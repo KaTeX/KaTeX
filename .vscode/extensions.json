@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "flowtype.flow-for-vscode",
+    "stylelint.vscode-stylelint",
+    "arcanis.vscode-zipfs"
+  ]
+}

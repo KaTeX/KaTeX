@@ -1,11 +1,9 @@
 // @flow
-import {checkNodeType} from "./parseNode";
-
 import type Parser from "./Parser";
 import type {ParseNode, AnyParseNode, NodeType, UnsupportedCmdParseNode}
     from "./parseNode";
 import type Options from "./Options";
-import type {ArgType, BreakToken, Mode} from "./types";
+import type {ArgType, BreakToken} from "./types";
 import type {HtmlDomNode} from "./domTree";
 import type {Token} from "./Token";
 import type {MathDomNode} from "./mathMLTree";
@@ -48,26 +46,10 @@ export type FunctionPropSpec = {
     // should appear before types for mandatory arguments.
     argTypes?: ArgType[],
 
-    // The greediness of the function to use ungrouped arguments.
-    //
-    // E.g. if you have an expression
-    //   \sqrt \frac 1 2
-    // since \frac has greediness=2 vs \sqrt's greediness=1, \frac
-    // will use the two arguments '1' and '2' as its two arguments,
-    // then that whole function will be used as the argument to
-    // \sqrt. On the other hand, the expressions
-    //   \frac \frac 1 2 3
-    // and
-    //   \frac \sqrt 1 2
-    // will fail because \frac and \frac have equal greediness
-    // and \sqrt has a lower greediness than \frac respectively. To
-    // make these parse, we would have to change them to:
-    //   \frac {\frac 1 2} 3
-    // and
-    //   \frac {\sqrt 1} 2
-    //
-    // The default value is `1`
-    greediness?: number,
+    // Whether it expands to a single token or a braced group of tokens.
+    // If it's grouped, it can be used as an argument to primitive commands,
+    // such as \sqrt (without the optional argument) and super/subscript.
+    allowedInArgument?: boolean,
 
     // Whether or not the function is allowed inside text mode
     // (default false)
@@ -86,13 +68,8 @@ export type FunctionPropSpec = {
     // Must be true if the function is an infix operator.
     infix?: boolean,
 
-    // Switch to the specified mode while consuming the command token.
-    // This is useful for commands that switch between math and text mode,
-    // for making sure that a switch happens early enough.  Note that the
-    // mode is switched immediately back to its original value after consuming
-    // the command token, so that the argument parsing and/or function handler
-    // can easily access the old mode while doing their own mode switching.
-    consumeMode?: ?Mode,
+    // Whether or not the function is a TeX primitive.
+    primitive?: boolean,
 };
 
 type FunctionDefSpec<NODETYPE: NodeType> = {|
@@ -133,12 +110,12 @@ export type FunctionSpec<NODETYPE: NodeType> = {|
     type: NODETYPE, // Need to use the type to avoid error. See NOTES below.
     numArgs: number,
     argTypes?: ArgType[],
-    greediness: number,
+    allowedInArgument: boolean,
     allowedInText: boolean,
     allowedInMath: boolean,
     numOptionalArgs: number,
     infix: boolean,
-    consumeMode: ?Mode,
+    primitive: boolean,
 
     // FLOW TYPE NOTES: Doing either one of the following two
     //
@@ -190,14 +167,14 @@ export default function defineFunction<NODETYPE: NodeType>({
         type,
         numArgs: props.numArgs,
         argTypes: props.argTypes,
-        greediness: (props.greediness === undefined) ? 1 : props.greediness,
+        allowedInArgument: !!props.allowedInArgument,
         allowedInText: !!props.allowedInText,
         allowedInMath: (props.allowedInMath === undefined)
             ? true
             : props.allowedInMath,
         numOptionalArgs: props.numOptionalArgs || 0,
         infix: !!props.infix,
-        consumeMode: props.consumeMode,
+        primitive: !!props.primitive,
         handler: handler,
     };
     for (let i = 0; i < names.length; ++i) {
@@ -235,9 +212,12 @@ export function defineFunctionBuilders<NODETYPE: NodeType>({
     });
 }
 
+export const normalizeArgument = function(arg: AnyParseNode): AnyParseNode {
+    return arg.type === "ordgroup" && arg.body.length === 1 ? arg.body[0] : arg;
+};
+
 // Since the corresponding buildHTML/buildMathML function expects a
 // list of elements, we normalize for different kinds of arguments
 export const ordargument = function(arg: AnyParseNode): AnyParseNode[] {
-    const node = checkNodeType(arg, "ordgroup");
-    return node ? node.body : [arg];
+    return arg.type === "ordgroup" ? arg.body : [arg];
 };

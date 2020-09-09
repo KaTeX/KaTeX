@@ -48,9 +48,8 @@ defineFunction({
     props: {
         numArgs: 1,
         argTypes: ["text"],
-        greediness: 2,
+        allowedInArgument: true,
         allowedInText: true,
-        consumeMode: "text",
     },
     handler({parser, funcName}, args) {
         const body = args[0];

@@ -4,6 +4,9 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import stretchy from "../stretchy";
+import {phasePath} from "../svgGeometry";
+import {PathNode, SvgNode} from "../domTree";
+import {calculateSize} from "../units";
 import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
@@ -11,14 +14,14 @@ import * as mml from "../buildMathML";
 
 
 const htmlBuilder = (group, options) => {
-    // \cancel, \bcancel, \xcancel, \sout, \fbox, \colorbox, \fcolorbox
+    // \cancel, \bcancel, \xcancel, \sout, \fbox, \colorbox, \fcolorbox, \phase
     // Some groups can return document fragments.  Handle those by wrapping
     // them in a span.
     const inner = buildCommon.wrapFragment(
         html.buildGroup(group.body, options), options);
 
     const label = group.label.substr(1);
-    const scale = options.sizeMultiplier;
+    let scale = options.sizeMultiplier;
     let img;
     let imgShift = 0;
 
@@ -34,18 +37,48 @@ const htmlBuilder = (group, options) => {
         img.height = options.fontMetrics().defaultRuleThickness / scale;
         imgShift = -0.5 * options.fontMetrics().xHeight;
 
+    } else if (label === "phase") {
+        // Set a couple of dimensions from the steinmetz package.
+        const lineWeight = calculateSize({number: 0.6, unit: "pt"}, options);
+        const clearance = calculateSize({number: 0.35, unit: "ex"}, options);
+
+        // Prevent size changes like \Huge from affecting line thickness
+        const newOptions = options.havingBaseSizing();
+        scale = scale / newOptions.sizeMultiplier;
+
+        const angleHeight = inner.height + inner.depth + lineWeight + clearance;
+        // Reserve a left pad for the angle.
+        inner.style.paddingLeft = (angleHeight / 2 + lineWeight) + "em";
+
+        // Create an SVG
+        const viewBoxHeight = Math.floor(1000 * angleHeight * scale);
+        const path = phasePath(viewBoxHeight);
+        const svgNode = new SvgNode([new PathNode("phase", path)], {
+            "width": "400em",
+            "height": `${viewBoxHeight / 1000}em`,
+            "viewBox": `0 0 400000 ${viewBoxHeight}`,
+            "preserveAspectRatio": "xMinYMin slice",
+        });
+        // Wrap it in a span with overflow: hidden.
+        img = buildCommon.makeSvgSpan(["hide-tail"], [svgNode], options);
+        img.style.height = angleHeight + "em";
+        imgShift = inner.depth + lineWeight + clearance;
+
     } else {
         // Add horizontal padding
         if (/cancel/.test(label)) {
             if (!isSingleChar) {
                 inner.classes.push("cancel-pad");
             }
+        } else if (label === "angl") {
+            inner.classes.push("anglpad");
         } else {
             inner.classes.push("boxpad");
         }
 
         // Add vertical padding
-        let vertPad = 0;
+        let topPad = 0;
+        let bottomPad = 0;
         let ruleThickness = 0;
         // ref: cancel package: \advance\totalheight2\p@ % "+2"
         if (/box/.test(label)) {
@@ -53,18 +86,30 @@ const htmlBuilder = (group, options) => {
                 options.fontMetrics().fboxrule, // default
                 options.minRuleThickness, // User override.
             );
-            vertPad = options.fontMetrics().fboxsep +
+            topPad = options.fontMetrics().fboxsep +
                 (label === "colorbox" ? 0 : ruleThickness);
+            bottomPad =  topPad;
+        } else if (label === "angl") {
+            ruleThickness = Math.max(
+                options.fontMetrics().defaultRuleThickness,
+                options.minRuleThickness
+            );
+            topPad = 4 * ruleThickness; // gap = 3 × line, plus the line itself.
+            bottomPad = Math.max(0, 0.25 - inner.depth);
         } else {
-            vertPad = isSingleChar ? 0.2 : 0;
+            topPad = isSingleChar ? 0.2 : 0;
+            bottomPad =  topPad;
         }
 
-        img = stretchy.encloseSpan(inner, label, vertPad, options);
+        img = stretchy.encloseSpan(inner, label, topPad, bottomPad, options);
         if (/fbox|boxed|fcolorbox/.test(label)) {
             img.style.borderStyle = "solid";
             img.style.borderWidth = `${ruleThickness}em`;
+        } else if (label === "angl" && ruleThickness !== 0.049) {
+            img.style.borderTopWidth = `${ruleThickness}em`;
+            img.style.borderRightWidth = `${ruleThickness}em`;
         }
-        imgShift = inner.depth + vertPad;
+        imgShift = inner.depth + bottomPad;
 
         if (group.backgroundColor) {
             img.style.backgroundColor = group.backgroundColor;
@@ -85,6 +130,7 @@ const htmlBuilder = (group, options) => {
             ],
         }, options);
     } else {
+        const classes = /cancel|phase/.test(label) ? ["svg-align"] : [];
         vlist = buildCommon.makeVList({
             positionType: "individualShift",
             children: [
@@ -98,7 +144,7 @@ const htmlBuilder = (group, options) => {
                     type: "elem",
                     elem: img,
                     shift: imgShift,
-                    wrapperClasses: /cancel/.test(label) ? ["svg-align"] : [],
+                    wrapperClasses: classes,
                 },
             ],
         }, options);
@@ -132,11 +178,17 @@ const mathmlBuilder = (group, options) => {
         case "\\bcancel":
             node.setAttribute("notation", "downdiagonalstrike");
             break;
+        case "\\phase":
+            node.setAttribute("notation", "phasorangle");
+            break;
         case "\\sout":
             node.setAttribute("notation", "horizontalstrike");
             break;
         case "\\fbox":
             node.setAttribute("notation", "box");
+            break;
+        case "\\angl":
+            node.setAttribute("notation", "actuarial");
             break;
         case "\\fcolorbox":
         case "\\colorbox":
@@ -173,7 +225,6 @@ defineFunction({
     props: {
         numArgs: 2,
         allowedInText: true,
-        greediness: 3,
         argTypes: ["color", "text"],
     },
     handler({parser, funcName}, args, optArgs) {
@@ -197,7 +248,6 @@ defineFunction({
     props: {
         numArgs: 3,
         allowedInText: true,
-        greediness: 3,
         argTypes: ["color", "color", "text"],
     },
     handler({parser, funcName}, args, optArgs) {
@@ -237,11 +287,11 @@ defineFunction({
 
 defineFunction({
     type: "enclose",
-    names: ["\\cancel", "\\bcancel", "\\xcancel", "\\sout"],
+    names: ["\\cancel", "\\bcancel", "\\xcancel", "\\sout", "\\phase"],
     props: {
         numArgs: 1,
     },
-    handler({parser, funcName}, args, optArgs) {
+    handler({parser, funcName}, args) {
         const body = args[0];
         return {
             type: "enclose",
@@ -252,4 +302,22 @@ defineFunction({
     },
     htmlBuilder,
     mathmlBuilder,
+});
+
+defineFunction({
+    type: "enclose",
+    names: ["\\angl"],
+    props: {
+        numArgs: 1,
+        argTypes: ["hbox"],
+        allowedInText: false,
+    },
+    handler({parser}, args) {
+        return {
+            type: "enclose",
+            mode: parser.mode,
+            label: "\\angl",
+            body: args[0],
+        };
+    },
 });

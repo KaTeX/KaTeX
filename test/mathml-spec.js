@@ -1,7 +1,3 @@
-/* global expect: false */
-/* global it: false */
-/* global describe: false */
-
 import buildMathML from "../src/buildMathML";
 import parseTree from "../src/parseTree";
 import Options from "../src/Options";
@@ -20,7 +16,8 @@ const getMathML = function(expr, settings = new Settings()) {
         maxSize: Infinity,
     });
 
-    const built = buildMathML(parseTree(expr, settings), expr, options);
+    const built = buildMathML(parseTree(expr, settings), expr, options,
+        settings.displayMode);
 
     // Strip off the surrounding <span>
     return built.children[0].toMarkup();
@@ -47,6 +44,11 @@ describe("A MathML builder", function() {
         expect(getMathML("\\displaystyle\\sum_a^b")).toMatchSnapshot();
     });
 
+    it('should use <msupsub> for integrals', () => {
+        expect(getMathML("\\displaystyle\\int_a^b + " +
+            "\\oiint_a^b + \\oiiint_a^b")).toMatchSnapshot();
+    });
+
     it('should use <msupsub> for regular operators', () => {
         expect(getMathML("\\textstyle\\sum_a^b")).toMatchSnapshot();
     });
@@ -66,6 +68,11 @@ describe("A MathML builder", function() {
 
     it('should use <mpadded> for raisebox', () => {
         expect(getMathML("\\raisebox{0.25em}{b}")).toMatchSnapshot();
+    });
+
+    it('should size delimiters correctly', () => {
+        expect(getMathML("(M) \\big(M\\big) \\Big(M\\Big) \\bigg(M\\bigg)" +
+        " \\Bigg(M\\Bigg)")).toMatchSnapshot();
     });
 
     it('should use <menclose> for colorbox', () => {

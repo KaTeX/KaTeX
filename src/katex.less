@@ -17,6 +17,9 @@
     // Prevent a rendering bug that misplaces \vec in Chrome.
     text-rendering: auto;
 
+    // Insulate fraction bars and rules from CSS that sets border-color.
+    border-color: currentColor;
+
     // Prevent background resetting on elements in Windows's high-contrast
     // mode, while still allowing background/foreground setting on root .katex
     * { -ms-high-contrast-adjust: none !important; }
@@ -81,7 +84,7 @@
     }
 
     // Math fonts.
-    .mathdefault {
+    .mathnormal {
         font-family: KaTeX_Math;
         font-style: italic;
     }
@@ -168,6 +171,7 @@
     .vlist-t {
         display: inline-table;
         table-layout: fixed;
+        border-collapse: collapse;
     }
 
     .vlist-r {
@@ -212,6 +216,25 @@
         font-size: 1px;
         width: 2px;
         min-width: 2px;
+    }
+
+    .vbox {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: baseline;
+    }
+
+    .hbox {
+        display: inline-flex;
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .thinbox {
+        display: inline-flex;
+        flex-direction: row;
+        width: 0;
+        max-width: 0; // necessary for Safari
     }
 
     .msupsub {
@@ -561,6 +584,32 @@
         border-bottom-style: solid;
         border-bottom-width: 0.08em;
     }
+
+    .angl {
+        // from package actuarialangle, which is always used in a subscript.
+        box-sizing: border-content;
+        border-top: 0.049em solid;        // defaultRuleThickness in scriptstyle
+        border-right: 0.049em solid;      // ditto
+        margin-right: 0.03889em;          // 1 mu
+    }
+
+    .anglpad {
+        padding: 0 0.03889em 0 0.03889em; // pad 1mu left and right (in scriptstyle)
+    }
+
+    .eqn-num::before {
+        counter-increment: katexEqnNo;
+        content: "(" counter(katexEqnNo) ")";
+    }
+
+    .mml-eqn-num::before {
+        counter-increment: mmlEqnNo;
+        content: "(" counter(mmlEqnNo) ")";
+    }
+
+    .mtr-glue {
+        width: 50%;
+    }
 }
 
 .katex-display {
@@ -594,4 +643,11 @@
 // Flush-left display math
 .katex-display.fleqn > .katex {
     text-align: left;
+    padding-left: 2em;
+}
+
+// Automatic equation numbers for some environments.
+// Use parallel counters for HTML and MathML.
+body {
+    counter-reset: katexEqnNo mmlEqnNo;
 }

@@ -1,0 +1,10 @@
+{
+  "javascript.validate.enable": false,
+  "eslint.nodePath": ".yarn/sdks",
+  "stylelint.stylelintPath": ".yarn/sdks/stylelint/lib/index.js",
+  "flow.pathToFlow": "${workspaceFolder}/.yarn/sdks/flow-bin/cli.js",
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  },
+}

@@ -62,11 +62,12 @@ function checkDelimiter(
     const symDelim = checkSymbolNodeType(delim);
     if (symDelim && utils.contains(delimiters, symDelim.text)) {
         return symDelim;
-    } else {
+    } else if (symDelim) {
         throw new ParseError(
-            "Invalid delimiter: '" +
-            (symDelim ? symDelim.text : JSON.stringify(delim)) +
-            "' after '" + context.funcName + "'", delim);
+            `Invalid delimiter '${symDelim.text}' after '${context.funcName}'`,
+            delim);
+    } else {
+        throw new ParseError(`Invalid delimiter type '${delim.type}'`, delim);
     }
 }
 
@@ -80,6 +81,7 @@ defineFunction({
     ],
     props: {
         numArgs: 1,
+        argTypes: ["primitive"],
     },
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
@@ -123,6 +125,10 @@ defineFunction({
             node.setAttribute("fence", "false");
         }
 
+        node.setAttribute("stretchy", "true");
+        node.setAttribute("minsize", delimiter.sizeToMaxHeight[group.size] + "em");
+        node.setAttribute("maxsize", delimiter.sizeToMaxHeight[group.size] + "em");
+
         return node;
     },
 });
@@ -140,6 +146,7 @@ defineFunction({
     names: ["\\right"],
     props: {
         numArgs: 1,
+        primitive: true,
     },
     handler: (context, args) => {
         // \left case below triggers parsing of \right in
@@ -165,6 +172,7 @@ defineFunction({
     names: ["\\left"],
     props: {
         numArgs: 1,
+        primitive: true,
     },
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
@@ -298,6 +306,7 @@ defineFunction({
     names: ["\\middle"],
     props: {
         numArgs: 1,
+        primitive: true,
     },
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);

@@ -1,8 +1,4 @@
 /* eslint max-len:0 */
-/* global expect: false */
-/* global it: false */
-/* global describe: false */
-/* global beforeAll: false */
 
 import buildMathML from "../src/buildMathML";
 import buildTree from "../src/buildTree";
@@ -582,10 +578,10 @@ describe("An over/brace/brack parser", function() {
         expect(numer.body).toHaveLength(4);
     });
 
-    it("should create a demonimator from the atoms after \\over", function() {
+    it("should create a denominator from the atoms after \\over", function() {
         const parse = getParsed(complexOver)[0];
 
-        const denom = parse.numer;
+        const denom = parse.denom;
         expect(denom.body).toHaveLength(4);
     });
 
@@ -851,13 +847,6 @@ describe("A color parser", function() {
 
     it("should parse new colors from the branding guide", function() {
         expect(newColorExpression).toParse();
-    });
-
-    it("should have correct greediness", function() {
-        expect`\textcolor{red}a`.toParse();
-        expect`\textcolor{red}{\text{a}}`.toParse();
-        expect`\textcolor{red}\text{a}`.not.toParse();
-        expect`\textcolor{red}\frac12`.not.toParse();
     });
 
     it("should use one-argument \\color by default", function() {
@@ -1247,6 +1236,10 @@ describe("A begin/end parser", function() {
         expect`\begin{array}{cc}a&b\\c&d\end{array}`.toParse();
     });
 
+    it("should parse and build an empty environment", function() {
+        expect`\begin{aligned}\end{aligned}`.toBuild();
+    });
+
     it("should parse an environment with hlines", function() {
         expect`\begin{matrix}\hline a&b\\ \hline c&d\end{matrix}`.toParse();
         expect`\begin{matrix}\hdashline a&b\\ \hdashline c&d\end{matrix}`.toParse();
@@ -1282,8 +1275,13 @@ describe("A begin/end parser", function() {
         expect(m2).toParse();
     });
 
-    it("should allow \\cr as a line terminator", function() {
+    it("should allow \\cr and \\\\ as a line terminator", function() {
         expect`\begin{matrix}a&b\cr c&d\end{matrix}`.toParse();
+        expect`\begin{matrix}a&b\\c&d\end{matrix}`.toParse();
+    });
+
+    it("should not allow \\cr to scan for an optional size argument", function() {
+        expect`\begin{matrix}a&b\cr[c]&d\end{matrix}`.toParse();
     });
 
     it("should eat a final newline", function() {
@@ -1294,6 +1292,17 @@ describe("A begin/end parser", function() {
     it("should grab \\arraystretch", function() {
         const parse = getParsed`\def\arraystretch{1.5}\begin{matrix}a&b\\c&d\end{matrix}`;
         expect(parse).toMatchSnapshot();
+    });
+
+    it("should allow an optional argument in {matrix*} and company.", function() {
+        expect("\\begin{matrix*}[r] a & -1 \\\\ -1 & d \\end{matrix*}").toBuild();
+        expect("\\begin{pmatrix*}[r] a & -1 \\\\ -1 & d \\end{pmatrix*}").toBuild();
+        expect("\\begin{bmatrix*}[r] a & -1 \\\\ -1 & d \\end{bmatrix*}").toBuild();
+        expect("\\begin{Bmatrix*}[r] a & -1 \\\\ -1 & d \\end{Bmatrix*}").toBuild();
+        expect("\\begin{vmatrix*}[r] a & -1 \\\\ -1 & d \\end{vmatrix*}").toBuild();
+        expect("\\begin{Vmatrix*}[r] a & -1 \\\\ -1 & d \\end{Vmatrix*}").toBuild();
+        expect("\\begin{matrix*} a & -1 \\\\ -1 & d \\end{matrix*}").toBuild();
+        expect("\\begin{matrix*}[] a & -1 \\\\ -1 & d \\end{matrix*}").not.toParse();
     });
 });
 
@@ -1317,6 +1326,16 @@ describe("A sqrt parser", function() {
 
     it("should build sized square roots", function() {
         expect("\\Large\\sqrt[3]{x}").toBuild();
+    });
+
+    it("should expand argument if optional argument doesn't exist", function() {
+        expect("\\sqrt\\foo").toParseLike("\\sqrt123",
+            new Settings({macros: {"\\foo": "123"}}));
+    });
+
+    it("should not expand argument if optional argument exists", function() {
+        expect("\\sqrt[2]\\foo").toParseLike("\\sqrt[2]{123}",
+            new Settings({macros: {"\\foo": "123"}}));
     });
 });
 
@@ -1593,13 +1612,22 @@ describe("A font parser", function() {
         expect(bf.body.body[2].text).toEqual("c");
     });
 
-    it("should have the correct greediness", function() {
+    it("should be allowed in the argument", function() {
         expect`e^\mathbf{x}`.toParse();
     });
 
     it("\\boldsymbol should inherit mbin/mrel from argument", () => {
         const built = getBuilt`a\boldsymbol{}b\boldsymbol{=}c\boldsymbol{+}d\boldsymbol{++}e\boldsymbol{xyz}f`;
         expect(built).toMatchSnapshot();
+    });
+
+    it("old-style fonts work like new-style fonts", () => {
+        expect`\rm xyz`.toParseLike`\mathrm{xyz}`;
+        expect`\sf xyz`.toParseLike`\mathsf{xyz}`;
+        expect`\tt xyz`.toParseLike`\mathtt{xyz}`;
+        expect`\bf xyz`.toParseLike`\mathbf{xyz}`;
+        expect`\it xyz`.toParseLike`\mathit{xyz}`;
+        expect`\cal xyz`.toParseLike`\mathcal{xyz}`;
     });
 });
 
@@ -1724,9 +1752,9 @@ describe("An HTML font tree-builder", function() {
         expect(markup).toContain("<span class=\"mord\">T</span>");
     });
 
-    it("should render \\textbf{R} with the correct font", function() {
-        const markup = katex.renderToString(r`\textbf{R}`);
-        expect(markup).toContain("<span class=\"mord textbf\">R</span>");
+    it("should render \\textbf{R } with the correct font", function() {
+        const markup = katex.renderToString(r`\textbf{R }`);
+        expect(markup).toContain("<span class=\"mord textbf\">R\u00a0</span>");
     });
 
     it("should render \\textmd{R} with the correct font", function() {
@@ -1824,7 +1852,7 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1850,7 +1878,7 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1876,7 +1904,7 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mn>2</mn>");
         expect(markup).toContain("<mi>\u03c9</mi>");   // \omega
         expect(markup).toContain("<mi mathvariant=\"normal\">\u03A9</mi>");   // \Omega
-        expect(markup).toContain("<mi>\u0131</mi>");   // \imath
+        expect(markup).toContain("<mi mathvariant=\"normal\">\u0131</mi>");   // \imath
         expect(markup).toContain("<mo>+</mo>");
     });
 
@@ -1998,6 +2026,36 @@ describe("An includegraphics builder", function() {
 
     it("should render with trust setting", function() {
         const built = getBuilt(img, trustSettings);
+        expect(built).toMatchSnapshot();
+    });
+});
+
+describe("An HTML extension builder", function() {
+    const html =
+        "\\htmlId{bar}{x}\\htmlClass{foo}{x}\\htmlStyle{color: red;}{x}\\htmlData{foo=a, bar=b}{x}";
+    const trustNonStrictSettings = new Settings({trust: true, strict: false});
+    it("should not fail", function() {
+        expect(html).toBuild(trustNonStrictSettings);
+    });
+
+    it("should set HTML attributes", function() {
+        const built = getBuilt(html, trustNonStrictSettings);
+        expect(built[0].attributes.id).toMatch("bar");
+        expect(built[1].classes).toContain("foo");
+        expect(built[2].attributes.style).toMatch("color: red");
+        expect(built[3].attributes).toEqual({
+            "data-bar": "b",
+            "data-foo": "a",
+        });
+    });
+
+    it("should not affect spacing", function() {
+        const built = getBuilt("\\htmlId{a}{x+}y", trustNonStrictSettings);
+        expect(built).toMatchSnapshot();
+    });
+
+    it("should render with trust and strict setting", function() {
+        const built = getBuilt(html, trustNonStrictSettings);
         expect(built).toMatchSnapshot();
     });
 });
@@ -2422,6 +2480,33 @@ describe("A strike-through builder", function() {
     });
 });
 
+describe("A actuarial angle parser", function() {
+    it("should not fail in math mode", function() {
+        expect`a_{\angl{n}}`.toParse();
+    });
+    it("should fail in text mode", function() {
+        expect`\text{a_{\angl{n}}}`.not.toParse();
+    });
+});
+
+describe("A actuarial angle builder", function() {
+    it("should not fail", function() {
+        expect`a_{\angl{n}}`.toBuild();
+        expect`a_{\angl{n}i}`.toBuild();
+        expect`a_{\angl n}`.toBuild();
+        expect`a_\angln`.toBuild();
+    });
+});
+
+describe("\\phase", function() {
+    it("should fail in text mode", function() {
+        expect`\text{\phase{-78.2^\circ}}`.not.toParse();
+    });
+    it("should not fail in math mode", function() {
+        expect`\phase{-78.2^\circ}`.toBuild();
+    });
+});
+
 describe("A phantom parser", function() {
     it("should not fail", function() {
         expect`\phantom{x}`.toParse();
@@ -2448,6 +2533,7 @@ describe("A phantom builder", function() {
         expect`\phantom{x^2}`.toBuild();
         expect`\phantom{x}^2`.toBuild();
         expect`\phantom x`.toBuild();
+        expect `\mathstrut`.toBuild();
 
         expect`\hphantom{x}`.toBuild();
         expect`\hphantom{x^2}`.toBuild();
@@ -2506,23 +2592,6 @@ describe("A smash builder", function() {
         expect`\smash[b]{x^2}`.toBuild(nonstrictSettings);
         expect`\smash[b]{x}^2`.toBuild(nonstrictSettings);
         expect`\smash[b] x`.toBuild(nonstrictSettings);
-    });
-});
-
-describe("A document fragment", function() {
-    it("should have paddings applied inside an extensible arrow", function() {
-        const markup = katex.renderToString("\\tiny\\xrightarrow\\textcolor{red}{x}");
-        expect(markup).toContain("x-arrow-pad");
-    });
-
-    it("should have paddings applied inside an enclose", function() {
-        const markup = katex.renderToString(r`\fbox\textcolor{red}{x}`);
-        expect(markup).toContain("boxpad");
-    });
-
-    it("should have paddings applied inside a square root", function() {
-        const markup = katex.renderToString(r`\sqrt\textcolor{red}{x}`);
-        expect(markup).toContain("padding-left");
     });
 });
 
@@ -2617,6 +2686,9 @@ describe("A substack function", function() {
     it("should accommodate macros in the argument", function() {
         expect`\sum_{\substack{ 0<i<\varPi \\ 0<j<\pi }}  P(i,j)`.toBuild();
     });
+    it("should accommodate an empty argument", function() {
+        expect`\sum_{\substack{}}  P(i,j)`.toBuild();
+    });
 
 });
 
@@ -2633,6 +2705,15 @@ describe("A cases environment", function() {
     it("should parse its input", function() {
         expect`f(a,b)=\begin{cases}a+1&\text{if }b\text{ is odd}\\a&\text{if }b=0\\a-1&\text{otherwise}\end{cases}`
             .toParse();
+    });
+
+});
+
+describe("An rcases environment", function() {
+
+    it("should build", function() {
+        expect`\begin{rcases} a &\text{if } b \\ c &\text{if } d \end{rcases}⇒…`
+            .toBuild();
     });
 
 });
@@ -2654,6 +2735,45 @@ describe("An aligned environment", function() {
     it("should not eat the last row when its first cell is empty", function() {
         const ae = getParsed`\begin{aligned}&E_1 & (1)\\&E_2 & (2)\\&E_3 & (3)\end{aligned}`[0];
         expect(ae.body).toHaveLength(3);
+    });
+});
+
+describe("AMS environments", function() {
+    it("should fail outside display mode", () => {
+        expect`\begin{gather}a+b\\c+d\end{gather}`.not.toParse(nonstrictSettings);
+        expect`\begin{gather*}a+b\\c+d\end{gather*}`.not.toParse(nonstrictSettings);
+        expect`\begin{align}a&=b+c\\d+e&=f\end{align}`.not.toParse(nonstrictSettings);
+        expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.not.toParse(nonstrictSettings);
+        expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.not.toParse(nonstrictSettings);
+        expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.not.toParse(nonstrictSettings);
+        expect`\begin{equation}a=b+c\end{equation}`.not.toParse(nonstrictSettings);
+        expect`\begin{split}a &=b+c\\&=e+f\end{split}`.not.toParse(nonstrictSettings);
+    });
+
+    const nonStrictDisplay = new Settings({displayMode: true, strict: false});
+    it("should build if in non-strict display mode", () => {
+        expect`\begin{gather}a+b\\c+d\end{gather}`.toBuild(nonStrictDisplay);
+        expect`\begin{gather*}a+b\\c+d\end{gather*}`.toBuild(nonStrictDisplay);
+        expect`\begin{align}a&=b+c\\d+e&=f\end{align}`.toBuild(nonStrictDisplay);
+        expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.toBuild(nonStrictDisplay);
+        expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.toBuild(nonStrictDisplay);
+        expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.toBuild(nonStrictDisplay);
+        expect`\begin{equation}a=b+c\end{equation}`.toBuild(nonStrictDisplay);
+        expect`\begin{equation}\begin{split}a &=b+c\\&=e+f\end{split}\end{equation}`.toBuild(nonStrictDisplay);
+        expect`\begin{split}a &=b+c\\&=e+f\end{split}`.toBuild(nonStrictDisplay);
+    });
+
+    it("{equation} should fail if argument contains two rows.", () => {
+        expect`\begin{equation}a=\cr b+c\end{equation}`.not.toParse(nonStrictDisplay);
+    });
+    it("{equation} should fail if argument contains two columns.", () => {
+        expect`\begin{equation}a &=b+c\end{equation}`.not.toBuild(nonStrictDisplay);
+    });
+    it("{split} should fail if argument contains three columns.", () => {
+        expect`\begin{equation}\begin{split}a &=b &+c\\&=e &+f\end{split}\end{equation}`.not.toBuild(nonStrictDisplay);
+    });
+    it("{array} should fail if body contains more columns than specification.", () => {
+        expect`\begin{array}{2}a & b & c\\d & e  f\end{array}`.not.toBuild(nonStrictDisplay);
     });
 });
 
@@ -2766,11 +2886,6 @@ describe("href and url commands", function() {
 });
 
 describe("A raw text parser", function() {
-    it("should not not parse a mal-formed string", function() {
-        // In the next line, the first character passed to \includegraphics is a
-        // Unicode combining character. So this is a test that the parser will catch a bad string.
-        expect("\\includegraphics[\u030aheight=0.8em, totalheight=0.9em, width=0.9em]{" + "https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").not.toParse();
-    });
     it("should return null for a omitted optional string", function() {
         expect("\\includegraphics{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").toParse();
     });
@@ -2921,10 +3036,38 @@ describe("A macro expander", function() {
     });
 
     it("should allow for macro argument", function() {
-        expect`\foo\bar`.toParseLike("(x)", new Settings({macros: {
+        expect`\foo\bar`.toParseLike("(xyz)", new Settings({macros: {
             "\\foo": "(#1)",
-            "\\bar": "x",
+            "\\bar": "xyz",
         }}));
+    });
+
+    it("should allow properly nested group for macro argument", function() {
+        expect`\foo{e^{x_{12}+3}}`.toParseLike("(e^{x_{12}+3})",
+            new Settings({macros: {"\\foo": "(#1)"}}));
+    });
+
+    it("should delay expansion if preceded by \\expandafter", function() {
+        expect`\expandafter\foo\bar`.toParseLike("x+y", new Settings({macros: {
+            "\\foo": "#1+#2",
+            "\\bar": "xy",
+        }}));
+        expect`\def\foo{x}\def\bar{\def\foo{y}}\expandafter\bar\foo`.toParseLike`x`;
+        // \def is not expandable, i.e., \expandafter doesn't define the macro
+        expect`\expandafter\foo\def\foo{x}`.not.toParse();
+    });
+
+    it("should not expand if preceded by \\noexpand", function() {
+        // \foo is not expanded and interpreted as if its meaning were \relax
+        expect`\noexpand\foo y`.toParseLike("y",
+            new Settings({macros: {"\\foo": "x"}}));
+        // \noexpand is expandable, so the second \foo is not expanded
+        expect`\expandafter\foo\noexpand\foo`.toParseLike("x",
+            new Settings({macros: {"\\foo": "x"}}));
+        // \frac is a macro and therefore expandable
+        expect`\noexpand\frac xy`.toParseLike`xy`;
+        // \def is not expandable, so is not affected by \noexpand
+        expect`\noexpand\def\foo{xy}\foo`.toParseLike`xy`;
     });
 
     it("should allow for space macro argument (text version)", function() {
@@ -2962,15 +3105,11 @@ describe("A macro expander", function() {
         }}));
     });
 
-    // TODO: The following is not currently possible to get working, given that
-    // functions and macros are dealt with separately.
-/*
     it("should allow for space function arguments", function() {
         expect`\frac\bar\bar`.toParseLike(r`\frac{}{}`, new Settings({macros: {
             "\\bar": " ",
         }}));
     });
-*/
 
     it("should build \\overset and \\underset", function() {
         expect`\overset{f}{\rightarrow} Y`.toBuild();
@@ -2999,9 +3138,14 @@ describe("A macro expander", function() {
         expect`\@ifstar{yes}{no}?!`.toParseLike`no?!`;
     });
 
-    it("\\@ifnextchar should not consume anything", function() {
+    it("\\@ifnextchar should not consume nonspaces", function() {
         expect`\@ifnextchar!{yes}{no}!!`.toParseLike`yes!!`;
         expect`\@ifnextchar!{yes}{no}?!`.toParseLike`no?!`;
+    });
+
+    it("\\@ifnextchar should consume spaces", function() {
+        expect`\def\x#1{\@ifnextchar x{yes}{no}}\x{}x\x{} x`
+            .toParseLike`yesxyesx`;
     });
 
     it("\\@ifstar should consume star but nothing else", function() {
@@ -3075,32 +3219,51 @@ describe("A macro expander", function() {
         expect`\varsubsetneqq\varsupsetneq\varsupsetneqq`.toBuild();
     });
 
-    // TODO(edemaine): This doesn't work yet.  Parses like `\text text`,
-    // which doesn't treat all four letters as an argument.
-    //it("\\TextOrMath should work in a macro passed to \\text", function() {
-    //    expect`\text\mode`.toParseLike(r`\text{text}`, new Settings({macros:
-    //        {"\\mode": "\\TextOrMath{text}{math}"});
-    //});
+    it("\\TextOrMath should work in a macro passed to \\text", function() {
+        expect`\text\mode`.toParseLike(r`\text{text}`, new Settings({macros:
+            {"\\mode": "\\TextOrMath{text}{math}"}}));
+    });
 
     it("\\gdef defines macros", function() {
         expect`\gdef\foo{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
-        expect`\gdef{\foo}{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
-        expect`\gdef\foo{hi}\foo+\text{\foo}`.toParseLike`hi+\text{hi}`;
+        expect`\gdef\foo{hi}\foo+\text\foo`.toParseLike`hi+\text{hi}`;
         expect`\gdef\foo#1{hi #1}\text{\foo{Alice}, \foo{Bob}}`
             .toParseLike`\text{hi Alice, hi Bob}`;
         expect`\gdef\foo#1#2{(#1,#2)}\foo 1 2+\foo 3 4`.toParseLike`(1,2)+(3,4)`;
         expect`\gdef\foo#2{}`.not.toParse();
+        expect`\gdef\foo#a{}`.not.toParse();
         expect`\gdef\foo#1#3{}`.not.toParse();
         expect`\gdef\foo#1#2#3#4#5#6#7#8#9{}`.toParse();
         expect`\gdef\foo#1#2#3#4#5#6#7#8#9#10{}`.not.toParse();
-        expect`\gdef\foo#{}`.not.toParse();
-        expect`\gdef\foo\bar`.toParse();
+        expect`\gdef\foo1`.not.toParse();
+        expect`\gdef{\foo}{}`.not.toParse();
+        expect`\gdef\foo\bar`.not.toParse();
         expect`\gdef{\foo\bar}{}`.not.toParse();
         expect`\gdef{}{}`.not.toParse();
-        // TODO: These shouldn't work, but `1` and `{1}` are currently treated
-        // the same, as are `\foo` and `{\foo}`.
-        //expect`\gdef\foo1`.not.toParse();
-        //expect`\gdef{\foo}{}`.not.toParse();
+    });
+
+    it("\\gdef defines macros with delimited parameter", function() {
+        expect`\gdef\foo|#1||{#1}\text{\foo| x y ||}`.toParseLike`\text{ x y }`;
+        expect`\gdef\foo#1|#2{#1+#2}\foo 1 2 |34`.toParseLike`12+34`;
+        expect`\gdef\foo#1#{#1}\foo1^{23}`.toParseLike`1^{23}`;
+        expect`\gdef\foo|{}\foo`.not.toParse();
+        expect`\gdef\foo#1|{#1}\foo1`.not.toParse();
+        expect`\gdef\foo#1|{#1}\foo1}|`.not.toParse();
+    });
+
+    it("\\xdef should expand definition", function() {
+        expect`\def\foo{a}\xdef\bar{\foo}\def\foo{}\bar`.toParseLike`a`;
+        // \def\noexpand\foo{} expands into \def\foo{}
+        expect`\def\foo{a}\xdef\bar{\def\noexpand\foo{}}\foo\bar\foo`.toParseLike`a`;
+        // \foo\noexpand\foo expands into a\foo
+        expect`\def\foo{a}\xdef\bar{\foo\noexpand\foo}\def\foo{b}\bar`.toParseLike`ab`;
+        // \foo is not defined
+        expect`\xdef\bar{\foo}`.not.toParse();
+    });
+
+    it("\\def should be handled in Parser", () => {
+        expect`\gdef\foo{1}`.toParse(new Settings({maxExpand: 0}));
+        expect`2^\def\foo{1}2`.not.toParse();
     });
 
     it("\\def works locally", () => {
@@ -3119,12 +3282,21 @@ describe("A macro expander", function() {
             "\\x\\def\\x{5}\\x}\\x").toParseLike`1{2{34}35}3`;
     });
 
-    it("\\global needs to followed by \\def", () => {
+    it("\\global needs to followed by macro prefixes, \\def or \\edef", () => {
         expect`\global\def\foo{}\foo`.toParseLike``;
-        // TODO: This doesn't work yet; \global needs to expand argument.
-        //expect`\def\DEF{\def}\global\DEF\foo{}\foo`.toParseLike``;
+        expect`\global\edef\foo{}\foo`.toParseLike``;
+        expect`\def\DEF{\def}\global\DEF\foo{}\foo`.toParseLike``;
+        expect`\global\global\def\foo{}\foo`.toParseLike``;
+        expect`\global\long\def\foo{}\foo`.toParseLike``;
         expect`\global\foo`.not.toParse();
         expect`\global\bar x`.not.toParse();
+    });
+
+    it("\\long needs to followed by macro prefixes, \\def or \\edef", () => {
+        expect`\long\def\foo{}\foo`.toParseLike``;
+        expect`\long\edef\foo{}\foo`.toParseLike``;
+        expect`\long\global\def\foo{}\foo`.toParseLike``;
+        expect`\long\foo`.not.toParse();
     });
 
     it("Macro arguments do not generate groups", () => {
@@ -3144,19 +3316,11 @@ describe("A macro expander", function() {
     });
 
     it("array cells generate groups", () => {
-        expect`\def\x{1}\begin{matrix}\x&\def\x{2}\x&\x\end{matrix}`
-            .toParseLike`\begin{matrix}1&2&1\end{matrix}`;
+        expect`\def\x{1}\begin{matrix}\x&\def\x{2}\x&\x\end{matrix}\x`
+            .toParseLike`\begin{matrix}1&2&1\end{matrix}1`;
+        expect`\def\x{1}\begin{matrix}\def\x{2}\x&\x\end{matrix}\x`
+            .toParseLike`\begin{matrix}2&1\end{matrix}1`;
     });
-
-    // TODO: This doesn't yet work; before the environment gets called,
-    // {matrix} gets consumed which means that the \def gets executed, before
-    // we can create a group. :-(  Issue #1989
-    /*
-    it("array cells generate groups", () => {
-        expect`\def\x{1}\begin{matrix}\def\x{2}&\x\end{matrix}`
-            .toParseLike`\begin{matrix}&1\end{matrix}`;
-    });
-    */
 
     it("\\gdef changes settings.macros", () => {
         const macros = {};
@@ -3168,6 +3332,49 @@ describe("A macro expander", function() {
         const macros = {};
         expect`\def\foo{1}`.toParse(new Settings({macros}));
         expect(macros["\\foo"]).toBeFalsy();
+    });
+
+    it("\\def changes settings.macros with globalGroup", () => {
+        const macros = {};
+        expect`\gdef\foo{1}`.toParse(new Settings({macros, globalGroup: true}));
+        expect(macros["\\foo"]).toBeTruthy();
+    });
+
+    it("\\let copies the definition", () => {
+        expect`\let\foo=\frac\def\frac{}\foo12`.toParseLike`\frac12`;
+        expect`\def\foo{1}\let\bar\foo\def\foo{2}\bar`.toParseLike`1`;
+        expect`\let\foo=\kern\edef\bar{\foo1em}\let\kern=\relax\bar`.toParseLike`\kern1em`;
+        // \foo = { (left brace)
+        expect`\let\foo{\sqrt\foo1}`.toParseLike`\sqrt{1}`;
+        // \equals = = (equal sign)
+        expect`\let\equals==a\equals b`.toParseLike`a=b`;
+        // \foo should not be expandable and not affected by \noexpand or \edef
+        expect`\let\foo=x\noexpand\foo`.toParseLike`x`;
+        expect`\let\foo=x\edef\bar{\foo}\def\foo{y}\bar`.toParseLike`y`;
+    });
+
+    it("\\let should consume one optional space after equals sign", () => {
+        // https://tex.stackexchange.com/questions/141166/let-foo-bar-vs-let-foo-bar-let-with-equals-sign
+        expect`\def\:{\let\space= }\: \text{\space}`.toParseLike`\text{ }`;
+        const tree = getParsed`\def\bold{\bgroup\bf\let\next= }\bold{a}`;
+        expect(tree).toMatchSnapshot();
+    });
+
+    it("\\futurelet should parse correctly", () => {
+        expect`\futurelet\foo\frac1{2+\foo}`.toParseLike`\frac1{2+1}`;
+    });
+
+    it("\\newcommand doesn't change settings.macros", () => {
+        const macros = {};
+        expect`\newcommand\foo{x^2}\foo+\foo`.toParse(new Settings({macros}));
+        expect(macros["\\foo"]).toBeFalsy();
+    });
+
+    it("\\newcommand changes settings.macros with globalGroup", () => {
+        const macros = {};
+        expect`\newcommand\foo{x^2}\foo+\foo`.toParse(
+            new Settings({macros, globalGroup: true}));
+        expect(macros["\\foo"]).toBeTruthy();
     });
 
     it("\\newcommand defines new macros", () => {
@@ -3233,6 +3440,16 @@ describe("A macro expander", function() {
         expect`\liminf`.toParseLike`\operatorname*{lim\,inf}`;
     });
 
+    it("should expand AMS log-like symbols as expected", () => {
+        expect`\injlim`.toParseLike`\operatorname*{inj\,lim}`;
+        expect`\projlim`.toParseLike`\operatorname*{proj\,lim}`;
+        expect`\varlimsup`.toParseLike`\operatorname*{\overline{lim}}`;
+        expect`\varliminf`.toParseLike`\operatorname*{\underline{lim}}`;
+        expect`\varinjlim`.toParseLike`\operatorname*{\underrightarrow{lim}}`;
+        expect`\varinjlim`.toParseLike`\operatorname*{\underrightarrow{lim}}`;
+        expect`\varprojlim`.toParseLike`\operatorname*{\underleftarrow{lim}}`;
+    });
+
     it("should expand \\plim as expected", () => {
         expect`\plim`.toParseLike`\mathop{\operatorname{plim}}\limits`;
     });
@@ -3243,6 +3460,26 @@ describe("A macro expander", function() {
 
     it("should expand \\argmax as expected", () => {
         expect`\argmax`.toParseLike`\operatorname*{arg\,max}`;
+    });
+
+    it("should expand \\bra as expected", () => {
+        expect`\bra{\phi}`.toParseLike`\mathinner{\langle{\phi}|}`;
+    });
+
+    it("should expand \\ket as expected", () => {
+        expect`\ket{\psi}`.toParseLike`\mathinner{|{\psi}\rangle}`;
+    });
+
+    it("should expand \\braket as expected", () => {
+        expect`\braket{\phi|\psi}`.toParseLike`\mathinner{\langle{\phi|\psi}\rangle}`;
+    });
+
+    it("should expand \\Bra as expected", () => {
+        expect`\Bra{\phi}`.toParseLike`\left\langle\phi\right|`;
+    });
+
+    it("should expand \\Ket as expected", () => {
+        expect`\Ket{\psi}`.toParseLike`\left|\psi\right\rangle`;
     });
 });
 
@@ -3298,9 +3535,9 @@ describe("\\@binrel automatic bin/rel/ord", () => {
         expect("L\\@binrel+xR").toParseLike("L\\mathbin xR");
         expect("L\\@binrel=xR").toParseLike("L\\mathrel xR");
         expect("L\\@binrel xxR").toParseLike("L\\mathord xR");
-        expect("L\\@binrel{+}{x}R").toParseLike("L\\mathbin{{x}}R");
-        expect("L\\@binrel{=}{x}R").toParseLike("L\\mathrel{{x}}R");
-        expect("L\\@binrel{x}{x}R").toParseLike("L\\mathord{{x}}R");
+        expect("L\\@binrel{+}{x}R").toParseLike("L\\mathbin{x}R");
+        expect("L\\@binrel{=}{x}R").toParseLike("L\\mathrel{x}R");
+        expect("L\\@binrel{x}{x}R").toParseLike("L\\mathord{x}R");
     });
 
     it("should base on just first character in group", () => {
@@ -3395,6 +3632,11 @@ describe("Unicode", function() {
         expect`∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙⟂⊨∌`.toBuild(strictSettings);
     });
 
+    it("should parse relations", function() {
+        // These characters are not in the KaTeX fonts. So they build with an error message.
+        expect`⊶⊷`.toParse();
+    });
+
     it("should build big operators", function() {
         expect`∏∐∑∫∬∭∮⋀⋁⋂⋃⨀⨁⨂⨄⨆`.toBuild(strictSettings);
     });
@@ -3422,7 +3664,7 @@ describe("Unicode", function() {
     });
 
     it("should build binary operators", function() {
-        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toBuild(strictSettings);
+        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝◯⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toBuild(strictSettings);
     });
 
     it("should build delimiters", function() {
@@ -3499,8 +3741,7 @@ describe("The maxSize setting", function() {
 describe("The maxExpand setting", () => {
     it("should prevent expansion", () => {
         expect`\gdef\foo{1}\foo`.toParse();
-        expect`\gdef\foo{1}\foo`.toParse(new Settings({maxExpand: 2}));
-        expect`\gdef\foo{1}\foo`.not.toParse(new Settings({maxExpand: 1}));
+        expect`\gdef\foo{1}\foo`.toParse(new Settings({maxExpand: 1}));
         expect`\gdef\foo{1}\foo`.not.toParse(new Settings({maxExpand: 0}));
     });
 
@@ -3532,19 +3773,16 @@ describe("The \\mathchoice function", function() {
 });
 
 describe("Newlines via \\\\ and \\newline", function() {
-    it("should build \\\\ and \\newline the same", () => {
+    it("should build \\\\ without the optional argument and \\newline the same", () => {
         expect`hello \\ world`.toBuildLike`hello \newline world`;
-        expect`hello \\[1ex] world`.toBuildLike(
-            "hello \\newline[1ex] world");
+    });
+
+    it("should not allow \\newline to scan for an optional size argument", () => {
+        expect`hello \newline[w]orld`.toBuild();
     });
 
     it("should not allow \\cr at top level", () => {
         expect`hello \cr world`.not.toBuild();
-    });
-
-    it("array redefines and resets \\\\", () => {
-        expect`a\\b\begin{matrix}x&y\\z&w\end{matrix}\\c`
-            .toParseLike`a\newline b\begin{matrix}x&y\cr z&w\end{matrix}\newline c`;
     });
 
     it("\\\\ causes newline, even after mrel and mop", () => {
@@ -3564,6 +3802,10 @@ describe("Symbols", function() {
 
     it("should parse spacing functions in math or text mode", () => {
         expect`A\;B\,C\nobreakspace \text{A\;B\,C\nobreakspace}`.toBuild(strictSettings);
+    });
+
+    it("should build \\minuso", () => {
+        expect`\\minuso`.toBuild(strictSettings);
     });
 
     it("should render ligature commands like their unicode characters", () => {
@@ -3666,5 +3908,25 @@ describe("Extending katex by new fonts and symbols", function() {
     });
     it("Add new font class to new extended symbols", () => {
         expect(katex.renderToString("۹۹^{۱۱}")).toMatchSnapshot();
+    });
+});
+
+describe("debugging macros", () => {
+    describe("message", () => {
+        it("should print the argument using console.log", () => {
+            jest.spyOn(console, "log").mockImplementation();
+            expect`\message{Hello, world}`.toParse();
+            // eslint-disable-next-line no-console
+            expect(console.log).toHaveBeenCalledWith("Hello, world");
+        });
+    });
+
+    describe("errmessage", () => {
+        it("should print the argument using console.error", () => {
+            jest.spyOn(console, "error").mockImplementation();
+            expect`\errmessage{Hello, world}`.toParse();
+            // eslint-disable-next-line no-console
+            expect(console.error).toHaveBeenCalledWith("Hello, world");
+        });
     });
 });

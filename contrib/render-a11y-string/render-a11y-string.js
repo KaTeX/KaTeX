@@ -188,7 +188,8 @@ const buildString = (
         a11yStrings.length > 0 &&
         // TODO(kevinb): check that the last item in a11yStrings is a string
         // I think we might be able to drop the nested arrays, which would make
-        // this easier to type - $FlowFixMe
+        // this easier to type
+        // $FlowFixMe
         /^\d+$/.test(a11yStrings[a11yStrings.length - 1])
     ) {
         a11yStrings[a11yStrings.length - 1] += ret;
@@ -533,6 +534,13 @@ const handleObject = (
                     regionStrings.push("end strikeout");
                 });
                 break;
+            } else if (/phase/.test(tree.label)) {
+                buildRegion(a11yStrings, function(regionStrings) {
+                    regionStrings.push("start phase angle");
+                    buildA11yStrings(tree.body, regionStrings, atomType);
+                    regionStrings.push("end phase angle");
+                });
+                break;
             }
             throw new Error(
                 `KaTeX-a11y: enclose node with ${tree.label} not supported yet`);
@@ -652,6 +660,16 @@ const handleObject = (
 
         case "middle": {
             buildString(tree.delim, atomType, a11yStrings);
+            break;
+        }
+
+        case "internal": {
+            // internal nodes are never included in the parse tree
+            break;
+        }
+
+        case "html": {
+            buildA11yStrings(tree.body, a11yStrings, atomType);
             break;
         }
 

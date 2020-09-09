@@ -9,9 +9,8 @@
 import ParseError from "./ParseError";
 import Style from "./Style";
 import buildCommon from "./buildCommon";
-import {Anchor} from "./domTree";
+import {Span, Anchor} from "./domTree";
 import utils from "./utils";
-import {checkNodeType} from "./parseNode";
 import {spacings, tightSpacings} from "./spacingData";
 import {_htmlGroupBuilders as groupBuilders} from "./defineFunction";
 import {DocumentFragment} from "./tree";
@@ -60,7 +59,7 @@ type DomType = $Keys<typeof DomEnum>;
 export const buildExpression = function(
     expression: AnyParseNode[],
     options: Options,
-    isRealGroup: boolean,
+    isRealGroup: boolean | "root",
     surrounding: [?DomType, ?DomType] = [null, null],
 ): HtmlDomNode[] {
     // Parse expressions into `groups`.
@@ -86,11 +85,8 @@ export const buildExpression = function(
 
     let glueOptions = options;
     if (expression.length === 1) {
-        const node = checkNodeType(expression[0], "sizing") ||
-            checkNodeType(expression[0], "styling");
-        if (!node) {
-            // No match.
-        } else if (node.type === "sizing") {
+        const node = expression[0];
+        if (node.type === "sizing") {
             glueOptions = options.havingSize(node.size);
         } else if (node.type === "styling") {
             glueOptions = options.havingStyle(styleMap[node.style]);
@@ -109,6 +105,7 @@ export const buildExpression = function(
 
     // Before determining what spaces to insert, perform bin cancellation.
     // Binary operators change to ordinary symbols in some contexts.
+    const isRoot = (isRealGroup === "root");
     traverseNonSpaceNodes(groups, (node, prev) => {
         const prevType = prev.classes[0];
         const type = node.classes[0];
@@ -117,7 +114,7 @@ export const buildExpression = function(
         } else if (type === "mbin" && utils.contains(binLeftCanceller, prevType)) {
             node.classes[0] = "mord";
         }
-    }, {node: dummyPrev}, dummyNext);
+    }, {node: dummyPrev}, dummyNext, isRoot);
 
     traverseNonSpaceNodes(groups, (node, prev) => {
         const prevType = getTypeOfDomTree(prev);
@@ -130,7 +127,7 @@ export const buildExpression = function(
         if (space) { // Insert glue (spacing) after the `prev`.
             return buildCommon.makeGlue(space, glueOptions);
         }
-    }, {node: dummyPrev}, dummyNext);
+    }, {node: dummyPrev}, dummyNext, isRoot);
 
     return groups;
 };
@@ -148,6 +145,7 @@ const traverseNonSpaceNodes = function(
         insertAfter?: HtmlDomNode => void,
     |},
     next: ?HtmlDomNode,
+    isRoot: boolean,
 ) {
     if (next) { // temporarily append the right node, if exists
         nodes.push(next);
@@ -158,27 +156,31 @@ const traverseNonSpaceNodes = function(
         const partialGroup = checkPartialGroup(node);
         if (partialGroup) { // Recursive DFS
             // $FlowFixMe: make nodes a $ReadOnlyArray by returning a new array
-            traverseNonSpaceNodes(partialGroup.children, callback, prev);
+            traverseNonSpaceNodes(partialGroup.children,
+                callback, prev, null, isRoot);
             continue;
         }
 
         // Ignore explicit spaces (e.g., \;, \,) when determining what implicit
         // spacing should go between atoms of different classes
-        if (node.classes[0] === "mspace") {
-            continue;
-        }
-
-        const result = callback(node, prev.node);
-        if (result) {
-            if (prev.insertAfter) {
-                prev.insertAfter(result);
-            } else { // insert at front
-                nodes.unshift(result);
-                i++;
+        const nonspace = !node.hasClass("mspace");
+        if (nonspace) {
+            const result = callback(node, prev.node);
+            if (result) {
+                if (prev.insertAfter) {
+                    prev.insertAfter(result);
+                } else { // insert at front
+                    nodes.unshift(result);
+                    i++;
+                }
             }
         }
 
-        prev.node = node;
+        if (nonspace) {
+            prev.node = node;
+        } else if (isRoot && node.hasClass("newline")) {
+            prev.node = makeSpan(["leftmost"]); // treat like beginning of line
+        }
         prev.insertAfter = (index => n => {
             nodes.splice(index + 1, 0, n);
             i++;
@@ -192,8 +194,9 @@ const traverseNonSpaceNodes = function(
 // Check if given node is a partial group, i.e., does not affect spacing around.
 const checkPartialGroup = function(
     node: HtmlDomNode,
-): ?(DocumentFragment<HtmlDomNode> | Anchor) {
-    if (node instanceof DocumentFragment || node instanceof Anchor) {
+): ?(DocumentFragment<HtmlDomNode> | Anchor | DomSpan) {
+    if (node instanceof DocumentFragment || node instanceof Anchor
+        || (node instanceof Span && node.hasClass("enclosing"))) {
         return node;
     }
     return null;
@@ -295,10 +298,6 @@ function buildHTMLUnbreakable(children, options) {
     // Add strut, which ensures that the top of the HTML element falls at
     // the height of the expression, and the bottom of the HTML element
     // falls at the depth of the expression.
-    // We used to have separate top and bottom struts, where the bottom strut
-    // would like to use `vertical-align: top`, but in IE 9 this lowers the
-    // baseline of the box to the bottom of this strut (instead of staying in
-    // the normal place) so we use an absolute value for vertical-align instead.
     const strut = makeSpan(["strut"]);
     strut.style.height = (body.height + body.depth) + "em";
     strut.style.verticalAlign = -body.depth + "em";
@@ -320,7 +319,13 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
     }
 
     // Build the expression contained in the tree
-    const expression = buildExpression(tree, options, true);
+    const expression = buildExpression(tree, options, "root");
+
+    let eqnNum;
+    if (expression.length === 2 && expression[1].hasClass("tag")) {
+        // An environment with automatic equation numbers, e.g. {gather}.
+        eqnNum = expression.pop();
+    }
 
     const children = [];
 
@@ -377,6 +382,8 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
         );
         tagChild.classes = ["tag"];
         children.push(tagChild);
+    } else if (eqnNum) {
+        children.push(eqnNum);
     }
 
     const htmlNode = makeSpan(["katex-html"], children);

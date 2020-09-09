@@ -47,8 +47,8 @@ const users = [
     },
     {
         caption: 'Gatsby',
-        image: 'https://www.gatsbyjs.org/monogram.svg',
-        infoLink: 'https://www.gatsbyjs.org/',
+        image: 'https://www.gatsbyjs.com/Gatsby-Monogram.svg',
+        infoLink: 'https://www.gatsbyjs.com/',
     },
     {
         caption: 'Gitter',
@@ -76,14 +76,29 @@ const users = [
         infoLink: 'https://www.intmath.com/',
     },
     {
+        caption: 'Marker',
+        image: 'https://raw.githubusercontent.com/fabiocolacio/Marker/master/data/com.github.fabiocolacio.marker.svg',
+        infoLink: 'https://fabiocolacio.github.io/Marker/',
+    },
+    {
         caption: 'Messenger',
         image: 'https://en.facebookbrand.com/wp-content/uploads/2016/09/messenger_icon2.png',
         infoLink: 'https://www.messenger.com/',
     },
     {
+        caption: 'MonsterWriter',
+        image: 'https://www.monsterwriter.app/assets/logo.png',
+        infoLink: 'https://www.monsterwriter.app/',
+    },
+    {
         caption: 'namu.wiki',
         image: '/img/namuwiki_logo.png',
         infoLink: 'https://namu.wiki/',
+    },
+    {
+        caption: 'Notable',
+        image: 'https://notable.app/static/images/logo_app.png',
+        infoLink: 'https://notable.app',
     },
     {
         caption: 'Observable',
@@ -152,6 +167,7 @@ const siteConfig = {
     favicon: '../favicon.ico',
 
     disableHeaderTitle: true,
+    scrollToTop: true,
 
     /* colors for website */
     colors: {
@@ -163,7 +179,7 @@ const siteConfig = {
     copyright:
     'Copyright © ' +
     new Date().getFullYear() +
-    ' Khan Academy',
+    ' Khan Academy and other contributors',
 
     highlight: {
         // Highlight.js theme to use for syntax highlighting in code blocks
@@ -177,7 +193,6 @@ const siteConfig = {
 
     scripts: [
         'https://buttons.github.io/buttons.js',
-        '/js/scrollspy.js',
     ],
 
     separateCss: ['static/static', 'static\\static'],

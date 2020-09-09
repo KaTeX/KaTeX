@@ -8,7 +8,6 @@
 import {SymbolNode, Anchor, Span, PathNode, SvgNode, createClass} from "./domTree";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols, {ligatures} from "./symbols";
-import utils from "./utils";
 import {wideCharacterFont} from "./wide-character";
 import {calculateSize} from "./units";
 import {DocumentFragment} from "./tree";
@@ -20,13 +19,6 @@ import type {FontVariant, Mode} from "./types";
 import type {documentFragment as HtmlDocumentFragment} from "./domTree";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
-
-// The following have to be loaded from Main-Italic font, using class mathit
-const mathitLetters = [
-    "\\imath", "ı",       // dotless i
-    "\\jmath", "ȷ",       // dotless j
-    "\\pounds", "\\mathsterling", "\\textsterling", "£",   // pounds symbol
-];
 
 /**
  * Looks up the given symbol in fontMetrics, after applying any symbol
@@ -129,63 +121,6 @@ const mathsym = function(
 };
 
 /**
- * Determines which of the two font names (Main-Italic and Math-Italic) and
- * corresponding style tags (maindefault or mathit) to use for default math font,
- * depending on the symbol.
- */
-const mathdefault = function(
-    value: string,
-    mode: Mode,
-    options: Options,
-    classes: string[],
-): {| fontName: string, fontClass: string |} {
-    if (/[0-9]/.test(value.charAt(0)) ||
-            // glyphs for \imath and \jmath do not exist in Math-Italic so we
-            // need to use Main-Italic instead
-            utils.contains(mathitLetters, value)) {
-        return {
-            fontName: "Main-Italic",
-            fontClass: "mathit",
-        };
-    } else {
-        return {
-            fontName: "Math-Italic",
-            fontClass: "mathdefault",
-        };
-    }
-};
-
-/**
- * Determines which of the font names (Main-Italic, Math-Italic, and Caligraphic)
- * and corresponding style tags (mathit, mathdefault, or mathcal) to use for font
- * "mathnormal", depending on the symbol.  Use this function instead of fontMap for
- * font "mathnormal".
- */
-const mathnormal = function(
-    value: string,
-    mode: Mode,
-    options: Options,
-    classes: string[],
-): {| fontName: string, fontClass: string |} {
-    if (utils.contains(mathitLetters, value)) {
-        return {
-            fontName: "Main-Italic",
-            fontClass: "mathit",
-        };
-    } else if (/[0-9]/.test(value.charAt(0))) {
-        return {
-            fontName: "Caligraphic-Regular",
-            fontClass: "mathcal",
-        };
-    } else {
-        return {
-            fontName: "Math-Italic",
-            fontClass: "mathdefault",
-        };
-    }
-};
-
-/**
  * Determines which of the two font names (Main-Bold and Math-BoldItalic) and
  * corresponding style tags (mathbf or boldsymbol) to use for font "boldsymbol",
  * depending on the symbol.  Use this function instead of fontMap for font
@@ -196,8 +131,10 @@ const boldsymbol = function(
     mode: Mode,
     options: Options,
     classes: string[],
+    type: "mathord" | "textord",
 ): {| fontName: string, fontClass: string |} {
-    if (lookupSymbol(value, "Math-BoldItalic", mode).metrics) {
+    if (type !== "textord" &&
+        lookupSymbol(value, "Math-BoldItalic", mode).metrics) {
         return {
             fontName: "Math-BoldItalic",
             fontClass: "boldsymbol",
@@ -236,15 +173,10 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     } else if (fontOrFamily) {
         let fontName;
         let fontClasses;
-        if (fontOrFamily === "boldsymbol" || fontOrFamily === "mathnormal") {
-            const fontData = fontOrFamily === "boldsymbol"
-                ? boldsymbol(text, mode, options, classes)
-                : mathnormal(text, mode, options, classes);
+        if (fontOrFamily === "boldsymbol") {
+            const fontData = boldsymbol(text, mode, options, classes, type);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
-        } else if (utils.contains(mathitLetters, text)) {
-            fontName = "Main-Italic";
-            fontClasses = ["mathit"];
         } else if (isFont) {
             fontName = fontMap[fontOrFamily].fontName;
             fontClasses = [fontOrFamily];
@@ -271,9 +203,8 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
 
     // Makes a symbol in the default font for mathords and textords.
     if (type === "mathord") {
-        const fontLookup = mathdefault(text, mode, options, classes);
-        return makeSymbol(text, fontLookup.fontName, mode, options,
-            classes.concat([fontLookup.fontClass]));
+        return makeSymbol(text, "Math-Italic", mode, options,
+            classes.concat(["mathnormal"]));
     } else if (type === "textord") {
         const font = symbols[mode][text] && symbols[mode][text].font;
         if (font === "ams") {
@@ -752,13 +683,14 @@ const fontMap: {[string]: {| variant: FontVariant, fontName: string |}} = {
         variant: "italic",
         fontName: "Main-Italic",
     },
+    "mathnormal": {
+        variant: "italic",
+        fontName: "Math-Italic",
+    },
 
-    // Default math font, "mathnormal" and "boldsymbol" are missing because they
-    // require the use of several fonts: Main-Italic and Math-Italic for default
-    // math font, Main-Italic, Math-Italic, Caligraphic for "mathnormal", and
-    // Math-BoldItalic and Main-Bold for "boldsymbol".  This is handled by a
-    // special case in makeOrd which ends up calling mathdefault, mathnormal,
-    // and boldsymbol.
+    // "boldsymbol" is missing because they require the use of multiple fonts:
+    // Math-BoldItalic and Main-Bold.  This is handled by a special case in
+    // makeOrd which ends up calling boldsymbol.
 
     // families
     "mathbb": {
@@ -796,6 +728,8 @@ const svgData: {
     oiintSize2: ["oiintSize2", 1.472, 0.659],
     oiiintSize1: ["oiiintSize1", 1.304, 0.499],
     oiiintSize2: ["oiiintSize2", 1.98, 0.659],
+    leftParenInner: ["leftParenInner", 0.875, 0.3],
+    rightParenInner: ["rightParenInner", 0.875, 0.3],
 };
 
 const staticSvg = function(value: string, options: Options): SvgSpan {

@@ -40,9 +40,9 @@ table td {
 |\\;|$a\;\;{b}$|a`\;\;{b}`|
 |_|$x_i$|`x_i`|
 |\\_|$\_$||
-|\\\`|$\text{\`{a}}$|<code>\text{\\'{a}}</code>|
+|\\\`|$\text{\`{a}}$|`\text{\\'{a}}`|
 |&#060;|$<$||
-|\\=|$\text{\={a}}$|<code>\text{\\={a}}</code>|
+|\\=|$\text{\={a}}$|`\text{\\={a}}`|
 | >|$>$||
 |\\>|$a\>\>{b}$|`a\>\>{b}`|
 |\[|$[$||
@@ -54,10 +54,10 @@ table td {
 |&#124;|$\vert$||
 |\\&#124;|$\Vert$||
 |~|$\text{no~no~no~breaks}$|`\text{no~no~no~breaks}`|
-|\\~|$\text{\~{a}}$|<code>\text{\\~{a}}</code>|
+|\\~|$\text{\~{a}}$|`\text{\\~{a}}`|
 |\\\\|$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |^|$x^i$|`x^i`|
-|\\^|$\text{\^{a}}$|<code>\text{\\^{a}}</code>|
+|\\^|$\text{\^{a}}$|`\text{\\^{a}}`|
 
 ## A
 
@@ -73,9 +73,11 @@ table td {
 |\alef|$\alef$||
 |\alefsym|$\alefsym$||
 |\aleph|$\aleph$||
-|{align}|<span style="color:firebrick;">Not supported</span>|see `{aligned}`|
+|{align}|$$\begin{align}a&=b+c\\d+e&=f\end{align}$$|`\begin{align}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{align}`|
+|{align\*}|$$\begin{align*}a&=b+c\\d+e&=f\end{align*}$$|`\begin{align*}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{align*}`|
 |{aligned}|$\begin{aligned}a&=b+c\\d+e&=f\end{aligned}$|`\begin{aligned}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{aligned}`|
-|{alignat}|<span style="color:firebrick;">Not supported</span>|see `{alignedat}`|
+|{alignat}|$$\begin{alignat}{2}10&x+&3&y=2\\3&x+&13&y=4\end{alignat}$$|`\begin{alignat}{2}`<br>&nbsp;&nbsp;&nbsp;`10&x+ &3&y = 2 \\`<br>&nbsp;&nbsp;&nbsp;` 3&x+&13&y = 4`<br>`\end{alignat}`|
+|{alignat\*}|$$\begin{alignat*}{2}10&x+&3&y=2\\3&x+&13&y=4\end{alignat*}$$|`\begin{alignat*}{2}`<br>&nbsp;&nbsp;&nbsp;`10&x+ &3&y = 2 \\`<br>&nbsp;&nbsp;&nbsp;` 3&x+&13&y = 4`<br>`\end{alignat*}`|
 |{alignedat}|$\begin{alignedat}{2}10&x+&3&y=2\\3&x+&13&y=4\end{alignedat}$|`\begin{alignedat}{2}`<br>&nbsp;&nbsp;&nbsp;`10&x+ &3&y = 2 \\`<br>&nbsp;&nbsp;&nbsp;` 3&x+&13&y = 4`<br>`\end{alignedat}`|
 |\allowbreak|||
 |\Alpha|$\Alpha$||
@@ -84,7 +86,8 @@ table td {
 |\And|$\And$||
 |\and|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
 |\ang|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
-|\angl|<span style="color:firebrick;">Not supported</span>||
+|\angl|$a_{\angl n}$||
+|\angln|$a_\angln$||
 |\angle|$\angle$||
 |\approx|$\approx$||
 |\approxeq|$\approxeq$||
@@ -99,8 +102,8 @@ table td {
 |{array}|$\begin{array}{cc}a&b\\c&d\end{array}$ | `\begin{array}{cc}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{array}`|
 |\array|<span style="color:firebrick;">Not supported</span>|see `{array}`|
 |\arraystretch|$\def\arraystretch{1.5}\begin{array}{cc}a&b\\c&d\end{array}$|`\def\arraystretch{1.5}`<br>`\begin{array}{cc}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{array}`|
-|\Arrowvert|<span style="color:firebrick;">Not supported</span>||
-|\arrowvert|<span style="color:firebrick;">Not supported</span>||
+|\Arrowvert|<span style="color:firebrick;">Not supported</span>|see `\Vert`|
+|\arrowvert|<span style="color:firebrick;">Not supported</span>|see `\vert`|
 |\ast|$\ast$||
 |\asymp|$\asymp$||
 |\atop|${a \atop b}$|`{a \atop b}`|
@@ -117,7 +120,7 @@ table td {
 |\backslash|$\backslash$||
 |\bar|$\bar{y}$|`\bar{y}`|
 |\barwedge|$\barwedge$||
-|\Bbb|$\Bbb{ABC}$|`\Bbb{ABC}`<br>KaTeX supports A-Z & k
+|\Bbb|$\Bbb{ABC}$|`\Bbb{ABC}`<br>KaTeX supports A-Z & k|
 |\Bbbk|$\Bbbk$||
 |\bbox|<span style="color:firebrick;">Not supported</span>||
 |\bcancel|$\bcancel{5}$|`\bcancel{5}`|
@@ -171,7 +174,9 @@ table td {
 |\blacktriangleright|$\blacktriangleright$||
 |\bm|$\bm{AaBb}$|`\bm{AaBb}`|
 |{Bmatrix}|$\begin{Bmatrix}a&b\\c&d\end{Bmatrix}$|`\begin{Bmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{Bmatrix}`|
+|{Bmatrix*}|$\begin{Bmatrix*}[r]0&-1\\-1&0\end{Bmatrix*}$|`\begin{Bmatrix*}[r]`<br>&nbsp;&nbsp;&nbsp;`0 & -1 \\`<br>&nbsp;&nbsp;&nbsp;`-1 & 0`<br>`\end{Bmatrix*}`|
 |{bmatrix}|$\begin{bmatrix}a&b\\c&d\end{bmatrix}$|`\begin{bmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{bmatrix}`|
+|{bmatrix*}|$\begin{bmatrix*}[r]0&-1\\-1&0\end{bmatrix*}$|`\begin{bmatrix*}[r]`<br>&nbsp;&nbsp;&nbsp;`0 & -1 \\`<br>&nbsp;&nbsp;&nbsp;`-1 & 0`<br>`\end{bmatrix*}`|
 |\bmod|$a \bmod b$|`a \bmod b`|
 |\bold|$\bold{AaBb123}$|`\bold{AaBb123}`|
 |\boldsymbol|$\boldsymbol{AaBb}$|`\boldsymbol{AaBb}`|
@@ -183,6 +188,9 @@ table td {
 |\boxminus|$\boxminus$||
 |\boxplus|$\boxplus$||
 |\boxtimes|$\boxtimes$||
+|\Bra|$\left\langle\psi\right\|$|`\Bra{\psi}`|
+|\bra|$\mathinner{\langle{\psi}\|}$|`\bra{\psi}`|
+|\braket|$\mathinner{\langle{\phi\|\psi}\rangle}$|`\braket{\phi|\psi}`|
 |\brace|${n\brace k}$|`{n\brace k}`|
 |\bracevert|<span style="color:firebrick;">Not supported</span>||
 |\brack|${n\brack k}$|`{n\brack k}`|
@@ -198,7 +206,7 @@ table td {
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\C|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
-|\cal|<span style="color:firebrick;">Not supported</span>|See `\mathcal`
+|\cal|$\cal AaBb123$|`\cal AaBb123`|
 |\cancel|$\cancel{5}$|`\cancel{5}`|
 |\cancelto|<span style="color:firebrick;">Not supported</span>||
 |\Cap|$\Cap$||
@@ -338,11 +346,13 @@ use `\ce` instead|
 |\downdownarrows|$\downdownarrows$||
 |\downharpoonleft|$\downharpoonleft$||
 |\downharpoonright|$\downharpoonright$||
+|{drcases}|$\begin{drcases}a&\text{if }b\\c&\text{if }d\end{drcases}$|`\begin{drcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{drcases}`|
 
 ## E
 
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
+|\edef|$\def\foo{a}\edef\bar{\foo}\def\foo{}\bar$|`\def\foo{a}\edef\bar{\foo}\def\foo{}\bar`|
 |\ell|$\ell$||
 |\else|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
 |\em|<span style="color:firebrick;">Not supported</span>||
@@ -360,7 +370,8 @@ use `\ce` instead|
 |\eqcirc|$\eqcirc$||
 |\Eqcolon|$\Eqcolon$||
 |\eqcolon|$\eqcolon$||
-|{equation}|<span style="color:firebrick;">Not supported</span>|[Issue #445](https://github.com/KaTeX/KaTeX/issues/445)|
+|{equation}|$$\begin{equation}a = b + c\end{equation}$$|`\begin{equation}`<br>&nbsp;&nbsp;&nbsp;`a = b + c`<br>`\end{equation}`|
+|{equation*}|$$\begin{equation*}a = b + c\end{equation*}$$|`\begin{equation*}`<br>&nbsp;&nbsp;&nbsp;`a = b + c`<br>`\end{equation*}`|
 |{eqnarray}|<span style="color:firebrick;">Not supported</span>||
 |\Eqqcolon|$\Eqqcolon$||
 |\eqqcolon|$\eqqcolon$||
@@ -376,6 +387,7 @@ use `\ce` instead|
 |\exist|$\exist$||
 |\exists|$\exists$||
 |\exp|$\exp$||
+|\expandafter|||
 
 ## F
 
@@ -392,6 +404,7 @@ use `\ce` instead|
 |\frac|$\frac a b$|`\frac a b`|
 |\frak|$\frak{AaBb}$|`\frak{AaBb}`|
 |\frown|$\frown$||
+|\futurelet|||
 
 ## G
 
@@ -400,7 +413,7 @@ use `\ce` instead|
 |\Game|$\Game$||
 |\Gamma|$\Gamma$||
 |\gamma|$\gamma$||
-|{gather}|<span style="color:firebrick;">Not supported</span>|see `{gathered}`|
+|{gather}|$$\begin{gather}a=b\\e=b+c\end{gather}$$|`\begin{gather}`<br>&nbsp;&nbsp;&nbsp;`a=b \\ `<br>&nbsp;&nbsp;&nbsp;`e=b+c`<br>`\end{gather}`|
 |{gathered}|$\begin{gathered}a=b\\e=b+c\end{gathered}$|`\begin{gathered}`<br>&nbsp;&nbsp;&nbsp;`a=b \\ `<br>&nbsp;&nbsp;&nbsp;`e=b+c`<br>`\end{gathered}`|
 |\gcd|$\gcd$||
 |\gdef|$\gdef\bar#1{#1^2} \bar{y} + \bar{y}$|`\gdef\bar#1{#1^2} \bar{y} + \bar{y}`|
@@ -457,6 +470,10 @@ use `\ce` instead|
 |\hskip|$w\hskip1em i\hskip2em d$|`w\hskip1em i\hskip2em d`|
 |\hslash|$\hslash$||
 |\hspace|$s\hspace7ex k$|`s\hspace7ex k`|
+|\htmlClass|$\htmlClass{foo}{x}$|`\htmlClass{foo}{x}` Must enable `trust` and disable `strict` [option](options.md)|
+|\htmlData|$\htmlData{foo=a, bar=b}{x}$|`\htmlData{foo=a, bar=b}{x}` Must enable `trust` and disable `strict` [option](options.md)|
+|\htmlId|$\htmlId{bar}{x}$|`\htmlId{bar}{x}` Must enable `trust` and disable `strict` [option](options.md)|
+|\htmlStyle|$\htmlStyle{color: red;}{x}$|`\htmlStyle{color: red;}{x}` Must enable `trust` and disable `strict` [option](options.md)|
 |\huge|$\huge huge$|`\huge huge`|
 |\Huge|$\Huge Huge$|`\Huge Huge`|
 
@@ -476,6 +493,7 @@ use `\ce` instead|
 |\iint|$\iint$||
 |\Im|$\Im$||
 |\image|$\image$||
+|\imageof|$\imageof$||
 |\imath|$\imath$||
 |\impliedby|$P\impliedby Q$|`P\impliedby Q`|
 |\implies|$P\implies Q$|`P\implies Q`|
@@ -484,7 +502,7 @@ use `\ce` instead|
 |\inf|$\inf$||
 |\infin|$\infin$||
 |\infty|$\infty$||
-|\injlim|<span style="color:firebrick;">Not supported</span>||
+|\injlim|$\injlim$| `\injlim` |
 |\int|$\int$||
 |\intercal|$\intercal$||
 |\intop|$\intop$||
@@ -506,6 +524,8 @@ use `\ce` instead|
 |\KaTeX|$\KaTeX$||
 |\ker|$\ker$||
 |\kern|$I\kern-2.5pt R$|`I\kern-2.5pt R`|
+|\Ket|$\left\|\psi\right\rangle$|`\Ket{\psi}`|
+|\ket|$\mathinner{\|{\psi}\rangle}$|`\ket{\psi}`|
 |\Koppa|<span style="color:firebrick;">Not supported</span>||
 |\koppa|<span style="color:firebrick;">Not supported</span>||
 
@@ -561,7 +581,7 @@ use `\ce` instead|
 |\lesseqqgtr|$\lesseqqgtr$||
 |\lessgtr|$\lessgtr$||
 |\lesssim|$\lesssim$||
-|\let|<span style="color:firebrick;">Not supported</span>|[Issue #1413](https://github.com/KaTeX/KaTeX/issues/1413)|
+|\let|||
 |\lfloor|$\lfloor$||
 |\lg|$\lg$||
 |\lgroup|$\lgroup$||
@@ -585,6 +605,7 @@ use `\ce` instead|
 |\lnot|$\lnot$||
 |\lnsim|$\lnsim$||
 |\log|$\log$||
+|\long|||
 |\Longleftarrow|$\Longleftarrow$||
 |\longleftarrow|$\longleftarrow$||
 |\Longleftrightarrow|$\Longleftrightarrow$||
@@ -640,11 +661,12 @@ use `\ce` instead|
 |\mathscr|$\mathscr{AB}$|`\mathscr{AaBb123}`<br>KaTeX supports A-Z|
 |\mathsf|$\mathsf{AaBb123}$|`\mathsf{AaBb123}`|
 |\mathsterling|$\mathsterling$||
-|\mathstrut|<span style="color:firebrick;">Not supported</span>||
+|\mathstrut|$\sqrt{\mathstrut a}$|`\sqrt{\mathstrut a}`|
 |\mathtip|<span style="color:firebrick;">Not supported</span>||
 |\mathtt|$\mathtt{AaBb123}$|`\mathtt{AaBb123}`|
 |\matrix|<span style="color:firebrick;">Not supported</span>|See `{matrix}`|
 |{matrix}|$\begin{matrix}a&b\\c&d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
+|{matrix*}|$\begin{matrix*}[r]0&-1\\-1&0\end{matrix*}$|`\begin{matrix*}[r]`<br>&nbsp;&nbsp;&nbsp;`0 & -1 \\`<br>&nbsp;&nbsp;&nbsp;`-1 & 0`<br>`\end{matrix*}`|
 |\max|$\max$||
 |\mbox|<span style="color:firebrick;">Not supported</span>||
 |\md|<span style="color:firebrick;">Not supported</span>||
@@ -655,6 +677,7 @@ use `\ce` instead|
 |\mid|$\{x∈ℝ\mid x>0\}$|`\{x∈ℝ\mid x>0\}`|
 |\middle|$P\left(A\middle\vert B\right)$|`P\left(A\middle\vert B\right)`|
 |\min|$\min$||
+|\minuso|$\minuso$||
 |\mit|<span style="color:firebrick;">Not supported</span>|See `\mathit`|
 |\mkern|$a\mkern18mu b$|`a\mkern18mu b`|
 |\mmlToken|<span style="color:firebrick;">Not supported</span>||
@@ -708,6 +731,7 @@ use `\ce` instead|
 |\nmid|$\nmid$||
 |\nobreak|||
 |\nobreakspace|$a\nobreakspace b$|`a\nobreakspace b`|
+|\noexpand|||
 |\nolimits|$\lim\nolimits_x$|`\lim\nolimits_x`|
 |\normalfont|<span style="color:firebrick;">Not supported</span>||
 |\normalsize|$\normalsize normalsize$|`\normalsize normalsize`|
@@ -764,6 +788,7 @@ use `\ce` instead|
 |\operatorname\*|$\operatorname{asin}\limits_y x$|`\operatorname{asin}\limits_y x`|
 |\oplus|$\oplus$||
 |\or|<span style="color:firebrick;">Not supported</span>||
+|\origof|$\origof$||
 |\oslash|$\oslash$||
 |\otimes|$\otimes$||
 |\over|${a+1 \over b+2}+c$|`{a+1 \over b+2}+c`|
@@ -794,7 +819,7 @@ use `\ce` instead|
 |\partial|$\partial$||
 |\perp|$\perp$||
 |\phantom|$\Gamma^{\phantom{i}j}_{i\phantom{j}k}$|`\Gamma^{\phantom{i}j}_{i\phantom{j}k}`|
-|\phase|<span style="color:firebrick;">Not supported</span>||
+|\phase|$\phase{-78^\circ}$|`\phase{-78^\circ}`|
 |\Phi|$\Phi$||
 |\phi|$\phi$||
 |\Pi|$\Pi$||
@@ -806,6 +831,7 @@ use `\ce` instead|
 |\pm|$\pm$||
 |\pmatrix|<span style="color:firebrick;">Not supported</span>|See `{pmatrix}`|
 |{pmatrix}|$\begin{pmatrix}a&b\\c&d\end{pmatrix}$|`\begin{pmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{pmatrix}`
+|{pmatrix*}|$\begin{pmatrix*}[r]0&-1\\-1&0\end{pmatrix*}$|`\begin{pmatrix*}[r]`<br>&nbsp;&nbsp;&nbsp;`0 & -1 \\`<br>&nbsp;&nbsp;&nbsp;`-1 & 0`<br>`\end{pmatrix*}`|
 |\pmb|$\pmb{\mu}$|`\pmb{\mu}`|
 |\pmod|$x\pmod a$|`x\pmod a`|
 |\pod|$x \pod a$|`x \pod a`|
@@ -821,7 +847,7 @@ use `\ce` instead|
 |\precsim|$\precsim$||
 |\prime|$\prime$||
 |\prod|$\prod$||
-|\projlim|<span style="color:firebrick;">Not supported</span>||
+|\projlim|$\projlim$|`\projlim`|
 |\propto|$\propto$||
 |\providecommand|$\providecommand\greet{\text{Hello}} \greet$|`\providecommand\greet{\text{Hello}} \greet`|
 |\psi|$\psi$||
@@ -847,6 +873,7 @@ use `\ce` instead|
 |\rBrace|$\rBrace$||
 |\rbrace|$\rbrace$||
 |\rbrack|$\rbrack$||
+|{rcases}|$\begin{rcases}a&\text{if }b\\c&\text{if }d\end{rcases}$|`\begin{rcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{rcases}`|
 |\rceil|$\rceil$||
 |\Re|$\Re$||
 |\real|$\real$||
@@ -939,11 +966,11 @@ use `\ce` instead|
 |\smiley|<span style="color:firebrick;">Not supported</span>||
 |\sout|$\sout{abc}$|`\sout{abc}`|
 |\Space|<span style="color:firebrick;">Not supported</span>|see `\space`
-|\space|$a\space{b}$|`a\space{b}`|
+|\space|$a\space b$|`a\space b`|
 |\spades|$\spades$||
 |\spadesuit|$\spadesuit$||
 |\sphericalangle|$\sphericalangle$||
-|{split}|<span style="color:firebrick;">Not supported</span>|[Issue #1345](https://github.com/KaTeX/KaTeX/issues/1345)|
+|{split}|$$\begin{equation}\begin{split}a &=b+c\\&=e+f\end{split}\end{equation}$$|`\begin{equation}`<br>`\begin{split}`<br>&nbsp;&nbsp;&nbsp;`a &=b+c\\`<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`&=e+f`<br>`\end{split}`<br>`\end{equation}`|
 |\sqcap|$\sqcap$||
 |\sqcup|$\sqcup$||
 |\square|$\square$||
@@ -1118,18 +1145,18 @@ use `\ce` instead|
 |\varDelta|$\varDelta$||
 |\varepsilon|$\varepsilon$||
 |\varGamma|$\varGamma$||
-|\varinjlim|<span style="color:firebrick;">Not supported</span>||
+|\varinjlim|$\varinjlim$|`\varinjlim`|
 |\varkappa|$\varkappa$||
 |\varLambda|$\varLambda$||
-|\varliminf|<span style="color:firebrick;">Not supported</span>||
-|\varlimsup|<span style="color:firebrick;">Not supported</span>||
+|\varliminf|$\varliminf$|`\varliminf`|
+|\varlimsup|$\varlimsup$|`\varlimsup`|
 |\varnothing|$\varnothing$||
 |\varOmega|$\varOmega$||
 |\varPhi|$\varPhi$||
 |\varphi|$\varphi$||
 |\varPi|$\varPi$||
 |\varpi|$\varpi$||
-|\varprojlim|<span style="color:firebrick;">Not supported</span>||
+|\varprojlim|$\varprojlim$|`\varprojlim`|
 |\varpropto|$\varpropto$||
 |\varPsi|$\varPsi$||
 |\varPsi|$\varPsi$||
@@ -1164,7 +1191,9 @@ use `\ce` instead|
 |\vfill|<span style="color:firebrick;">Not supported</span>||
 |\vline|<span style="color:firebrick;">Not supported</span>|[Issue #269](https://github.com/KaTeX/KaTeX/issues/269)|
 |{Vmatrix}|$\begin{Vmatrix}a&b\\c&d\end{Vmatrix}$|`\begin{Vmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{Vmatrix}`|
+|{Vmatrix*}|$\begin{Vmatrix*}[r]0&-1\\-1&0\end{Vmatrix*}$|`\begin{Vmatrix*}[r]`<br>&nbsp;&nbsp;&nbsp;`0 & -1 \\`<br>&nbsp;&nbsp;&nbsp;`-1 & 0`<br>`\end{Vmatrix*}`|
 |{vmatrix}|$\begin{vmatrix}a&b\\c&d\end{vmatrix}$|`\begin{vmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{vmatrix}`|
+|{vmatrix*}|$\begin{vmatrix*}[r]0&-1\\-1&0\end{vmatrix*}$|`\begin{vmatrix*}[r]`<br>&nbsp;&nbsp;&nbsp;`0 & -1 \\`<br>&nbsp;&nbsp;&nbsp;`-1 & 0`<br>`\end{vmatrix*}`|
 |\vphantom|$\overline{\vphantom{M}a}$|`\overline{\vphantom{M}a}`|
 |\Vvdash|$\Vvdash$||
 
@@ -1186,6 +1215,7 @@ use `\ce` instead|
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\xcancel|$\xcancel{ABC}$|`\xcancel{ABC}`|
+|\xdef|$\def\foo{a}\xdef\bar{\foo}\def\foo{}\bar$|`\def\foo{a}\xdef\bar{\foo}\def\foo{}\bar`|
 |\Xi|$\Xi$||
 |\xi|$\xi$||
 |\xhookleftarrow|$\xhookleftarrow{abc}$|`\xhookleftarrow{abc}`|

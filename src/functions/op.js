@@ -7,7 +7,7 @@ import * as mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import Style from "../Style";
 import {assembleSupSub} from "./utils/assembleSupSub";
-import {assertNodeType, checkNodeType} from "../parseNode";
+import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -28,14 +28,13 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     let subGroup;
     let hasLimits = false;
     let group: ParseNode<"op">;
-    const supSub = checkNodeType(grp, "supsub");
-    if (supSub) {
+    if (grp.type === "supsub") {
         // If we have limits, supsub will pass us its group to handle. Pull
         // out the superscript and subscript and set the group to the op in
         // its base.
-        supGroup = supSub.sup;
-        subGroup = supSub.sub;
-        group = assertNodeType(supSub.base, "op");
+        supGroup = grp.sup;
+        subGroup = grp.sub;
+        group = assertNodeType(grp.base, "op");
         hasLimits = true;
     } else {
         group = assertNodeType(grp, "op");
@@ -62,7 +61,6 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             // No font glyphs yet, so use a glyph w/o the oval.
             // TODO: When font glyphs are available, delete this code.
             stash = group.name.substr(1);
-            // $FlowFixMe
             group.name = stash === "oiint" ? "\\iint" : "\\iiint";
         }
 
@@ -83,7 +81,6 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
                     {type: "elem", elem: oval, shift: large ? 0.08 : 0},
                 ],
             }, options);
-            // $FlowFixMe
             group.name = "\\" + stash;
             base.classes.unshift("mop");
             // $FlowFixMe
@@ -101,8 +98,6 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     } else {
         // Otherwise, this is a text operator. Build the text from the
         // operator's name.
-        // TODO(emily): Add a space in the middle of some of these
-        // operators, like \limsup
         const output = [];
         for (let i = 1; i < group.name.length; i++) {
             output.push(buildCommon.mathsym(group.name[i], group.mode, options));
@@ -229,6 +224,7 @@ defineFunction({
     names: ["\\mathop"],
     props: {
         numArgs: 1,
+        primitive: true,
     },
     handler: ({parser}, args) => {
         const body = args[0];

@@ -32,6 +32,10 @@ These libraries are maintained by third-parties.
 
 - [katex-ruby](https://github.com/glebm/katex-ruby): Provides server-side rendering and integration with popular Ruby web frameworks (Rails, Hanami, and anything that uses Sprockets).
 
+### Rust
+
+- [katex-rs](https://github.com/xu-cheng/katex-rs): Rust bindings to provide server-side rendering.
+
 ### Vue
 - [vue-katex](https://github.com/lucpotage/vue-katex): Vue plugin to render TeX expressions using KaTeX.
 
