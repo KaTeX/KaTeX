@@ -90,7 +90,7 @@ jobs:
               include.push(...SELENIUM_BROWSERS.map(name => ({
                   browser: name,
                   services: {selenium: {
-                      image: `selenium/standalone-${name}:3.141.59-20200525`,
+                      image: `selenium/standalone-${name}:3.141.59-20200826`,
                       ports: ["4444:4444"],
                   }},
               })));
