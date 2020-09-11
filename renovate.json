@@ -4,6 +4,9 @@
     ":dependencyDashboard",
     "group:linters"
   ],
+  "git-submodules": {
+    "enabled": true
+  },
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["at any time"],
@@ -12,7 +15,8 @@
   },
   "includePaths": [
     "package.json",
-    "website/package.json"
+    "website/package.json",
+    ".gitmodules"
   ],
   "rangeStrategy": "update-lockfile",
   "commitBody": "[skip netlify]",
