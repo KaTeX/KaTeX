@@ -1,5 +1,14 @@
 {
   "extends": [
-    "config:base"
-  ]
+    "config:base",
+    ":maintainLockFilesWeekly",
+    "group:linters"
+  ],
+  "includePaths": [
+    "package.json",
+    "website/package.json"
+  ],
+  "rangeStrategy": "update-lockfile",
+  "commitBody": "[skip netlify]",
+  "postUpdateOptions": ["yarnDedupeHighest"]
 }
