@@ -1,9 +1,15 @@
 {
   "extends": [
     "config:base",
-    ":maintainLockFilesWeekly",
+    ":dependencyDashboard",
     "group:linters"
   ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["at any time"],
+    "stabilityDays": 0,
+    "dependencyDashboardApproval": true
+  },
   "includePaths": [
     "package.json",
     "website/package.json"
