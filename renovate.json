@@ -1,0 +1,28 @@
+{
+  "extends": [
+    "config:base",
+    ":dependencyDashboard",
+    ":automergeMinor",
+    ":prNotPending",
+    "group:linters"
+  ],
+  "git-submodules": {
+    "enabled": true,
+    "automerge": false
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["at any time"],
+    "stabilityDays": 0,
+    "dependencyDashboardApproval": true
+  },
+  "includePaths": [
+    "package.json",
+    "website/package.json",
+    ".gitmodules"
+  ],
+  "stabilityDays": 3,
+  "rangeStrategy": "update-lockfile",
+  "commitBody": "[skip netlify]",
+  "postUpdateOptions": ["yarnDedupeHighest"]
+}

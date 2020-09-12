@@ -3,20 +3,6 @@
 
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/" # Location of package manifests
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "npm"
-    directory: "/website/"
-    schedule:
-      interval: "daily"
-
-  - package-ecosystem: "gitsubmodule"
-    directory: "/" # Location of .gitmodules
-    schedule:
-      interval: "daily"
-
   - package-ecosystem: "github-actions"
     directory: "/" # Location of .github
     schedule:
