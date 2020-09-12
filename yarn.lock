@@ -3454,9 +3454,9 @@ __metadata:
   linkType: hard
 
 "commander@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "commander@npm:6.0.0"
-  checksum: c7dad02c772d6c6eb76f0642756408df98c730a17c764f5329700638045abd9633038251277ce7d6a077a96d89e6261ee268a4249a3bc4edd607ca8a0126642f
+  version: 6.1.0
+  resolution: "commander@npm:6.1.0"
+  checksum: ef1e310c3f430b84f8818ec9c6e5ce1b84909616eb2c1b1a79f646bc25fbca156eccf2ecf19f07e77a08dc519728d53d1300f94f3b2ad93de65add66044dfce6
   languageName: node
   linkType: hard
 
