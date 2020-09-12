@@ -7691,7 +7691,7 @@ fsevents@^1.2.7:
     jspngopt: ^0.2.0
     less: ^3.9.0
     less-loader: ^7.0.0
-    mini-css-extract-plugin: ^0.10.0
+    mini-css-extract-plugin: ^0.11.0
     mkdirp: ^1.0.4
     pako: ^1.0.8
     pnp-webpack-plugin: ^1.6.4
@@ -8316,9 +8316,9 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"mini-css-extract-plugin@npm:^0.10.0":
-  version: 0.10.1
-  resolution: "mini-css-extract-plugin@npm:0.10.1"
+"mini-css-extract-plugin@npm:^0.11.0":
+  version: 0.11.1
+  resolution: "mini-css-extract-plugin@npm:0.11.1"
   dependencies:
     loader-utils: ^1.1.0
     normalize-url: 1.9.1
@@ -8326,7 +8326,7 @@ fsevents@^1.2.7:
     webpack-sources: ^1.1.0
   peerDependencies:
     webpack: ^4.4.0 || ^5.0.0
-  checksum: d9b9296a166f1b800577dffd7aa22f4031cbcc919e86cf823a3fc12cba4c017168b87eaf3562d29768e74c736c7e1d90dc5865f140f11069c4dee0e28cff051f
+  checksum: 2becaad094831672fbbdc2169dc182445b1b50e18742c4f1393a4912bad221f85735873fd6343a1d82c9ae826f5caae62e49b30aecc7cc6c9eef706cdcfd9985
   languageName: node
   linkType: hard
 
