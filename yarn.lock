@@ -6200,15 +6200,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"import-cwd@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "import-cwd@npm:2.1.0"
-  dependencies:
-    import-from: ^2.1.0
-  checksum: 2b8cb7bab332ae13d24aaa226b1b59a438e2e5dc07e6dcc735860d0520f9591a8ed55f60444658123c30958057e4b0f552bb5140e6e243d7fbd4b24bfee29d85
-  languageName: node
-  linkType: hard
-
 "import-fresh@npm:^2.0.0":
   version: 2.0.0
   resolution: "import-fresh@npm:2.0.0"
@@ -6226,15 +6217,6 @@ fsevents@^1.2.7:
     parent-module: ^1.0.0
     resolve-from: ^4.0.0
   checksum: 5ace95063123e8c2e30cfe302421f3ef1598d4fff9763c1b6bbed0ab4e700a16e45078fbfc3f7a8a5c3680e01edf707bca25354dec90a268b9803074e46bc89c
-  languageName: node
-  linkType: hard
-
-"import-from@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "import-from@npm:2.1.0"
-  dependencies:
-    resolve-from: ^3.0.0
-  checksum: eb8dddd9d20058d3b3bb303f8e352cbd1bd53174d4fb2814fb64fc20b8796964116873aa7ebefbe57ec282ac6a2fce51c21dd47870de36e5d63304e612b18996
   languageName: node
   linkType: hard
 
@@ -7695,7 +7677,7 @@ fsevents@^1.2.7:
     mkdirp: ^1.0.4
     pako: ^1.0.8
     pnp-webpack-plugin: ^1.6.4
-    postcss-loader: ^3.0.0
+    postcss-loader: ^4.0.0
     postcss-preset-env: ^6.7.0
     prettier: ^2.0.5
     query-string: ^6.2.0
@@ -9746,25 +9728,19 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"postcss-load-config@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "postcss-load-config@npm:2.1.0"
+"postcss-loader@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "postcss-loader@npm:4.0.1"
   dependencies:
-    cosmiconfig: ^5.0.0
-    import-cwd: ^2.0.0
-  checksum: 06db8cf48d442b30b1fd99807278a0845731ae28a9a68e9c13082e6ce04d47d2729cd99909448aa12ed8a5f1ba1a8b5f63542b8e453a3ce45a786e576cba06d8
-  languageName: node
-  linkType: hard
-
-"postcss-loader@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "postcss-loader@npm:3.0.0"
-  dependencies:
-    loader-utils: ^1.1.0
+    cosmiconfig: ^7.0.0
+    klona: ^2.0.3
+    loader-utils: ^2.0.0
+    schema-utils: ^2.7.1
+    semver: ^7.3.2
+  peerDependencies:
     postcss: ^7.0.0
-    postcss-load-config: ^2.0.0
-    schema-utils: ^1.0.0
-  checksum: 50b2d8892d9b2cc6d9c81990ffb839d1716d3f571fcac7bd0dd3208447a016ce5c776b5f7de9eeb575ee5f7329221d5e22c9d1e41d56eb76ed87ce4401f90d4f
+    webpack: ^4.0.0 || ^5.0.0
+  checksum: e66d0c615ed29e1ea9388bdb7b6b863759037f71769eea41d022d6ef467a86e5001e36d3300d8f8efa5e5042af9329f44af3ad158787f645f8ac2eb93fc00ff4
   languageName: node
   linkType: hard
 
