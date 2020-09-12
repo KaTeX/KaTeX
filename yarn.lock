@@ -2890,14 +2890,14 @@ __metadata:
   linkType: hard
 
 "browserstack-local@npm:^1.4.5":
-  version: 1.4.5
-  resolution: "browserstack-local@npm:1.4.5"
+  version: 1.4.7
+  resolution: "browserstack-local@npm:1.4.7"
   dependencies:
     https-proxy-agent: ^4.0.0
     is-running: ^2.1.0
     ps-tree: =1.2.0
     temp-fs: ^0.9.9
-  checksum: ad58653e3fbead3e8f687aed2d7bd5cfd1ce19fa0c916d073ba34d6cddc5960b7712b771300c051355ee39009388323b0ad39223246e1c69adbdf173e54b81ce
+  checksum: 1a2b9eb11e4fa992d4d2670eab8b68259446cad7f49773fa3f4b632ff0033065a517841ea8f3c574e869837ecb13ac38a269b64be4137c0deadb2b8f08f6a8cc
   languageName: node
   linkType: hard
 
