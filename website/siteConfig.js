@@ -143,7 +143,7 @@ const users = [
 ];
 
 const siteConfig = {
-    title: 'KaTeX',
+    title: 'KaTeX Test',
     tagline: 'The fastest math typesetting library for the web',
     url: 'https://katex.org',
     baseUrl: '/',
