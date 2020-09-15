@@ -27,6 +27,15 @@
       "datasourceTemplate": "docker",
       "depNameTemplate": "selenium/standalone-{{browserTag}}",
       "versioningTemplate": "regex:^3\\.141\\.59-(?<patch>\\d+)$"
+    }, {
+      "fileMatch": ["^\\.flowconfig$"],
+      "matchStrings": ["\\[version\\]\\s*(?<currentValue>.*?)\\s"],
+      "datasourceTemplate": "npm",
+      "depNameTemplate": "flow-bin"
+    }, {
+      "fileMatch": ["^\\.yarn/sdks/[^/]+/package\\.json$"],
+      "matchStrings": ["\"name\": \"(?<depName>.*?)\",\\s*\"version\": \"(?<currentValue>.*?)-pnpify\""],
+      "datasourceTemplate": "npm"
     }
   ],
   "stabilityDays": 3,
