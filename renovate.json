@@ -18,6 +18,12 @@
   "ignorePaths": ["dockers/texcmp/"],
   "regexManagers": [
     {
+      "fileMatch": ["^\\.github/workflows/[^/]+\\.ya?ml$"],
+      "matchStrings": ["uses: (?<depName>.*?)@(?<currentValue>.*?)\\s"],
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "regex:^v(?<major>\\d+)$"
+    },
+    {
       "fileMatch": [
         "^\\.github/workflows/ci\\.yml$",
         "^dockers/screenshotter/screenshotter\\.sh$"
