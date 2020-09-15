@@ -40,5 +40,9 @@
   "stabilityDays": 3,
   "rangeStrategy": "update-lockfile",
   "commitBody": "[skip netlify]",
-  "postUpdateOptions": ["yarnDedupeHighest"]
+  "postUpdateOptions": ["yarnDedupeHighest"],
+  "packageRules": [{
+    "paths": ["website/**"],
+    "commitBody": ""
+  }]
 }
