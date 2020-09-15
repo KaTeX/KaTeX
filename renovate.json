@@ -7,8 +7,7 @@
     "group:linters"
   ],
   "git-submodules": {
-    "enabled": true,
-    "automerge": false
+    "enabled": true
   },
   "lockFileMaintenance": {
     "enabled": true,
