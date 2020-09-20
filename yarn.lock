@@ -2893,16 +2893,16 @@ __metadata:
   linkType: hard
 
 "browserslist@npm:^4.0.0, browserslist@npm:^4.12.0, browserslist@npm:^4.13.0, browserslist@npm:^4.6.4, browserslist@npm:^4.8.5":
-  version: 4.14.2
-  resolution: "browserslist@npm:4.14.2"
+  version: 4.14.3
+  resolution: "browserslist@npm:4.14.3"
   dependencies:
-    caniuse-lite: ^1.0.30001125
-    electron-to-chromium: ^1.3.564
-    escalade: ^3.0.2
+    caniuse-lite: ^1.0.30001131
+    electron-to-chromium: ^1.3.570
+    escalade: ^3.1.0
     node-releases: ^1.1.61
   bin:
     browserslist: cli.js
-  checksum: e321c3c14f4eec04b458bd43fbbd457910dd7e905cd47910c1ecc94d65186670b951f6fc223453985f9c83d6ac09c35fcaa47552c0352123b8e8d4b0f5dbfed7
+  checksum: 2a4693e10fa70a3a7bff64f71a0a24eda9369ac9c13d00edf42e84594ec143a65136f4f48159b6412c6c6c34a73ddafb20db46ec8ad8de90ddaba0ad6128645d
   languageName: node
   linkType: hard
 
@@ -3121,7 +3121,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30000981, caniuse-lite@npm:^1.0.30001102, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001125":
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30000981, caniuse-lite@npm:^1.0.30001102, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001131":
   version: 1.0.30001131
   resolution: "caniuse-lite@npm:1.0.30001131"
   checksum: 3b257a6a85d9f2a3e4a2cb1562e6c931a1a14095c7b1c826db4a721411292eaae80dbf8712431dce45e2b3e3b10e3c153487f1312abed7d9602fd9d26dffdcbf
@@ -4448,10 +4448,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-to-chromium@npm:^1.3.564":
-  version: 1.3.566
-  resolution: "electron-to-chromium@npm:1.3.566"
-  checksum: 8229e453fe2805f737943573472fe3f41306bf4a1f068bb6c9c09d57a00a9b6106b58fe008f730568e18f11a324d34fdb39ed49fd8c8438146ff16b180d77866
+"electron-to-chromium@npm:^1.3.570":
+  version: 1.3.570
+  resolution: "electron-to-chromium@npm:1.3.570"
+  checksum: 23388b39692e2932e56033e7c0b5b5f70199e22c03335d97c811cad9b16f89e80c94abe55c6140aa12d0e19431abec764955395df9fdf3972918c6bccebc8e10
   languageName: node
   linkType: hard
 
@@ -4625,10 +4625,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"escalade@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "escalade@npm:3.0.2"
-  checksum: 30f45cb4dbc35e41dd53910c016313733219bdd06c49751fd30ef241509ef4f1c8b21b65313949aaaf1edd58ab1ac84bf71b4a70465c7be46f7e5eaf51d737bb
+"escalade@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "escalade@npm:3.1.0"
+  checksum: 437c5b2619a412c0b075fb33e590e3516f187f7da8b20035685e08f346e27842722e5740a3398535d7d590ae4fb70068374ed59190d4eb4f9bb06d052e2fc92f
   languageName: node
   linkType: hard
 
