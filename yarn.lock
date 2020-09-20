@@ -13183,8 +13183,8 @@ fsevents@^1.2.7:
   linkType: hard
 
 "webpack-bundle-analyzer@npm:^3.0.4":
-  version: 3.8.0
-  resolution: "webpack-bundle-analyzer@npm:3.8.0"
+  version: 3.9.0
+  resolution: "webpack-bundle-analyzer@npm:3.9.0"
   dependencies:
     acorn: ^7.1.1
     acorn-walk: ^7.1.1
@@ -13195,13 +13195,13 @@ fsevents@^1.2.7:
     express: ^4.16.3
     filesize: ^3.6.1
     gzip-size: ^5.0.0
-    lodash: ^4.17.15
+    lodash: ^4.17.19
     mkdirp: ^0.5.1
     opener: ^1.5.1
     ws: ^6.0.0
   bin:
     webpack-bundle-analyzer: lib/bin/analyzer.js
-  checksum: 9ebe98aa5e4b81fb38e079c93c4fd3ae0117872c146cb4b8fba173d51df77d01e11f630197e249bcd58fc4d2cec0579b0366e9782facb612686861c9f2103a9e
+  checksum: 3ec0daf957cc17143f73bf00113aa567b466d674baae68e6f9148dfb80bdcc81c94f6da9f8e8cbb7782a6161319efcccc4a013b3820d13993934818cce7650c0
   languageName: node
   linkType: hard
 
