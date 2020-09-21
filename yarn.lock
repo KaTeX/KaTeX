@@ -13312,8 +13312,8 @@ fsevents@^1.2.7:
   linkType: hard
 
 "webpack@npm:^4.44.0":
-  version: 4.44.1
-  resolution: "webpack@npm:4.44.1"
+  version: 4.44.2
+  resolution: "webpack@npm:4.44.2"
   dependencies:
     "@webassemblyjs/ast": 1.9.0
     "@webassemblyjs/helper-module-context": 1.9.0
@@ -13345,7 +13345,7 @@ fsevents@^1.2.7:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: d4d140010bdf1fe4a5ef5435733e4b4fb71081cafd5e995adca0ca6259e271c7b51af909477e03bbbeb35487bd399a672bb0bc4a4726baebac059444b489b412
+  checksum: cb4a9051d64df00494d18afd379d26669b96309f3f41e89e55b8531d99d67060bf8b262a996dbcdc2cda99adfb6c1c2bd9966630d329b09f9f9aa9fc732a3259
   languageName: node
   linkType: hard
 
