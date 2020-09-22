@@ -12349,8 +12349,8 @@ fsevents@^1.2.7:
   linkType: hard
 
 "terser-webpack-plugin@npm:^4.0.0":
-  version: 4.2.1
-  resolution: "terser-webpack-plugin@npm:4.2.1"
+  version: 4.2.2
+  resolution: "terser-webpack-plugin@npm:4.2.2"
   dependencies:
     cacache: ^15.0.5
     find-cache-dir: ^3.3.1
@@ -12359,11 +12359,11 @@ fsevents@^1.2.7:
     schema-utils: ^2.7.1
     serialize-javascript: ^5.0.1
     source-map: ^0.6.1
-    terser: ^5.3.1
+    terser: ^5.3.2
     webpack-sources: ^1.4.3
   peerDependencies:
     webpack: ^4.0.0 || ^5.0.0
-  checksum: 1bee7f94bbd1575707d1bc62f483f87ee4f84267b5754300eee14acb7ec269464470b476a40133d5ccea0fb687ff8d69c2452a8d97ce04a75c620f28454b8126
+  checksum: 9901bcb6eef18724b01b4bae85eb1ec08a9ab02903d3c1853134b34a42fabe3fbc0fb30afe53522eb7e8568fbf42e88d9593e813645cf316a33e7ecd34ec2be7
   languageName: node
   linkType: hard
 
@@ -12380,7 +12380,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"terser@npm:^5.3.1":
+"terser@npm:^5.3.2":
   version: 5.3.2
   resolution: "terser@npm:5.3.2"
   dependencies:
