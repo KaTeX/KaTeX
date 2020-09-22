@@ -7,8 +7,7 @@
     "group:linters"
   ],
   "git-submodules": {
-    "enabled": true,
-    "automerge": false
+    "enabled": true
   },
   "lockFileMaintenance": {
     "enabled": true,
@@ -16,13 +15,40 @@
     "stabilityDays": 0,
     "dependencyDashboardApproval": true
   },
-  "includePaths": [
-    "package.json",
-    "website/package.json",
-    ".gitmodules"
+  "ignorePaths": ["dockers/texcmp/"],
+  "regexManagers": [
+    {
+      "fileMatch": ["^\\.github/workflows/[^/]+\\.ya?ml$"],
+      "matchStrings": ["uses: (?<depName>.*?)@(?<currentValue>.*?)\\s"],
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "regex:^v(?<major>\\d+)$"
+    },
+    {
+      "fileMatch": [
+        "^\\.github/workflows/ci\\.yml$",
+        "^dockers/screenshotter/screenshotter\\.sh$"
+      ],
+      "matchStrings": ["\"(?<browserTag>[a-z]*):(?<currentValue>[\\d.\\-]*)\""],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "selenium/standalone-{{browserTag}}",
+      "versioningTemplate": "regex:^3\\.141\\.59-(?<patch>\\d+)$"
+    }, {
+      "fileMatch": ["^\\.flowconfig$"],
+      "matchStrings": ["\\[version\\]\\s*(?<currentValue>.*?)\\s"],
+      "datasourceTemplate": "npm",
+      "depNameTemplate": "flow-bin"
+    }, {
+      "fileMatch": ["^\\.yarn/sdks/[^/]+/package\\.json$"],
+      "matchStrings": ["\"name\": \"(?<depName>.*?)\",\\s*\"version\": \"(?<currentValue>.*?)-pnpify\""],
+      "datasourceTemplate": "npm"
+    }
   ],
   "stabilityDays": 3,
   "rangeStrategy": "update-lockfile",
-  "commitBody": "[skip netlify]",
-  "postUpdateOptions": ["yarnDedupeHighest"]
+  "commitMessageSuffix": "[skip netlify]",
+  "postUpdateOptions": ["yarnDedupeHighest"],
+  "packageRules": [{
+    "paths": ["website/**"],
+    "commitMessageSuffix": ""
+  }]
 }

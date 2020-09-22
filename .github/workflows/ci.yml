@@ -75,7 +75,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const SELENIUM_BROWSERS = ["chrome", "firefox"];
+          const SELENIUM_BROWSERS = ["chrome:3.141.59-20200525", "firefox:3.141.59-20200525"];
           const BROWSERSTACK_BROWSERS = [{
               browserName: "safari",
               browser_version: "13.1",
@@ -87,10 +87,10 @@ jobs:
 
           // running selenium doesn't require access to secrets
           if (context.eventName !== "pull_request_target") {
-              include.push(...SELENIUM_BROWSERS.map(name => ({
-                  browser: name,
+              include.push(...SELENIUM_BROWSERS.map(browserTag => ({
+                  browser: browserTag.split(':')[0],
                   services: {selenium: {
-                      image: `selenium/standalone-${name}:3.141.59-20200525`,
+                      image: `selenium/standalone-${browserTag}`,
                       ports: ["4444:4444"],
                   }},
               })));
