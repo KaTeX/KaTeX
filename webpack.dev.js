@@ -19,6 +19,7 @@ katexConfig.devServer = {
     disableHostCheck: true,
     host: '0.0.0.0',
     port: PORT,
+    sockPort: 'location',
     stats: {
         colors: true,
     },
