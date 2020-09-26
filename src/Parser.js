@@ -143,7 +143,7 @@ export default class Parser {
         return parse;
     }
 
-    static endOfExpression = ["}", "\\endgroup", "\\end", "\\right", "&"];
+    static endOfExpression: string[] = ["}", "\\endgroup", "\\end", "\\right", "&"];
 
     /**
      * Parses an "expression", which is a list of atoms.

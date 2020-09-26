@@ -172,6 +172,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
             plugins: [PnpWebpackPlugin],
         },
         resolveLoader: {
+            // $FlowIgnore
             plugins: [PnpWebpackPlugin.moduleLoader(module)],
         },
     };

@@ -4,6 +4,8 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
 
+import type {AnyParseNode} from '../parseNode';
+
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
@@ -47,7 +49,7 @@ defineFunction({
             type: "color",
             mode: parser.mode,
             color,
-            body: ordargument(body),
+            body: (ordargument(body): AnyParseNode[]),
         };
     },
     htmlBuilder,
@@ -72,7 +74,7 @@ defineFunction({
         parser.gullet.macros.set("\\current@color", color);
 
         // Parse out the implicit body that should be colored.
-        const body = parser.parseExpression(true, breakOnTokenText);
+        const body: AnyParseNode[] = parser.parseExpression(true, breakOnTokenText);
 
         return {
             type: "color",
