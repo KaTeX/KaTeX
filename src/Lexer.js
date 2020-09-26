@@ -42,7 +42,7 @@ const controlWordWhitespaceRegexString =
 const controlWordWhitespaceRegex = new RegExp(
     `^(${controlWordRegexString})${spaceRegexString}*$`);
 const combiningDiacriticalMarkString = "[\u0300-\u036f]";
-export const combiningDiacriticalMarksEndRegex =
+export const combiningDiacriticalMarksEndRegex: RegExp =
     new RegExp(`${combiningDiacriticalMarkString}+$`);
 const tokenRegexString = `(${spaceRegexString}+)|` +  // whitespace
     "([!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint

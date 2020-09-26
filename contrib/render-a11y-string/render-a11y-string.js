@@ -710,7 +710,10 @@ const flatten = function(array) {
     return result;
 };
 
-const renderA11yString = function(text: string, settings?: SettingsOptions) {
+const renderA11yString = function(
+    text: string,
+    settings?: SettingsOptions,
+): string {
 
     const tree = katex.__parse(text, settings);
     const a11yStrings = buildA11yStrings(tree, [], "normal");
