@@ -2893,16 +2893,16 @@ __metadata:
   linkType: hard
 
 "browserslist@npm:^4.0.0, browserslist@npm:^4.12.0, browserslist@npm:^4.13.0, browserslist@npm:^4.6.4, browserslist@npm:^4.8.5":
-  version: 4.14.3
-  resolution: "browserslist@npm:4.14.3"
+  version: 4.14.5
+  resolution: "browserslist@npm:4.14.5"
   dependencies:
-    caniuse-lite: ^1.0.30001131
-    electron-to-chromium: ^1.3.570
+    caniuse-lite: ^1.0.30001135
+    electron-to-chromium: ^1.3.571
     escalade: ^3.1.0
     node-releases: ^1.1.61
   bin:
     browserslist: cli.js
-  checksum: 2a4693e10fa70a3a7bff64f71a0a24eda9369ac9c13d00edf42e84594ec143a65136f4f48159b6412c6c6c34a73ddafb20db46ec8ad8de90ddaba0ad6128645d
+  checksum: 18261764bd01f559059a57b1536b75b93e8b448c3e9ccd4de1699b40fcd0697feebbd2e76cc573cbfd0c3f308d29e441435591f93f81bc60596101f5a3d58bbb
   languageName: node
   linkType: hard
 
@@ -3121,10 +3121,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30000981, caniuse-lite@npm:^1.0.30001102, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001131":
-  version: 1.0.30001131
-  resolution: "caniuse-lite@npm:1.0.30001131"
-  checksum: 3b257a6a85d9f2a3e4a2cb1562e6c931a1a14095c7b1c826db4a721411292eaae80dbf8712431dce45e2b3e3b10e3c153487f1312abed7d9602fd9d26dffdcbf
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30000981, caniuse-lite@npm:^1.0.30001102, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001135":
+  version: 1.0.30001137
+  resolution: "caniuse-lite@npm:1.0.30001137"
+  checksum: 8cc7405638f4d89a77a6db51f4162bb539c6f180f8c1151d3a8efd3c2e634214b6b1897d74c93c00908d5b7ad33a16f92696be053f391747819ba68945e82f12
   languageName: node
   linkType: hard
 
@@ -4448,10 +4448,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-to-chromium@npm:^1.3.570":
-  version: 1.3.570
-  resolution: "electron-to-chromium@npm:1.3.570"
-  checksum: 23388b39692e2932e56033e7c0b5b5f70199e22c03335d97c811cad9b16f89e80c94abe55c6140aa12d0e19431abec764955395df9fdf3972918c6bccebc8e10
+"electron-to-chromium@npm:^1.3.571":
+  version: 1.3.573
+  resolution: "electron-to-chromium@npm:1.3.573"
+  checksum: 62ea2526a227320b3dc0879503b0ee4f18e7238acdede5c8ee3640e2c18406c709d193e32a919ad561a63edfc6ded119f0eb11d6b391fae387d4b64de5e3b024
   languageName: node
   linkType: hard
 
@@ -5345,12 +5345,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flow-bin@npm:^0.133.0":
-  version: 0.133.0
-  resolution: "flow-bin@npm:0.133.0"
+"flow-bin@npm:^0.134.0":
+  version: 0.134.0
+  resolution: "flow-bin@npm:0.134.0"
   bin:
     flow: cli.js
-  checksum: b767946fb8763372127d7c7fd013a8c39de2066e59e19210aba17e6e7bb772bdd19f225b90466ca02bcdb2523463d59eb10d15f671d1ea024612219ed9f44fb2
+  checksum: 8858ccda62b4e7d30c1672cb48dfcd43c9421c89c692f295224090032573b1488a07abbd7cabdd9d4e2acd8792467d67e7fbeaeb0792191af772e4eae70c4010
   languageName: node
   linkType: hard
 
@@ -7657,7 +7657,7 @@ fsevents@^1.2.7:
     eslint-plugin-flowtype: ^5.2.0
     eslint-plugin-react: ^7.20.3
     file-loader: ^6.0.0
-    flow-bin: ^0.133.0
+    flow-bin: ^0.134.0
     fs-extra: ^9.0.1
     husky: ^4.2.5
     istanbul-lib-coverage: ^3.0.0
@@ -11082,8 +11082,8 @@ fsevents@^1.2.7:
   linkType: hard
 
 "rollup@npm:^2.21.0":
-  version: 2.27.1
-  resolution: "rollup@npm:2.27.1"
+  version: 2.28.2
+  resolution: "rollup@npm:2.28.2"
   dependencies:
     fsevents: ~2.1.2
   dependenciesMeta:
@@ -11091,7 +11091,7 @@ fsevents@^1.2.7:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: ed5d60f5fe01b4141bcbf58fab9a27201df7b1de04dd3b30fc341a5540ff079c70f407f379a27aaeafbbc8c4e89b232c2c5fe109a63094fcdb002fbb97e0ce70
+  checksum: a0cfb9b5f7a3bd6b1528c18de5b86fa9befa78ee5358fe697c058ddd72325ce4d4b72df2391c8b06c538c92827035e26943b09ffa82b99a35bf3034ebd64e4f9
   languageName: node
   linkType: hard
 

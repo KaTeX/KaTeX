@@ -25,6 +25,7 @@ import {
 
 import type {SettingsOptions} from "./src/Settings";
 import type {AnyParseNode} from "./src/parseNode";
+import type {DomSpan} from "./src/domTree";
 
 import {defineSymbol} from './src/symbols';
 import {defineMacro} from './src/macros';
@@ -36,7 +37,7 @@ declare var __VERSION__: string;
  * Parse and build an expression, and place that expression in the DOM node
  * given.
  */
-let render = function(
+let render: (string, Node, SettingsOptions) => void = function(
     expression: string,
     baseNode: Node,
     options: SettingsOptions,
@@ -109,7 +110,7 @@ const renderError = function(
 const renderToDomTree = function(
     expression: string,
     options: SettingsOptions,
-) {
+): DomSpan {
     const settings = new Settings(options);
     try {
         const tree = parseTree(expression, settings);
@@ -126,7 +127,7 @@ const renderToDomTree = function(
 const renderToHTMLTree = function(
     expression: string,
     options: SettingsOptions,
-) {
+): DomSpan {
     const settings = new Settings(options);
     try {
         const tree = parseTree(expression, settings);
