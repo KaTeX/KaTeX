@@ -174,7 +174,9 @@ table td {
 |\blacktriangleright|$\blacktriangleright$||
 |\bm|$\bm{AaBb}$|`\bm{AaBb}`|
 |{Bmatrix}|$\begin{Bmatrix}a&b\\c&d\end{Bmatrix}$|`\begin{Bmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{Bmatrix}`|
+|{Bmatrix*}|$\begin{Bmatrix*}[r]0&-1\\-1&0\end{Bmatrix*}$|`\begin{Bmatrix*}[r]`<br>&nbsp;&nbsp;&nbsp;`0 & -1 \\`<br>&nbsp;&nbsp;&nbsp;`-1 & 0`<br>`\end{Bmatrix*}`|
 |{bmatrix}|$\begin{bmatrix}a&b\\c&d\end{bmatrix}$|`\begin{bmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{bmatrix}`|
+|{bmatrix*}|$\begin{bmatrix*}[r]0&-1\\-1&0\end{bmatrix*}$|`\begin{bmatrix*}[r]`<br>&nbsp;&nbsp;&nbsp;`0 & -1 \\`<br>&nbsp;&nbsp;&nbsp;`-1 & 0`<br>`\end{bmatrix*}`|
 |\bmod|$a \bmod b$|`a \bmod b`|
 |\bold|$\bold{AaBb123}$|`\bold{AaBb123}`|
 |\boldsymbol|$\boldsymbol{AaBb}$|`\boldsymbol{AaBb}`|
@@ -666,6 +668,7 @@ use `\ce` instead|
 |\mathtt|$\mathtt{AaBb123}$|`\mathtt{AaBb123}`|
 |\matrix|<span style="color:firebrick;">Not supported</span>|See `{matrix}`|
 |{matrix}|$\begin{matrix}a&b\\c&d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
+|{matrix*}|$\begin{matrix*}[r]0&-1\\-1&0\end{matrix*}$|`\begin{matrix*}[r]`<br>&nbsp;&nbsp;&nbsp;`0 & -1 \\`<br>&nbsp;&nbsp;&nbsp;`-1 & 0`<br>`\end{matrix*}`|
 |\max|$\max$||
 |\mbox|<span style="color:firebrick;">Not supported</span>||
 |\md|<span style="color:firebrick;">Not supported</span>||
@@ -830,6 +833,7 @@ use `\ce` instead|
 |\pm|$\pm$||
 |\pmatrix|<span style="color:firebrick;">Not supported</span>|See `{pmatrix}`|
 |{pmatrix}|$\begin{pmatrix}a&b\\c&d\end{pmatrix}$|`\begin{pmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{pmatrix}`
+|{pmatrix*}|$\begin{pmatrix*}[r]0&-1\\-1&0\end{pmatrix*}$|`\begin{pmatrix*}[r]`<br>&nbsp;&nbsp;&nbsp;`0 & -1 \\`<br>&nbsp;&nbsp;&nbsp;`-1 & 0`<br>`\end{pmatrix*}`|
 |\pmb|$\pmb{\mu}$|`\pmb{\mu}`|
 |\pmod|$x\pmod a$|`x\pmod a`|
 |\pod|$x \pod a$|`x \pod a`|
@@ -1191,7 +1195,9 @@ use `\ce` instead|
 |\vfill|<span style="color:firebrick;">Not supported</span>||
 |\vline|<span style="color:firebrick;">Not supported</span>|[Issue #269](https://github.com/KaTeX/KaTeX/issues/269)|
 |{Vmatrix}|$\begin{Vmatrix}a&b\\c&d\end{Vmatrix}$|`\begin{Vmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{Vmatrix}`|
+|{Vmatrix*}|$\begin{Vmatrix*}[r]0&-1\\-1&0\end{Vmatrix*}$|`\begin{Vmatrix*}[r]`<br>&nbsp;&nbsp;&nbsp;`0 & -1 \\`<br>&nbsp;&nbsp;&nbsp;`-1 & 0`<br>`\end{Vmatrix*}`|
 |{vmatrix}|$\begin{vmatrix}a&b\\c&d\end{vmatrix}$|`\begin{vmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{vmatrix}`|
+|{vmatrix*}|$\begin{vmatrix*}[r]0&-1\\-1&0\end{vmatrix*}$|`\begin{vmatrix*}[r]`<br>&nbsp;&nbsp;&nbsp;`0 & -1 \\`<br>&nbsp;&nbsp;&nbsp;`-1 & 0`<br>`\end{vmatrix*}`|
 |\vphantom|$\overline{\vphantom{M}a}$|`\overline{\vphantom{M}a}`|
 |\Vvdash|$\Vvdash$||
 

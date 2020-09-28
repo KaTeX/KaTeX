@@ -18,6 +18,8 @@ defineFunction({
         numArgs: 1,
         argTypes: ["text"],
         allowedInText: true,
+        primitive: true,
+        allowedInArgument: true,
     },
     handler({parser}, args) {
         return {
@@ -27,7 +29,7 @@ defineFunction({
         };
     },
     htmlBuilder(group, options) {
-        const elements =  html.buildExpression(group.body, options, false);
+        const elements = html.buildExpression(group.body, options, false);
         return buildCommon.makeFragment(elements);
     },
     mathmlBuilder(group, options) {

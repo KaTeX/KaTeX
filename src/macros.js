@@ -72,6 +72,12 @@ export interface MacroContextInterface {
     expandMacroAsText(name: string): string | void;
 
     /**
+     * Consume an argument from the token stream, and return the resulting array
+     * of tokens and start/end token.
+     */
+    consumeArg(delims?: ?string[]): MacroArg;
+
+    /**
      * Consume the specified number of arguments from the token stream,
      * and return the resulting array of arguments.
      */
@@ -91,10 +97,17 @@ export interface MacroContextInterface {
     isExpandable(name: string): boolean;
 }
 
+export type MacroArg = {
+    tokens: Token[],
+    start: Token,
+    end: Token
+};
+
 /** Macro tokens (in reverse order). */
 export type MacroExpansion = {
     tokens: Token[],
     numArgs: number,
+    delimiters?: string[][],
     unexpandable?: boolean, // used in \let
 };
 
@@ -240,7 +253,7 @@ defineMacro("\\char", function(context) {
 // \renewcommand{\macro}[args]{definition}
 // TODO: Optional arguments: \newcommand{\macro}[args][default]{definition}
 const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
-    let arg = context.consumeArgs(1)[0];
+    let arg = context.consumeArg().tokens;
     if (arg.length !== 1) {
         throw new ParseError(
             "\\newcommand's first argument must be a macro name");
@@ -258,7 +271,7 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
     }
 
     let numArgs = 0;
-    arg = context.consumeArgs(1)[0];
+    arg = context.consumeArg().tokens;
     if (arg.length === 1 && arg[0].text === "[") {
         let argText = '';
         let token = context.expandNextToken();
@@ -271,7 +284,7 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
             throw new ParseError(`Invalid number of arguments: ${argText}`);
         }
         numArgs = parseInt(argText);
-        arg = context.consumeArgs(1)[0];
+        arg = context.consumeArg().tokens;
     }
 
     // Final arg is the expansion of the macro
@@ -696,8 +709,10 @@ defineMacro("\\pmb", "\\html@mathml{" +
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
 
-// \\ defaults to \newline, but changes to \cr within array environment
-defineMacro("\\\\", "\\newline");
+// \expandafter\let\expandafter\@normalcr
+//     \csname\expandafter\@gobble\string\\ \endcsname
+// \DeclareRobustCommand\newline{\@normalcr\relax}
+defineMacro("\\newline", "\\\\\\relax");
 
 // \def\TeX{T\kern-.1667em\lower.5ex\hbox{E}\kern-.125emX\@}
 // TODO: Doesn't normally work in math mode because \@ fails.  KaTeX doesn't

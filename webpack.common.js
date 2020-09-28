@@ -68,11 +68,11 @@ function createConfig(target /*: Target */, dev /*: boolean */,
     }, {
         loader: 'postcss-loader',
         // $FlowIgnore
-        options: {plugins: [require('postcss-preset-env')()]},
+        options: {postcssOptions: {plugins: [require('postcss-preset-env')()]}},
     }];
     if (minimize) {
         // $FlowIgnore
-        cssLoaders[1].options.plugins.push(require('cssnano')());
+        cssLoaders[1].options.postcssOptions.plugins.push(require('cssnano')());
     }
 
     const lessOptions = {modifyVars: {
@@ -172,6 +172,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
             plugins: [PnpWebpackPlugin],
         },
         resolveLoader: {
+            // $FlowIgnore
             plugins: [PnpWebpackPlugin.moduleLoader(module)],
         },
     };

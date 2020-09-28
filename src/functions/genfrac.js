@@ -1,5 +1,5 @@
 // @flow
-import defineFunction from "../defineFunction";
+import defineFunction, {normalizeArgument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
@@ -241,14 +241,14 @@ const mathmlBuilder = (group, options) => {
 defineFunction({
     type: "genfrac",
     names: [
-        "\\cfrac", "\\dfrac", "\\frac", "\\tfrac",
+        "\\dfrac", "\\frac", "\\tfrac",
         "\\dbinom", "\\binom", "\\tbinom",
         "\\\\atopfrac", // can’t be entered directly
         "\\\\bracefrac", "\\\\brackfrac",   // ditto
     ],
     props: {
         numArgs: 2,
-        greediness: 2,
+        allowedInArgument: true,
     },
     handler: ({parser, funcName}, args) => {
         const numer = args[0];
@@ -259,7 +259,6 @@ defineFunction({
         let size = "auto";
 
         switch (funcName) {
-            case "\\cfrac":
             case "\\dfrac":
             case "\\frac":
             case "\\tfrac":
@@ -290,7 +289,6 @@ defineFunction({
         }
 
         switch (funcName) {
-            case "\\cfrac":
             case "\\dfrac":
             case "\\dbinom":
                 size = "display";
@@ -304,7 +302,7 @@ defineFunction({
         return {
             type: "genfrac",
             mode: parser.mode,
-            continued: funcName === "\\cfrac",
+            continued: false,
             numer,
             denom,
             hasBarLine,
@@ -317,6 +315,31 @@ defineFunction({
 
     htmlBuilder,
     mathmlBuilder,
+});
+
+defineFunction({
+    type: "genfrac",
+    names: ["\\cfrac"],
+    props: {
+        numArgs: 2,
+    },
+    handler: ({parser, funcName}, args) => {
+        const numer = args[0];
+        const denom = args[1];
+
+        return {
+            type: "genfrac",
+            mode: parser.mode,
+            continued: true,
+            numer,
+            denom,
+            hasBarLine: true,
+            leftDelim: null,
+            rightDelim: null,
+            size: "display",
+            barSize: null,
+        };
+    },
 });
 
 // Infix generalized fractions -- these are not rendered directly, but replaced
@@ -374,7 +397,7 @@ defineFunction({
     names: ["\\genfrac"],
     props: {
         numArgs: 6,
-        greediness: 6,
+        allowedInArgument: true,
         argTypes: ["math", "math", "size", "text", "math", "math"],
     },
     handler({parser}, args) {
@@ -382,10 +405,12 @@ defineFunction({
         const denom = args[5];
 
         // Look into the parse nodes to get the desired delimiters.
-        const leftDelim = args[0].type === "atom" && args[0].family === "open"
-            ? delimFromValue(args[0].text) : null;
-        const rightDelim = args[1].type === "atom" && args[1].family === "close"
-            ? delimFromValue(args[1].text) : null;
+        const leftNode = normalizeArgument(args[0]);
+        const leftDelim = leftNode.type === "atom" && leftNode.family === "open"
+            ? delimFromValue(leftNode.text) : null;
+        const rightNode = normalizeArgument(args[1]);
+        const rightDelim = rightNode.type === "atom" && rightNode.family === "close"
+            ? delimFromValue(rightNode.text) : null;
 
         const barNode = assertNodeType(args[2], "size");
         let hasBarLine;

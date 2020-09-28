@@ -12,10 +12,7 @@ import * as mml from "../buildMathML";
 
 const htmlBuilder = (group, options) => {
     const body = html.buildGroup(group.body, options);
-    let dy = calculateSize(group.dy, options);
-    if (group.funcName === "\\lower") {
-        dy *= -1;
-    }
+    const dy = calculateSize(group.dy, options);
     return buildCommon.makeVList({
         positionType: "shift",
         positionData: -dy,
@@ -26,10 +23,7 @@ const htmlBuilder = (group, options) => {
 const mathmlBuilder = (group, options) => {
     const node = new mathMLTree.MathNode(
         "mpadded", [mml.buildGroup(group.body, options)]);
-    let dy = group.dy.number;
-    if (group.funcName === "\\lower") {
-        dy *= -1;
-    }
+    const dy = group.dy.number;
     node.setAttribute("voffset", dy + group.dy.unit);
     return node;
 };
@@ -62,12 +56,13 @@ defineFunction({
     names: ["\\raise", "\\lower"],
     props: {
         numArgs: 2,
-        greediness: 0, // Less than the greediness of \hbox.
         argTypes: ["size", "hbox"],
         allowedInText: true,
+        primitive: true,
     },
     handler({parser, funcName}, args) {
         const amount = assertNodeType(args[0], "size").value;
+        amount.number = funcName === "\\lower" ? -amount.number : amount.number;
         const body = args[1];
         return {
             type: "raisebox",

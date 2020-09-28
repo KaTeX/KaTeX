@@ -244,6 +244,7 @@ MathOp: a\mathop+b\mathop:c\mathop{\delta}e\mathop{\textrm{and}}f\mathrel{\matho
 MathRm: \mathrm{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathSf: \mathsf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathScr: \mathscr{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathtoolsMatrix: \begin{matrix*}[l] a & -1 \\ -1 & d \end{matrix*} \; \begin{pmatrix*}[r] a & -1 \\ -1 & d \end{pmatrix*}
 MathTt: \mathtt{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 Mod: |
     \begin{array}{cc}
