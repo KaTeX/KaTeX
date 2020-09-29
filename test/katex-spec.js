@@ -1644,19 +1644,11 @@ describe("A \\pmb builder", function() {
 
 describe("A raise parser", function() {
     it("should parse and build text in \\raisebox", function() {
-        expect("\\raisebox5pt{text}").toBuild(strictSettings);
-        expect("\\raisebox-5pt{text}").toBuild(strictSettings);
         expect("\\raisebox{5pt}{text}").toBuild(strictSettings);
         expect("\\raisebox{-5pt}{text}").toBuild(strictSettings);
     });
 
-    it("should parse and build math in non-strict \\raise, \\lower, or \\vcenter", function() {
-        expect("\\raise5pt{\\frac a b}").toBuild(nonstrictSettings);
-        expect("\\raise-5pt{\\frac a b}").toBuild(nonstrictSettings);
-        expect("\\lower5pt{\\frac a b}").toBuild(nonstrictSettings);
-        expect("\\lower-5pt{\\frac a b}").toBuild(nonstrictSettings);
-        expect("\\raise{5pt}{\\frac a b}").toBuild(nonstrictSettings);
-        expect("\\raise{-5pt}{\\frac a b}").toBuild(nonstrictSettings);
+    it("should parse and build math in non-strict \\vcenter", function() {
         expect("\\vcenter{\\frac a b}").toBuild(nonstrictSettings);
     });
 
@@ -1669,9 +1661,13 @@ describe("A raise parser", function() {
         expect("\\hbox{\\frac a b}").not.toParse(nonstrictSettings);
     });
 
+    it("should fail to build, given an unbraced length", function() {
+        expect("\\raisebox5pt{text}").not.toBuild(strictSettings);
+        expect("\\raisebox-5pt{text}").not.toBuild(strictSettings);
+    });
+
+
     it("should build math in an hbox when math mode is set", function() {
-        expect("M\\raise5pt\\hbox{$\\frac a b$}N").toBuild(strictSettings);
-        expect("M\\lower5pt\\hbox{$\\frac a b$}N").toBuild(strictSettings);
         expect("a + \\vcenter{\\hbox{$\\frac{\\frac a b}c$}}").toBuild(strictSettings);
     });
 });

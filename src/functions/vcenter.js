@@ -35,9 +35,10 @@ defineFunction({
     },
     mathmlBuilder(group, options) {
         // There is no way to do this in MathML.
-        // TODO: Monitor MathML and update this code when possible.
+        // Write a class as a breadcrumb in case some post-processor wants
+        // to perform a vcenter adjustment.
         return new mathMLTree.MathNode(
-            "mpadded", [mml.buildGroup(group.body, options)], []);
+            "mpadded", [mml.buildGroup(group.body, options)], ["vcenter"]);
     },
 });
 

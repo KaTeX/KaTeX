@@ -617,8 +617,7 @@ use `\ce` instead|
 |\looparrowleft|$\looparrowleft$||
 |\looparrowright|$\looparrowright$||
 |\lor|$\lor$||
-|\lower|$M\lower5pt{M^2}M$|`M\lower5pt\hbox{$M^2$}M`<br>TeX (strict) syntax|
-|\lower|$M\lower5pt{M^2}M$|`M\lower5pt{M^2}M`<br>non-strict syntax|
+|\lower|<span style="color:firebrick;">Not supported</span>||
 |\lozenge|$\lozenge$||
 |\lparen|$\lparen$||
 |\Lrarr|$\Lrarr$||
@@ -865,9 +864,8 @@ use `\ce` instead|
 |\quad|$a\quad\quad{b}$|`a\quad\quad{b}`|
 |\R|$\R$||
 |\r|$\text{\r{a}}$|`\text{\r{a}}`|
-|\raise|$M\raise3pt{M^2}M$|`M\raise3pt\hbox{$M^2$}M`<br>TeX (strict) syntax|
-|\raise|$M\raise3pt{M^2}M$|`M\raise3pt{M^2}M`<br>non-strict syntax|
-|\raisebox|$h\raisebox{2pt}{ighe}r$|`h\raisebox{2pt}{ighe}r`|
+|\raise|<span style="color:firebrick;">Not supported</span>|see `\raisebox`|
+|\raisebox|$h\raisebox{2pt}{ighe}r$|`h\raisebox{2pt}{$ighe$}r`|
 |\rang|$\langle A\rang$|`\langle A\rang`|
 |\rangle|$\langle A\rangle$|`\langle A\rangle`|
 |\Rarr|$\Rarr$||

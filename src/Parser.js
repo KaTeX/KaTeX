@@ -510,12 +510,10 @@ export default class Parser {
             case "text":
                 return this.parseArgumentGroup(optional, type);
             case "hbox": {
-                const boxIsUnecessary = /\\(lower|raise|vcenter)'$/.test(name) &&
-                    !this.settings.strict;
                 // hbox argument type wraps the argument in the equivalent of
                 // \hbox, which is like \text but switching to \textstyle size.
                 const group = this.parseArgumentGroup(optional, "text");
-                return group != null && !boxIsUnecessary ? {
+                return group != null ? {
                     type: "styling",
                     mode: group.mode,
                     body: [group],

@@ -234,14 +234,14 @@ In display math, KaTeX does not insert automatic line breaks. It ignores display
 
 ||||
 |:--------------|:----------------------------------------|:-----
-|$x_n$ `x_n` |$\stackrel{!}{=}$ `\stackrel{!}{=}`| $a\raisebox{0.25em}{$b$}c$ `a\raisebox{0.25em}{$b$}c`
-|$e^x$ `e^x` |$\overset{!}{=}$ `\overset{!}{=}`  | $M\raise2pt{M^2}M$ `M\raise2pt\hbox{$M^2$}M`
+|$x_n$ `x_n` |$\stackrel{!}{=}$ `\stackrel{!}{=}`| $a \atop b$ `a \atop b`
+|$e^x$ `e^x` |$\overset{!}{=}$ `\overset{!}{=}`  | $a\raisebox{0.25em}{$b$}c$ `a\raisebox{0.25em}{$b$}c`
 |$_u^o $ `_u^o `| $\underset{!}{=}$ `\underset{!}{=}` | $a+\left(\vcenter{\frac{\frac a b}c}\right)$ `a+\left(\vcenter{\hbox{$\frac{\frac a b}c$}}\right)`
-|$a \atop b$ `a \atop b` | $M\lower2pt{M^2}M$ `M\lower2pt\hbox{$M^2$}M` | $$\sum_{\substack{0<i<m\\0<j<n}}$$ `\sum_{\substack{0<i<m\\0<j<n}}`
+||| $$\sum_{\substack{0<i<m\\0<j<n}}$$ `\sum_{\substack{0<i<m\\0<j<n}}`
 
 `\raisebox` and `\hbox` put their argument into text mode. To raise math, nest `$…$` delimiters inside the argument as shown above. 
 
-`\vcenter`, `\raise`, and `\lower` can be written without an `\hbox` if the `strict` rendering option is *false*. In that case, omit the nested `$…$` delimiters.
+`\vcenter` can be written without an `\hbox` if the `strict` rendering option is *false*. In that case, omit the nested `$…$` delimiters.
 
 ### Overlap and Spacing
 

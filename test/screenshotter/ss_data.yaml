@@ -326,7 +326,7 @@ PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2
 Raisebox: 
     \begin{matrix}
         \frac{a}{a\raisebox{0.5em}{b}} \cdot \frac{a\raisebox{-0.5em}{b}}{a} \cdot \sqrt{a\raisebox{0.5em}{b}} \cdot \sqrt{a\raisebox{-0.5em}{b}} \cdot \sqrt{a\raisebox{0.5em}{b}\raisebox{-0.5em}{b}} \\[2em]
-        a + \left(\vcenter{\hbox{$\frac{a+b}{\dfrac{c}{d}}$}}\right) \cdot M\raise5pt\hbox{M}N \cdot M\lower5pt\hbox{$M^2$}N
+        a + \left(\vcenter{\hbox{$\frac{a+b}{\dfrac{c}{d}}$}}\right)
     \end {matrix}
 ReactionArrows: |
     \begin{matrix}

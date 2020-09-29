@@ -403,7 +403,6 @@ type ParseNodeTypes = {
         type: "raisebox",
         mode: Mode,
         loc?: ?SourceLocation,
-        funcName: string,
         dy: Measurement,
         body: AnyParseNode,
     |},
