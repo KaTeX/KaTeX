@@ -33,15 +33,15 @@ export function parseCD(parser: Parser): ParseNode<"array"> {
     // Get the array's parse nodes with \\ temporarily mapped to \cr.
     const parseNodes = [];
     parser.gullet.beginGroup();
-    parser.gullet.macros.set("\\\\", "\\cr");
+    parser.gullet.macros.set("\\cr", "\\\\\\relax");
     parser.gullet.beginGroup();
     while (true) {  // eslint-disable-line no-constant-condition
         // Get the parse nodes for the next row.
-        parseNodes.push(parser.parseExpression(false, "\\cr"));
+        parseNodes.push(parser.parseExpression(false, "\\\\"));
         parser.gullet.endGroup();
         parser.gullet.beginGroup();
         const next = parser.fetch().text;
-        if (next === "&" || next === "\\cr") {
+        if (next === "&" || next === "\\\\") {
             parser.consume();
         } else if (next === "\\end") {
             if (parseNodes[parseNodes.length - 1].length === 0) {
