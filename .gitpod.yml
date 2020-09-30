@@ -1,6 +1,6 @@
 tasks:
   - init: yarn install
-    command: yarn start --sockPort 443
+    command: yarn start
   - openMode: split-right
     command: echo "Run 'yarn test' to run tests."
 
@@ -15,5 +15,7 @@ github:
 
 vscode:
   extensions:
-    - dbaeumer.vscode-eslint@2.1.5:9Wg0Glx/TwD8ElFBg+FKcQ==
+    - dbaeumer.vscode-eslint@2.1.8:02aHhbJ0Q4aGdjHXlTdVKg==
     - flowtype.flow-for-vscode@1.5.0:AwOT6wgHTF43loZQCAUMLA==
+    - stylelint.vscode-stylelint@0.85.0:GjHxVXEBqt1ud+yaj0V9KQ==
+    - arcanis.vscode-zipfs@2.0.0:Jh27TSop+DJ1aYIf3ajnvA==

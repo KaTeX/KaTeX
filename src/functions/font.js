@@ -2,7 +2,7 @@
 // TODO(kevinb): implement \\sl and \\sc
 
 import {binrelClass} from "./mclass";
-import defineFunction from "../defineFunction";
+import defineFunction, {normalizeArgument} from "../defineFunction";
 import utils from "../utils";
 
 import * as html from "../buildHTML";
@@ -44,10 +44,10 @@ defineFunction({
     ],
     props: {
         numArgs: 1,
-        greediness: 2,
+        allowedInArgument: true,
     },
     handler: ({parser, funcName}, args) => {
-        const body = args[0];
+        const body = normalizeArgument(args[0]);
         let func = funcName;
         if (func in fontAliases) {
             func = fontAliases[func];
@@ -68,7 +68,6 @@ defineFunction({
     names: ["\\boldsymbol", "\\bm"],
     props: {
         numArgs: 1,
-        greediness: 2,
     },
     handler: ({parser}, args) => {
         const body = args[0];

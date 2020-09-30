@@ -123,8 +123,8 @@ const text = [D, Dc, T, Tc, T, Tc, T, Tc];
 
 // We only export some of the styles.
 export default {
-    DISPLAY: styles[D],
-    TEXT: styles[T],
-    SCRIPT: styles[S],
-    SCRIPTSCRIPT: styles[SS],
+    DISPLAY: (styles[D]: Style),
+    TEXT: (styles[T]: Style),
+    SCRIPT: (styles[S]: Style),
+    SCRIPTSCRIPT: (styles[SS]: Style),
 };

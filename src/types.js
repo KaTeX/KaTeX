@@ -21,13 +21,14 @@ export type Mode = "math" | "text";
 //                 argument is parsed normally)
 //   - Mode: Node group parsed in given mode.
 export type ArgType = "color" | "size" | "url" | "raw" | "original" | "hbox" |
-    Mode;
+    "primitive" | Mode;
 
 // LaTeX display style.
 export type StyleStr = "text" | "display" | "script" | "scriptscript";
 
 // Allowable token text for "break" arguments in parser.
-export type BreakToken = "]" | "}" | "\\endgroup" | "$" | "\\)" | "\\cr";
+export type BreakToken = "]" | "}" | "\\endgroup" | "$" | "\\)" | "\\\\" | "\\end" |
+    "EOF";
 
 // Math font variants.
 export type FontVariant = "bold" | "bold-italic" | "bold-sans-serif" |

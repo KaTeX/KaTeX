@@ -158,7 +158,7 @@ export default class Settings {
      * This is for the second category of `errorCode`s listed in the README.
      */
     useStrictBehavior(errorCode: string, errorMsg: string,
-                      token?: Token | AnyParseNode) {
+                      token?: Token | AnyParseNode): boolean {
         let strict = this.strict;
         if (typeof strict === "function") {
             // Allow return value of strict function to be boolean or string
@@ -196,7 +196,7 @@ export default class Settings {
      * If `context` has a `url` field, a `protocol` field will automatically
      * get added by this function (changing the specified object).
      */
-    isTrusted(context: AnyTrustContext) {
+    isTrusted(context: AnyTrustContext): boolean {
         if (context.url && !context.protocol) {
             context.protocol = utils.protocolFromUrl(context.url);
         }

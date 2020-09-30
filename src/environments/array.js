@@ -89,12 +89,11 @@ function parseArray(
     |},
     style: StyleStr,
 ): ParseNode<"array"> {
-    // Parse body of array with \\ temporarily mapped to \cr
     parser.gullet.beginGroup();
-    if (singleRow) {
-        parser.gullet.macros.set("\\\\", ""); // {equation} acts this way.
-    } else {
-        parser.gullet.macros.set("\\\\", "\\cr");
+    if (!singleRow) {
+        // \cr is equivalent to \\ without the optional size argument (see below)
+        // TODO: provide helpful error when \cr is used outside array environment
+        parser.gullet.macros.set("\\cr", "\\\\\\relax");
     }
 
     // Get current arraystretch if it's not set by the environment
@@ -124,7 +123,7 @@ function parseArray(
 
     while (true) {  // eslint-disable-line no-constant-condition
         // Parse each cell in its own group (namespace)
-        let cell = parser.parseExpression(false, "\\cr");
+        let cell = parser.parseExpression(false, singleRow ? "\\end" : "\\\\");
         parser.gullet.endGroup();
         parser.gullet.beginGroup();
 
@@ -168,12 +167,18 @@ function parseArray(
                 hLinesBeforeRow.push([]);
             }
             break;
-        } else if (next === "\\cr") {
-            if (singleRow) {
-                throw new ParseError("Misplaced \\cr.", parser.nextToken);
+        } else if (next === "\\\\") {
+            parser.consume();
+            let size;
+            // \def\Let@{\let\\\math@cr}
+            // \def\math@cr{...\math@cr@}
+            // \def\math@cr@{\new@ifnextchar[\math@cr@@{\math@cr@@[\z@]}}
+            // \def\math@cr@@[#1]{...\math@cr@@@...}
+            // \def\math@cr@@@{\cr}
+            if (parser.gullet.future().text !== " ") {
+                size = parser.parseSizeGroup(true);
             }
-            const cr = assertNodeType(parser.parseFunction(), "cr");
-            rowGaps.push(cr.size);
+            rowGaps.push(size ? size.value : null);
 
             // check for \hline(s) following the row separator
             hLinesBeforeRow.push(getHLines(parser));
@@ -188,7 +193,7 @@ function parseArray(
 
     // End cell group
     parser.gullet.endGroup();
-    // End array group defining \\
+    // End array group defining \cr
     parser.gullet.endGroup();
 
     return {
@@ -757,6 +762,8 @@ defineEnvironment({
 
 // The matrix environments of amsmath builds on the array environment
 // of LaTeX, which is discussed above.
+// The mathtools package adds starred versions of the same environments.
+// These have an optional argument to choose left|center|right justification.
 defineEnvironment({
     type: "array",
     names: [
@@ -766,6 +773,12 @@ defineEnvironment({
         "Bmatrix",
         "vmatrix",
         "Vmatrix",
+        "matrix*",
+        "pmatrix*",
+        "bmatrix*",
+        "Bmatrix*",
+        "vmatrix*",
+        "Vmatrix*",
     ],
     props: {
         numArgs: 0,
@@ -778,11 +791,38 @@ defineEnvironment({
             "Bmatrix": ["\\{", "\\}"],
             "vmatrix": ["|", "|"],
             "Vmatrix": ["\\Vert", "\\Vert"],
-        }[context.envName];
+        }[context.envName.replace("*", "")];
         // \hskip -\arraycolsep in amsmath
-        const payload = {hskipBeforeAndAfter: false};
+        let colAlign = "c";
+        const payload = {
+            hskipBeforeAndAfter: false,
+            cols: [{type: "align", align: colAlign}],
+        };
+        if (context.envName.charAt(context.envName.length - 1) === "*") {
+            // It's one of the mathtools starred functions.
+            // Parse the optional alignment argument.
+            const parser = context.parser;
+            parser.consumeSpaces();
+            if (parser.fetch().text === "[") {
+                parser.consume();
+                parser.consumeSpaces();
+                colAlign = parser.fetch().text;
+                if ("lcr".indexOf(colAlign) === -1) {
+                    throw new ParseError("Expected l or c or r", parser.nextToken);
+                }
+                parser.consume();
+                parser.consumeSpaces();
+                parser.expect("]");
+                parser.consume();
+                payload.cols = [{type: "align", align: colAlign}];
+            }
+        }
         const res: ParseNode<"array"> =
             parseArray(context.parser, payload, dCellStyle(context.envName));
+        // Populate cols with the correct number of column alignment specs.
+        res.cols = new Array(res.body[0].length).fill(
+            {type: "align", align: colAlign}
+        );
         return delimiters ? {
             type: "leftright",
             mode: context.mode,

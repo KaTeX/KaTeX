@@ -102,6 +102,8 @@ KaTeX also supports:
 
 Environments `align`, `alignat`, `CD`, `equation`, and `gather` (and their starred versions) may be called from display mode. This usually means that they may be called from within `$$…$$` delimiters or `\[…\]` delimiters. They may not be called from within `$…$` or `\(…\)` delimiters. In the KaTeX auto-render extension, as in LaTeX, these environments are themselves are a way to change from text mode to math display mode, and `\[…\]` delimiters are not necessary.
 
+And KaTeX supports `matrix*`, `pmatrix*`, `bmatrix*`, `Bmatrix*`, `vmatrix*`, and `Vmatrix*`, which take an optional argument to set column alignment, as in `\begin{matrix}[1]`, `\begin{matrix}[c]`, or `\begin{matrix}[r]`.
+
 Acceptable line separators include: `\\`, `\cr`, `\\[distance]`, and `\cr[distance]`. *Distance* can be written with any of the [KaTeX units](#units).
 
 The `{array}` environment supports `|` and `:` vertical separators.
@@ -324,7 +326,6 @@ Direct Input: $∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← �
 Macros can also be defined in the KaTeX [rendering options](options.md).
 
 Macros accept up to nine arguments: #1, #2, etc.
-Delimiters (such as `\def\add#1+#2{#1\oplus#2}`) are not currently supported.
 
 `\gdef`, `\xdef`, `\global\def`, `\global\edef`, `\global\let`, and `\global\futurelet` will persist between math expressions.
 
@@ -348,7 +349,7 @@ Available functions include:
 | $\iiint$ `\iiint`| $\smallint$ `\smallint` | $\biguplus$ `\biguplus`  | $\bigcup$ `\bigcup`
 | $\oint$ `\oint`  | $\oiint$ `\oiint`       | $\oiiint$ `\oiiint`      | $\bigsqcup$ `\bigsqcup`
 
-Direct Input: $∫ ∬ ∭ ∮ ∏ ∐ ∑ ⋀ ⋁ ⋂ ⋃ ⨀ ⨁ ⨂ ⨄ ⨆$
+Direct Input: $∫ ∬ ∭ ∮ ∏ ∐ ∑ ⋀ ⋁ ⋂ ⋃ ⨀ ⨁ ⨂ ⨄ ⨆$ ∯ ∰
 
 ### Binary Operators
 
