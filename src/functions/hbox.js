@@ -19,7 +19,6 @@ defineFunction({
         argTypes: ["text"],
         allowedInText: true,
         primitive: true,
-        allowedInArgument: true,
     },
     handler({parser}, args) {
         return {
