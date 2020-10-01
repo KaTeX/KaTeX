@@ -260,7 +260,12 @@ defineFunctionBuilders({
             }
         }
 
-        const node = new mathMLTree.MathNode(nodeType, children);
+        let node = new mathMLTree.MathNode(nodeType, children);
+
+        if (group.base && (group.base.type === "op" ||
+            group.base.type === "operatorname")) {
+            node = new mathMLTree.MathNode("mo", [node]);
+        }
 
         return node;
     },
