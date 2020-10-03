@@ -10266,13 +10266,13 @@ fsevents@^1.2.7:
   linkType: hard
 
 "postcss@npm:^7.0.0, postcss@npm:^7.0.1, postcss@npm:^7.0.14, postcss@npm:^7.0.17, postcss@npm:^7.0.2, postcss@npm:^7.0.21, postcss@npm:^7.0.26, postcss@npm:^7.0.27, postcss@npm:^7.0.32, postcss@npm:^7.0.5, postcss@npm:^7.0.6":
-  version: 7.0.34
-  resolution: "postcss@npm:7.0.34"
+  version: 7.0.35
+  resolution: "postcss@npm:7.0.35"
   dependencies:
     chalk: ^2.4.2
     source-map: ^0.6.1
     supports-color: ^6.1.0
-  checksum: 60e02f81cedf98bc5f902e72ca7cfef20dc5789e367fd3620a41a00719ff3226796831f4ba55db7a1a1c595564fe0fa9a0a2fa6d8b2477d10ab83422fc0f91de
+  checksum: 8a979ea9799dd48399337708a395ddb8cf0e328515201ed35c99f5ba5eaa7688eae65764c570bf49b5be0b106226e2f222abc210de068b3d3da9a9a3bbb70567
   languageName: node
   linkType: hard
 
@@ -10500,13 +10500,13 @@ fsevents@^1.2.7:
   linkType: hard
 
 "query-string@npm:^6.2.0":
-  version: 6.13.2
-  resolution: "query-string@npm:6.13.2"
+  version: 6.13.4
+  resolution: "query-string@npm:6.13.4"
   dependencies:
     decode-uri-component: ^0.2.0
     split-on-first: ^1.0.0
     strict-uri-encode: ^2.0.0
-  checksum: a93a866ccc68f58b14cb8f681bc93b94aa3c98433d987ae51295d0ffc5bcb24e812fbc66e81174d60d5e8e0e94e72ab1be8ec5c29f578a82ce0806018f74601e
+  checksum: 928ce0201d455a6d7543e926cf78de7795acdd90ddb97f58ba110e8d7ca2156cff7f5afccefc83a02ce71680099104accc9cffb30f557b421a317bea9d315b23
   languageName: node
   linkType: hard
 
