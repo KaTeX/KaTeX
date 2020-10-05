@@ -10500,13 +10500,13 @@ fsevents@^1.2.7:
   linkType: hard
 
 "query-string@npm:^6.2.0":
-  version: 6.13.4
-  resolution: "query-string@npm:6.13.4"
+  version: 6.13.5
+  resolution: "query-string@npm:6.13.5"
   dependencies:
     decode-uri-component: ^0.2.0
     split-on-first: ^1.0.0
     strict-uri-encode: ^2.0.0
-  checksum: 928ce0201d455a6d7543e926cf78de7795acdd90ddb97f58ba110e8d7ca2156cff7f5afccefc83a02ce71680099104accc9cffb30f557b421a317bea9d315b23
+  checksum: a60b70e2612624247e67dd693b2812b3acb3cf2846c7fce369924e9ad4f63a673e2c0bfd6523d189454e93b818ba0ff04886752d4dc664c6402bc1bf69753c67
   languageName: node
   linkType: hard
 
