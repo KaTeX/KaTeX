@@ -784,7 +784,7 @@ use `\ce` instead|
 |\Omicron|$\Omicron$||
 |\omicron|$\omicron$||
 |\ominus|$\ominus$||
-|\operatorname|$\operatorname{asin} x$|\operatorname{asin} x|
+|\operatorname|$\operatorname{asin} x$|`\operatorname{asin} x`|
 |\operatorname\*|$\operatorname*{asin}\limits_y x$|`\operatorname*{asin}\limits_y x`|
 |\oplus|$\oplus$||
 |\or|<span style="color:firebrick;">Not supported</span>||
