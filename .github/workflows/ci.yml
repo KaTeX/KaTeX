@@ -75,7 +75,7 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const SELENIUM_BROWSERS = ["chrome:3.141.59-20200826", "firefox:3.141.59-20200826"];
+          const SELENIUM_BROWSERS = ["chrome:3.141.59-20201010", "firefox:3.141.59-20200826"];
           const BROWSERSTACK_BROWSERS = [{
               browserName: "safari",
               browser_version: "13.1",
