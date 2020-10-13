@@ -7694,7 +7694,7 @@ fsevents@^1.2.7:
     rollup: ^2.21.0
     selenium-webdriver: ^3.6.0
     sri-toolbox: ^0.2.0
-    style-loader: ^1.2.1
+    style-loader: ^2.0.0
     stylelint: ^13.6.1
     stylelint-config-standard: ^20.0.0
     terser-webpack-plugin: ^4.0.0
@@ -11202,7 +11202,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"schema-utils@npm:^2.6.5, schema-utils@npm:^2.7.0, schema-utils@npm:^2.7.1":
+"schema-utils@npm:^2.6.5, schema-utils@npm:^2.7.1":
   version: 2.7.1
   resolution: "schema-utils@npm:2.7.1"
   dependencies:
@@ -12093,15 +12093,15 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"style-loader@npm:^1.2.1":
-  version: 1.3.0
-  resolution: "style-loader@npm:1.3.0"
+"style-loader@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "style-loader@npm:2.0.0"
   dependencies:
     loader-utils: ^2.0.0
-    schema-utils: ^2.7.0
+    schema-utils: ^3.0.0
   peerDependencies:
     webpack: ^4.0.0 || ^5.0.0
-  checksum: 4654b5178cb2c32f8d35363938b8bbb2b435fcfd2f81865185e3899183a3ad1390a24da467890463a6c9d07f6785d568a269805b706c8d56086c942530d77d95
+  checksum: ffc305488244ab499f91b05a1c94dd199b8b106d69e260ce38bd599819bbb352357e107bef3c319b775b9fb0eaed571cb68f8c7940e457553f85a980f4b630d8
   languageName: node
   linkType: hard
 

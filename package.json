@@ -72,7 +72,7 @@
     "rollup": "^2.21.0",
     "selenium-webdriver": "^3.6.0",
     "sri-toolbox": "^0.2.0",
-    "style-loader": "^1.2.1",
+    "style-loader": "^2.0.0",
     "stylelint": "^13.6.1",
     "stylelint-config-standard": "^20.0.0",
     "terser-webpack-plugin": "^4.0.0",
