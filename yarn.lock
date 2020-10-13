@@ -9738,18 +9738,18 @@ fsevents@^1.2.7:
   linkType: hard
 
 "postcss-loader@npm:^4.0.0":
-  version: 4.0.3
-  resolution: "postcss-loader@npm:4.0.3"
+  version: 4.0.4
+  resolution: "postcss-loader@npm:4.0.4"
   dependencies:
     cosmiconfig: ^7.0.0
     klona: ^2.0.4
     loader-utils: ^2.0.0
-    schema-utils: ^2.7.1
+    schema-utils: ^3.0.0
     semver: ^7.3.2
   peerDependencies:
     postcss: ^7.0.0 || ^8.0.1
     webpack: ^4.0.0 || ^5.0.0
-  checksum: 2f3f14040a715eeb3919b5da1767c445cf24d7f5046663df827256f534ee5eae79fcbfdcfbe05093cc70636b61ca1fa5d99e5549d9b976c62689b21ba43a4702
+  checksum: f82028a03da25789d684dc0c9a770954c8ff11bfcc67cc1a6f928e66d04bab7a2349ac19c5205a969feaf766e5d56429b9cc8ec7bfe101b413219a443ddb18b7
   languageName: node
   linkType: hard
 
