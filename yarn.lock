@@ -5204,14 +5204,14 @@ __metadata:
   linkType: hard
 
 "file-loader@npm:^6.0.0":
-  version: 6.1.0
-  resolution: "file-loader@npm:6.1.0"
+  version: 6.1.1
+  resolution: "file-loader@npm:6.1.1"
   dependencies:
     loader-utils: ^2.0.0
-    schema-utils: ^2.7.1
+    schema-utils: ^3.0.0
   peerDependencies:
     webpack: ^4.0.0 || ^5.0.0
-  checksum: ad930c9e7fa8c85cc048afa44c370c86f6a9ba89149b2b24e362f0b279595a05d039211263bf65117e4850f337f9bff251288ddff426dda997468a00e1268ffc
+  checksum: 0272335818c26e5c78a9f972ce779c8ed508e815329e4ace4d55045100140d89460d72eec1af78400dd04f2d16e28e29b3649433804619653cf044220afdf45d
   languageName: node
   linkType: hard
 
