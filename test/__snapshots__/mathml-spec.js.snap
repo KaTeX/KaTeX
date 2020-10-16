@@ -308,29 +308,27 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} correc
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
-      <mo>
-        <msub>
-          <mrow>
-            <mi mathvariant="normal">
-              lim sup
-            </mi>
-            <mo>
-              ⁡
-            </mo>
-          </mrow>
-          <mrow>
-            <mi>
-              x
-            </mi>
-            <mo>
-              →
-            </mo>
-            <mi mathvariant="normal">
-              ∞
-            </mi>
-          </mrow>
-        </msub>
-      </mo>
+      <msub>
+        <mrow>
+          <mi mathvariant="normal">
+            lim sup
+          </mi>
+          <mo>
+            ⁡
+          </mo>
+        </mrow>
+        <mrow>
+          <mi>
+            x
+          </mi>
+          <mo>
+            →
+          </mo>
+          <mi mathvariant="normal">
+            ∞
+          </mi>
+        </mrow>
+      </msub>
     </mrow>
     <annotation encoding="application/x-tex">
       \\limsup_{x \\rightarrow \\infty}
@@ -345,29 +343,27 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} in dis
 >
   <semantics>
     <mrow>
-      <mo>
-        <munder>
-          <mrow>
-            <mi mathvariant="normal">
-              lim sup
-            </mi>
-            <mo>
-              ⁡
-            </mo>
-          </mrow>
-          <mrow>
-            <mi>
-              x
-            </mi>
-            <mo>
-              →
-            </mo>
-            <mi mathvariant="normal">
-              ∞
-            </mi>
-          </mrow>
-        </munder>
-      </mo>
+      <munder>
+        <mrow>
+          <mi mathvariant="normal">
+            lim sup
+          </mi>
+          <mo>
+            ⁡
+          </mo>
+        </mrow>
+        <mrow>
+          <mi>
+            x
+          </mi>
+          <mo>
+            →
+          </mo>
+          <mi mathvariant="normal">
+            ∞
+          </mi>
+        </mrow>
+      </munder>
     </mrow>
     <annotation encoding="application/x-tex">
       \\limsup_{x \\rightarrow \\infty}
@@ -424,27 +420,25 @@ exports[`A MathML builder should render mathchoice as if there was nothing 1`] =
               displaystyle="true"
       >
         <mrow>
-          <mo>
-            <munderover>
-              <mo>
-                ∑
-              </mo>
-              <mrow>
-                <mi>
-                  k
-                </mi>
-                <mo>
-                  =
-                </mo>
-                <mn>
-                  0
-                </mn>
-              </mrow>
-              <mi mathvariant="normal">
-                ∞
+          <munderover>
+            <mo>
+              ∑
+            </mo>
+            <mrow>
+              <mi>
+                k
               </mi>
-            </munderover>
-          </mo>
+              <mo>
+                =
+              </mo>
+              <mn>
+                0
+              </mn>
+            </mrow>
+            <mi mathvariant="normal">
+              ∞
+            </mi>
+          </munderover>
           <msup>
             <mi>
               x
@@ -467,27 +461,25 @@ exports[`A MathML builder should render mathchoice as if there was nothing 2`] =
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
     <mrow>
-      <mo>
-        <msubsup>
-          <mo>
-            ∑
-          </mo>
-          <mrow>
-            <mi>
-              k
-            </mi>
-            <mo>
-              =
-            </mo>
-            <mn>
-              0
-            </mn>
-          </mrow>
-          <mi mathvariant="normal">
-            ∞
+      <msubsup>
+        <mo>
+          ∑
+        </mo>
+        <mrow>
+          <mi>
+            k
           </mi>
-        </msubsup>
-      </mo>
+          <mo>
+            =
+          </mo>
+          <mn>
+            0
+          </mn>
+        </mrow>
+        <mi mathvariant="normal">
+          ∞
+        </mi>
+      </msubsup>
       <msup>
         <mi>
           x
@@ -703,51 +695,45 @@ exports[`A MathML builder should use <msupsub> for integrals 1`] = `
       <mstyle scriptlevel="0"
               displaystyle="true"
       >
-        <mo>
-          <msubsup>
-            <mo>
-              ∫
-            </mo>
-            <mi>
-              a
-            </mi>
-            <mi>
-              b
-            </mi>
-          </msubsup>
-        </mo>
+        <msubsup>
+          <mo>
+            ∫
+          </mo>
+          <mi>
+            a
+          </mi>
+          <mi>
+            b
+          </mi>
+        </msubsup>
         <mo>
           +
         </mo>
-        <mo>
-          <msubsup>
-            <mo>
-              ∯
-            </mo>
-            <mi>
-              a
-            </mi>
-            <mi>
-              b
-            </mi>
-          </msubsup>
-        </mo>
+        <msubsup>
+          <mo>
+            ∯
+          </mo>
+          <mi>
+            a
+          </mi>
+          <mi>
+            b
+          </mi>
+        </msubsup>
         <mo>
           +
         </mo>
-        <mo>
-          <msubsup>
-            <mo>
-              ∰
-            </mo>
-            <mi>
-              a
-            </mi>
-            <mi>
-              b
-            </mi>
-          </msubsup>
-        </mo>
+        <msubsup>
+          <mo>
+            ∰
+          </mo>
+          <mi>
+            a
+          </mi>
+          <mi>
+            b
+          </mi>
+        </msubsup>
       </mstyle>
     </mrow>
     <annotation encoding="application/x-tex">
@@ -764,19 +750,17 @@ exports[`A MathML builder should use <msupsub> for regular operators 1`] = `
       <mstyle scriptlevel="0"
               displaystyle="false"
       >
-        <mo>
-          <msubsup>
-            <mo>
-              ∑
-            </mo>
-            <mi>
-              a
-            </mi>
-            <mi>
-              b
-            </mi>
-          </msubsup>
-        </mo>
+        <msubsup>
+          <mo>
+            ∑
+          </mo>
+          <mi>
+            a
+          </mi>
+          <mi>
+            b
+          </mi>
+        </msubsup>
       </mstyle>
     </mrow>
     <annotation encoding="application/x-tex">
@@ -793,19 +777,17 @@ exports[`A MathML builder should use <munderover> for large operators 1`] = `
       <mstyle scriptlevel="0"
               displaystyle="true"
       >
-        <mo>
-          <munderover>
-            <mo>
-              ∑
-            </mo>
-            <mi>
-              a
-            </mi>
-            <mi>
-              b
-            </mi>
-          </munderover>
-        </mo>
+        <munderover>
+          <mo>
+            ∑
+          </mo>
+          <mi>
+            a
+          </mi>
+          <mi>
+            b
+          </mi>
+        </munderover>
       </mstyle>
     </mrow>
     <annotation encoding="application/x-tex">
