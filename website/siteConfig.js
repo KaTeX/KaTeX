@@ -140,6 +140,11 @@ const users = [
         image: '/img/vade_mecum_shelf_logo.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
     },
+    {
+        caption: 'MathWills',
+        image: '/img/mathwills_logo.svg',
+        infoLink: 'https://www.mathwills.com/',
+    },
 ];
 
 const siteConfig = {
