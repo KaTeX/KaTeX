@@ -8310,15 +8310,15 @@ fsevents@^1.2.7:
   linkType: hard
 
 "mini-css-extract-plugin@npm:^1.0.0":
-  version: 1.2.0
-  resolution: "mini-css-extract-plugin@npm:1.2.0"
+  version: 1.2.1
+  resolution: "mini-css-extract-plugin@npm:1.2.1"
   dependencies:
     loader-utils: ^2.0.0
     schema-utils: ^3.0.0
     webpack-sources: ^1.1.0
   peerDependencies:
     webpack: ^4.4.0 || ^5.0.0
-  checksum: e87cbebbcbdcd0ecacd32d4056a95e129360f32b74140195d48fed0d67e9ad9cc6c8e87fb54fe1df16841dd11dd0236574bdcf565a978b9718df4a99cbe28ca8
+  checksum: c2e9751e636daffad276d8befb6cc62a95ab2e3f563ed488ad6281d3800a12baac09f140ec738d6fbedb383ad34665fac140b4dcd472a49fdd277e6ebece062d
   languageName: node
   linkType: hard
 
