@@ -2892,16 +2892,17 @@ __metadata:
   linkType: hard
 
 "browserslist@npm:^4.0.0, browserslist@npm:^4.12.0, browserslist@npm:^4.13.0, browserslist@npm:^4.6.4, browserslist@npm:^4.8.5":
-  version: 4.14.6
-  resolution: "browserslist@npm:4.14.6"
+  version: 4.14.7
+  resolution: "browserslist@npm:4.14.7"
   dependencies:
-    caniuse-lite: ^1.0.30001154
-    electron-to-chromium: ^1.3.585
+    caniuse-lite: ^1.0.30001157
+    colorette: ^1.2.1
+    electron-to-chromium: ^1.3.591
     escalade: ^3.1.1
-    node-releases: ^1.1.65
+    node-releases: ^1.1.66
   bin:
     browserslist: cli.js
-  checksum: f870aa5822b4bfcddac1accdef252bfd8cee81c906c6c64481a11948fa0d0ff707e6bcb4c40af64d441ae034d5c491b2c53817ce655221cca7e96813f3e23350
+  checksum: 62b671a69a8d5636d848383ef2cdb64299a436149a889e08c6b91bf0d595bee6c1d358edf1f3dcde72b5fb803f138015b9c1de75566b19330d071ab76f3d1339
   languageName: node
   linkType: hard
 
@@ -3120,7 +3121,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30000981, caniuse-lite@npm:^1.0.30001102, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001154":
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30000981, caniuse-lite@npm:^1.0.30001102, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001157":
   version: 1.0.30001157
   resolution: "caniuse-lite@npm:1.0.30001157"
   checksum: 8fc930094b538a6592bd09d1c444fe5dc44cfc3517effeb722fb9832d200755908f3b3551069f8f61518ffac65c3dcf4ea022b74de60b70468a6c1d18f5b4184
@@ -4454,10 +4455,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-to-chromium@npm:^1.3.585":
-  version: 1.3.589
-  resolution: "electron-to-chromium@npm:1.3.589"
-  checksum: 71257f9500c8f34526054398219917819605f0319b86b1914dfed85cbdde7cc49d0187466714515b14643e183eb8cb00112df30d6c867486640485fbae601d1f
+"electron-to-chromium@npm:^1.3.591":
+  version: 1.3.594
+  resolution: "electron-to-chromium@npm:1.3.594"
+  checksum: 78c62307c24c93a42e2f8819b233cad97974ba4e9e4475f7bd5bc7cbf8ddc0fe59cba5c1fc4db2a79e71060dbcc4273a579bc5fd4de220f33414b62124fcd6e2
   languageName: node
   linkType: hard
 
@@ -8662,10 +8663,10 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"node-releases@npm:^1.1.65":
-  version: 1.1.65
-  resolution: "node-releases@npm:1.1.65"
-  checksum: 7b8b1c118e3596376841ad44d33c55b93a3d3b7f9827ca48048579e58a81110ed3df00942ca7bd6c59d52adfdfb6da5ee1d33514b57ef8c9ee65d36bd0a3a609
+"node-releases@npm:^1.1.66":
+  version: 1.1.66
+  resolution: "node-releases@npm:1.1.66"
+  checksum: 342621a8bdbd28860e8321687df6fbd5db540daee4279eb1aa330a4b01c0b8e401fb7e405bd60c72de31a911087bd88633cb685832640d5142b1db7d418f257a
   languageName: node
   linkType: hard
 
