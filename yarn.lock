@@ -2491,18 +2491,18 @@ __metadata:
   linkType: hard
 
 "babel-loader@npm:^8.0.5":
-  version: 8.1.0
-  resolution: "babel-loader@npm:8.1.0"
+  version: 8.2.1
+  resolution: "babel-loader@npm:8.2.1"
   dependencies:
     find-cache-dir: ^2.1.0
     loader-utils: ^1.4.0
-    mkdirp: ^0.5.3
+    make-dir: ^2.1.0
     pify: ^4.0.1
     schema-utils: ^2.6.5
   peerDependencies:
     "@babel/core": ^7.0.0
     webpack: ">=2"
-  checksum: f7b236a5f7b3f2c8a49ec41ed0a2905075ed4bb6d6ba85552b50be7c56b8fdb46e92270576ef29e6598f23919f7a00a515091c2410ced25c08992a4bd799124b
+  checksum: e4bc46cbd8095f1b7e8c424b7a782c15786870f25cc760c5ff40463db74d873e24296bc61e1fade33de897c2c81b92653ff3cdcb1df0cfa0b5f49c878948dd41
   languageName: node
   linkType: hard
 
