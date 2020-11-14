@@ -223,6 +223,7 @@ table td {
 |\cf|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem;
 use `\ce` instead|
 |\cfrac|$\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}$|`\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}`|
+|\char|$\char"263a$|`\char"263a`|
 |\check|$\check{oe}$|`\check{oe}`|
 |\ch|$\ch$||
 |\checkmark|$\checkmark$||
@@ -785,8 +786,8 @@ use `\ce` instead|
 |\Omicron|$\Omicron$||
 |\omicron|$\omicron$||
 |\ominus|$\ominus$||
-|\operatorname|$\operatorname{asin} x$|\operatorname{asin} x|
-|\operatorname\*|$\operatorname{asin}\limits_y x$|`\operatorname{asin}\limits_y x`|
+|\operatorname|$\operatorname{asin} x$|`\operatorname{asin} x`|
+|\operatorname\*|$\operatorname*{asin}\limits_y x$|`\operatorname*{asin}\limits_y x`|
 |\oplus|$\oplus$||
 |\or|<span style="color:firebrick;">Not supported</span>||
 |\origof|$\origof$||
