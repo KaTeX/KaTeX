@@ -256,6 +256,12 @@ type ParseNodeTypes = {
         size: StyleStr | "auto",
         barSize: Measurement | null,
     |},
+    "hbox": {|
+        type: "hbox",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        body: AnyParseNode[],
+    |},
     "horizBrace": {|
         type: "horizBrace",
         mode: Mode,
@@ -432,6 +438,12 @@ type ParseNodeTypes = {
     |},
     "underline": {|
         type: "underline",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        body: AnyParseNode,
+    |},
+    "vcenter": {|
+        type: "vcenter",
         mode: Mode,
         loc?: ?SourceLocation,
         body: AnyParseNode,

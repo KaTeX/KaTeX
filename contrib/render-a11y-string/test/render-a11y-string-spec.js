@@ -272,6 +272,13 @@ describe("renderA11yString", () => {
         });
     });
 
+    describe("hbox", () => {
+        test("\\hbox", () => {
+            const result = renderA11yString("x+\\hbox{y}");
+            expect(result).toMatchInlineSnapshot(`"x, plus, y"`);
+        });
+    });
+
     describe("inner", () => {
         test("\\ldots", () => {
             const result = renderA11yString("\\ldots");
@@ -521,6 +528,13 @@ describe("renderA11yString", () => {
             expect(result).toMatchInlineSnapshot(
                 `"start underline, 1, plus, 2, end underline"`,
             );
+        });
+    });
+
+    describe("vcenter", () => {
+        test("\\vcenter", () => {
+            const result = renderA11yString("x+\\vcenter{y}");
+            expect(result).toMatchInlineSnapshot(`"x, plus, y"`);
         });
     });
 
