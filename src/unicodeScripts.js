@@ -39,6 +39,11 @@ const scriptData: Array<Script> = [
         blocks: [[0x0400, 0x04ff]],
     },
     {
+        // Armenian
+        name: 'armenian',
+        blocks: [[0x0530, 0x058F]],
+    },
+    {
         // The Brahmic scripts of South and Southeast Asia
         // Devanagari (0900–097F)
         // Bengali (0980–09FF)
