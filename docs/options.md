@@ -38,6 +38,8 @@ You can provide an object of options as the last argument to [`katex.render` and
     (outside an array/tabular environment).  In strict mode, no line break
     results, as in LaTeX.
 
+  If `strict` is `true`, then `\newcommand`, `\renewcommand`, and `\providecommand` have local scope within a group, as in LaTeX. If `strict` is any value other than `true`, these commands will create macros with global scope.
+
 - `trust`: `boolean` or `function` (default: `false`). If `false` (do not trust input), prevent any commands like `\includegraphics` that could enable adverse behavior, rendering them instead in `errorColor`. If `true` (trust input), allow all such commands. Provide a custom function `handler(context)` to customize behavior depending on the context (command, arguments e.g. a URL, etc.).  A list of possible contexts:
 
   - `{command: "\\url", url, protocol}`
@@ -57,7 +59,6 @@ You can provide an object of options as the last argument to [`katex.render` and
   - Allow all commands with specific protocols: `trust: (context) => ['http', 'https', '_relative'].includes(context.protocol)`
   - Allow all commands but forbid specific protocol: `trust: (context) => context.protocol !== 'file'`
   - Allow certain commands with specific protocols: `trust: (context) => ['\\url', '\\href'].includes(context.command) && ['http', 'https', '_relative'].includes(context.protocol)`
-- `globalGroup`: `boolean`  (default: `false`). Place KaTeX code in the global group. As a consequence, `\def` and `\newcommand` persist in `macros` across render calls. In LaTeX, constructs such as `\begin{equation}` and `$$` create a local group and prevent definitions from becoming visible outside of those blocks.
 
 For example:
 

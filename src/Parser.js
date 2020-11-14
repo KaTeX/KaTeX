@@ -117,11 +117,9 @@ export default class Parser {
      * Main parsing function, which parses an entire input.
      */
     parse(): AnyParseNode[] {
-        if (!this.settings.globalGroup) {
-            // Create a group namespace for the math expression.
-            // (LaTeX creates a new group for every $...$, $$...$$, \[...\].)
-            this.gullet.beginGroup();
-        }
+        // Create a group namespace for the math expression.
+        // (LaTeX creates a new group for every $...$, $$...$$, \[...\].)
+        this.gullet.beginGroup();
 
         // Use old \color behavior (same as LaTeX's \textcolor) if requested.
         // We do this within the group for the math expression, so it doesn't
@@ -137,9 +135,7 @@ export default class Parser {
         this.expect("EOF");
 
         // End the group namespace for the expression
-        if (!this.settings.globalGroup) {
-            this.gullet.endGroup();
-        }
+        this.gullet.endGroup();
         return parse;
     }
 

@@ -3334,9 +3334,9 @@ describe("A macro expander", function() {
         expect(macros["\\foo"]).toBeFalsy();
     });
 
-    it("\\def changes settings.macros with globalGroup", () => {
+    it("\\newcommand changes settings.macros with strict = false", () => {
         const macros = {};
-        expect`\gdef\foo{1}`.toParse(new Settings({macros, globalGroup: true}));
+        expect`\newcommand\foo{1}`.toParse(new Settings({macros, strict: false}));
         expect(macros["\\foo"]).toBeTruthy();
     });
 
@@ -3366,7 +3366,7 @@ describe("A macro expander", function() {
 
     it("\\newcommand doesn't change settings.macros", () => {
         const macros = {};
-        expect`\newcommand\foo{x^2}\foo+\foo`.toParse(new Settings({macros}));
+        expect`\newcommand\foo{x^2}\foo+\foo`.toParse(new Settings({macros, strict: true}));
         expect(macros["\\foo"]).toBeFalsy();
     });
 
@@ -3413,14 +3413,14 @@ describe("A macro expander", function() {
             .toParseLike`12`;
     });
 
-    it("\\newcommand is local", () => {
+    it("\\newcommand is local in strict settings", () => {
         expect`\newcommand\foo{1}\foo{\renewcommand\foo{2}\foo}\foo`
-            .toParseLike`1{2}1`;
+            .toParseLike(`1{2}1`, {strict: true});
     });
 
     it("\\newcommand accepts number of arguments", () => {
         expect`\newcommand\foo[1]{#1^2}\foo x+\foo{y}`.toParseLike`x^2+y^2`;
-        expect`\newcommand\foo[10]{#1^2}\foo 0123456789`.toParseLike`0^2`;
+        expect`\newcommand\foo[9]{#1^2}\foo 012345678`.toParseLike`0^2`;
         expect`\newcommand\foo[x]{}`.not.toParse();
         expect`\newcommand\foo[1.5]{}`.not.toParse();
     });

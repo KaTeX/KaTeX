@@ -208,3 +208,71 @@ defineFunction({
         };
     },
 });
+
+// \newcommand{\macro}[args]{definition}
+// \renewcommand{\macro}[args]{definition}
+// TODO: Optional arguments: \newcommand{\macro}[args][default]{definition}
+// At user request, we make \newcommand a global definition instead of a definition
+// valid only within a local group namespace.
+defineFunction({
+    type: "internal",
+    names: ["\\newcommand", "\\renewcommand", "\\providecommand"],
+    props: {
+        numArgs: 0,
+        allowedInText: true,
+        primitive: true,
+    },
+    handler({parser, funcName}) {
+        let name = "";
+        const tok = parser.gullet.popToken();
+        if (tok.text === "{") {
+            name = checkControlSequence(parser.gullet.popToken());
+            parser.gullet.popToken();
+        } else {
+            name = checkControlSequence(tok);
+        }
+
+        const exists = parser.gullet.isDefined(name);
+        if (exists && funcName === "\\newcommand") {
+            throw new ParseError(
+              `\\newcommand{${name}} attempting to redefine ${name}; ` +
+              `use \\renewcommand`
+            );
+        }
+        if (!exists && funcName === "\\renewcommand") {
+            throw new ParseError(
+              `\\renewcommand{${name}} when command ${name} does not yet exist; ` +
+              `use \\newcommand`
+            );
+        }
+
+        let numArgs = 0;
+        if (parser.gullet.future().text === "[") {
+            let tok = parser.gullet.popToken();
+            tok = parser.gullet.popToken();
+            if (!/^[1-9]$/.test(tok.text)) {
+                throw new ParseError(`Invalid number of arguments: "${tok.text}"`);
+            }
+            numArgs = parseInt(tok.text);
+            tok = parser.gullet.popToken();
+            if (tok.text !== "]") {
+                throw new ParseError(`Invalid argument "${tok.text}"`);
+            }
+        }
+
+        // replacement text, enclosed in '{' and '}' and properly nested
+        const {tokens} = parser.gullet.consumeArg();
+
+        parser.gullet.macros.set(
+            name,
+            {tokens, numArgs},
+            parser.settings.strict !== true
+        );
+
+        return {
+            type: "internal",
+            mode: parser.mode,
+        };
+
+    },
+});
