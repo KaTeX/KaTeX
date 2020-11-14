@@ -223,6 +223,7 @@ table td {
 |\cf|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem;
 use `\ce` instead|
 |\cfrac|$\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}$|`\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}`|
+|\char|$\char"263a$|`\char"263a`|
 |\check|$\check{oe}$|`\check{oe}`|
 |\ch|$\ch$||
 |\checkmark|$\checkmark$||
@@ -455,7 +456,8 @@ use `\ce` instead|
 |\harr|$\harr$||
 |\hat|$\hat{\theta}$|`\hat{\theta}`|
 |\hbar|$\hbar$||
-|\hbox|<span style="color:firebrick;">Not supported</span>||
+|\hbox|$\hbox{$x^2$}$|`\hbox{$x^2$}`|
+|\hbox to <dimen>| <span style="color:firebrick;">Not supported</span> ||
 |\hdashline|$\begin{matrix}a&b\\ \hdashline c &d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`\hdashline`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |\hearts|$\hearts$||
 |\heartsuit|$\heartsuit$||
@@ -864,7 +866,7 @@ use `\ce` instead|
 |\R|$\R$||
 |\r|$\text{\r{a}}$|`\text{\r{a}}`|
 |\raise|<span style="color:firebrick;">Not supported</span>|see `\raisebox`|
-|\raisebox|$h\raisebox{2pt}{ighe}r$|`h\raisebox{2pt}{ighe}r`|
+|\raisebox|$h\raisebox{2pt}{ighe}r$|`h\raisebox{2pt}{$ighe$}r`|
 |\rang|$\langle A\rang$|`\langle A\rang`|
 |\rangle|$\langle A\rangle$|`\langle A\rangle`|
 |\Rarr|$\Rarr$||
@@ -1175,8 +1177,9 @@ use `\ce` instead|
 |\vartriangleright|$\vartriangleright$||
 |\varUpsilon|$\varUpsilon$||
 |\varXi|$\varXi$||
-|\vcentcolon|$\vcentcolon$||
-|\vcenter|<span style="color:firebrick;">Not supported</span>||
+|\vcentcolon|$\mathrel{\vcentcolon =}$|`\mathrel{\vcentcolon =}`|
+|\vcenter|$a+\left(\vcenter{\frac{\frac a b}c}\right)$|`a+\left(\vcenter{\hbox{$\frac{\frac a b}c$}}\right)`<br>TeX (strict) syntax|
+|\vcenter|$a+\left(\vcenter{\frac{\frac a b}c}\right)$|`a+\left(\vcenter{\frac{\frac a b}c}\right)`<br>non-strict syntax|
 |\Vdash|$\Vdash$||
 |\vDash|$\vDash$||
 |\vdash|$\vdash$||
