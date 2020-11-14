@@ -7806,8 +7806,8 @@ fsevents@^1.2.7:
   linkType: hard
 
 "less-loader@npm:^7.0.0":
-  version: 7.0.2
-  resolution: "less-loader@npm:7.0.2"
+  version: 7.1.0
+  resolution: "less-loader@npm:7.1.0"
   dependencies:
     klona: ^2.0.4
     loader-utils: ^2.0.0
@@ -7815,7 +7815,7 @@ fsevents@^1.2.7:
   peerDependencies:
     less: ^3.5.0
     webpack: ^4.0.0 || ^5.0.0
-  checksum: e9e294a02ed7c317349a4c10db45b63550ce15a844b690206c1002caf93c735f3719e00588340be6e2689941f895077ecf5d8609196d6d4110490200976358c0
+  checksum: 8b6545b280eca5b92dc5549e7644c213d09c245d0c06f24f35322cc96399e9e33cbadee31fba95afd93d34ebb3f785c3e80545c06d068fca52cb9661102012b9
   languageName: node
   linkType: hard
 

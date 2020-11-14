@@ -1642,6 +1642,36 @@ describe("A \\pmb builder", function() {
     });
 });
 
+describe("A raise parser", function() {
+    it("should parse and build text in \\raisebox", function() {
+        expect("\\raisebox{5pt}{text}").toBuild(strictSettings);
+        expect("\\raisebox{-5pt}{text}").toBuild(strictSettings);
+    });
+
+    it("should parse and build math in non-strict \\vcenter", function() {
+        expect("\\vcenter{\\frac a b}").toBuild(nonstrictSettings);
+    });
+
+    it("should fail to parse math in \\raisebox", function() {
+        expect("\\raisebox{5pt}{\\frac a b}").not.toParse(nonstrictSettings);
+        expect("\\raisebox{-5pt}{\\frac a b}").not.toParse(nonstrictSettings);
+    });
+
+    it("should fail to parse math in an \\hbox", function() {
+        expect("\\hbox{\\frac a b}").not.toParse(nonstrictSettings);
+    });
+
+    it("should fail to build, given an unbraced length", function() {
+        expect("\\raisebox5pt{text}").not.toBuild(strictSettings);
+        expect("\\raisebox-5pt{text}").not.toBuild(strictSettings);
+    });
+
+
+    it("should build math in an hbox when math mode is set", function() {
+        expect("a + \\vcenter{\\hbox{$\\frac{\\frac a b}c$}}").toBuild(strictSettings);
+    });
+});
+
 describe("A comment parser", function() {
     it("should parse comments at the end of a line", () => {
         expect("a^2 + b^2 = c^2 % Pythagoras' Theorem\n").toParse();
