@@ -21,7 +21,7 @@ table td {
 ## Accents
 
 ||||
-|:----------------------------|:----------------------------------------------------|:-----
+|:----------------------------|:----------------------------------------------------|:------
 |$a'$ `a'`  |$\tilde{a}$ `\tilde{a}`|$\mathring{g}$ `\mathring{g}`
 |$a''$ `a''`|$\widetilde{ac}$ `\widetilde{ac}`  |$\overgroup{AB}$ `\overgroup{AB}`
 |$a^{\prime}$ `a^{\prime}` |$\utilde{AB}$ `\utilde{AB}`  |$\undergroup{AB}$ `\undergroup{AB}`
