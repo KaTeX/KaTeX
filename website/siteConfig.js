@@ -81,6 +81,11 @@ const users = [
         infoLink: 'https://fabiocolacio.github.io/Marker/',
     },
     {
+        caption: 'MathWills',
+        image: '/img/mathwills_logo.svg',
+        infoLink: 'https://www.mathwills.com/',
+    },
+    {
         caption: 'Messenger',
         image: 'https://en.facebookbrand.com/wp-content/uploads/2016/09/messenger_icon2.png',
         infoLink: 'https://www.messenger.com/',
@@ -139,11 +144,6 @@ const users = [
         caption: 'Vade Mecum Shelf',
         image: '/img/vade_mecum_shelf_logo.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
-    },
-    {
-        caption: 'MathWills',
-        image: '/img/mathwills_logo.svg',
-        infoLink: 'https://www.mathwills.com/',
     },
 ];
 
