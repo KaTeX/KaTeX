@@ -45,6 +45,7 @@
     "file-loader": "^6.0.0",
     "flow-bin": "^0.135.0",
     "fs-extra": "^9.0.1",
+    "got": "^11.8.0",
     "husky": "^4.2.5",
     "istanbul-lib-coverage": "^3.0.0",
     "istanbul-lib-report": "^3.0.0",
