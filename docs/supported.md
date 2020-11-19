@@ -418,7 +418,6 @@ $\stackrel{!}{=}$ `\stackrel{!}{=}`
 
 |||||
 |:-----------|:------------|:-------------|:------------------|
-| | | | |
 | $=$ `=` | $\dashv$ `\dashv` | $\leq$ `\leq` | $\simeq$ `\simeq` |
 | $<$ `<` | $\dblcolon$ `\dblcolon` | $\leqq$ `\leqq` | $\smallfrown$ `\smallfrown` |
 | $>$ `>` | $\doteq$ `\doteq` | $\leqslant$ `\leqslant` | $\smallsmile$ `\smallsmile` |
