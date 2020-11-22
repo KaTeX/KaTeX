@@ -43,7 +43,7 @@
     "eslint-plugin-flowtype": "^5.2.0",
     "eslint-plugin-react": "^7.20.3",
     "file-loader": "^6.0.0",
-    "flow-bin": "^0.135.0",
+    "flow-bin": "^0.138.0",
     "fs-extra": "^9.0.1",
     "husky": "^4.2.5",
     "istanbul-lib-coverage": "^3.0.0",
