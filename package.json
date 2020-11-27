@@ -62,7 +62,6 @@
     "mini-css-extract-plugin": "^1.0.0",
     "mkdirp": "^1.0.4",
     "pako": "^2.0.0",
-    "pnp-webpack-plugin": "^1.6.4",
     "postcss": "^7.0.32",
     "postcss-loader": "^4.0.0",
     "postcss-preset-env": "^6.7.0",
@@ -75,11 +74,11 @@
     "style-loader": "^2.0.0",
     "stylelint": "^13.6.1",
     "stylelint-config-standard": "^20.0.0",
-    "terser-webpack-plugin": "^4.0.0",
-    "webpack": "^4.44.0",
+    "terser-webpack-plugin": "^5.0.3",
+    "webpack": "^5.8.0",
     "webpack-bundle-analyzer": "^4.0.0",
-    "webpack-cli": "^3.2.3",
-    "webpack-dev-server": "^3.2.0"
+    "webpack-cli": "^4.2.0",
+    "webpack-dev-server": "^4.0.0-beta.0"
   },
   "bin": "cli.js",
   "scripts": {
@@ -97,7 +96,7 @@
     "test:perf": "NODE_ENV=test node test/perf-test.js",
     "clean": "rm -rf dist/ node_modules/",
     "clean-install": "yarn clean && yarn",
-    "start": "webpack-dev-server --hot --config webpack.dev.js",
+    "start": "webpack serve --config webpack.dev.js",
     "analyze": "webpack --config webpack.analyze.js",
     "build": "rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c && webpack",
     "watch": "yarn build --watch",
