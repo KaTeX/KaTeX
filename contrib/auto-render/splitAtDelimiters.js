@@ -27,76 +27,72 @@ const findEndOfMath = function(delimiter, text, startIndex) {
     return -1;
 };
 
-const splitAtDelimiters = function(startData, leftDelim, rightDelim, display) {
-    const finalData = [];
+const escapeRegex = function(string) {
+    return string.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+};
 
-    for (let i = 0; i < startData.length; i++) {
-        if (startData[i].type === "text") {
-            const text = startData[i].data;
 
-            let lookingForLeft = true;
-            let currIndex = 0;
-            let nextIndex;
-
-            nextIndex = text.indexOf(leftDelim);
-            if (nextIndex !== -1) {
-                currIndex = nextIndex;
-                finalData.push({
-                    type: "text",
-                    data: text.slice(0, currIndex),
-                });
-                lookingForLeft = false;
-            }
-
-            while (true) {
-                if (lookingForLeft) {
-                    nextIndex = text.indexOf(leftDelim, currIndex);
-                    if (nextIndex === -1) {
-                        break;
-                    }
-
-                    finalData.push({
-                        type: "text",
-                        data: text.slice(currIndex, nextIndex),
-                    });
-
-                    currIndex = nextIndex;
-                } else {
-                    nextIndex = findEndOfMath(
-                        rightDelim,
-                        text,
-                        currIndex + leftDelim.length);
-                    if (nextIndex === -1) {
-                        break;
-                    }
-
-                    finalData.push({
-                        type: "math",
-                        data: text.slice(
-                            currIndex + leftDelim.length,
-                            nextIndex),
-                        rawData: text.slice(
-                            currIndex,
-                            nextIndex + rightDelim.length),
-                        display: display,
-                    });
-
-                    currIndex = nextIndex + rightDelim.length;
-                }
-
-                lookingForLeft = !lookingForLeft;
-            }
-
-            finalData.push({
-                type: "text",
-                data: text.slice(currIndex),
-            });
+const splitAtDelimiters = function(text, delimiters) {
+    let regexLeft;
+    for (let i = 0; i < delimiters.length; i++) {
+        if (i === 0) {
+            regexLeft = "(";
         } else {
-            finalData.push(startData[i]);
+            regexLeft += "|";
         }
+        regexLeft += escapeRegex(delimiters[i].left);
+    }
+    regexLeft = new RegExp(regexLeft + ")");
+
+    let lookingForLeft = true;
+    let index;
+    const data = [];
+
+    while (true) {
+        if (lookingForLeft) {
+            index = text.search(regexLeft);
+            if (index === -1) {
+                break;
+            }
+            if (index > 0) {
+                data.push({
+                    type: "text",
+                    data: text.slice(0, index),
+                });
+                text = text.slice(index);
+            }
+        } else {
+            let i = 0;
+            while (!text.startsWith(delimiters[i].left)) { i++; }
+            index = findEndOfMath(
+                delimiters[i].right,
+                text,
+                delimiters[i].left.length
+            );
+            if (index === -1) {
+                break;
+            }
+
+            data.push({
+                type: "math",
+                data: text.slice(delimiters[i].left.length, index),
+                rawData: text.slice(0, index + delimiters[i].right.length),
+                display: delimiters[i].display || false,
+            });
+            text = text.slice(index + delimiters[i].right.length);
+        }
+
+        lookingForLeft = !lookingForLeft;
     }
 
-    return finalData;
+    if (text !== "") {
+        data.push({
+            type: "text",
+            data: text,
+        });
+    }
+
+    return data;
 };
 
 export default splitAtDelimiters;
