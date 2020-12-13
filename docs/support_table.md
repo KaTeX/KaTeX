@@ -91,6 +91,8 @@ table td {
 |\angle|$\angle$||
 |\approx|$\approx$||
 |\approxeq|$\approxeq$||
+|\approxcolon|$\approxcolon$||
+|\approxcoloncolon|$\approxcoloncolon$||
 |\arccos|$\arccos$||
 |\arcctg|$\arcctg$||
 |\arcsin|$\arcsin$||
@@ -247,10 +249,17 @@ use `\ce` instead|
 |\colon|$\colon$||
 |\Colonapprox|$\Colonapprox$||
 |\colonapprox|$\colonapprox$||
+|\coloncolon|$\coloncolon$||
+|\coloncolonapprox|$\coloncolonapprox$||
+|\coloncolonequals|$\coloncolonequals$||
+|\coloncolonminus|$\coloncolonminus$||
+|\coloncolonsim|$\coloncolonsim$||
 |\Coloneq|$\Coloneq$||
 |\coloneq|$\coloneq$||
+|\colonequals|$\colonequals$||
 |\Coloneqq|$\Coloneqq$||
 |\coloneqq|$\coloneqq$||
+|\colonminus|$\colonminus$||
 |\Colonsim|$\Colonsim$||
 |\colonsim|$\colonsim$||
 |\color|$\color{#0000FF} AaBb123$|`\color{#0000FF} AaBb123`|
@@ -380,6 +389,8 @@ use `\ce` instead|
 |\eqsim|$\eqsim$||
 |\eqslantgtr|$\eqslantgtr$||
 |\eqslantless|$\eqslantless$||
+|\equalscolon|$\equalscolon$||
+|\equalscoloncolon|$\equalscoloncolon$||
 |\equiv|$\equiv$||
 |\Eta|$\Eta$||
 |\eta|$\eta$||
@@ -679,6 +690,8 @@ use `\ce` instead|
 |\mid|$\{x∈ℝ\mid x>0\}$|`\{x∈ℝ\mid x>0\}`|
 |\middle|$P\left(A\middle\vert B\right)$|`P\left(A\middle\vert B\right)`|
 |\min|$\min$||
+|\minuscolon|$\minuscolon$||
+|\minuscoloncolon|$\minuscoloncolon$||
 |\minuso|$\minuso$||
 |\mit|<span style="color:firebrick;">Not supported</span>|See `\mathit`|
 |\mkern|$a\mkern18mu b$|`a\mkern18mu b`|
@@ -872,6 +885,7 @@ use `\ce` instead|
 |\Rarr|$\Rarr$||
 |\rArr|$\rArr$||
 |\rarr|$\rarr$||
+|\ratio|$\ratio$||
 |\rBrace|$\rBrace$||
 |\rbrace|$\rbrace$||
 |\rbrack|$\rbrack$||
@@ -949,6 +963,8 @@ use `\ce` instead|
 |\Sigma|$\Sigma$||
 |\sigma|$\sigma$||
 |\sim|$\sim$||
+|\simcolon|$\simcolon$||
+|\simcoloncolon|$\simcoloncolon$||
 |\simeq|$\simeq$||
 |\sin|$\sin$||
 |\sinh|$\sinh$||
