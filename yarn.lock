@@ -7753,8 +7753,8 @@ fsevents@^1.2.7:
   linkType: hard
 
 "less@npm:^3.9.0":
-  version: 3.12.2
-  resolution: "less@npm:3.12.2"
+  version: 3.13.0
+  resolution: "less@npm:3.13.0"
   dependencies:
     errno: ^0.1.1
     graceful-fs: ^4.1.2
@@ -7780,8 +7780,8 @@ fsevents@^1.2.7:
     source-map:
       optional: true
   bin:
-    lessc: bin/lessc
-  checksum: a9b1b74c1f78e52d5dcbac3c02bbf74487ea93e62c56a6f0a9f40dd4f33e0281d30a2fe1afc71381cac046a31644071e25e6eeebeddd339ef2df5904051e5c53
+    lessc: ./bin/lessc
+  checksum: b294e1d467b48e1391f98249f97aaba598080720c539ee3eb4a13967d779696ff582c4631c68dd8c9ef3b0ad38b3cf63b1b60746c56a76fc24b24b9cd14f82ae
   languageName: node
   linkType: hard
 
