@@ -6110,8 +6110,8 @@ fsevents@^1.2.7:
   linkType: hard
 
 "husky@npm:^4.2.5":
-  version: 4.3.5
-  resolution: "husky@npm:4.3.5"
+  version: 4.3.6
+  resolution: "husky@npm:4.3.6"
   dependencies:
     chalk: ^4.0.0
     ci-info: ^2.0.0
@@ -6126,7 +6126,7 @@ fsevents@^1.2.7:
   bin:
     husky-run: bin/run.js
     husky-upgrade: lib/upgrader/bin.js
-  checksum: d15ccb44da39432bb5db1cd0c81eb169be25863bd4ff998c9ecf0c4e769e7d3fb547ed5044ae8b77050303841264bbe48aedf066afb1ee394bcbea4469e2d684
+  checksum: 3c8708887822c93094c4af22608df00a3bdd74784172d13cd08c5d1ed3e7a602f6016bce9982de206f060661f1ea801362edf5658c18fc4a3866d605c47ecaf9
   languageName: node
   linkType: hard
 
