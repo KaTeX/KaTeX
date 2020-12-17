@@ -36,7 +36,7 @@
     "browserslist": "^4.13.0",
     "browserstack-local": "^1.4.5",
     "caniuse-lite": "^1.0.30001102",
-    "css-loader": "^4.0.0",
+    "css-loader": "^5.0.0",
     "cssnano": "^4.1.10",
     "eslint": "^7.4.0",
     "eslint-plugin-actions": "^1.0.1",
