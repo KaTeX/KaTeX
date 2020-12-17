@@ -7303,6 +7303,16 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"react@npm:^17.0.0":
+  version: 17.0.1
+  resolution: "react@npm:17.0.1"
+  dependencies:
+    loose-envify: ^1.1.0
+    object-assign: ^4.1.1
+  checksum: a76d86ec973eb4b25a46071ac7f974adfd66ed89ad1db63043be1d976ec25417520a210e6d724b0ad937422b706afcf9962cedda9e92125992a8c0e8a95f2051
+  languageName: node
+  linkType: hard
+
 "read-pkg-up@npm:^1.0.1":
   version: 1.0.1
   resolution: "read-pkg-up@npm:1.0.1"
@@ -7648,7 +7658,7 @@ fsevents@^1.2.7:
   dependencies:
     docusaurus: ^1.14.6
     fs-extra: ^9.0.1
-    react: ^16.8.4
+    react: ^17.0.0
   dependenciesMeta:
     docusaurus:
       unplugged: true
