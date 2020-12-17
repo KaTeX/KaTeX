@@ -7656,7 +7656,7 @@ fsevents@^1.2.7:
     mkdirp: ^1.0.4
     pako: ^2.0.0
     pnp-webpack-plugin: ^1.6.4
-    postcss: ^7.0.32
+    postcss: ^8.0.0
     postcss-loader: ^4.0.0
     postcss-preset-env: ^6.7.0
     prettier: ^2.0.5
@@ -8495,6 +8495,15 @@ fsevents@^1.2.7:
   dependencies:
     node-gyp: latest
   checksum: eeab7cf260362a578f0b8622716a76d19bc009722049c7274748644ce03b2aa38ca01b3ac730a0497fd2c1ec882a21a0592e800a903994ed4d32acd06bf7eba7
+  languageName: node
+  linkType: hard
+
+"nanoid@npm:^3.1.20":
+  version: 3.1.20
+  resolution: "nanoid@npm:3.1.20"
+  bin:
+    nanoid: bin/nanoid.cjs
+  checksum: 4788d36edcfec7bb32ddf33ed8f1f46df2867f70e9b1993bb131f7677e04ead2b621e5d614d2736308be18db1d54208d8ab207b4586bd5b052f71fb9d4c0ebea
   languageName: node
   linkType: hard
 
@@ -10268,6 +10277,17 @@ fsevents@^1.2.7:
     source-map: ^0.6.1
     supports-color: ^6.1.0
   checksum: 8a979ea9799dd48399337708a395ddb8cf0e328515201ed35c99f5ba5eaa7688eae65764c570bf49b5be0b106226e2f222abc210de068b3d3da9a9a3bbb70567
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^8.0.0":
+  version: 8.2.1
+  resolution: "postcss@npm:8.2.1"
+  dependencies:
+    colorette: ^1.2.1
+    nanoid: ^3.1.20
+    source-map: ^0.6.1
+  checksum: aa7ba3d80a4d8e25bc1a3f61461d7f6b60d361fb1301465d0eb973c5f38b347ad0842b02b8cc8801ede46559391d7c640c7313301a829ef9ca77e34be7230854
   languageName: node
   linkType: hard
 
