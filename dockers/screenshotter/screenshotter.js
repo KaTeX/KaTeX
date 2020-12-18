@@ -220,7 +220,7 @@ function startServer() {
         devServer = wds;
         katexPort = port;
         attempts = 0;
-        process.nextTick(opts.seleniumProxy ? getDriver
+        process.nextTick(opts.seleniumProxy ? getProxyDriver
             : opts.browserstack ? startBrowserstackLocal : tryConnect);
     });
     server.on("error", function(err) {
@@ -302,7 +302,7 @@ function buildDriver() {
     setupDriver();
 }
 
-function getDriver() {
+function getProxyDriver() {
     got.post(opts.seleniumProxy, {
         json: {
             browserstack: opts.browserstack,
