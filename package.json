@@ -61,7 +61,7 @@
     "less-loader": "^7.0.0",
     "mini-css-extract-plugin": "^1.0.0",
     "mkdirp": "^1.0.4",
-    "pako": "^1.0.8",
+    "pako": "^2.0.0",
     "pnp-webpack-plugin": "^1.6.4",
     "postcss": "^7.0.32",
     "postcss-loader": "^4.0.0",
@@ -77,7 +77,7 @@
     "stylelint-config-standard": "^20.0.0",
     "terser-webpack-plugin": "^4.0.0",
     "webpack": "^4.44.0",
-    "webpack-bundle-analyzer": "^3.0.4",
+    "webpack-bundle-analyzer": "^4.0.0",
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.2.0"
   },

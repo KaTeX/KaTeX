@@ -44,4 +44,3 @@ defineFunction({
         return node;
     },
 });
-

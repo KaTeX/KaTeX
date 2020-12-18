@@ -91,6 +91,8 @@ table td {
 |\angle|$\angle$||
 |\approx|$\approx$||
 |\approxeq|$\approxeq$||
+|\approxcolon|$\approxcolon$||
+|\approxcoloncolon|$\approxcoloncolon$||
 |\arccos|$\arccos$||
 |\arcctg|$\arcctg$||
 |\arcsin|$\arcsin$||
@@ -223,6 +225,7 @@ table td {
 |\cf|<span style="color:firebrick;">Not supported</span>|Deprecated by mhchem;
 use `\ce` instead|
 |\cfrac|$\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}$|`\cfrac{2}{1+\cfrac{2}{1+\cfrac{2}{1}}}`|
+|\char|$\char"263a$|`\char"263a`|
 |\check|$\check{oe}$|`\check{oe}`|
 |\ch|$\ch$||
 |\checkmark|$\checkmark$||
@@ -246,10 +249,17 @@ use `\ce` instead|
 |\colon|$\colon$||
 |\Colonapprox|$\Colonapprox$||
 |\colonapprox|$\colonapprox$||
+|\coloncolon|$\coloncolon$||
+|\coloncolonapprox|$\coloncolonapprox$||
+|\coloncolonequals|$\coloncolonequals$||
+|\coloncolonminus|$\coloncolonminus$||
+|\coloncolonsim|$\coloncolonsim$||
 |\Coloneq|$\Coloneq$||
 |\coloneq|$\coloneq$||
+|\colonequals|$\colonequals$||
 |\Coloneqq|$\Coloneqq$||
 |\coloneqq|$\coloneqq$||
+|\colonminus|$\colonminus$||
 |\Colonsim|$\Colonsim$||
 |\colonsim|$\colonsim$||
 |\color|$\color{#0000FF} AaBb123$|`\color{#0000FF} AaBb123`|
@@ -379,6 +389,8 @@ use `\ce` instead|
 |\eqsim|$\eqsim$||
 |\eqslantgtr|$\eqslantgtr$||
 |\eqslantless|$\eqslantless$||
+|\equalscolon|$\equalscolon$||
+|\equalscoloncolon|$\equalscoloncolon$||
 |\equiv|$\equiv$||
 |\Eta|$\Eta$||
 |\eta|$\eta$||
@@ -455,7 +467,8 @@ use `\ce` instead|
 |\harr|$\harr$||
 |\hat|$\hat{\theta}$|`\hat{\theta}`|
 |\hbar|$\hbar$||
-|\hbox|<span style="color:firebrick;">Not supported</span>||
+|\hbox|$\hbox{$x^2$}$|`\hbox{$x^2$}`|
+|\hbox to <dimen>| <span style="color:firebrick;">Not supported</span> ||
 |\hdashline|$\begin{matrix}a&b\\ \hdashline c &d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`\hdashline`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |\hearts|$\hearts$||
 |\heartsuit|$\heartsuit$||
@@ -677,6 +690,8 @@ use `\ce` instead|
 |\mid|$\{x∈ℝ\mid x>0\}$|`\{x∈ℝ\mid x>0\}`|
 |\middle|$P\left(A\middle\vert B\right)$|`P\left(A\middle\vert B\right)`|
 |\min|$\min$||
+|\minuscolon|$\minuscolon$||
+|\minuscoloncolon|$\minuscoloncolon$||
 |\minuso|$\minuso$||
 |\mit|<span style="color:firebrick;">Not supported</span>|See `\mathit`|
 |\mkern|$a\mkern18mu b$|`a\mkern18mu b`|
@@ -864,12 +879,13 @@ use `\ce` instead|
 |\R|$\R$||
 |\r|$\text{\r{a}}$|`\text{\r{a}}`|
 |\raise|<span style="color:firebrick;">Not supported</span>|see `\raisebox`|
-|\raisebox|$h\raisebox{2pt}{ighe}r$|`h\raisebox{2pt}{ighe}r`|
+|\raisebox|$h\raisebox{2pt}{ighe}r$|`h\raisebox{2pt}{$ighe$}r`|
 |\rang|$\langle A\rang$|`\langle A\rang`|
 |\rangle|$\langle A\rangle$|`\langle A\rangle`|
 |\Rarr|$\Rarr$||
 |\rArr|$\rArr$||
 |\rarr|$\rarr$||
+|\ratio|$\ratio$||
 |\rBrace|$\rBrace$||
 |\rbrace|$\rbrace$||
 |\rbrack|$\rbrack$||
@@ -947,6 +963,8 @@ use `\ce` instead|
 |\Sigma|$\Sigma$||
 |\sigma|$\sigma$||
 |\sim|$\sim$||
+|\simcolon|$\simcolon$||
+|\simcoloncolon|$\simcoloncolon$||
 |\simeq|$\simeq$||
 |\sin|$\sin$||
 |\sinh|$\sinh$||
@@ -1175,8 +1193,9 @@ use `\ce` instead|
 |\vartriangleright|$\vartriangleright$||
 |\varUpsilon|$\varUpsilon$||
 |\varXi|$\varXi$||
-|\vcentcolon|$\vcentcolon$||
-|\vcenter|<span style="color:firebrick;">Not supported</span>||
+|\vcentcolon|$\mathrel{\vcentcolon =}$|`\mathrel{\vcentcolon =}`|
+|\vcenter|$a+\left(\vcenter{\frac{\frac a b}c}\right)$|`a+\left(\vcenter{\hbox{$\frac{\frac a b}c$}}\right)`<br>TeX (strict) syntax|
+|\vcenter|$a+\left(\vcenter{\frac{\frac a b}c}\right)$|`a+\left(\vcenter{\frac{\frac a b}c}\right)`<br>non-strict syntax|
 |\Vdash|$\Vdash$||
 |\vDash|$\vDash$||
 |\vdash|$\vdash$||

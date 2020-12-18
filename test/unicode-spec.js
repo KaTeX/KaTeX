@@ -80,6 +80,11 @@ describe("unicode", function() {
         expect`გამარჯობა`.not.toParse(strictSettings);
     });
 
+    it("should build Armenian both inside and outside \\text{}", function() {
+        expect`ԱԲԳաբգ`.toBuild(nonstrictSettings);
+        expect`\text{ԱԲԳաբգ}`.toBuild(nonstrictSettings);
+    });
+
     it("should build extended Latin characters inside \\text{}", function() {
         expect`\text{ěščřžůřťďňőİı}`.toBuild();
     });
@@ -116,6 +121,7 @@ describe("unicodeScripts", () => {
         // eslint-disable-next-line no-misleading-character-class
         latin: /[\u0100-\u024f\u0300-\u036f]/,
         cyrillic: /[\u0400-\u04ff]/,
+        armenian: /[\u0530-\u058F]/,
         brahmic: /[\u0900-\u109F]/,
         georgian: /[\u10a0-\u10ff]/,
         cjk: /[\u3000-\u30FF\u4E00-\u9FAF\uFF00-\uFF60]/,
