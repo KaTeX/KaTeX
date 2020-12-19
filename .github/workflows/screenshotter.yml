@@ -1,0 +1,98 @@
+name: Screenshotter
+
+on:
+  push:
+    branches: [ master ]
+  pull_request_target:
+    branches: [ master ]
+
+jobs:
+  screenshotter:
+    runs-on: ubuntu-latest
+    if: |
+      !contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
+      !contains(toJSON(github.event.commits.*.message), '[ci skip]')
+    strategy:
+      matrix:
+        browser: [chrome, firefox, safari]
+        include:
+        - browser: chrome
+          image: selenium/standalone-chrome:3.141.59-20201119
+        - browser: firefox
+          image: selenium/standalone-firefox:3.141.59-20201119
+        - browser: safari
+          image: ylemkimon/selenium-proxy:latest
+          browserstack:
+            browserName: safari
+            browser_version: 13.1
+            os: OS X
+            os_version: Catalina
+      fail-fast: false
+    services:
+      selenium:
+        image: ${{ matrix.image }}
+        env:
+          # secrets are not supported in matrix, so put it here and limit to browserstack job
+          BROWSERSTACK_USER: ${{ matrix.browserstack && secrets.BROWSERSTACK_USER }}
+          BROWSERSTACK_ACCESS_KEY: ${{ matrix.browserstack && secrets.BROWSERSTACK_ACCESS_KEY }}
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event_name == 'pull_request_target' && format('refs/pull/{0}/merge', github.event.pull_request.number) || '' }}
+        submodules: recursive
+        persist-credentials: false # do not persist credentials
+
+    - name: Use Node.js 14
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14'
+
+    - name: Restore cached dependencies # restore only to prevent cache poisoning
+      uses: ylemkimon/cache-restore@v2
+      with:
+        path: |
+          .yarn/cache
+          .pnp.js
+        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
+        restore-keys: |
+          yarn-deps-v1-
+
+    - name: Run screenshotter
+      run: |
+        TOKEN="$(cat /proc/sys/kernel/random/uuid | sha256sum | head -c 64)"
+        echo "::add-mask::$TOKEN"
+        echo "TOKEN=$TOKEN" >> $GITHUB_ENV
+        echo "::stop-commands::$TOKEN" # stop processing workflow commands
+
+        # run in Docker container
+        # mount .git readonly to prevent modification
+        docker run --rm \
+          --network ${{ job.services.selenium.network }} \
+          -v "$PWD:/code" \
+          -v "$PWD/.git:/code/.git:ro" \
+          -w /code \
+          -e YARN_ENABLE_SCRIPTS=0 \
+          -e CI=true \
+          node:14 \
+          /bin/bash -c 'yarn --immutable && yarn node dockers/screenshotter/screenshotter.js -b ${{ matrix.browser }} --verify --diff --new --katex-ip $HOSTNAME ${{ matrix.browserstack && format('--selenium-proxy http://selenium:4445/build --browserstack --selenium-capabilities ''\''''{0}''\', toJson(matrix.browserstack)) || '--selenium-ip selenium' }}'
+        echo "::$TOKEN::"
+      timeout-minutes: 10
+
+    - name: Print Selenium Docker logs
+      if: always()
+      run: |
+        echo "::stop-commands::$TOKEN" # stop processing workflow commands
+        docker logs ${{ job.services.selenium.id }}
+        echo "::$TOKEN::"
+
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: new-${{ matrix.browser }}
+        path: test/screenshotter/new
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: diff-${{ matrix.browser }}
+        path: test/screenshotter/diff
