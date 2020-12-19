@@ -244,6 +244,11 @@ export default function buildMathML(
 ): DomSpan {
     const expression = buildExpression(tree, options);
 
+    // TODO: Make a pass thru the MathML similar to buildHTML.traverseNonSpaceNodes
+    // and add spacing nodes. This is necessary only adjacent to math operators
+    // like \sin or \lim or to subsup elements that contain math operators.
+    // MathML takes care of the other spacing issues.
+
     // Wrap up the expression in an mrow so it is presented in the semantics
     // tag correctly, unless it's a single <mrow> or <mtable>.
     let wrapper;

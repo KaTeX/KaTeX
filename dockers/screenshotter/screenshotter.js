@@ -8,9 +8,12 @@ const net = require("net");
 const os = require("os");
 const pako = require("pako");
 const path = require("path");
+const got = require("got");
+
 const selenium = require("selenium-webdriver");
 const firefox = require("selenium-webdriver/firefox");
 const chrome = require("selenium-webdriver/chrome");
+const seleniumHttp = require("selenium-webdriver/http");
 
 const istanbulLibCoverage = require('istanbul-lib-coverage');
 const istanbulLibReport = require('istanbul-lib-report');
@@ -44,6 +47,7 @@ const opts = require("commander")
         "Port number of the Selenium web driver", 4444, parseInt)
     .option("--selenium-capabilities <JSON>",
         "Desired capabilities of the Selenium web driver", JSON.parse)
+    .option("--selenium-proxy <url>", "Use Selenium proxy if specified")
     .option("--katex-url <url>", "Full URL of the KaTeX development server")
     .option("--katex-ip <ip>", "IP address of the KaTeX development server")
     .option("--katex-port <n>",
@@ -216,7 +220,8 @@ function startServer() {
         devServer = wds;
         katexPort = port;
         attempts = 0;
-        process.nextTick(opts.browserstack ? startBrowserstackLocal : tryConnect);
+        process.nextTick(opts.seleniumProxy ? getProxyDriver
+            : opts.browserstack ? startBrowserstackLocal : tryConnect);
     });
     server.on("error", function(err) {
         if (devServer !== null) { // error after we started listening
@@ -294,6 +299,28 @@ function buildDriver() {
         builder.withCapabilities(opts.seleniumCapabilities);
     }
     driver = builder.build();
+    setupDriver();
+}
+
+function getProxyDriver() {
+    got.post(opts.seleniumProxy, {
+        json: {
+            browserstack: opts.browserstack,
+            capabilities: opts.seleniumCapabilities,
+            seleniumURL,
+        },
+        responseType: 'json',
+    }).then(({body}) => {
+        const session = new selenium.Session(body.id, body.capabilities);
+        const client = Promise.resolve(seleniumURL)
+            .then(url => new seleniumHttp.HttpClient(url));
+        const executor = new seleniumHttp.Executor(client);
+        driver = new selenium.WebDriver(session, executor);
+        setupDriver();
+    });
+}
+
+function setupDriver() {
     driver.manage().timeouts().setScriptTimeout(3000).then(function() {
         let html = '<!DOCTYPE html>' +
             '<html><head><style type="text/css">html,body{' +

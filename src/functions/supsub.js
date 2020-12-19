@@ -260,9 +260,7 @@ defineFunctionBuilders({
             }
         }
 
-        const node = new mathMLTree.MathNode(nodeType, children);
-
-        return node;
+        return new mathMLTree.MathNode(nodeType, children);
     },
 });
 

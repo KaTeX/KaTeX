@@ -21,7 +21,7 @@ table td {
 ## Accents
 
 ||||
-|:----------------------------|:----------------------------------------------------|:-----
+|:----------------------------|:----------------------------------------------------|:------
 |$a'$ `a'`  |$\tilde{a}$ `\tilde{a}`|$\mathring{g}$ `\mathring{g}`
 |$a''$ `a''`|$\widetilde{ac}$ `\widetilde{ac}`  |$\overgroup{AB}$ `\overgroup{AB}`
 |$a^{\prime}$ `a^{\prime}` |$\utilde{AB}$ `\utilde{AB}`  |$\undergroup{AB}$ `\undergroup{AB}`
@@ -203,7 +203,7 @@ Direct Input: $∂ ∇ ℑ Ⅎ ℵ ℶ ℷ ℸ ⅁ ℏ ð$
 
 The letters listed above will render properly in any KaTeX rendering mode.
 
-In addition, Brahmic, Georgian, Chinese, Japanese, and Korean glyphs are always accepted in text mode. However, these glyphs will be rendered from system fonts (not KaTeX-supplied fonts) so their typography may clash.
+In addition, Armenian, Brahmic, Georgian, Chinese, Japanese, and Korean glyphs are always accepted in text mode. However, these glyphs will be rendered from system fonts (not KaTeX-supplied fonts) so their typography may clash.
 You can provide rules for CSS classes `.latin-fallback`, `.cyrillic-fallback`, `.brahmic-fallback`, `.georgian-fallback`, `.cjk-fallback`, and `.hangul-fallback` to provide fallback fonts for these languages.
 Use of these glyphs may cause small vertical alignment issues: KaTeX has detailed metrics for listed symbols and most Latin, Greek, and Cyrillic letters, but other accepted glyphs are treated as if they are each as tall as the letter M in the current KaTeX font.
 
@@ -211,6 +211,8 @@ If the KaTeX rendering mode is set to `strict: false` or `strict: "warn"` (d
 All unrecognized characters will be treated as if they appeared in text mode, and are subject to the same issues of using system fonts and possibly using incorrect vertical alignment.
 
 For Persian composite characters, a user-supplied [plug-in](https://github.com/HosseinAgha/persian-katex-plugin) is under development.
+
+Any character can be written with the `\char` function and the Unicode code in hex. For example `\char"263a` will render as $\char"263a$.
 
 ## Layout
 
@@ -243,11 +245,14 @@ In display math, KaTeX does not insert automatic line breaks. It ignores display
 
 ||||
 |:--------------|:----------------------------------------|:-----
-|$x_n$ `x_n` |$\stackrel{!}{=}$ `\stackrel{!}{=}`  |$a \atop b$ `a \atop b`
-|$e^x$ `e^x` |$\overset{!}{=}$ `\overset{!}{=}` |$a\raisebox{0.25em}{b}c$ `a\raisebox{0.25em}{b}c`
-|$_u^o $ `_u^o `|$\underset{!}{=}$ `\underset{!}{=}` | $$\sum_{\substack{0<i<m\\0<j<n}}$$ `\sum_{\substack{0<i<m\\0<j<n}}`
+|$x_n$ `x_n` |$\stackrel{!}{=}$ `\stackrel{!}{=}`| $a \atop b$ `a \atop b`
+|$e^x$ `e^x` |$\overset{!}{=}$ `\overset{!}{=}`  | $a\raisebox{0.25em}{$b$}c$ `a\raisebox{0.25em}{$b$}c`
+|$_u^o $ `_u^o `| $\underset{!}{=}$ `\underset{!}{=}` | $a+\left(\vcenter{\frac{\frac a b}c}\right)$ `a+\left(\vcenter{\hbox{$\frac{\frac a b}c$}}\right)`
+||| $$\sum_{\substack{0<i<m\\0<j<n}}$$ `\sum_{\substack{0<i<m\\0<j<n}}`
 
-The second argument of `\raisebox` can contain math if it is nested within `$…$` delimiters, as in `\raisebox{0.25em}{$\frac a b$}`
+`\raisebox` and `\hbox` put their argument into text mode. To raise math, nest `$…$` delimiters inside the argument as shown above. 
+
+`\vcenter` can be written without an `\hbox` if the `strict` rendering option is *false*. In that case, omit the nested `$…$` delimiters.
 
 ### Overlap and Spacing
 
@@ -421,39 +426,42 @@ $\sqrt[3]{x}$ `\sqrt[3]{x}`
 $\stackrel{!}{=}$ `\stackrel{!}{=}`
 
 |||||
-|:----------------------------|:--------------------------------|:--------------------------------|:-----
-| $=$ `=` | $\eqcirc$ `\eqcirc` | $\lessapprox$ `\lessapprox` | $\sqsubset$ `\sqsubset` |
-| $<$ `<` | $\eqcolon$ `\eqcolon` | $\lesseqgtr$ `\lesseqgtr` | $\sqsubseteq$ `\sqsubseteq` |
-| $>$ `>` | $\Eqcolon$ `\Eqcolon` | $\lesseqqgtr$ `\lesseqqgtr` | $\sqsupset$ `\sqsupset` |
-| $:$ `:` | $\eqqcolon$ `\eqqcolon` | $\lessgtr$ `\lessgtr` | $\sqsupseteq$ `\sqsupseteq` |
-| $\approx$ `\approx` | $\Eqqcolon$ `\Eqqcolon` | $\lesssim$ `\lesssim` | $\Subset$ `\Subset` |
-| $\approxeq$ `\approxeq` | $\eqsim$ `\eqsim` | $\ll$ `\ll` | $\subset$ `\subset` or `\sub` |
-| $\asymp$ `\asymp` | $\eqslantgtr$ `\eqslantgtr` | $\lll$ `\lll` | $\subseteq$ `\subseteq` or `\sube` |
-| $\backepsilon$ `\backepsilon` | $\eqslantless$ `\eqslantless` | $\llless$ `\llless` | $\subseteqq$ `\subseteqq` |
-| $\backsim$ `\backsim` | $\equiv$ `\equiv` | $\lt$ `\lt` | $\succ$ `\succ` |
-| $\backsimeq$ `\backsimeq` | $\fallingdotseq$ `\fallingdotseq` | $\mid$ `\mid` | $\succapprox$ `\succapprox` |
-| $\between$ `\between` | $\frown$ `\frown` | $\models$ `\models` | $\succcurlyeq$ `\succcurlyeq` |
-| $\bowtie$ `\bowtie` | $\ge$ `\ge` | $\multimap$ `\multimap` | $\succeq$ `\succeq` |
-| $\bumpeq$ `\bumpeq` | $\geq$ `\geq` | $\origof$ `\origof` | $\succsim$ `\succsim` |
-| $\Bumpeq$ `\Bumpeq` | $\geqq$ `\geqq` | $\owns$ `\owns` | $\Supset$ `\Supset` |
-| $\circeq$ `\circeq` | $\geqslant$ `\geqslant` | $\parallel$ `\parallel` | $\supset$ `\supset` |
-| $\colonapprox$ `\colonapprox` | $\gg$ `\gg` | $\perp$ `\perp` | $\supseteq$ `\supseteq` or `\supe` |
-| $\Colonapprox$ `\Colonapprox` | $\ggg$ `\ggg` | $\pitchfork$ `\pitchfork` | $\supseteqq$ `\supseteqq` |
-| $\coloneq$ `\coloneq` | $\gggtr$ `\gggtr` | $\prec$ `\prec` | $\thickapprox$ `\thickapprox` |
-| $\Coloneq$ `\Coloneq` | $\gt$ `\gt` | $\precapprox$ `\precapprox` | $\thicksim$ `\thicksim` |
-| $\coloneqq$ `\coloneqq` | $\gtrapprox$ `\gtrapprox` | $\preccurlyeq$ `\preccurlyeq` | $\trianglelefteq$ `\trianglelefteq` |
-| $\Coloneqq$ `\Coloneqq` | $\gtreqless$ `\gtreqless` | $\preceq$ `\preceq` | $\triangleq$ `\triangleq` |
-| $\colonsim$ `\colonsim` | $\gtreqqless$ `\gtreqqless` | $\precsim$ `\precsim` | $\trianglerighteq$ `\trianglerighteq` |
-| $\Colonsim$ `\Colonsim` | $\gtrless$ `\gtrless` | $\propto$ `\propto` | $\varpropto$ `\varpropto` |
-| $\cong$ `\cong` | $\gtrsim$ `\gtrsim` | $\risingdotseq$ `\risingdotseq` | $\vartriangle$ `\vartriangle` |
-| $\curlyeqprec$ `\curlyeqprec` | $\imageof$ `\imageof` | $\shortmid$ `\shortmid` | $\vartriangleleft$ `\vartriangleleft` |
-| $\curlyeqsucc$ `\curlyeqsucc` | $\in$ `\in` or `\isin` | $\shortparallel$ `\shortparallel` | $\vartriangleright$ `\vartriangleright` |
-| $\dashv$ `\dashv` | $\Join$ `\Join` | $\sim$ `\sim` | $\vcentcolon$ `\vcentcolon` |
-| $\dblcolon$ `\dblcolon` | $\le$ `\le` | $\simeq$ `\simeq` | $\vdash$ `\vdash` |
-| $\doteq$ `\doteq` | $\leq$ `\leq` | $\smallfrown$ `\smallfrown` | $\vDash$ `\vDash` |
-| $\Doteq$ `\Doteq` | $\leqq$ `\leqq` | $\smallsmile$ `\smallsmile` | $\Vdash$ `\Vdash` |
-| $\doteqdot$ `\doteqdot` | $\leqslant$ `\leqslant` | $\smile$ `\smile` | $\Vvdash$ `\Vvdash` |
-
+|:-----------|:------------|:-------------|:------------------|
+| $=$ `=` | $\dashv$ `\dashv` | $\leq$ `\leq` | $\simeq$ `\simeq` |
+| $<$ `<` | $\dblcolon$ `\dblcolon` | $\leqq$ `\leqq` | $\smallfrown$ `\smallfrown` |
+| $>$ `>` | $\doteq$ `\doteq` | $\leqslant$ `\leqslant` | $\smallsmile$ `\smallsmile` |
+| $:$ `:` | $\Doteq$ `\Doteq` | $\lessapprox$ `\lessapprox` | $\smile$ `\smile` |
+| $\approx$ `\approx` | $\doteqdot$ `\doteqdot` | $\lesseqgtr$ `\lesseqgtr` | $\sqsubset$ `\sqsubset` |
+| $\approxcolon$ `\approxcolon` | $\equalscolon$ `\equalscolon` | $\lesseqqgtr$ `\lesseqqgtr` | $\sqsubseteq$ `\sqsubseteq` |
+| $\approxcoloncolon$ `\approxcoloncolon` | $\equalscoloncolon$ `\equalscoloncolon` | $\lessgtr$ `\lessgtr` | $\sqsupset$ `\sqsupset` |
+| $\approxeq$ `\approxeq` | $\eqcirc$ `\eqcirc` | $\lesssim$ `\lesssim` | $\sqsupseteq$ `\sqsupseteq` |
+| $\asymp$ `\asymp` | $\eqcolon$ `\eqcolon` | $\ll$ `\ll` | $\Subset$ `\Subset` |
+| $\backepsilon$ `\backepsilon` | $\Eqcolon$ `\Eqcolon` | $\lll$ `\lll` | $\subset$ `\subset` or `\sub` |
+| $\backsim$ `\backsim` | $\eqqcolon$ `\eqqcolon` | $\llless$ `\llless` | $\subseteq$ `\subseteq` or `\sube` |
+| $\backsimeq$ `\backsimeq` | $\Eqqcolon$ `\Eqqcolon` | $\lt$ `\lt` | $\subseteqq$ `\subseteqq` |
+| $\between$ `\between` | $\eqsim$ `\eqsim` | $\mid$ `\mid` | $\succ$ `\succ` |
+| $\bowtie$ `\bowtie` | $\eqslantgtr$ `\eqslantgtr` | $\minuscolon$ `\minuscolon` | $\succapprox$ `\succapprox` |
+| $\bumpeq$ `\bumpeq` | $\eqslantless$ `\eqslantless` | $\minuscoloncolon$ `\minuscoloncolon` | $\succcurlyeq$ `\succcurlyeq` |
+| $\Bumpeq$ `\Bumpeq` | $\equiv$ `\equiv` | $\models$ `\models` | $\succeq$ `\succeq` |
+| $\circeq$ `\circeq` | $\fallingdotseq$ `\fallingdotseq` | $\multimap$ `\multimap` | $\succsim$ `\succsim` |
+| $\colonapprox$ `\colonapprox` | $\frown$ `\frown` | $\origof$ `\origof` | $\Supset$ `\Supset` |
+| $\Colonapprox$ `\Colonapprox` | $\ge$ `\ge` | $\owns$ `\owns` | $\supset$ `\supset` |
+| $\coloncolon$ `\coloncolon` | $\geq$ `\geq` | $\parallel$ `\parallel` | $\supseteq$ `\supseteq` or `\supe` |
+| $\coloncolonapprox$ `\coloncolonapprox` | $\geqq$ `\geqq` | $\perp$ `\perp` | $\supseteqq$ `\supseteqq` |
+| $\coloncolonequals$ `\coloncolonequals` | $\geqslant$ `\geqslant` | $\pitchfork$ `\pitchfork` | $\thickapprox$ `\thickapprox` |
+| $\coloncolonminus$ `\coloncolonminus` | $\gg$ `\gg` | $\prec$ `\prec` | $\thicksim$ `\thicksim` |
+| $\coloncolonsim$ `\coloncolonsim` | $\ggg$ `\ggg` | $\precapprox$ `\precapprox` | $\trianglelefteq$ `\trianglelefteq` |
+| $\coloneq$ `\coloneq` | $\gggtr$ `\gggtr` | $\preccurlyeq$ `\preccurlyeq` | $\triangleq$ `\triangleq` |
+| $\Coloneq$ `\Coloneq` | $\gt$ `\gt` | $\preceq$ `\preceq` | $\trianglerighteq$ `\trianglerighteq` |
+| $\coloneqq$ `\coloneqq` | $\gtrapprox$ `\gtrapprox` | $\precsim$ `\precsim` | $\varpropto$ `\varpropto` |
+| $\Coloneqq$ `\Coloneqq` | $\gtreqless$ `\gtreqless` | $\propto$ `\propto` | $\vartriangle$ `\vartriangle` |
+| $\colonequals$ `\colonequals` | $\gtreqqless$ `\gtreqqless` | $\ratio$ `\ratio` | $\vartriangleleft$ `\vartriangleleft` |
+| $\colonminus$ `\colonminus` | $\gtrless$ `\gtrless` | $\risingdotseq$ `\risingdotseq` | $\vartriangleright$ `\vartriangleright` |
+| $\colonsim$ `\colonsim` | $\gtrsim$ `\gtrsim` | $\shortmid$ `\shortmid` | $\vcentcolon$ `\vcentcolon` |
+| $\Colonsim$ `\Colonsim` | $\imageof$ `\imageof` | $\shortparallel$ `\shortparallel` | $\vdash$ `\vdash` |
+| $\cong$ `\cong` | $\in$ `\in` or `\isin` | $\sim$ `\sim` | $\vDash$ `\vDash` |
+| $\curlyeqprec$ `\curlyeqprec` | $\Join$ `\Join` | $\simcolon$ `\simcolon` | $\Vdash$ `\Vdash` |
+| $\curlyeqsucc$ `\curlyeqsucc` | $\le$ `\le` | $\simcoloncolon$ `\simcoloncolon` | $\Vvdash$ `\Vvdash` |
 
 Direct Input: $= < > : ∈ ∋ ∝ ∼ ∽ ≂ ≃ ≅ ≈ ≊ ≍ ≎ ≏ ≐ ≑ ≒ ≓ ≖ ≗ ≜ ≡ ≤ ≥ ≦ ≧ ≫ ≬ ≳ ≷ ≺ ≻ ≼ ≽ ≾ ≿ ⊂ ⊃ ⊆ ⊇ ⊏ ⊐ ⊑ ⊒ ⊢ ⊣ ⊩ ⊪ ⊸ ⋈ ⋍ ⋐ ⋑ ⋔ ⋙ ⋛ ⋞ ⋟ ⌢ ⌣ ⩾ ⪆ ⪌ ⪕ ⪖ ⪯ ⪰ ⪷ ⪸ ⫅ ⫆ ≲ ⩽ ⪅ ≶ ⋚ ⪋ ⟂ ⊨ ⊶ ⊷$ `≔ ≕ ⩴`
 

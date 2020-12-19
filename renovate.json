@@ -25,10 +25,10 @@
     },
     {
       "fileMatch": [
-        "^\\.github/workflows/ci\\.yml$",
+        "^\\.github/workflows/screenshotter\\.yml$",
         "^dockers/screenshotter/screenshotter\\.sh$"
       ],
-      "matchStrings": ["\"(?<browserTag>[a-z]*):(?<currentValue>[\\d.\\-]*)\""],
+      "matchStrings": ["[-\"](?<browserTag>[a-z]+):(?<currentValue>[\\d.\\-]+)[\"\\s]"],
       "datasourceTemplate": "docker",
       "depNameTemplate": "selenium/standalone-{{browserTag}}",
       "versioningTemplate": "regex:^3\\.141\\.59-(?<patch>\\d+)$"

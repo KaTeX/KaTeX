@@ -1,0 +1,24 @@
+<svg width="800" height="800" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+ <g>
+  <title>background</title>
+  <rect fill="#fff" id="canvas_background" height="802" width="802" y="-1" x="-1"/>
+  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
+  </g>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_1" y2="0" x2="400" y1="800" x1="0" stroke-width="14" stroke="#000" fill="none"/>
+  <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_2" y2="0" x2="400" y1="800" x1="800" stroke-width="14" stroke="#000" fill="none"/>
+  <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_3" y2="800" x2="400" y1="0" x1="0" stroke-width="14" stroke="#000" fill="none"/>
+  <line stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_4" y2="800" x2="400" y1="0" x1="800" stroke-width="14" stroke="#000" fill="none"/>
+  <path stroke="#000" id="svg_5" d="m406.03325,800.30389l194.35504,-392.13148l194.35504,392.13148l-388.71008,0z" stroke-width="0" fill="#bcf955"/>
+  <path id="svg_6" d="m1289.49403,111.25773l0.745,-1.30375l0.745,1.30375l-1.49,0z" stroke-width="0" stroke="#000" fill="#bcf955"/>
+  <path transform="rotate(180 600.3883056640625,195.14845275878903) " stroke="#000" id="svg_8" d="m406.03325,391.21419l194.35504,-392.13148l194.35504,392.13148l-388.71008,0z" stroke-width="0" fill="#bcf955"/>
+  <path stroke="#000" id="svg_9" d="m6.03444,801.60258l194.35504,-392.13148l194.35504,392.13148l-388.71008,0z" stroke-width="0" fill="#c690db"/>
+  <path transform="rotate(180 200.38946533203125,192.5511016845703) " stroke="#000" id="svg_10" d="m6.03444,388.61678l194.35504,-392.13148l194.35504,392.13148l-388.71008,0z" stroke-width="0" fill="#c690db"/>
+  <path stroke="#000" transform="rotate(90 96.68746948242183,399.01477050781256) " id="svg_11" d="m-290.32436,496.4171l387.01184,-194.80459l387.01184,194.80459l-774.02367,0z" stroke-opacity="null" stroke-width="0" fill="#e53612"/>
+  <path stroke="#000" transform="rotate(-90 703.1791381835938,399.01480102539057) " id="svg_12" d="m316.16736,496.4171l387.01184,-194.8046l387.01184,194.8046l-774.02368,0z" stroke-opacity="null" stroke-width="0" fill="#e53612"/>
+ </g>
+</svg>
