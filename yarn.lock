@@ -3687,6 +3687,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"copy-anything@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "copy-anything@npm:2.0.1"
+  dependencies:
+    is-what: ^3.7.1
+  checksum: 1573bc59ed5a0d8ebe21cace8fcc250d1c91d6efeee12f720663286491a9020b37884b47f6e1bc6e2fd3baefff00bc8a983503b496d492854ef715bc5ccf981e
+  languageName: node
+  linkType: hard
+
 "copy-concurrently@npm:^1.0.0":
   version: 1.0.5
   resolution: "copy-concurrently@npm:1.0.5"
@@ -6942,6 +6951,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"is-what@npm:^3.7.1":
+  version: 3.12.0
+  resolution: "is-what@npm:3.12.0"
+  checksum: d343342b1c2a013fe5afe05bf6e08c75c113d9d33dd61a3dd180551c6eed45811c3d9184be695e67ca36da0bc2921c396d4c7409bfce22418dfbc66a9e906771
+  languageName: node
+  linkType: hard
+
 "is-windows@npm:^1.0.1, is-windows@npm:^1.0.2":
   version: 1.0.2
   resolution: "is-windows@npm:1.0.2"
@@ -7902,9 +7918,10 @@ fsevents@^1.2.7:
   linkType: hard
 
 "less@npm:^3.9.0":
-  version: 3.13.0
-  resolution: "less@npm:3.13.0"
+  version: 3.13.1
+  resolution: "less@npm:3.13.1"
   dependencies:
+    copy-anything: ^2.0.1
     errno: ^0.1.1
     graceful-fs: ^4.1.2
     image-size: ~0.5.0
@@ -7930,7 +7947,7 @@ fsevents@^1.2.7:
       optional: true
   bin:
     lessc: ./bin/lessc
-  checksum: b294e1d467b48e1391f98249f97aaba598080720c539ee3eb4a13967d779696ff582c4631c68dd8c9ef3b0ad38b3cf63b1b60746c56a76fc24b24b9cd14f82ae
+  checksum: cc1a86d352c561eca57dcd5a96fd9f6f5a43759e8c0588dee9cb2414c6dc60b3cc8522d16ff363ffaba85a0d8cec4372b45e5c18fddd43730f8c78b2fc28d0d2
   languageName: node
   linkType: hard
 
