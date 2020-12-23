@@ -214,8 +214,10 @@ const makeInner = function(
     return {type: "elem", elem: span};
 };
 
-// Helper for makeStackedDelim
+// Helpers for makeStackedDelim
 const lap = {type: "kern", size: -0.008};
+const verts = ["|", "\\lvert", "\\rvert", "\\vert"];
+const doubleVerts = ["\\|", "\\lVert", "\\rVert", "\\Vert"];
 
 /**
  * Make a stacked delimiter out of a given delimiter, with the total height at
@@ -259,9 +261,9 @@ const makeStackedDelim = function(
         top = "\\Uparrow";
         repeat = "\u2016";
         bottom = "\\Downarrow";
-    } else if (utils.contains(["|", "\\lvert", "\\rvert", "\\vert"], delim)) {
+    } else if (utils.contains(verts, delim)) {
         repeat = "\u2223";
-    } else if (utils.contains(["\\|", "\\lVert", "\\rVert", "\\Vert"], delim)) {
+    } else if (utils.contains(doubleVerts, delim)) {
         repeat = "\u2225";
     } else if (delim === "[" || delim === "\\lbrack") {
         top = "\u23a1";
