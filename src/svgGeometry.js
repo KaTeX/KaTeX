@@ -156,6 +156,11 @@ export const innerPath = function(name: string, height: number ): string {
     switch (name) {
         case "\u239c":
             return `M291 0 H417 V${height} H291z M291 0 H417 V${height} H291z`;
+        case "\u2223":
+            return `M145 0 H188 V${height} H145z M145 0 H188 V${height} H145z`;
+        case "\u2225":
+            return `M145 0 H188 V${height} H145z M145 0 H188 V${height} H145z` +
+                `M367 0 H410 V${height} H367z M367 0 H410 V${height} H367z`;
         case "\u239f":
             return `M457 0 H583 V${height} H457z M457 0 H583 V${height} H457z`;
         case "\u23a2":

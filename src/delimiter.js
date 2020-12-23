@@ -155,6 +155,8 @@ const makeLargeDelim = function(delim,
 const innerWidth = {
     // advance width of glyphs in the KaTeX fonts.
     "\u2016": 0.778,
+    "\u2223": 0.333,
+    "\u2225": 0.556,
     "\u239c": 0.875,
     "\u239f": 0.875,
     "\u23a2": 0.667,
@@ -257,6 +259,10 @@ const makeStackedDelim = function(
         top = "\\Uparrow";
         repeat = "\u2016";
         bottom = "\\Downarrow";
+    } else if (utils.contains(["|", "\\lvert", "\\rvert", "\\vert"], delim)) {
+        repeat = "\u2223";
+    } else if (utils.contains(["\\|", "\\lVert", "\\rVert", "\\Vert"], delim)) {
+        repeat = "\u2225";
     } else if (delim === "[" || delim === "\\lbrack") {
         top = "\u23a1";
         repeat = "\u23a2";
