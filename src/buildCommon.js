@@ -728,8 +728,6 @@ const svgData: {
     oiintSize2: ["oiintSize2", 1.472, 0.659],
     oiiintSize1: ["oiiintSize1", 1.304, 0.499],
     oiiintSize2: ["oiiintSize2", 1.98, 0.659],
-    leftParenInner: ["leftParenInner", 0.875, 0.3],
-    rightParenInner: ["rightParenInner", 0.875, 0.3],
 };
 
 const staticSvg = function(value: string, options: Options): SvgSpan {
