@@ -30,6 +30,21 @@ var html = katex.renderToString("c = \\pm\\sqrt{a^2 + b^2}", {
 // '<span class="katex">...</span>'
 ```
 
+## Persistent Macros
+
+KaTeX documentation tells the author that `\gdef` will create a macro that persists between KaTeX fields. In order to fulfill that promise, you must make certain provisions. Say that a parser has dropped from the sky with an array of DOM elements that contain math. You could then write this code:
+
+```js
+const macros = {};
+for (let element of mathElements) {
+    katex.render(element.textContent, element, {
+        throwOnError: false,
+        macros
+    };
+```
+
+Notice that you create the `macros` object outside the loop. That object will contain macros that the user defines using `\gdef` and the macros will persist between calls to `katex.render`.
+
 ## Handling errors
 
 The examples above use the `throwOnError: false` option, which renders invalid
