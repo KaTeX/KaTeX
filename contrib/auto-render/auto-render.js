@@ -108,6 +108,12 @@ const renderMathInElement = function(elem, options) {
         // LaTeX uses $…$, but it ruins the display of normal `$` in text:
         // {left: "$", right: "$", display: false},
 
+        // Render AMS environments even if outside $$…$$ delimiters.
+        {left: "\\begin{equation}", right: "\\end{equation}", display: true},
+        {left: "\\begin{align}", right: "\\end{align}", display: true},
+        {left: "\\begin{alignat}", right: "\\end{alignat}", display: true},
+        {left: "\\begin{gather}", right: "\\end{gather}", display: true},
+
         //  \[…\] must come last in this array. Otherwise, renderMathInElement
         //  will search for \[ before it searches for $$ or  \(
         // That makes it susceptible to finding a \\[0.3em] row delimiter and
