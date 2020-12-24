@@ -338,18 +338,29 @@ const makeStackedDelim = function(
     // Get the metrics of the four sections
     const topMetrics = getMetrics(top, font, mode);
     const topHeightTotal = topMetrics.height + topMetrics.depth;
+    const repeatMetrics = getMetrics(repeat, font, mode);
+    const repeatHeightTotal = repeatMetrics.height + repeatMetrics.depth;
     const bottomMetrics = getMetrics(bottom, font, mode);
     const bottomHeightTotal = bottomMetrics.height + bottomMetrics.depth;
     let middleHeightTotal = 0;
+    let middleFactor = 1;
     if (middle !== null) {
         const middleMetrics = getMetrics(middle, font, mode);
         middleHeightTotal = middleMetrics.height + middleMetrics.depth;
+        middleFactor = 2; // repeat symmetrically above and below middle
     }
 
     // Calcuate the minimal height that the delimiter can have.
     // It is at least the size of the top, bottom, and optional middle combined.
     const minHeight = topHeightTotal + bottomHeightTotal + middleHeightTotal;
-    const height = Math.max(heightTotal, minHeight);
+
+    // Compute the number of copies of the repeat symbol we will need
+    const repeatCount = Math.max(0, Math.ceil(
+        (heightTotal - minHeight) / (middleFactor * repeatHeightTotal)));
+
+    // Compute the total height of the delimiter including all the symbols
+    const realHeightTotal =
+        minHeight + repeatCount * middleFactor * repeatHeightTotal;
 
     // The center of the delimiter is placed at the center of the axis. Note
     // that in this context, "center" means that the delimiter should be
@@ -360,7 +371,7 @@ const makeStackedDelim = function(
         axisHeight *= options.sizeMultiplier;
     }
     // Calculate the depth
-    const depth = height / 2 - axisHeight;
+    const depth = realHeightTotal / 2 - axisHeight;
 
 
     // Now, we start building the pieces that will go into the vlist
@@ -374,12 +385,13 @@ const makeStackedDelim = function(
     if (middle === null) {
         // The middle section will be an SVG. Make it an extra 0.016em tall.
         // We'll overlap by 0.008em at top and bottom.
-        const innerHeight = height - topHeightTotal - bottomHeightTotal + 0.016;
+        const innerHeight = realHeightTotal - topHeightTotal - bottomHeightTotal
+            + 0.016;
         stack.push(makeInner(repeat, innerHeight, options));
     } else {
         // When there is a middle bit, we need the middle part and two repeated
         // sections
-        const innerHeight = (height - topHeightTotal - bottomHeightTotal -
+        const innerHeight = (realHeightTotal - topHeightTotal - bottomHeightTotal -
             middleHeightTotal) / 2 + 0.016;
         stack.push(makeInner(repeat, innerHeight, options));
         // Now insert the middle of the brace.
