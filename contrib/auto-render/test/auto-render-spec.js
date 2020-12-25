@@ -191,16 +191,25 @@ describe("A delimiter splitter", function() {
             ]);
     });
 
+    it("ignores \\$", function() {
+        expect("$x = \\$5$").toSplitInto(
+            "$", "$",
+            [
+                {type: "math", data: "x = \\$5",
+                    rawData: "$x = \\$5$", display: false},
+            ]);
+    });
+
     it("remembers which delimiters are display-mode", function() {
         const startData = "hello ( world ) boo";
 
         expect(splitAtDelimiters(startData,
                                  [{left:"(", right:")", display:true}])).toEqual(
             [
-                {type: "text", data: "hello "},
+                                         {type: "text", data: "hello "},
                 {type: "math", data: " world ",
                     rawData: "( world )", display: true},
-                {type: "text", data: " boo"},
+                                         {type: "text", data: " boo"},
             ]);
     });
 
@@ -225,47 +234,33 @@ describe("A delimiter splitter", function() {
             ]);
     });
 
-
-    // the two tests below are no longer relevant
-    /*    it("works with more than one start datum", function() {
-          const startData = [
-          {type: "text", data: "hello ( world ) boo"},
-          {type: "math", data: "math", rawData: "(math)", display: true},
-          {type: "text", data: "hello ( world ) boo"},
-          ];
-
-          expect(splitAtDelimiters(startData, "(", ")", false)).toEqual(
-          [
-          {type: "text", data: "hello "},
-          {type: "math", data: " world ",
-          rawData: "( world )", display: false},
-          {type: "text", data: " boo"},
-          {type: "math", data: "math", rawData: "(math)", display: true},
-          {type: "text", data: "hello "},
-          {type: "math", data: " world ",
-          rawData: "( world )", display: false},
-          {type: "text", data: " boo"},
-          ]);
-          });
-
-          it("doesn't do splitting inside of math nodes", function() {
-          const startData = [
-          {type: "text", data: "hello ( world ) boo"},
-          {type: "math", data: "hello ( world ) boo",
-          rawData: "(hello ( world ) boo)", display: true},
-          ];
-
-          expect(splitAtDelimiters(startData, "(", ")", false)).toEqual(
-          [
-          {type: "text", data: "hello "},
-          {type: "math", data: " world ",
-          rawData: "( world )", display: false},
-          {type: "text", data: " boo"},
-          {type: "math", data: "hello ( world ) boo",
-          rawData: "(hello ( world ) boo)", display: true},
-          ]);
-          });
-    */
+    it("handles a mix of $ and $$", function() {
+        expect(splitAtDelimiters("$hello$world$$boo$$",
+            [
+                                     {left:"$$", right:"$$", display:true},
+                                     {left:"$", right:"$", display:false},
+            ])).toEqual(
+            [
+                {type: "math", data: "hello",
+                    rawData: "$hello$", display: false},
+                                         {type: "text", data: "world"},
+                {type: "math", data: "boo",
+                    rawData: "$$boo$$", display: true},
+            ]);
+        expect(splitAtDelimiters("$hello$$world$$$boo$$",
+            [
+                                     {left:"$$", right:"$$", display:true},
+                                     {left:"$", right:"$", display:false},
+            ])).toEqual(
+            [
+                {type: "math", data: "hello",
+                    rawData: "$hello$", display: false},
+                {type: "math", data: "world",
+                    rawData: "$world$", display: false},
+                {type: "math", data: "boo",
+                    rawData: "$$boo$$", display: true},
+            ]);
+    });
 });
 
 describe("Pre-process callback", function() {
