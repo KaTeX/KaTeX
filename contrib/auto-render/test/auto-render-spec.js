@@ -206,10 +206,10 @@ describe("A delimiter splitter", function() {
         expect(splitAtDelimiters(startData,
                                  [{left:"(", right:")", display:true}])).toEqual(
             [
-                                         {type: "text", data: "hello "},
+                {type: "text", data: "hello "},
                 {type: "math", data: " world ",
                     rawData: "( world )", display: true},
-                                         {type: "text", data: " boo"},
+                {type: "text", data: " boo"},
             ]);
     });
 
@@ -225,8 +225,8 @@ describe("A delimiter splitter", function() {
             ]);
         expect(splitAtDelimiters("\\(\\fbox{$hi$}\\)",
             [
-                                     {left:"\\(", right:"\\)", display:false},
-                                     {left:"$", right:"$", display:false},
+                {left:"\\(", right:"\\)", display:false},
+                {left:"$", right:"$", display:false},
             ])).toEqual(
             [
                 {type: "math", data: "\\fbox{$hi$}",
@@ -237,8 +237,8 @@ describe("A delimiter splitter", function() {
     it("handles a mix of $ and $$", function() {
         expect(splitAtDelimiters("$hello$world$$boo$$",
             [
-                                     {left:"$$", right:"$$", display:true},
-                                     {left:"$", right:"$", display:false},
+                {left:"$$", right:"$$", display:true},
+                {left:"$", right:"$", display:false},
             ])).toEqual(
             [
                 {type: "math", data: "hello",
@@ -249,8 +249,8 @@ describe("A delimiter splitter", function() {
             ]);
         expect(splitAtDelimiters("$hello$$world$$$boo$$",
             [
-                                     {left:"$$", right:"$$", display:true},
-                                     {left:"$", right:"$", display:false},
+                {left:"$$", right:"$$", display:true},
+                {left:"$", right:"$", display:false},
             ])).toEqual(
             [
                 {type: "math", data: "hello",
