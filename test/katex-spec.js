@@ -2809,6 +2809,25 @@ describe("AMS environments", function() {
     });
 });
 
+describe("The CD environment", function() {
+    it("should fail if not is display mode", function() {
+        expect(`\\begin{CD}A @X<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(
+            new Settings({displayMode: false})
+        );
+    });
+    const displaySettings = new Settings({displayMode: true});
+    it("should fail if the character after '@' is not in <>AV=|.", function() {
+        expect(`\\begin{CD}A @X<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(displaySettings);
+    });
+    it("should fail if an arrow does not have its final character.", function() {
+        expect(`\\begin{CD}A @<a< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(displaySettings);
+        expect(`\\begin{CD}A @<a<< B @>>b C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(displaySettings);
+    });
+    it("should fail without an \\\\end.", function() {
+        expect(`\\begin{CD}A @<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G`).not.toParse(displaySettings);
+    });
+});
+
 describe("operatorname support", function() {
     it("should not fail", function() {
         expect("\\operatorname{x*Π∑\\Pi\\sum\\frac a b}").toBuild();
