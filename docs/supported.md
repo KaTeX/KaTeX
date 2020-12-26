@@ -417,42 +417,39 @@ $\sqrt[3]{x}$ `\sqrt[3]{x}`
 $\stackrel{!}{=}$ `\stackrel{!}{=}`
 
 |||||
-|:-----------|:------------|:-------------|:------------------|
-| $=$ `=` | $\dashv$ `\dashv` | $\leq$ `\leq` | $\simeq$ `\simeq` |
-| $<$ `<` | $\dblcolon$ `\dblcolon` | $\leqq$ `\leqq` | $\smallfrown$ `\smallfrown` |
-| $>$ `>` | $\doteq$ `\doteq` | $\leqslant$ `\leqslant` | $\smallsmile$ `\smallsmile` |
-| $:$ `:` | $\Doteq$ `\Doteq` | $\lessapprox$ `\lessapprox` | $\smile$ `\smile` |
-| $\approx$ `\approx` | $\doteqdot$ `\doteqdot` | $\lesseqgtr$ `\lesseqgtr` | $\sqsubset$ `\sqsubset` |
-| $\approxcolon$ `\approxcolon` | $\equalscolon$ `\equalscolon` | $\lesseqqgtr$ `\lesseqqgtr` | $\sqsubseteq$ `\sqsubseteq` |
-| $\approxcoloncolon$ `\approxcoloncolon` | $\equalscoloncolon$ `\equalscoloncolon` | $\lessgtr$ `\lessgtr` | $\sqsupset$ `\sqsupset` |
-| $\approxeq$ `\approxeq` | $\eqcirc$ `\eqcirc` | $\lesssim$ `\lesssim` | $\sqsupseteq$ `\sqsupseteq` |
-| $\asymp$ `\asymp` | $\eqcolon$ `\eqcolon` | $\ll$ `\ll` | $\Subset$ `\Subset` |
-| $\backepsilon$ `\backepsilon` | $\Eqcolon$ `\Eqcolon` | $\lll$ `\lll` | $\subset$ `\subset` or `\sub` |
-| $\backsim$ `\backsim` | $\eqqcolon$ `\eqqcolon` | $\llless$ `\llless` | $\subseteq$ `\subseteq` or `\sube` |
-| $\backsimeq$ `\backsimeq` | $\Eqqcolon$ `\Eqqcolon` | $\lt$ `\lt` | $\subseteqq$ `\subseteqq` |
-| $\between$ `\between` | $\eqsim$ `\eqsim` | $\mid$ `\mid` | $\succ$ `\succ` |
-| $\bowtie$ `\bowtie` | $\eqslantgtr$ `\eqslantgtr` | $\minuscolon$ `\minuscolon` | $\succapprox$ `\succapprox` |
-| $\bumpeq$ `\bumpeq` | $\eqslantless$ `\eqslantless` | $\minuscoloncolon$ `\minuscoloncolon` | $\succcurlyeq$ `\succcurlyeq` |
-| $\Bumpeq$ `\Bumpeq` | $\equiv$ `\equiv` | $\models$ `\models` | $\succeq$ `\succeq` |
-| $\circeq$ `\circeq` | $\fallingdotseq$ `\fallingdotseq` | $\multimap$ `\multimap` | $\succsim$ `\succsim` |
-| $\colonapprox$ `\colonapprox` | $\frown$ `\frown` | $\origof$ `\origof` | $\Supset$ `\Supset` |
-| $\Colonapprox$ `\Colonapprox` | $\ge$ `\ge` | $\owns$ `\owns` | $\supset$ `\supset` |
-| $\coloncolon$ `\coloncolon` | $\geq$ `\geq` | $\parallel$ `\parallel` | $\supseteq$ `\supseteq` or `\supe` |
-| $\coloncolonapprox$ `\coloncolonapprox` | $\geqq$ `\geqq` | $\perp$ `\perp` | $\supseteqq$ `\supseteqq` |
-| $\coloncolonequals$ `\coloncolonequals` | $\geqslant$ `\geqslant` | $\pitchfork$ `\pitchfork` | $\thickapprox$ `\thickapprox` |
-| $\coloncolonminus$ `\coloncolonminus` | $\gg$ `\gg` | $\prec$ `\prec` | $\thicksim$ `\thicksim` |
-| $\coloncolonsim$ `\coloncolonsim` | $\ggg$ `\ggg` | $\precapprox$ `\precapprox` | $\trianglelefteq$ `\trianglelefteq` |
-| $\coloneq$ `\coloneq` | $\gggtr$ `\gggtr` | $\preccurlyeq$ `\preccurlyeq` | $\triangleq$ `\triangleq` |
-| $\Coloneq$ `\Coloneq` | $\gt$ `\gt` | $\preceq$ `\preceq` | $\trianglerighteq$ `\trianglerighteq` |
-| $\coloneqq$ `\coloneqq` | $\gtrapprox$ `\gtrapprox` | $\precsim$ `\precsim` | $\varpropto$ `\varpropto` |
-| $\Coloneqq$ `\Coloneqq` | $\gtreqless$ `\gtreqless` | $\propto$ `\propto` | $\vartriangle$ `\vartriangle` |
-| $\colonequals$ `\colonequals` | $\gtreqqless$ `\gtreqqless` | $\ratio$ `\ratio` | $\vartriangleleft$ `\vartriangleleft` |
-| $\colonminus$ `\colonminus` | $\gtrless$ `\gtrless` | $\risingdotseq$ `\risingdotseq` | $\vartriangleright$ `\vartriangleright` |
-| $\colonsim$ `\colonsim` | $\gtrsim$ `\gtrsim` | $\shortmid$ `\shortmid` | $\vcentcolon$ `\vcentcolon` |
-| $\Colonsim$ `\Colonsim` | $\imageof$ `\imageof` | $\shortparallel$ `\shortparallel` | $\vdash$ `\vdash` |
-| $\cong$ `\cong` | $\in$ `\in` or `\isin` | $\sim$ `\sim` | $\vDash$ `\vDash` |
-| $\curlyeqprec$ `\curlyeqprec` | $\Join$ `\Join` | $\simcolon$ `\simcolon` | $\Vdash$ `\Vdash` |
-| $\curlyeqsucc$ `\curlyeqsucc` | $\le$ `\le` | $\simcoloncolon$ `\simcoloncolon` | $\Vvdash$ `\Vvdash` |
+|:--------|:------------------------|:----------------------------|:------------------|
+| $=$ `=` | $\doteqdot$ `\doteqdot` | $\lessapprox$ `\lessapprox` | $\smile$ `\smile` |
+| $<$ `<` | $\eqcirc$ `\eqcirc` | $\lesseqgtr$ `\lesseqgtr` | $\sqsubset$ `\sqsubset` |
+| $>$ `>` | $\eqcolon$ `\eqcolon` or<br>    `\minuscolon` | $\lesseqqgtr$ `\lesseqqgtr` | $\sqsubseteq$ `\sqsubseteq` |
+| $:$ `:` | $\Eqcolon$ `\Eqcolon` or<br>    `\minuscoloncolon` | $\lessgtr$ `\lessgtr` | $\sqsupset$ `\sqsupset` |
+| $\approx$ `\approx` | $\eqqcolon$ `\eqqcolon` or<br>    `\equalscolon` | $\lesssim$ `\lesssim` | $\sqsupseteq$ `\sqsupseteq` |
+| $\approxcolon$ `\approxcolon` | $\Eqqcolon$ `\Eqqcolon` or<br>    `\equalscoloncolon` | $\ll$ `\ll` | $\Subset$ `\Subset` |
+| $\approxcoloncolon$ `\approxcoloncolon` | $\eqsim$ `\eqsim` | $\lll$ `\lll` | $\subset$ `\subset` or `\sub` |
+| $\approxeq$ `\approxeq` | $\eqslantgtr$ `\eqslantgtr` | $\llless$ `\llless` | $\subseteq$ `\subseteq` or `\sube` |
+| $\asymp$ `\asymp` | $\eqslantless$ `\eqslantless` | $\lt$ `\lt` | $\subseteqq$ `\subseteqq` |
+| $\backepsilon$ `\backepsilon` | $\equiv$ `\equiv` | $\mid$ `\mid` | $\succ$ `\succ` |
+| $\backsim$ `\backsim` | $\fallingdotseq$ `\fallingdotseq` | $\models$ `\models` | $\succapprox$ `\succapprox` |
+| $\backsimeq$ `\backsimeq` | $\frown$ `\frown` | $\multimap$ `\multimap` | $\succcurlyeq$ `\succcurlyeq` |
+| $\between$ `\between` | $\ge$ `\ge` | $\origof$ `\origof` | $\succeq$ `\succeq` |
+| $\bowtie$ `\bowtie` | $\geq$ `\geq` | $\owns$ `\owns` | $\succsim$ `\succsim` |
+| $\bumpeq$ `\bumpeq` | $\geqq$ `\geqq` | $\parallel$ `\parallel` | $\Supset$ `\Supset` |
+| $\Bumpeq$ `\Bumpeq` | $\geqslant$ `\geqslant` | $\perp$ `\perp` | $\supset$ `\supset` |
+| $\circeq$ `\circeq` | $\gg$ `\gg` | $\pitchfork$ `\pitchfork` | $\supseteq$ `\supseteq` or `\supe` |
+| $\colonapprox$ `\colonapprox` | $\ggg$ `\ggg` | $\prec$ `\prec` | $\supseteqq$ `\supseteqq` |
+| $\Colonapprox$ `\Colonapprox` or<br>    `\coloncolonapprox` | $\gggtr$ `\gggtr` | $\precapprox$ `\precapprox` | $\thickapprox$ `\thickapprox` |
+| $\coloneq$ `\coloneq` or<br>    `\colonminus` | $\gt$ `\gt` | $\preccurlyeq$ `\preccurlyeq` | $\thicksim$ `\thicksim` |
+| $\Coloneq$ `\Coloneq` or<br>    `\coloncolonminus` | $\gtrapprox$ `\gtrapprox` | $\preceq$ `\preceq` | $\trianglelefteq$ `\trianglelefteq` |
+| $\coloneqq$ `\coloneqq` or<br>   `\colonequals` | $\gtreqless$ `\gtreqless` | $\precsim$ `\precsim` | $\triangleq$ `\triangleq` |
+| $\Coloneqq$ `\Coloneqq` or<br>    `\coloncolonequals` | $\gtreqqless$ `\gtreqqless` | $\propto$ `\propto` | $\trianglerighteq$ `\trianglerighteq` |
+| $\colonsim$ `\colonsim` | $\gtrless$ `\gtrless` | $\risingdotseq$ `\risingdotseq` | $\varpropto$ `\varpropto` |
+| $\Colonsim$ `\Colonsim` or<br>    `\coloncolonsim` | $\gtrsim$ `\gtrsim` | $\shortmid$ `\shortmid` | $\vartriangle$ `\vartriangle` |
+| $\cong$ `\cong` | $\imageof$ `\imageof` | $\shortparallel$ `\shortparallel` | $\vartriangleleft$ `\vartriangleleft` |
+| $\curlyeqprec$ `\curlyeqprec` | $\in$ `\in` or `\isin` | $\sim$ `\sim` | $\vartriangleright$ `\vartriangleright` |
+| $\curlyeqsucc$ `\curlyeqsucc` | $\Join$ `\Join` | $\simcolon$ `\simcolon` | $\vcentcolon$ `\vcentcolon` or<br>   `\ratio` |
+| $\dashv$ `\dashv` | $\le$ `\le` | $\simcoloncolon$ `\simcoloncolon` | $\vdash$ `\vdash` |
+| $\dblcolon$ `\dblcolon` or<br>   `\coloncolon` | $\leq$ `\leq` | $\simeq$ `\simeq` | $\vDash$ `\vDash` |
+| $\doteq$ `\doteq` | $\leqq$ `\leqq` | $\smallfrown$ `\smallfrown` | $\Vdash$ `\Vdash` |
+| $\Doteq$ `\Doteq` | $\leqslant$ `\leqslant` | $\smallsmile$ `\smallsmile` | $\Vvdash$ `\Vvdash` |
 
 Direct Input: $= < > : ∈ ∋ ∝ ∼ ∽ ≂ ≃ ≅ ≈ ≊ ≍ ≎ ≏ ≐ ≑ ≒ ≓ ≖ ≗ ≜ ≡ ≤ ≥ ≦ ≧ ≫ ≬ ≳ ≷ ≺ ≻ ≼ ≽ ≾ ≿ ⊂ ⊃ ⊆ ⊇ ⊏ ⊐ ⊑ ⊒ ⊢ ⊣ ⊩ ⊪ ⊸ ⋈ ⋍ ⋐ ⋑ ⋔ ⋙ ⋛ ⋞ ⋟ ⌢ ⌣ ⩾ ⪆ ⪌ ⪕ ⪖ ⪯ ⪰ ⪷ ⪸ ⫅ ⫆ ≲ ⩽ ⪅ ≶ ⋚ ⪋ ⟂ ⊨ ⊶ ⊷$ `≔ ≕ ⩴`
 
