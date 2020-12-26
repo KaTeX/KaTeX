@@ -7293,13 +7293,13 @@ fsevents@^1.2.7:
   linkType: hard
 
 "react@npm:^16.8.4":
-  version: 16.13.1
-  resolution: "react@npm:16.13.1"
+  version: 16.14.0
+  resolution: "react@npm:16.14.0"
   dependencies:
     loose-envify: ^1.1.0
     object-assign: ^4.1.1
     prop-types: ^15.6.2
-  checksum: 13dcc9ba8a7521ecc3d7e69998dbc5703ae9515308d06a94a474ad34b42f1fc109372265e924a8c9b11d20fa1828407c290b8f61617c36734c4ca907ae7e5f45
+  checksum: 2769580b22952a52de3b5b2ea0f09cb904030b762d759739f49ab4da0b1f550e5c087ce3728c4be90f423d09481e0c075483c0c30b1ea9c549445c8b12020fd3
   languageName: node
   linkType: hard
 

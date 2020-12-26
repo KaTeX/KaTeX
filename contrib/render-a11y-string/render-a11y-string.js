@@ -327,6 +327,11 @@ const handleObject = (
             break;
         }
 
+        case "hbox": {
+            buildA11yStrings(tree.body, a11yStrings, atomType);
+            break;
+        }
+
         case "kern": {
             // No op: we don't attempt to present kerning information
             // to the screen reader.
@@ -544,6 +549,11 @@ const handleObject = (
             }
             throw new Error(
                 `KaTeX-a11y: enclose node with ${tree.label} not supported yet`);
+        }
+
+        case "vcenter": {
+            buildA11yStrings(tree.body, a11yStrings, atomType);
+            break;
         }
 
         case "vphantom": {

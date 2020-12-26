@@ -6,6 +6,5 @@ not dead
 > 0.1%
 not ie < 11
 not safari < 9
-
-# Currently maintained Node.js versions
-maintained node versions
+not chrome < 60
+not dead

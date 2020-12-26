@@ -164,7 +164,7 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
         const operator = new mathMLTree.MathNode("mo",
             [mml.makeText("\u2061", "text")]);
         if (group.parentIsSupSub) {
-            node = new mathMLTree.MathNode("mo", [node, operator]);
+            node = new mathMLTree.MathNode("mrow", [node, operator]);
         } else {
             node = mathMLTree.newDocumentFragment([node, operator]);
         }

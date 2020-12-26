@@ -130,7 +130,7 @@ const mathmlBuilder: MathMLBuilder<"operatorname"> = (group, options) => {
         [mml.makeText("\u2061", "text")]);
 
     if (group.parentIsSupSub) {
-        return new mathMLTree.MathNode("mo", [identifier, operator]);
+        return new mathMLTree.MathNode("mrow", [identifier, operator]);
     } else {
         return mathMLTree.newDocumentFragment([identifier, operator]);
     }

@@ -35,7 +35,7 @@ KaTeX will automatically include only necessary fonts for target environments
 specified by [Browserslist config](https://github.com/browserslist/browserslist#queries).
 
 To force a font type to be included or excluded, set `USE_(FONT NAME)` environment
-variable to `"true"` or `"false"`, respectively.`
+variable to `"true"` or `"false"`, respectively.
 
 ## Location of font files
 
