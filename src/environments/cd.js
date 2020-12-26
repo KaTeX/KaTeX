@@ -10,7 +10,7 @@ import ParseError from "../ParseError";
 import type Parser from "../Parser";
 import type {ParseNode, AnyParseNode} from "../parseNode";
 
-const cdArrow = {
+const cdArrowFunctionName = {
     ">": "\\\\cdrightarrow",
     "<": "\\\\cdleftarrow",
     "=": "\\\\cdlongequal",
@@ -21,6 +21,11 @@ const cdArrow = {
 };
 
 const newCell = () => {
+    // Create an empty cell, to be filled below with parse nodes.
+    // The parseTree from this module must be constructed like the
+    // one created by parseArray(), so an empty CD cell must
+    // be a ParseNode<"styling">. And CD is always displaystyle.
+    // So these values are fixed and flow can do implicit typing.
     return {type: "styling", body: [], mode: "math", style: "display"};
 };
 
@@ -29,23 +34,71 @@ const isLabelEnd = (node: AnyParseNode, endChar: string): boolean => {
         node.text === endChar);
 };
 
+function cdArrow(
+    arrowChar: string,
+    firstLabel: ParseNode<"ordgroup">,
+    secondLabel: ParseNode<"ordgroup">,
+    parser: Parser
+): AnyParseNode {
+    // Return a parse tree of an arrow and its labels.
+    // This acts in a way similar to a macro expansion.
+    const funcName = cdArrowFunctionName[arrowChar];
+    switch (funcName) {
+        case "\\\\cdrightarrow":
+        case "\\\\cdleftarrow":
+            return parser.callFunction(
+                funcName, [firstLabel], [secondLabel]
+            );
+        case "\\uparrow":
+        case "\\downarrow": {
+            const leftLabel = parser.callFunction(
+                "\\\\cdleft", [firstLabel], []
+            );
+            const bareArrow = {
+                type: "atom",
+                text: funcName,
+                mode: "math",
+                family: "rel",
+            };
+            const sizedArrow = parser.callFunction("\\Big", [bareArrow], []);
+            const rightLabel = parser.callFunction(
+                "\\\\cdright", [secondLabel], []
+            );
+            const arrowGroup = {
+                type: "ordgroup",
+                mode: "math",
+                body: [leftLabel, sizedArrow, rightLabel],
+            };
+            return parser.callFunction("\\\\cdparent", [arrowGroup], []);
+        }
+        case "\\\\cdlongequal":
+            return parser.callFunction("\\\\cdlongequal", [], []);
+        case "\\Vert": {
+            const arrow = {type: "textord", text: "\\Vert", mode: "math"};
+            return parser.callFunction("\\Big", [arrow], []);
+        }
+        default:
+            return {type: "textord", text: " ", mode: "math"};
+    }
+}
+
 export function parseCD(parser: Parser): ParseNode<"array"> {
     // Get the array's parse nodes with \\ temporarily mapped to \cr.
-    const parseNodes = [];
+    const parsedRows: AnyParseNode[][] = [];
     parser.gullet.beginGroup();
     parser.gullet.macros.set("\\cr", "\\\\\\relax");
     parser.gullet.beginGroup();
     while (true) {  // eslint-disable-line no-constant-condition
         // Get the parse nodes for the next row.
-        parseNodes.push(parser.parseExpression(false, "\\\\"));
+        parsedRows.push(parser.parseExpression(false, "\\\\"));
         parser.gullet.endGroup();
         parser.gullet.beginGroup();
         const next = parser.fetch().text;
         if (next === "&" || next === "\\\\") {
             parser.consume();
         } else if (next === "\\end") {
-            if (parseNodes[parseNodes.length - 1].length === 0) {
-                parseNodes.pop(); // final row ended in \\
+            if (parsedRows[parsedRows.length - 1].length === 0) {
+                parsedRows.pop(); // final row ended in \\
             }
             break;
         } else {
@@ -58,99 +111,99 @@ export function parseCD(parser: Parser): ParseNode<"array"> {
     const body = [row];
 
     // Loop thru the parse nodes. Collect them into cells and arrows.
-    for (let i = 0; i < parseNodes.length; i++) {
+    for (let i = 0; i < parsedRows.length; i++) {
         // Start a new row.
-        const nodes = parseNodes[i];
+        const rowNodes = parsedRows[i];
+        // Create the first cell.
         let cell = newCell();
 
-        for (let j = 0; j < nodes.length; j++) {
-            if (!(nodes[j].type === "textord" && nodes[j].text === "@")) {
-                cell.body.push(nodes[j]);
+        for (let j = 0; j < rowNodes.length; j++) {
+            if (!(rowNodes[j].type === "textord" && rowNodes[j].text === "@")) {
+                // If a parseNode is not an arrow, it goes into a cell.
+                cell.body.push(rowNodes[j]);
             } else {
                 // Parse node j is an "@", the start of an arrow.
+                // Before starting on the arrow, push the cell into `row`.
                 row.push(cell);
-                const arrowChar = assertSymbolNodeType(nodes[j + 1]).text;
+
+                // Now collect parseNodes into an arrow.
+                // The character after "@" defines the arrow type.
+                j += 1;
+                const arrowChar = assertSymbolNodeType(rowNodes[j]).text;
+
+                // Create two empty label nodes. We may or may not use them.
                 const firstLabel = {type: "ordgroup", mode: "math", body: []};
                 const secondLabel = {type: "ordgroup", mode: "math", body: []};
+
+                // Process the arrow.
                 if ("=|.".indexOf(arrowChar) > -1) {
-                    j += 1;
+                    // Three "arrows", ``@=`, `@|`, and `@.`, do not take labels.
+                    // Do nothing here.
                 } else if ("<>AV".indexOf(arrowChar) > -1) {
-                    // Get the arrow labels.
-                    for (let k = j + 2; k < nodes.length; k++) {
-                        if (isLabelEnd(nodes[k], arrowChar)) {
+                    // Four arrows, `@>>>`, `@<<<`, `@AAA`, and `@VVV`, each take
+                    // two optional labels. E.g. the right-point arrow syntax is
+                    // really:  @>{optional label}>{optional label}>
+                    // Collect parseNodes for the first label.
+                    let inLabel = true;
+                    for (let k = j + 1; k < rowNodes.length; k++) {
+                        if (isLabelEnd(rowNodes[k], arrowChar)) {
+                            inLabel = false;
                             j = k;
                             break;
                         }
-                        firstLabel.body.push(nodes[k]);
+                        firstLabel.body.push(rowNodes[k]);
                     }
-                    for (let k = j + 1; k < nodes.length; k++) {
-                        if (isLabelEnd(nodes[k], arrowChar)) {
+                    if (inLabel) {
+                        // isLabelEnd never returned a true.
+                        throw new ParseError("Missing a " + arrowChar +
+                            " character to complete a CD arrow.", rowNodes[j]);
+                    }
+                    // node j is now the arrowChar between the two labels.
+                    // Collect label parseNodes for the second label.
+                    inLabel = true;
+                    for (let k = j + 1; k < rowNodes.length; k++) {
+                        if (isLabelEnd(rowNodes[k], arrowChar)) {
+                            inLabel = false;
                             j = k;
                             break;
                         }
-                        secondLabel.body.push(nodes[k]);
+                        secondLabel.body.push(rowNodes[k]);
+                    }
+                    if (inLabel) {
+                        throw new ParseError("Missing a " + arrowChar +
+                            " character to complete a CD arrow.", rowNodes[j]);
                     }
                 } else {
-                    throw new ParseError(`Expected one of "<>AV=|." after @.`);
+                    throw new ParseError(`Expected one of "<>AV=|." after @`,
+                        rowNodes[j]);
                 }
 
                 // Now join the arrow to its labels.
-                // This acts in a way similar to a macro expansion.
-                const funcName = cdArrow[arrowChar];
-                let arrow;
-                switch (funcName) {
-                    case "\\\\cdrightarrow":
-                    case "\\\\cdleftarrow":
-                        arrow = parser.callFunction(
-                            funcName, [firstLabel], [secondLabel]
-                        );
-                        break;
-                    case "\\uparrow":
-                    case "\\downarrow": {
-                        const leftLabel = parser.callFunction(
-                            "\\\\cdleft", [firstLabel], []
-                        );
-                        arrow = {
-                            type: "atom",
-                            text: funcName,
-                            mode: "math",
-                            family: "rel",
-                        };
-                        arrow = parser.callFunction("\\Big", [arrow], []);
-                        const rightLabel = parser.callFunction(
-                            "\\\\cdright", [secondLabel], []
-                        );
-                        arrow = {
-                            type: "ordgroup",
-                            mode: "math",
-                            body: [leftLabel, arrow, rightLabel],
-                        };
-                        arrow = parser.callFunction("\\\\cdparent", [arrow], []);
-                        break;
-                    }
-                    case "\\\\cdlongequal":
-                        arrow = parser.callFunction("\\\\cdlongequal", [], []);
-                        break;
-                    case "\\Vert":
-                        arrow = {type: "textord", text: "\\Vert", mode: "math"};
-                        arrow = parser.callFunction("\\Big", [arrow], []);
-                        break;
-                    default:
-                        arrow = {type: "textord", text: " ", mode: "math"};
-                }
-                arrow = {
+                const arrow: AnyParseNode = cdArrow(arrowChar,
+                    firstLabel, secondLabel, parser);
+
+                // Wrap the arrow in  ParseNode<"styling">.
+                // This is done to match parseArray() behavior.
+                const wrappedArrow = {
                     type: "styling",
                     body: [arrow],
                     mode: "math",
-                    style: "display",
+                    style: "display", // CD is always displaystyle.
                 };
-                row.push(arrow);
+                row.push(wrappedArrow);
+                // In CD's syntax, cells are implicit. That is, everything that
+                // is not an arrow gets collected into a cell. So create an empty
+                // cell now. It will collect upcoming parseNodes.
                 cell = newCell();
             }
         }
         if (i % 2 === 0) {
+            // Even-numbered rows consist of: cell, arrow, cell, arrow, ... cell
+            // The last cell is not yet pushed into `row`, so:
             row.push(cell);
         } else {
+            // Odd-numbered rows consist of: vert arrow, empty cell, ... vert arrow
+            // Remove the empty cell that was placed at the beginning of `row`.
             row.shift();
         }
         row = [];
@@ -180,13 +233,15 @@ export function parseCD(parser: Parser): ParseNode<"array"> {
         cols,
         colSeparationType: "CD",
         hLinesBeforeRow: new Array(body.length + 1).fill([]),
-        isCD: true,
     };
 }
 
-// The function below are not available for general use.
+// The functions below are not available for general use.
 // They are here only for internal use by the {CD} environment in placing labels
 // next to vertical arrows.
+
+// We don't need any such functions for horizontal arrows because we can reuse
+// the functionality that already exists for extensible arrows.
 
 defineFunction({
     type: "cdlabel",

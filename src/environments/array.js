@@ -74,7 +74,6 @@ function parseArray(
         singleRow,
         maxNumCols,
         leqno,
-        isCD,
     }: {|
         hskipBeforeAndAfter?: boolean,
         addJot?: boolean,
@@ -85,7 +84,6 @@ function parseArray(
         singleRow?: boolean,
         maxNumCols?: number,
         leqno?: boolean,
-        isCD?: boolean,
     |},
     style: StyleStr,
 ): ParseNode<"array"> {
@@ -209,7 +207,6 @@ function parseArray(
         colSeparationType,
         addEqnNum,
         leqno,
-        isCD,
     };
 }
 
@@ -260,7 +257,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     }
 
     // Vertical spacing
-    const baselineskip = group.isCD
+    const baselineskip = group.colSeparationType === "CD"
       ? calculateSize({number: 3, unit: "ex"}, options)
       : 12 * pt; // see size10.clo
     // Default \jot from ltmath.dtx
