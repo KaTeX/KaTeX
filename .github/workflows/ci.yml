@@ -5,15 +5,11 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-  pull_request_target:
-    branches: [ master ]
-    types: [ labeled ] # 'test screenshots' label on PRs from fork
 
 jobs:
   test:
     runs-on: ubuntu-latest
     if: |
-      github.event_name != 'pull_request_target' &&
       !contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
       !contains(toJSON(github.event.commits.*.message), '[ci skip]')
 
@@ -57,129 +53,4 @@ jobs:
     - uses: codecov/codecov-action@v1
       with:
         directory: ./coverage/
-
-  screenshotter_dispatcher:
-    runs-on: ubuntu-latest
-    if: |
-      (github.event_name != 'pull_request_target' ||
-        (github.event.pull_request.head.repo.full_name != 'KaTeX/KaTeX' &&
-          contains(github.event.pull_request.labels.*.name, 'test screenshots'))) &&
-      !contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
-      !contains(toJSON(github.event.commits.*.message), '[ci skip]')
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.result }}
-
-    steps:
-    - id: set-matrix
-      uses: actions/github-script@v3
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const SELENIUM_BROWSERS = ["chrome:3.141.59-20201117", "firefox:3.141.59-20201117"];
-          const BROWSERSTACK_BROWSERS = [{
-              browserName: "safari",
-              browser_version: "13.1",
-              os: "OS X",
-              os_version: "Catalina",
-          }];
-
-          const include = [];
-
-          // running selenium doesn't require access to secrets
-          if (context.eventName !== "pull_request_target") {
-              include.push(...SELENIUM_BROWSERS.map(browserTag => ({
-                  browser: browserTag.split(':')[0],
-                  services: {selenium: {
-                      image: `selenium/standalone-${browserTag}`,
-                      ports: ["4444:4444"],
-                  }},
-              })));
-          }
-
-          // check access to Browserstack crendential secrets
-          if (context.eventName !== "pull_request" ||
-                  context.payload.pull_request.head.repo.full_name === "KaTeX/KaTeX") {
-              if (context.eventName === "pull_request_target") {
-                  github.issues.removeLabel({
-                      issue_number: context.issue.number,
-                      owner: context.repo.owner,
-                      repo: context.repo.repo,
-                      name: "test screenshots",
-                  });
-              }
-              include.push(...BROWSERSTACK_BROWSERS.map(capabilities => ({
-                  browser: capabilities.browserName,
-                  services: {},
-                  browserstack: capabilities,
-              })));
-          }
-
-          return {browser: include.map(b => b.browser), include};
-
-  screenshotter:
-    runs-on: ubuntu-latest
-    needs: screenshotter_dispatcher
-    strategy:
-      matrix: ${{ fromJson(needs.screenshotter_dispatcher.outputs.matrix) }}
-      fail-fast: false
-    services: ${{ matrix.services }}
-
-    steps:
-    - uses: actions/checkout@v2
-      if: github.event_name != 'pull_request_target'
-      with:
-        submodules: recursive
-        persist-credentials: false # minimize exposure and prevent accidental pushes
-    - uses: actions/checkout@v2
-      if: github.event_name == 'pull_request_target'
-      with:
-        # pull_request_target is run in the context of the base repository
-        # of the pull request, so the default ref is master branch and
-        # ref should be manually set to the head of the PR
-        ref: refs/pull/${{ github.event.pull_request.number }}/head
-        submodules: recursive
-
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: '12'
-
-    - name: Cache dependencies
-      uses: actions/cache@v2
-      with:
-        path: |
-          .yarn/cache
-          .pnp.js
-        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
-        restore-keys: |
-          yarn-deps-v1-
-
-    - name: Install dependencies
-      run: yarn --immutable
-      env:
-        YARN_ENABLE_SCRIPTS: 0 # disable postinstall scripts
-
-    - name: Verify screenshots and generate diffs and new screenshots
-      run: yarn node dockers/screenshotter/screenshotter.js -b ${{ matrix.browser }} --verify --diff --new -c ${{ job.services.selenium.id }}
-      if: matrix.services.selenium
-    - name: Verify screenshots and generate diffs and new screenshots
-      run: yarn node dockers/screenshotter/screenshotter.js -b ${{ matrix.browser }} --verify --diff --new --browserstack --selenium-capabilities '${{ toJson(matrix.browserstack) }}'
-      if: matrix.browserstack
-      env:
-        BROWSERSTACK_USER: ${{ secrets.BROWSERSTACK_USER }}
-        BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-
-    - name: Print Docker logs
-      run: docker logs ${{ job.services.selenium.id }}
-      if: always() && matrix.services.selenium
-
-    - uses: actions/upload-artifact@v2
-      if: failure()
-      with:
-        name: new-${{ matrix.browser }}
-        path: test/screenshotter/new
-    - uses: actions/upload-artifact@v2
-      if: failure()
-      with:
-        name: diff-${{ matrix.browser }}
-        path: test/screenshotter/diff
+      timeout-minutes: 3
