@@ -96,7 +96,7 @@ const renderMathInElement = function(elem, options) {
         {left: "\\(", right: "\\)", display: false},
         // LaTeX uses $…$, but it ruins the display of normal `$` in text:
         // {left: "$", right: "$", display: false},
-	      // $ must come after $$
+        // $ must come after $$
 
         // Render AMS environments even if outside $$…$$ delimiters.
         {left: "\\begin{equation}", right: "\\end{equation}", display: true},
