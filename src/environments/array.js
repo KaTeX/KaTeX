@@ -2,6 +2,7 @@
 import buildCommon from "../buildCommon";
 import Style from "../Style";
 import defineEnvironment from "../defineEnvironment";
+import {parseCD} from "./cd";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
@@ -27,7 +28,7 @@ export type AlignSpec = { type: "separator", separator: string } | {
 };
 
 // Type to indicate column separation in MathML
-export type ColSeparationType = "align" | "alignat" | "gather" | "small";
+export type ColSeparationType = "align" | "alignat" | "gather" | "small" | "CD";
 
 // Helper functions
 function getHLines(parser: Parser): boolean[] {
@@ -256,7 +257,9 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     }
 
     // Vertical spacing
-    const baselineskip = 12 * pt; // see size10.clo
+    const baselineskip = group.colSeparationType === "CD"
+      ? calculateSize({number: 3, unit: "ex"}, options)
+      : 12 * pt; // see size10.clo
     // Default \jot from ltmath.dtx
     // TODO(edemaine): allow overriding \jot via \setlength (#687)
     const jot = 3 * pt;
@@ -516,7 +519,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     const gap = (group.arraystretch === 0.5)
         ? 0.1  // {smallmatrix}, {subarray}
         : 0.16 + group.arraystretch - 1 + (group.addJot ? 0.09 : 0);
-    table.setAttribute("rowspacing", gap + "em");
+    table.setAttribute("rowspacing", gap.toFixed(4) + "em");
 
     // MathML table lines go only between cells.
     // To place a line on an edge we'll use <menclose>, if necessary.
@@ -580,6 +583,8 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
         table.setAttribute("columnspacing", "0em");
     } else if (group.colSeparationType === "small") {
         table.setAttribute("columnspacing", "0.2778em");
+    } else if (group.colSeparationType === "CD") {
+        table.setAttribute("columnspacing", "0.5em");
     } else {
         table.setAttribute("columnspacing", "1em");
     }
@@ -1011,6 +1016,20 @@ defineEnvironment({
             leqno: context.parser.settings.leqno,
         };
         return parseArray(context.parser, res, "display");
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+defineEnvironment({
+    type: "array",
+    names: ["CD"],
+    props: {
+        numArgs: 0,
+    },
+    handler(context) {
+        validateAmsEnvironmentContext(context);
+        return parseCD(context.parser);
     },
     htmlBuilder,
     mathmlBuilder,
