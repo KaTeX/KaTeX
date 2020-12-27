@@ -144,7 +144,7 @@ export function parseCD(parser: Parser): ParseNode<"array"> {
                     // two optional labels. E.g. the right-point arrow syntax is
                     // really:  @>{optional label}>{optional label}>
                     // Collect parseNodes into labels.
-                    for (let m = 0; m < 2; m++) {
+                    for (let labelNum = 0; labelNum < 2; labelNum++) {
                         let inLabel = true;
                         for (let k = j + 1; k < rowNodes.length; k++) {
                             if (isLabelEnd(rowNodes[k], arrowChar)) {
@@ -152,7 +152,7 @@ export function parseCD(parser: Parser): ParseNode<"array"> {
                                 j = k;
                                 break;
                             }
-                            labels[m].body.push(rowNodes[k]);
+                            labels[labelNum].body.push(rowNodes[k]);
                         }
                         if (inLabel) {
                             // isLabelEnd never returned a true.
