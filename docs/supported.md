@@ -334,7 +334,7 @@ Macros accept up to nine arguments: #1, #2, etc.
 
 <div id="gdef"></div>
 
-`\gdef`, `\xdef`, `\global\def`, `\global\edef`, `\global\let`, and `\global\futurelet` will persist between math expressions. (Exception: macro persistence may be disabled for security reasons.)
+Macros defined by `\gdef`, `\xdef`, `\global\def`, `\global\edef`, `\global\let`, and `\global\futurelet` will persist between math expressions. (Exception: macro persistence may be disabled. There are legitimate security reasons for that.)
 
 KaTeX has no `\par`, so all macros are long by default and `\long` will be ignored.
 

@@ -46,7 +46,7 @@ The last argument to `katex.render` and `katex.renderToString` can contain
 
 KaTeX’s [macro documentation](supported.html#gdef) tells the author that `\gdef` will create a macro that persists between KaTeX elements. In order to enable that persistence, you must create one shared `macros` object that you pass into every call to `katex.render` or `katex.renderToString`. (Do not create a fresh `macros` object for each call.)
 
-For example, suppose that you have an array `mathElements` of DOM elements that contain math. Then you could then write this code:
+For example, suppose that you have an array `mathElements` of DOM elements that contain math. Then you could write this code:
 
 ```js
 const macros = {};
