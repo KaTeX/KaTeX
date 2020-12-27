@@ -97,6 +97,15 @@ describe("A delimiter splitter", function() {
                     rawData: "[[ world ]]", display: false},
                 {type: "text", data: " boo"},
             ]);
+        expect("hello \\begin{equation} world \\end{equation} boo").toSplitInto(
+            "\\begin{equation}", "\\end{equation}",
+            [
+                {type: "text", data: "hello "},
+                {type: "math", data: "\\begin{equation} world \\end{equation}",
+                    rawData: "\\begin{equation} world \\end{equation}",
+                    display: false},
+                {type: "text", data: " boo"},
+            ]);
     });
 
     it("splits mutliple times", function() {
