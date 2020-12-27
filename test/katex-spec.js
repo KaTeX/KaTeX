@@ -2811,11 +2811,11 @@ describe("AMS environments", function() {
 
 describe("The CD environment", function() {
     it("should fail if not is display mode", function() {
-        expect(`\\begin{CD}A @X<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(
-            new Settings({displayMode: false})
+        expect(`\\begin{CD}A @<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(
+            new Settings({displayMode: false, strict: false})
         );
     });
-    const displaySettings = new Settings({displayMode: true});
+    const displaySettings = new Settings({displayMode: true, strict: false});
     it("should fail if the character after '@' is not in <>AV=|.", function() {
         expect(`\\begin{CD}A @X<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(displaySettings);
     });
@@ -2825,6 +2825,10 @@ describe("The CD environment", function() {
     });
     it("should fail without an \\\\end.", function() {
         expect(`\\begin{CD}A @<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G`).not.toParse(displaySettings);
+    });
+
+    it("should succeed without the flaws noted above.", function() {
+        expect(`\\begin{CD}A @<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).toBuild(displaySettings);
     });
 });
 

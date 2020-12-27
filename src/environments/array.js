@@ -519,7 +519,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     const gap = (group.arraystretch === 0.5)
         ? 0.1  // {smallmatrix}, {subarray}
         : 0.16 + group.arraystretch - 1 + (group.addJot ? 0.09 : 0);
-    table.setAttribute("rowspacing", gap + "em");
+    table.setAttribute("rowspacing", gap.toFixed(4) + "em");
 
     // MathML table lines go only between cells.
     // To place a line on an edge we'll use <menclose>, if necessary.

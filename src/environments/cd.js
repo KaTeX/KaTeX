@@ -29,6 +29,10 @@ const newCell = () => {
     return {type: "styling", body: [], mode: "math", style: "display"};
 };
 
+const isStartOfArrow = (node: AnyParseNode) => {
+    return (node.type === "textord" && node.text === "@");
+};
+
 const isLabelEnd = (node: AnyParseNode, endChar: string): boolean => {
     return ((node.type === "mathord" || node.type === "atom") &&
         node.text === endChar);
@@ -117,7 +121,7 @@ export function parseCD(parser: Parser): ParseNode<"array"> {
         let cell = newCell();
 
         for (let j = 0; j < rowNodes.length; j++) {
-            if (!(rowNodes[j].type === "textord" && rowNodes[j].text === "@")) {
+            if (!isStartOfArrow(rowNodes[j])) {
                 // If a parseNode is not an arrow, it goes into a cell.
                 cell.body.push(rowNodes[j]);
             } else {
@@ -152,6 +156,11 @@ export function parseCD(parser: Parser): ParseNode<"array"> {
                                 j = k;
                                 break;
                             }
+                            if (isStartOfArrow(rowNodes[k])) {
+                                throw new ParseError("Missing a " + arrowChar +
+                                " character to complete a CD arrow.", rowNodes[k]);
+                            }
+
                             labels[labelNum].body.push(rowNodes[k]);
                         }
                         if (inLabel) {
@@ -297,7 +306,7 @@ defineFunction({
         return parent;
     },
     mathmlBuilder(group, options) {
-        return  new mathMLTree.MathNode("mrow",
+        return new mathMLTree.MathNode("mrow",
         [mml.buildGroup(group.fragment, options)]);
     },
 });
