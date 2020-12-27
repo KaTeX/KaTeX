@@ -215,7 +215,7 @@ table td {
 |\cap|$\cap$||
 |{cases}|$\begin{cases}a&\text{if }b\\c&\text{if }d\end{cases}$|`\begin{cases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{cases}`|
 |\cases|<span style="color:firebrick;">Not supported</span>|see `{cases}`|
-|{CD}|<span style="color:firebrick;">Not supported</span>||
+|{CD}|$$\begin{CD}A @>a>> B \\@VbVV @AAcA\\C @= D\end{CD}$$|`\begin{CD}`<br>&nbsp;&nbsp;&nbsp;`A  @>a>>  B  \\`<br>`@VbVV    @AAcA \\`<br>&nbsp;&nbsp;&nbsp;`C  @=     D`<br>`\end{CD}`|
 |\cdot|$\cdot$||
 |\cdotp|$\cdotp$||
 |\cdots|$\cdots$||

@@ -204,6 +204,211 @@ exports[`A MathML builder normal spaces render normally 1`] = `
 </math>
 `;
 
+exports[`A MathML builder should build the CD environment properly 1`] = `
+<math xmlns="http://www.w3.org/1998/Math/MathML"
+      display="block"
+>
+  <semantics>
+    <mtable rowspacing="0.2500em"
+            columnalign="center center center"
+            columnspacing="0.5em"
+    >
+      <mtr>
+        <mtd>
+          <mstyle scriptlevel="0"
+                  displaystyle="true"
+          >
+            <mi>
+              A
+            </mi>
+          </mstyle>
+        </mtd>
+        <mtd>
+          <mstyle scriptlevel="0"
+                  displaystyle="true"
+          >
+            <munderover>
+              <mo stretchy="true"
+                  minsize="3.0em"
+              >
+                →
+              </mo>
+              <mpadded width="+0.6em"
+                       lspace="0.3em"
+              >
+                <mrow>
+                </mrow>
+              </mpadded>
+              <mpadded width="+0.6em"
+                       lspace="0.3em"
+              >
+                <mi>
+                  a
+                </mi>
+              </mpadded>
+            </munderover>
+          </mstyle>
+        </mtd>
+        <mtd>
+          <mstyle scriptlevel="0"
+                  displaystyle="true"
+          >
+            <mi>
+              B
+            </mi>
+          </mstyle>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mstyle scriptlevel="0"
+                  displaystyle="true"
+          >
+            <mrow>
+              <mrow>
+                <mstyle displaystyle="false"
+                        scriptlevel="1"
+                >
+                  <mpadded width="0"
+                           lspace="-1width"
+                           voffset="0.7em"
+                  >
+                    <mrow>
+                      <mrow>
+                      </mrow>
+                    </mrow>
+                  </mpadded>
+                </mstyle>
+                <mo fence="false"
+                    stretchy="true"
+                    minsize="1.8em"
+                    maxsize="1.8em"
+                >
+                  ↓
+                </mo>
+                <mstyle displaystyle="false"
+                        scriptlevel="1"
+                >
+                  <mpadded width="0"
+                           voffset="0.7em"
+                  >
+                    <mrow>
+                      <mi>
+                        b
+                      </mi>
+                    </mrow>
+                  </mpadded>
+                </mstyle>
+              </mrow>
+            </mrow>
+          </mstyle>
+        </mtd>
+        <mtd>
+          <mstyle scriptlevel="0"
+                  displaystyle="true"
+          >
+          </mstyle>
+        </mtd>
+        <mtd>
+          <mstyle scriptlevel="0"
+                  displaystyle="true"
+          >
+            <mrow>
+              <mrow>
+                <mstyle displaystyle="false"
+                        scriptlevel="1"
+                >
+                  <mpadded width="0"
+                           lspace="-1width"
+                           voffset="0.7em"
+                  >
+                    <mrow>
+                      <mrow>
+                      </mrow>
+                    </mrow>
+                  </mpadded>
+                </mstyle>
+                <mo fence="false"
+                    stretchy="true"
+                    minsize="1.8em"
+                    maxsize="1.8em"
+                >
+                  ↓
+                </mo>
+                <mstyle displaystyle="false"
+                        scriptlevel="1"
+                >
+                  <mpadded width="0"
+                           voffset="0.7em"
+                  >
+                    <mrow>
+                      <mi>
+                        c
+                      </mi>
+                    </mrow>
+                  </mpadded>
+                </mstyle>
+              </mrow>
+            </mrow>
+          </mstyle>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mstyle scriptlevel="0"
+                  displaystyle="true"
+          >
+            <mi>
+              C
+            </mi>
+          </mstyle>
+        </mtd>
+        <mtd>
+          <mstyle scriptlevel="0"
+                  displaystyle="true"
+          >
+            <munderover>
+              <mo stretchy="true"
+                  minsize="3.0em"
+              >
+                →
+              </mo>
+              <mpadded width="+0.6em"
+                       lspace="0.3em"
+              >
+                <mrow>
+                </mrow>
+              </mpadded>
+              <mpadded width="+0.6em"
+                       lspace="0.3em"
+              >
+                <mi>
+                  d
+                </mi>
+              </mpadded>
+            </munderover>
+          </mstyle>
+        </mtd>
+        <mtd>
+          <mstyle scriptlevel="0"
+                  displaystyle="true"
+          >
+            <mi>
+              D
+            </mi>
+          </mstyle>
+        </mtd>
+      </mtr>
+      <mtr>
+      </mtr>
+    </mtable>
+    <annotation encoding="application/x-tex">
+      \\begin{CD} A @&gt;a&gt;&gt; B\\\\ @VVbV @VVcV\\\\ C @&gt;d&gt;&gt; D \\end{CD}
+    </annotation>
+  </semantics>
+</math>
+`;
+
 exports[`A MathML builder should concatenate digits into single <mn> 1`] = `
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
