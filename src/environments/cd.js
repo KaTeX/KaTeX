@@ -36,8 +36,7 @@ const isLabelEnd = (node: AnyParseNode, endChar: string): boolean => {
 
 function cdArrow(
     arrowChar: string,
-    firstLabel: ParseNode<"ordgroup">,
-    secondLabel: ParseNode<"ordgroup">,
+    labels: ParseNode<"ordgroup">[],
     parser: Parser
 ): AnyParseNode {
     // Return a parse tree of an arrow and its labels.
@@ -47,12 +46,12 @@ function cdArrow(
         case "\\\\cdrightarrow":
         case "\\\\cdleftarrow":
             return parser.callFunction(
-                funcName, [firstLabel], [secondLabel]
+                funcName, [labels[0]], [labels[1]]
             );
         case "\\uparrow":
         case "\\downarrow": {
             const leftLabel = parser.callFunction(
-                "\\\\cdleft", [firstLabel], []
+                "\\\\cdleft", [labels[0]], []
             );
             const bareArrow = {
                 type: "atom",
@@ -62,7 +61,7 @@ function cdArrow(
             };
             const sizedArrow = parser.callFunction("\\Big", [bareArrow], []);
             const rightLabel = parser.callFunction(
-                "\\\\cdright", [secondLabel], []
+                "\\\\cdright", [labels[1]], []
             );
             const arrowGroup = {
                 type: "ordgroup",
@@ -132,8 +131,9 @@ export function parseCD(parser: Parser): ParseNode<"array"> {
                 const arrowChar = assertSymbolNodeType(rowNodes[j]).text;
 
                 // Create two empty label nodes. We may or may not use them.
-                const firstLabel = {type: "ordgroup", mode: "math", body: []};
-                const secondLabel = {type: "ordgroup", mode: "math", body: []};
+                const labels: ParseNode<"ordgroup">[] = new Array(2);
+                labels[0] = {type: "ordgroup", mode: "math", body: []};
+                labels[1] = {type: "ordgroup", mode: "math", body: []};
 
                 // Process the arrow.
                 if ("=|.".indexOf(arrowChar) > -1) {
@@ -143,35 +143,22 @@ export function parseCD(parser: Parser): ParseNode<"array"> {
                     // Four arrows, `@>>>`, `@<<<`, `@AAA`, and `@VVV`, each take
                     // two optional labels. E.g. the right-point arrow syntax is
                     // really:  @>{optional label}>{optional label}>
-                    // Collect parseNodes for the first label.
-                    let inLabel = true;
-                    for (let k = j + 1; k < rowNodes.length; k++) {
-                        if (isLabelEnd(rowNodes[k], arrowChar)) {
-                            inLabel = false;
-                            j = k;
-                            break;
+                    // Collect parseNodes into labels.
+                    for (let m = 0; m < 2; m++) {
+                        let inLabel = true;
+                        for (let k = j + 1; k < rowNodes.length; k++) {
+                            if (isLabelEnd(rowNodes[k], arrowChar)) {
+                                inLabel = false;
+                                j = k;
+                                break;
+                            }
+                            labels[m].body.push(rowNodes[k]);
                         }
-                        firstLabel.body.push(rowNodes[k]);
-                    }
-                    if (inLabel) {
-                        // isLabelEnd never returned a true.
-                        throw new ParseError("Missing a " + arrowChar +
-                            " character to complete a CD arrow.", rowNodes[j]);
-                    }
-                    // node j is now the arrowChar between the two labels.
-                    // Collect label parseNodes for the second label.
-                    inLabel = true;
-                    for (let k = j + 1; k < rowNodes.length; k++) {
-                        if (isLabelEnd(rowNodes[k], arrowChar)) {
-                            inLabel = false;
-                            j = k;
-                            break;
+                        if (inLabel) {
+                            // isLabelEnd never returned a true.
+                            throw new ParseError("Missing a " + arrowChar +
+                                " character to complete a CD arrow.", rowNodes[j]);
                         }
-                        secondLabel.body.push(rowNodes[k]);
-                    }
-                    if (inLabel) {
-                        throw new ParseError("Missing a " + arrowChar +
-                            " character to complete a CD arrow.", rowNodes[j]);
                     }
                 } else {
                     throw new ParseError(`Expected one of "<>AV=|." after @`,
@@ -179,8 +166,7 @@ export function parseCD(parser: Parser): ParseNode<"array"> {
                 }
 
                 // Now join the arrow to its labels.
-                const arrow: AnyParseNode = cdArrow(arrowChar,
-                    firstLabel, secondLabel, parser);
+                const arrow: AnyParseNode = cdArrow(arrowChar, labels, parser);
 
                 // Wrap the arrow in  ParseNode<"styling">.
                 // This is done to match parseArray() behavior.
