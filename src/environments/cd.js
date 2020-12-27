@@ -297,7 +297,7 @@ defineFunction({
         return parent;
     },
     mathmlBuilder(group, options) {
-        return  new mathMLTree.MathNode("mrow",
+        return new mathMLTree.MathNode("mrow",
         [mml.buildGroup(group.fragment, options)]);
     },
 });
