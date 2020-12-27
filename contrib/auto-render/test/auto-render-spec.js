@@ -101,7 +101,7 @@ describe("A delimiter splitter", function() {
             "\\begin{equation}", "\\end{equation}",
             [
                 {type: "text", data: "hello "},
-                {type: "math", data: " world ",
+                {type: "math", data: "\\begin{equation} world \\end{equation}",
                     rawData: "\\begin{equation} world \\end{equation}",
                     display: false},
                 {type: "text", data: " boo"},

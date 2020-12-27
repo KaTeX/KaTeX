@@ -31,6 +31,8 @@ const escapeRegex = function(string) {
     return string.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
 };
 
+const amsRegex = /^\\begin{/;
+
 const splitAtDelimiters = function(text, delimiters) {
     let index;
     const data = [];
@@ -57,10 +59,14 @@ const splitAtDelimiters = function(text, delimiters) {
         if (index === -1) {
             break;
         }
+        const rawData = text.slice(0, index + delimiters[i].right.length);
+        const math = amsRegex.test(rawData)
+            ? rawData
+            : text.slice(delimiters[i].left.length, index);
         data.push({
             type: "math",
-            data: text.slice(delimiters[i].left.length, index),
-            rawData: text.slice(0, index + delimiters[i].right.length),
+            data: math,
+            rawData,
             display: delimiters[i].display,
         });
         text = text.slice(index + delimiters[i].right.length);
