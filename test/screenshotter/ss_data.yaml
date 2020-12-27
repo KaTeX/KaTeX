@@ -86,6 +86,9 @@ Cases: |
         a &\text{if } b \\
         c &\text{if } d
     \end{rcases}⇒…
+CD:
+  tex: \begin{CD} A @<a<< B @>>b> C \\ @| @AcAA @VVdV \\ D @= E @>>> F \end{CD}
+  display: 1
 Colors:
     tex: \blue{a}\textcolor{#0f0}{b}\textcolor{red}{c}
     nolatex: different syntax and different scope
