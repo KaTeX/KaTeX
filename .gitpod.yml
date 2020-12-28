@@ -1,6 +1,6 @@
 tasks:
   - init: yarn install
-    command: yarn start --sockPort 443
+    command: yarn start
   - openMode: split-right
     command: echo "Run 'yarn test' to run tests."
 

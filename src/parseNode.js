@@ -41,6 +41,20 @@ type ParseNodeTypes = {
         hLinesBeforeRow: Array<boolean[]>,
         addEqnNum?: boolean,
         leqno?: boolean,
+        isCD?: boolean,
+    |},
+    "cdlabel": {|
+        type: "cdlabel",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        side: string,
+        label: AnyParseNode,
+    |},
+    "cdlabelparent": {|
+        type: "cdlabelparent",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        fragment: AnyParseNode,
     |},
     "color": {|
         type: "color",
@@ -256,6 +270,12 @@ type ParseNodeTypes = {
         size: StyleStr | "auto",
         barSize: Measurement | null,
     |},
+    "hbox": {|
+        type: "hbox",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        body: AnyParseNode[],
+    |},
     "horizBrace": {|
         type: "horizBrace",
         mode: Mode,
@@ -432,6 +452,12 @@ type ParseNodeTypes = {
     |},
     "underline": {|
         type: "underline",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        body: AnyParseNode,
+    |},
+    "vcenter": {|
+        type: "vcenter",
         mode: Mode,
         loc?: ?SourceLocation,
         body: AnyParseNode,

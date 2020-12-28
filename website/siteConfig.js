@@ -81,6 +81,11 @@ const users = [
         infoLink: 'https://fabiocolacio.github.io/Marker/',
     },
     {
+        caption: 'MathWills',
+        image: '/img/mathwills_logo.svg',
+        infoLink: 'https://www.mathwills.com/',
+    },
+    {
         caption: 'Messenger',
         image: 'https://en.facebookbrand.com/wp-content/uploads/2016/09/messenger_icon2.png',
         infoLink: 'https://www.messenger.com/',

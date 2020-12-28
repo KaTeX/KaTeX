@@ -349,7 +349,7 @@ const makeLineSpan = function(
     className: string,
     options: Options,
     thickness?: number,
-) {
+): DomSpan {
     const line = makeSpan([className], [], options);
     line.height = Math.max(
         thickness || options.fontMetrics().defaultRuleThickness,
@@ -369,7 +369,7 @@ const makeAnchor = function(
     classes: string[],
     children: HtmlDomNode[],
     options: Options,
-) {
+): Anchor {
     const anchor = new Anchor(href, classes, children, options);
 
     sizeElementFromChildren(anchor);

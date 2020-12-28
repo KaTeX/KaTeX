@@ -29,8 +29,8 @@
     }
 
     .katex-mathml {
-        // Accessibility hack to only show to screen readers
-        // Found at: http://a11yproject.com/posts/how-to-hide-content/
+        /* Accessibility hack to only show to screen readers
+         Found at: http://a11yproject.com/posts/how-to-hide-content/ */
         position: absolute;
         clip: rect(1px, 1px, 1px, 1px);
         padding: 0;
@@ -318,8 +318,8 @@
 
     .sqrt {
         > .root {
-            // These values are taken from the definition of `\r@@t`,
-            // `\mkern 5mu` and `\mkern -10mu`.
+            /* These values are taken from the definition of `\r@@t`,
+             `\mkern 5mu` and `\mkern -10mu`. */
             margin-left: 5*@mu;
             margin-right: -10*@mu;
         }
@@ -555,6 +555,10 @@
         padding: 0 0.5em;
     }
 
+    .cd-arrow-pad {
+        padding: 0 0.55556em 0 0.27778em;  // \;{#1}\;\;
+    }
+
     .x-arrow,
     .mover,
     .munder {
@@ -609,6 +613,25 @@
 
     .mtr-glue {
         width: 50%;
+    }
+
+    .cd-vert-arrow {
+        display: inline-block;
+        position: relative;
+    }
+
+    .cd-label-left {
+        display: inline-block;
+        position: absolute;
+        right: calc(50% + 0.3em);
+        text-align: left;
+    }
+
+    .cd-label-right {
+        display: inline-block;
+        position: absolute;
+        left: calc(50% + 0.3em);
+        text-align: right;
     }
 }
 
