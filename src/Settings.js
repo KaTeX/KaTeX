@@ -67,7 +67,6 @@ export type SettingsOptions = {
     maxSize?: number;
     maxExpand?: number;
     globalGroup?: boolean;
-    topEnv?: boolean;
 };
 
 /**
@@ -95,7 +94,6 @@ export default class Settings {
     maxSize: number;
     maxExpand: number;
     globalGroup: boolean;
-    topEnv: boolean;
 
     constructor(options: SettingsOptions) {
         // allow null options
@@ -117,7 +115,6 @@ export default class Settings {
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
         this.maxExpand = Math.max(0, utils.deflt(options.maxExpand, 1000));
         this.globalGroup = utils.deflt(options.globalGroup, false);
-        this.topEnv = utils.deflt(options.topEnv, false);
     }
 
     /**

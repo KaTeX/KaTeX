@@ -48,11 +48,14 @@ function getHLines(parser: Parser): boolean[] {
 
 const validateAmsEnvironmentContext = context => {
     const settings = context.parser.settings;
+    const input = context.parser.gullet.lexer.input.trim();
     if (!settings.displayMode) {
-        throw new ParseError(`{${context.envName}} cannot be used inline.`);
-    } else if (settings.strict && !settings.topEnv) {
-        settings.reportNonstrict("textEnv",
-            `{${context.envName}} called from math mode.`);
+        throw new ParseError(`{${context.envName}} can be used only in` +
+            ` display mode.`);
+    } else if (!/^\\begin{/.test(input)) {
+        // Some other math exists in this KaTeX element before this environment.
+        throw new ParseError(`An AMS environment may not be mixed with other math` +
+            ` in the same KaTeX element.`);
     }
 };
 
