@@ -30,6 +30,7 @@ import buildCommon from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
+import fontMetricsData from "../submodules/katex-fonts/fontMetricsData";
 
 import type Options from "./Options";
 import type {CharacterMetrics} from "./fontMetrics";
@@ -152,24 +153,11 @@ const makeLargeDelim = function(delim,
     return span;
 };
 
-const innerWidth = {
-    // advance width of glyphs in the KaTeX fonts.
-    "\u2016": 0.778,
-    "\u2223": 0.333,
-    "\u2225": 0.556,
-    "\u239c": 0.875,
-    "\u239f": 0.875,
-    "\u23a2": 0.667,
-    "\u23a5": 0.667,
-    "\u23aa": 0.889,
-    "\u23d0": 0.667,
-};
-
 /**
- * Make an corner span with the given offset and in the given font. This is used
- * in `makeStackedDelim` to make the stacking pieces for the delimiter.
+ * Make a span from a font glyph with the given offset and in the given font.
+ * This is used in makeStackedDelim to make the stacking pieces for the delimiter.
  */
-const makeCorner = function(
+const makeGlyphSpan = function(
     symbol: string,
     font: "Size1-Regular" | "Size4-Regular",
     mode: Mode,
@@ -197,7 +185,9 @@ const makeInner = function(
     options: Options
 ): VListElem {
     // Create a span with inline SVG for the inner part of a tall stacked delimiter.
-    const width = innerWidth[ch];
+    const width = fontMetricsData['Size4-Regular'][ch.charCodeAt(0)]
+        ? fontMetricsData['Size4-Regular'][ch.charCodeAt(0)][4].toFixed(3)
+        : fontMetricsData['Size1-Regular'][ch.charCodeAt(0)][4].toFixed(3);
     const path = new PathNode("inner", innerPath(ch,  Math.round(1000 * height)));
     const svgNode = new SvgNode([path], {
         "width": width + "em",
@@ -215,7 +205,8 @@ const makeInner = function(
 };
 
 // Helpers for makeStackedDelim
-const lap = {type: "kern", size: -0.008};
+const lapInEms = 0.008;
+const lap = {type: "kern", size: -1 * lapInEms};
 const verts = ["|", "\\lvert", "\\rvert", "\\vert"];
 const doubleVerts = ["\\|", "\\lVert", "\\rVert", "\\Vert"];
 
@@ -379,31 +370,31 @@ const makeStackedDelim = function(
     const stack = [];
 
     // Add the bottom symbol
-    stack.push(makeCorner(bottom, font, mode));
+    stack.push(makeGlyphSpan(bottom, font, mode));
     stack.push(lap); // overlap
 
     if (middle === null) {
         // The middle section will be an SVG. Make it an extra 0.016em tall.
         // We'll overlap by 0.008em at top and bottom.
         const innerHeight = realHeightTotal - topHeightTotal - bottomHeightTotal
-            + 0.016;
+            + 2 * lapInEms;
         stack.push(makeInner(repeat, innerHeight, options));
     } else {
         // When there is a middle bit, we need the middle part and two repeated
         // sections
         const innerHeight = (realHeightTotal - topHeightTotal - bottomHeightTotal -
-            middleHeightTotal) / 2 + 0.016;
+            middleHeightTotal) / 2 + 2 * lapInEms;
         stack.push(makeInner(repeat, innerHeight, options));
         // Now insert the middle of the brace.
         stack.push(lap);
-        stack.push(makeCorner(middle, font, mode));
+        stack.push(makeGlyphSpan(middle, font, mode));
         stack.push(lap);
         stack.push(makeInner(repeat, innerHeight, options));
     }
 
     // Add the top symbol
     stack.push(lap);
-    stack.push(makeCorner(top, font, mode));
+    stack.push(makeGlyphSpan(top, font, mode));
 
     // Finally, build the vlist
     const newOptions = options.havingBaseStyle(Style.TEXT);

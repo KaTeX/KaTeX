@@ -151,7 +151,7 @@ export const sqrtPath = function(
     return path;
 };
 
-export const innerPath = function(name: string, height: number ): string {
+export const innerPath = function(name: string, height: number): string {
     // The inner part of stretchy tall delimiters
     switch (name) {
         case "\u239c":
