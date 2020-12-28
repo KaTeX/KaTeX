@@ -413,22 +413,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
             "skew": 0,
             "style": {
             },
-            "text": "+",
-            "width": 0.89444
-          },
-          {
-            "classes": [
-              "mord",
-              "mathbf"
-            ],
-            "depth": 0.13333,
-            "height": 0.63333,
-            "italic": 0,
-            "maxFontSize": 1,
-            "skew": 0,
-            "style": {
-            },
-            "text": "+",
+            "text": "++",
             "width": 0.89444
           }
         ],
@@ -494,45 +479,15 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
               "mord",
               "boldsymbol"
             ],
-            "depth": 0,
-            "height": 0.44444,
-            "italic": 0,
-            "maxFontSize": 1,
-            "skew": 0,
-            "style": {
-            },
-            "text": "x",
-            "width": 0.65903
-          },
-          {
-            "classes": [
-              "mord",
-              "boldsymbol"
-            ],
             "depth": 0.19444,
-            "height": 0.44444,
-            "italic": 0.03704,
-            "maxFontSize": 1,
-            "skew": 0,
-            "style": {
-            },
-            "text": "y",
-            "width": 0.59028
-          },
-          {
-            "classes": [
-              "mord",
-              "boldsymbol"
-            ],
-            "depth": 0,
             "height": 0.44444,
             "italic": 0.04213,
             "maxFontSize": 1,
             "skew": 0,
             "style": {
             },
-            "text": "z",
-            "width": 0.55509
+            "text": "xyz",
+            "width": 0.65903
           }
         ],
         "classes": [
@@ -1158,10 +1113,7 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
                   <span class="sizing reset-size6 size3 mtight">
                     <span class="mord mtight">
                       <span class="mord mockEasternArabicFont-Regular mtight">
-                        ۱
-                      </span>
-                      <span class="mord mockEasternArabicFont-Regular mtight">
-                        ۱
+                        ۱۱
                       </span>
                     </span>
                   </span>
