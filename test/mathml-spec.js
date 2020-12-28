@@ -79,6 +79,13 @@ describe("A MathML builder", function() {
         expect(getMathML("\\colorbox{red}{b}")).toMatchSnapshot();
     });
 
+    it('should build the CD environment properly', () => {
+        const displaySettings = new Settings({displayMode: true, strict: false});
+        const mathml = getMathML("\\begin{CD} A @>a>> B\\\\ @VVbV @VVcV\\\\" +
+            " C @>d>> D \\end{CD}", displaySettings);
+        expect(mathml).toMatchSnapshot();
+    });
+
     it('should set href attribute for href appropriately', () => {
         expect(
             getMathML("\\href{http://example.org}{\\alpha}", new Settings({trust: true})),

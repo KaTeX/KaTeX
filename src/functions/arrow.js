@@ -30,6 +30,8 @@ defineFunction({
         // The next 3 functions are here to support the mhchem extension.
         // Direct use of these functions is discouraged and may break someday.
         "\\xrightleftarrows", "\\xrightequilibrium", "\\xleftequilibrium",
+        // The next 3 functions are here only to support the {CD} environment.
+        "\\\\cdrightarrow", "\\\\cdleftarrow", "\\\\cdlongequal",
     ],
     props: {
         numArgs: 1,
@@ -57,7 +59,8 @@ defineFunction({
         let newOptions = options.havingStyle(style.sup());
         const upperGroup = buildCommon.wrapFragment(
             html.buildGroup(group.body, newOptions, options), options);
-        upperGroup.classes.push("x-arrow-pad");
+        const arrowPrefix = group.label.slice(0, 2) === "\\x" ? "x" : "cd";
+        upperGroup.classes.push(arrowPrefix + "-arrow-pad");
 
         let lowerGroup;
         if (group.below) {
@@ -65,7 +68,7 @@ defineFunction({
             newOptions = options.havingStyle(style.sub());
             lowerGroup = buildCommon.wrapFragment(
                 html.buildGroup(group.below, newOptions, options), options);
-            lowerGroup.classes.push("x-arrow-pad");
+            lowerGroup.classes.push(arrowPrefix + "-arrow-pad");
         }
 
         const arrowBody = stretchy.svgSpan(group, options);
@@ -112,6 +115,9 @@ defineFunction({
     },
     mathmlBuilder(group, options) {
         const arrowNode = stretchy.mathMLnode(group.label);
+        arrowNode.setAttribute(
+            "minsize", group.label.charAt(0) === "x" ? "1.75em" : "3.0em"
+        );
         let node;
 
         if (group.body) {

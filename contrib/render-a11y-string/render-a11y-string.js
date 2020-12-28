@@ -647,6 +647,14 @@ const handleObject = (
             throw new Error("KaTeX-a11y: xArrow not implemented yet");
         }
 
+        case "cdlabel": {
+            throw new Error("KaTeX-a11y: cdlabel not implemented yet");
+        }
+
+        case "cdlabelparent": {
+            throw new Error("KaTeX-a11y: cdlabelparent not implemented yet");
+        }
+
         case "mclass": {
             // \neq and \ne are macros so we let "htmlmathml" render the mathmal
             // side of things and extract the text from that.
