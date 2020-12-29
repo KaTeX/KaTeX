@@ -4,8 +4,6 @@ const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 // $FlowIgnore
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-// $FlowIgnore
-const PnpWebpackPlugin = require('pnp-webpack-plugin');
 
 const {version} = require("./package.json");
 
@@ -106,6 +104,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
             libraryExport: 'default',
             // Enable output modules to be used in browser or Node.
             // See: https://github.com/webpack/webpack/issues/6522
+            // https://github.com/webpack/webpack/pull/11987
             globalObject: "(typeof self !== 'undefined' ? self : this)",
             path: path.resolve(__dirname, 'dist'),
             publicPath: dev ? '/' : '',
@@ -168,12 +167,8 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         performance: {
             hints: false,
         },
-        resolve: {
-            plugins: [PnpWebpackPlugin],
-        },
-        resolveLoader: {
-            // $FlowIgnore
-            plugins: [PnpWebpackPlugin.moduleLoader(module)],
+        stats: {
+            colors: true,
         },
     };
 }
