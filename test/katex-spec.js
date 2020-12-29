@@ -2778,6 +2778,7 @@ describe("AMS environments", function() {
         expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.not.toParse(nonstrictSettings);
         expect`\begin{equation}a=b+c\end{equation}`.not.toParse(nonstrictSettings);
         expect`\begin{split}a &=b+c\\&=e+f\end{split}`.not.toParse(nonstrictSettings);
+        expect`\begin{CD}A @>a>> B \\@VbVV @AAcA\\C @= D\end{CD}`.not.toParse(nonstrictSettings);
     });
 
     const nonStrictDisplay = new Settings({displayMode: true, strict: false});
@@ -2791,6 +2792,7 @@ describe("AMS environments", function() {
         expect`\begin{equation}a=b+c\end{equation}`.toBuild(nonStrictDisplay);
         expect`\begin{equation}\begin{split}a &=b+c\\&=e+f\end{split}\end{equation}`.toBuild(nonStrictDisplay);
         expect`\begin{split}a &=b+c\\&=e+f\end{split}`.toBuild(nonStrictDisplay);
+        expect`\begin{CD}A @<a<< B @>>b> C @>>> D\\@. @| @AcAA @VVdV \\@. E @= F @>>> G\end{CD}`.toBuild(nonStrictDisplay);
     });
 
     it("{equation} should fail if argument contains two rows.", () => {
@@ -2804,6 +2806,29 @@ describe("AMS environments", function() {
     });
     it("{array} should fail if body contains more columns than specification.", () => {
         expect`\begin{array}{2}a & b & c\\d & e  f\end{array}`.not.toBuild(nonStrictDisplay);
+    });
+});
+
+describe("The CD environment", function() {
+    it("should fail if not is display mode", function() {
+        expect(`\\begin{CD}A @<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(
+            new Settings({displayMode: false, strict: false})
+        );
+    });
+    const displaySettings = new Settings({displayMode: true, strict: false});
+    it("should fail if the character after '@' is not in <>AV=|.", function() {
+        expect(`\\begin{CD}A @X<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(displaySettings);
+    });
+    it("should fail if an arrow does not have its final character.", function() {
+        expect(`\\begin{CD}A @<a< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(displaySettings);
+        expect(`\\begin{CD}A @<a<< B @>>b C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(displaySettings);
+    });
+    it("should fail without an \\\\end.", function() {
+        expect(`\\begin{CD}A @<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G`).not.toParse(displaySettings);
+    });
+
+    it("should succeed without the flaws noted above.", function() {
+        expect(`\\begin{CD}A @<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).toBuild(displaySettings);
     });
 });
 

@@ -41,6 +41,20 @@ type ParseNodeTypes = {
         hLinesBeforeRow: Array<boolean[]>,
         addEqnNum?: boolean,
         leqno?: boolean,
+        isCD?: boolean,
+    |},
+    "cdlabel": {|
+        type: "cdlabel",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        side: string,
+        label: AnyParseNode,
+    |},
+    "cdlabelparent": {|
+        type: "cdlabelparent",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        fragment: AnyParseNode,
     |},
     "color": {|
         type: "color",

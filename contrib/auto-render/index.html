@@ -25,13 +25,15 @@
     <div id="test">
       This is some text $math \frac12$ other text $\unsupported$
       <span class="blue">
-        Other node \[ displaymath \frac{1}{2} \] blah $$ \int_2^3 $$
+        Other node \[ \text{displaymath} \frac{1}{2} \] blah $$ \int_2^3 $$
       </span>
       and some <!-- comment --> more text \(and math\) blah. And $math with a
       \$ sign$.
       <pre>
         Stuff in a $pre tag$
       </pre>
+      <p>An AMS environment without <code>$$…$$</code> delimiters.</p>
+      <p>\begin{equation} \begin{split} a &=b+c\\ &=e+f \end{split} \end{equation}</p>
     </div>
     <script>
       renderMathInElement(
@@ -39,9 +41,13 @@
           {
               delimiters: [
                   {left: "$$", right: "$$", display: true},
-                  {left: "\\[", right: "\\]", display: true},
                   {left: "$", right: "$", display: false},
-                  {left: "\\(", right: "\\)", display: false}
+                  {left: "\\begin{equation}", right: "\\end{equation}", display: true},
+                  {left: "\\begin{align}", right: "\\end{align}", display: true},
+                  {left: "\\begin{alignat}", right: "\\end{alignat}", display: true},
+                  {left: "\\begin{gather}", right: "\\end{gather}", display: true},
+                  {left: "\\(", right: "\\)", display: false},
+                  {left: "\\[", right: "\\]", display: true}
               ]
           }
       );
