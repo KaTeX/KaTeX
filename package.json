@@ -58,7 +58,7 @@
     "js-yaml": "^3.12.1",
     "json-stable-stringify": "^1.0.1",
     "jspngopt": "^0.2.0",
-    "less": "^3.9.0",
+    "less": "^4.0.0",
     "less-loader": "^7.0.0",
     "mini-css-extract-plugin": "^1.0.0",
     "mkdirp": "^1.0.4",

@@ -7137,7 +7137,7 @@ __metadata:
     js-yaml: ^3.12.1
     json-stable-stringify: ^1.0.1
     jspngopt: ^0.2.0
-    less: ^3.9.0
+    less: ^4.0.0
     less-loader: ^7.0.0
     mini-css-extract-plugin: ^1.0.0
     mkdirp: ^1.0.4
@@ -7247,9 +7247,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"less@npm:^3.9.0":
-  version: 3.13.1
-  resolution: "less@npm:3.13.1"
+"less@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "less@npm:4.0.0"
   dependencies:
     copy-anything: ^2.0.1
     errno: ^0.1.1
@@ -7258,6 +7258,7 @@ __metadata:
     make-dir: ^2.1.0
     mime: ^1.4.1
     native-request: ^1.0.5
+    parse-node-version: ^1.0.1
     source-map: ~0.6.0
     tslib: ^1.10.0
   dependenciesMeta:
@@ -7277,7 +7278,7 @@ __metadata:
       optional: true
   bin:
     lessc: ./bin/lessc
-  checksum: cc1a86d352c561eca57dcd5a96fd9f6f5a43759e8c0588dee9cb2414c6dc60b3cc8522d16ff363ffaba85a0d8cec4372b45e5c18fddd43730f8c78b2fc28d0d2
+  checksum: 36feda01fd2d849bb29984125aac175c6c268b846aba804c5e92d3353353f4518fa5889b6b559f72631d4e4dae3b15cd024dea9103b18b54a444ea0925be6552
   languageName: node
   linkType: hard
 
@@ -8590,6 +8591,13 @@ __metadata:
     json-parse-even-better-errors: ^2.3.0
     lines-and-columns: ^1.1.6
   checksum: 5e09955194d4ced3a7c8d2e41302834c1420e3709e06b16fa0d4bff575f054f7323cb4d4551fb6680d4c487184883ba20229de19edd5a52e1c5920148778d8cc
+  languageName: node
+  linkType: hard
+
+"parse-node-version@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "parse-node-version@npm:1.0.1"
+  checksum: 79ae38178715cd9ebec482d876b8bc773c98e017ccdb50d40937e9d65ece0ebf7eef507ed100e182e352b0bacfe2acba6b3b3b7ae978be20a79a91a4853bb27b
   languageName: node
   linkType: hard
 
