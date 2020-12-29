@@ -2782,41 +2782,41 @@ describe("AMS environments", function() {
         expect`\begin{CD}A @>a>> B \\@VbVV @AAcA\\C @= D\end{CD}`.not.toParse(nonstrictSettings);
     });
 
-    const nonStrictDisplay = new Settings({displayMode: true, strict: false});
-    it("should build if in non-strict display mode", () => {
-        expect`\begin{gather}a+b\\c+d\end{gather}`.toBuild(nonStrictDisplay);
-        expect`\begin{gather*}a+b\\c+d\end{gather*}`.toBuild(nonStrictDisplay);
-        expect`\begin{align}a&=b+c\\d+e&=f\end{align}`.toBuild(nonStrictDisplay);
-        expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.toBuild(nonStrictDisplay);
-        expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.toBuild(nonStrictDisplay);
-        expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.toBuild(nonStrictDisplay);
-        expect`\begin{equation}a=b+c\end{equation}`.toBuild(nonStrictDisplay);
-        expect`\begin{equation}\begin{split}a &=b+c\\&=e+f\end{split}\end{equation}`.toBuild(nonStrictDisplay);
-        expect`\begin{split}a &=b+c\\&=e+f\end{split}`.toBuild(nonStrictDisplay);
-        expect`\begin{CD}A @<a<< B @>>b> C @>>> D\\@. @| @AcAA @VVdV \\@. E @= F @>>> G\end{CD}`.toBuild(nonStrictDisplay);
+    const displayMode = new Settings({displayMode: true, strict: false});
+    it("should build if in display mode", () => {
+        expect`\begin{gather}a+b\\c+d\end{gather}`.toBuild(displayMode);
+        expect`\begin{gather*}a+b\\c+d\end{gather*}`.toBuild(displayMode);
+        expect`\begin{align}a&=b+c\\d+e&=f\end{align}`.toBuild(displayMode);
+        expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.toBuild(displayMode);
+        expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.toBuild(displayMode);
+        expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.toBuild(displayMode);
+        expect`\begin{equation}a=b+c\end{equation}`.toBuild(displayMode);
+        expect`\begin{equation}\begin{split}a &=b+c\\&=e+f\end{split}\end{equation}`.toBuild(displayMode);
+        expect`\begin{split}a &=b+c\\&=e+f\end{split}`.toBuild(displayMode);
+        expect`\begin{CD}A @<a<< B @>>b> C @>>> D\\@. @| @AcAA @VVdV \\@. E @= F @>>> G\end{CD}`.toBuild(displayMode);
     });
 
     it("{equation} should fail if argument contains two rows.", () => {
-        expect`\begin{equation}a=\cr b+c\end{equation}`.not.toParse(nonStrictDisplay);
+        expect`\begin{equation}a=\cr b+c\end{equation}`.not.toParse(displayMode);
     });
     it("{equation} should fail if argument contains two columns.", () => {
-        expect`\begin{equation}a &=b+c\end{equation}`.not.toBuild(nonStrictDisplay);
+        expect`\begin{equation}a &=b+c\end{equation}`.not.toBuild(displayMode);
     });
     it("{split} should fail if argument contains three columns.", () => {
-        expect`\begin{equation}\begin{split}a &=b &+c\\&=e &+f\end{split}\end{equation}`.not.toBuild(nonStrictDisplay);
+        expect`\begin{equation}\begin{split}a &=b &+c\\&=e &+f\end{split}\end{equation}`.not.toBuild(displayMode);
     });
     it("{array} should fail if body contains more columns than specification.", () => {
-        expect`\begin{array}{2}a & b & c\\d & e  f\end{array}`.not.toBuild(nonStrictDisplay);
+        expect`\begin{array}{2}a & b & c\\d & e  f\end{array}`.not.toBuild(displayMode);
     });
 });
 
 describe("The CD environment", function() {
     it("should fail if not is display mode", function() {
         expect(`\\begin{CD}A @<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(
-            new Settings({displayMode: false, strict: false})
+            new Settings({displayMode: false})
         );
     });
-    const displaySettings = new Settings({displayMode: true, strict: false});
+    const displaySettings = new Settings({displayMode: true});
     it("should fail if the character after '@' is not in <>AV=|.", function() {
         expect(`\\begin{CD}A @X<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(displaySettings);
     });
