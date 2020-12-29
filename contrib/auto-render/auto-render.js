@@ -3,22 +3,11 @@
 import katex from "katex";
 import splitAtDelimiters from "./splitAtDelimiters";
 
-const splitWithDelimiters = function(text, delimiters) {
-    let data = [{type: "text", data: text}];
-    for (let i = 0; i < delimiters.length; i++) {
-        const delimiter = delimiters[i];
-        data = splitAtDelimiters(
-            data, delimiter.left, delimiter.right,
-            delimiter.display || false);
-    }
-    return data;
-};
-
 /* Note: optionsCopy is mutated by this method. If it is ever exposed in the
  * API, we should copy it before mutating.
  */
 const renderMathInText = function(text, optionsCopy) {
-    const data = splitWithDelimiters(text, optionsCopy.delimiters);
+    const data = splitAtDelimiters(text, optionsCopy.delimiters);
     if (data.length === 1 && data[0].type === 'text') {
         // There is no formula in the text.
         // Let's return null which means there is no need to replace
@@ -48,7 +37,7 @@ const renderMathInText = function(text, optionsCopy) {
                 }
                 optionsCopy.errorCallback(
                     "KaTeX auto-render: Failed to parse `" + data[i].data +
-                    "` with ",
+                        "` with ",
                     e
                 );
                 fragment.appendChild(document.createTextNode(data[i].rawData));
@@ -76,8 +65,8 @@ const renderElem = function(elem, optionsCopy) {
             const className = ' ' + childNode.className + ' ';
             const shouldRender = optionsCopy.ignoredTags.indexOf(
                 childNode.nodeName.toLowerCase()) === -1 &&
-                    optionsCopy.ignoredClasses.every(
-                        x => className.indexOf(' ' + x + ' ') === -1);
+                  optionsCopy.ignoredClasses.every(
+                      x => className.indexOf(' ' + x + ' ') === -1);
 
             if (shouldRender) {
                 renderElem(childNode, optionsCopy);
@@ -107,11 +96,15 @@ const renderMathInElement = function(elem, options) {
         {left: "\\(", right: "\\)", display: false},
         // LaTeX uses $…$, but it ruins the display of normal `$` in text:
         // {left: "$", right: "$", display: false},
+        // $ must come after $$
 
-        //  \[…\] must come last in this array. Otherwise, renderMathInElement
-        //  will search for \[ before it searches for $$ or  \(
-        // That makes it susceptible to finding a \\[0.3em] row delimiter and
-        // treating it as if it were the start of a KaTeX math zone.
+        // Render AMS environments even if outside $$…$$ delimiters.
+        {left: "\\begin{equation}", right: "\\end{equation}", display: true},
+        {left: "\\begin{align}", right: "\\end{align}", display: true},
+        {left: "\\begin{alignat}", right: "\\end{alignat}", display: true},
+        {left: "\\begin{gather}", right: "\\end{gather}", display: true},
+        {left: "\\begin{CD}", right: "\\end{CD}", display: true},
+
         {left: "\\[", right: "\\]", display: true},
     ];
     optionsCopy.ignoredTags = optionsCopy.ignoredTags || [

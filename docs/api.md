@@ -41,3 +41,25 @@ hover text.  Without this option, invalid LaTeX will cause a
 
 The last argument to `katex.render` and `katex.renderToString` can contain
 [a variety of rendering options](options.md).
+
+## Persistent Macros
+
+KaTeX’s [macro documentation](supported.html#gdef) tells the author that `\gdef` will create a macro that persists between KaTeX elements. In order to enable that persistence, you must create one shared `macros` object that you pass into every call to `katex.render` or `katex.renderToString`. (Do not create a fresh `macros` object for each call.)
+
+For example, suppose that you have an array `mathElements` of DOM elements that contain math. Then you could write this code:
+
+```js
+const macros = {};
+for (let element of mathElements) {
+    katex.render(element.textContent, element, {
+        throwOnError: false,
+        macros
+    };
+}
+```
+
+Notice that you create the `macros` object outside the loop. If an author uses `\gdef`, KaTeX will insert that macro definition into the `macros` object and since `macros` continues to exist between calls to `katex.render`, `\gdef` macros will persist between `mathElements`.
+
+### Security of Persistent Macros
+
+Persistent macros can change the behavior of KaTeX (e.g. redefining standard commands), so for security, such a setup should be used only for multiple elements of common trust.  For example, you might enable persistent macros within a message posted by a single user (by creating a `macros` object for that message), but you probably should not enable persistent macros across multiple messages posted by multiple users.
