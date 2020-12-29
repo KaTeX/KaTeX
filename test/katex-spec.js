@@ -869,6 +869,7 @@ describe("A color parser", function() {
         const macros = {};
         expect(oldColorExpression).toParseLike(r`\textcolor{#fA6}{x}y`, {
             colorIsTextColor: true,
+            globalGroup: true,
             macros: macros,
         });
         expect(macros).toEqual({});
