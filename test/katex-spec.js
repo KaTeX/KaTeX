@@ -869,6 +869,7 @@ describe("A color parser", function() {
         const macros = {};
         expect(oldColorExpression).toParseLike(r`\textcolor{#fA6}{x}y`, {
             colorIsTextColor: true,
+            globalGroup: true,
             macros: macros,
         });
         expect(macros).toEqual({});
@@ -2162,6 +2163,7 @@ describe("An accent parser", function() {
         expect`\vec{x^2}`.toParse();
         expect`\vec{x}^2`.toParse();
         expect`\vec x`.toParse();
+        expect("\\underbar{X}").toParse();
     });
 
     it("should produce accents", function() {

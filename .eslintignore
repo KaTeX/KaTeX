@@ -5,4 +5,4 @@ website/build/*
 website/lib/remarkable-katex.js
 **/*.min.js
 contrib/mhchem/*
-coverage
+coverage/*

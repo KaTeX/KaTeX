@@ -1123,6 +1123,7 @@ use `\ce` instead|
 |\uArr|$\uArr$||
 |\uarr|$\uarr$||
 |\ulcorner|$\ulcorner$||
+|\underbar|$\underbar{X}$|`\underbar{X}`|
 |\underbrace|$\underbrace{x+⋯+x}_{n\text{ times}}$|`\underbrace{x+⋯+x}_{n\text{ times}}`|
 |\underbracket|<span style="color:firebrick;">Not supported</span>||
 |\undergroup|$\undergroup{AB}$|`\undergroup{AB}`|

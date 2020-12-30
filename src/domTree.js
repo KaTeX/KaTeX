@@ -533,7 +533,7 @@ export class PathNode implements VirtualNode {
 
     constructor(pathName: string, alternate?: string) {
         this.pathName = pathName;
-        this.alternate = alternate;  // Used only for \sqrt and \phase
+        this.alternate = alternate;  // Used only for \sqrt, \phase, & tall delims
     }
 
     toNode(): Node {
