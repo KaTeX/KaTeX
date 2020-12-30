@@ -63,8 +63,7 @@ defineFunction({
     htmlBuilder(group, options) {
         const newOptions = optionsWithFont(group, options);
         const inner = html.buildExpression(group.body, newOptions, true);
-        return buildCommon.makeSpan(
-            ["mord", "text"], buildCommon.tryCombineChars(inner), newOptions);
+        return buildCommon.makeSpan(["mord", "text"], inner, newOptions);
     },
     mathmlBuilder(group, options) {
         const newOptions = optionsWithFont(group, options);

@@ -93,8 +93,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             base = inner[0];
             base.classes[0] = "mop"; // replace old mclass
         } else {
-            base = buildCommon.makeSpan(
-                ["mop"], buildCommon.tryCombineChars(inner), options);
+            base = buildCommon.makeSpan(["mop"], inner, options);
         }
     } else {
         // Otherwise, this is a text operator. Build the text from the
