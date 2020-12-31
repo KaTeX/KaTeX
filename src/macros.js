@@ -377,6 +377,9 @@ defineMacro("\\clap", "\\mathclap{\\textrm{#1}}");
 // \mathstrut from the TeXbook, p 360
 defineMacro("\\mathstrut", "\\vphantom{(}");
 
+// \underbar from TeXbook p 353
+defineMacro("\\underbar", "\\underline{\\text{#1}}");
+
 // \not is defined by base/fontmath.ltx via
 // \DeclareMathSymbol{\not}{\mathrel}{symbols}{"36}
 // It's thus treated like a \mathrel, but defined by a symbol that has zero

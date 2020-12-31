@@ -2163,6 +2163,7 @@ describe("An accent parser", function() {
         expect`\vec{x^2}`.toParse();
         expect`\vec{x}^2`.toParse();
         expect`\vec x`.toParse();
+        expect("\\underbar{X}").toParse();
     });
 
     it("should produce accents", function() {
