@@ -2782,7 +2782,7 @@ describe("AMS environments", function() {
         expect`\begin{CD}A @>a>> B \\@VbVV @AAcA\\C @= D\end{CD}`.not.toParse(nonstrictSettings);
     });
 
-    const displayMode = new Settings({displayMode: true, strict: false});
+    const displayMode = new Settings({displayMode: true});
     it("should build if in display mode", () => {
         expect`\begin{gather}a+b\\c+d\end{gather}`.toBuild(displayMode);
         expect`\begin{gather*}a+b\\c+d\end{gather*}`.toBuild(displayMode);
