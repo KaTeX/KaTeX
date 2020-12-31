@@ -7234,8 +7234,8 @@ __metadata:
   linkType: hard
 
 "less-loader@npm:^7.0.0":
-  version: 7.2.0
-  resolution: "less-loader@npm:7.2.0"
+  version: 7.2.1
+  resolution: "less-loader@npm:7.2.1"
   dependencies:
     klona: ^2.0.4
     loader-utils: ^2.0.0
@@ -7243,7 +7243,7 @@ __metadata:
   peerDependencies:
     less: ^3.5.0 || ^4.0.0
     webpack: ^4.0.0 || ^5.0.0
-  checksum: 4b017f604da7c4baf63d7dfdfecf435ed836f0ffadc7d0bf2281e73164b4d1d4616b112a0af3259ae7b119a1c0b172fd5848c4ff436b58a6253a20f86453c4c9
+  checksum: 4167ebbfb37de567a3a7a1630fb5bcf1266fc688b43120e0a59b24038a0a9372e237a939f803140e2832b016c0a72e6ce700c41b570642010e597484a1779a15
   languageName: node
   linkType: hard
 
