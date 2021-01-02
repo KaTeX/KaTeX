@@ -9776,13 +9776,13 @@ __metadata:
   linkType: hard
 
 "query-string@npm:^6.2.0":
-  version: 6.13.7
-  resolution: "query-string@npm:6.13.7"
+  version: 6.13.8
+  resolution: "query-string@npm:6.13.8"
   dependencies:
     decode-uri-component: ^0.2.0
     split-on-first: ^1.0.0
     strict-uri-encode: ^2.0.0
-  checksum: b6d9ef79b77640456e764dcb427591e6079616141aa68f1dae444387864cbc44f945d766085a1ebef1e0fa1b0f8faa8925a96eaebf933119b97bacc12c5d22e5
+  checksum: 5d52ccd5988d60bb17990b287f2fa03d7d4eb3358f6716da7fc32c865196acf957cbdaa9272a36d60de80f06be67cbc7985c21432fecd75ab0166bbf06d87ff9
   languageName: node
   linkType: hard
 
