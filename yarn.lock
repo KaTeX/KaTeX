@@ -4353,8 +4353,8 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-react@npm:^7.20.3":
-  version: 7.21.5
-  resolution: "eslint-plugin-react@npm:7.21.5"
+  version: 7.22.0
+  resolution: "eslint-plugin-react@npm:7.22.0"
   dependencies:
     array-includes: ^3.1.1
     array.prototype.flatmap: ^1.2.3
@@ -4369,7 +4369,7 @@ __metadata:
     string.prototype.matchall: ^4.0.2
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7
-  checksum: a7123f6feb287ad7e15d36b1c9fda8f78a0f0d39b9ee2d6479a5f0ad0effb8f60f639ef7449cecabb711095060e487f0950b69478b22768547b909c0de4f3afd
+  checksum: 34927cb4880984e3a3e413ef57ebedbc4c4bf8e26f3cf561986e240c621d0873765fc5eef2be22171625deab2f77d0ec7013b422987ae5296fbdee0c682c6cc5
   languageName: node
   linkType: hard
 
@@ -4407,8 +4407,8 @@ __metadata:
   linkType: hard
 
 "eslint@npm:^7.4.0":
-  version: 7.16.0
-  resolution: "eslint@npm:7.16.0"
+  version: 7.17.0
+  resolution: "eslint@npm:7.17.0"
   dependencies:
     "@babel/code-frame": ^7.0.0
     "@eslint/eslintrc": ^0.2.2
@@ -4449,7 +4449,7 @@ __metadata:
     v8-compile-cache: ^2.0.3
   bin:
     eslint: bin/eslint.js
-  checksum: facdebbce95f7812b026cae955f22863e0850584c8b4ab6daefa555f48b38a8b3d62c1857c0eeebe52218c49345853f516209b300c6747ea89d6f88ef495a56d
+  checksum: 12b09a972eb0b81fabf9c1b38b3e9ada0cc051a22ee5022e31852e7babde6fe02a0135be3027451ee02c9ff4a6f738b55205d2953f98eb16a43350ad73070b27
   languageName: node
   linkType: hard
 
