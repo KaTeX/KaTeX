@@ -49,10 +49,8 @@ function getHLines(parser: Parser): boolean[] {
 const validateAmsEnvironmentContext = context => {
     const settings = context.parser.settings;
     if (!settings.displayMode) {
-        throw new ParseError(`{${context.envName}} cannot be used inline.`);
-    } else if (settings.strict && !settings.topEnv) {
-        settings.reportNonstrict("textEnv",
-            `{${context.envName}} called from math mode.`);
+        throw new ParseError(`{${context.envName}} can be used only in` +
+            ` display mode.`);
     }
 };
 
