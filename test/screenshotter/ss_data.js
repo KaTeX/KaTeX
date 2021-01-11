@@ -16,7 +16,7 @@ const queryKeys = [
     "tex", "pre", "post", "display", "noThrow", "errorColor", "styles",
 ];
 let dict = fs.readFileSync(require.resolve("./ss_data.yaml"));
-dict = jsyaml.safeLoad(dict);
+dict = jsyaml.load(dict);
 for (const key in dict) {
     if (dict.hasOwnProperty(key)) {
         let itm = dict[key];
