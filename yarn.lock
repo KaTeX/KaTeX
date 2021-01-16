@@ -8612,9 +8612,9 @@ __metadata:
   linkType: hard
 
 "pako@npm:^2.0.0":
-  version: 2.0.2
-  resolution: "pako@npm:2.0.2"
-  checksum: 7e51399fd9f9b94b4fe2103164efdd3ffc2ac42c9a74d78cdf17c201deb593f841f124a9e214dc3b625d52f25fed4b578b953f9d6a336fcd5b07f30b7af74d13
+  version: 2.0.3
+  resolution: "pako@npm:2.0.3"
+  checksum: a89beeaf07a8853f1b1b4868088489582f9f3ba4170e779c2af6a9f2f91735c67a4e63e52b9c7cdef6e0b530838b72437cf53ff624ef5315d6eb2ae0c459b1dd
   languageName: node
   linkType: hard
 
