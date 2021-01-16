@@ -2323,6 +2323,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"argparse@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "argparse@npm:2.0.1"
+  checksum: 160b7a25d2a7097fd5fdf25eb8a99e037340078f70e6c7cfdef305837ed14d54570b2b13261bcae26c8cd44ad6e9a7136a0110d815ac65a7891c69c7bf2f4afd
+  languageName: node
+  linkType: hard
+
 "arr-diff@npm:^4.0.0":
   version: 4.0.0
   resolution: "arr-diff@npm:4.0.0"
@@ -4930,12 +4937,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"find-versions@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "find-versions@npm:3.2.0"
+"find-versions@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "find-versions@npm:4.0.0"
   dependencies:
-    semver-regex: ^2.0.0
-  checksum: 2ddc16b4265184e2b7ab68bfd9d84835178fef4193abd957ebe328e0de98e8ca3b31e2a19201c1c8308e24786faa295aab46c0bc21fa89440e2a1bc8174987f0
+    semver-regex: ^3.1.2
+  checksum: 05174128349e522f0746cc343a509f2ce1c8c765e24968ff2ac6f82fda4e4c680f5f71c6a781ce28406d19addc32a205116ac14ee83cb2e336635dd803f56cbd
   languageName: node
   linkType: hard
 
@@ -5669,23 +5676,23 @@ __metadata:
   linkType: hard
 
 "husky@npm:^4.2.5":
-  version: 4.3.6
-  resolution: "husky@npm:4.3.6"
+  version: 4.3.7
+  resolution: "husky@npm:4.3.7"
   dependencies:
     chalk: ^4.0.0
     ci-info: ^2.0.0
     compare-versions: ^3.6.0
     cosmiconfig: ^7.0.0
-    find-versions: ^3.2.0
+    find-versions: ^4.0.0
     opencollective-postinstall: ^2.0.2
-    pkg-dir: ^4.2.0
+    pkg-dir: ^5.0.0
     please-upgrade-node: ^3.2.0
     slash: ^3.0.0
     which-pm-runs: ^1.0.0
   bin:
     husky-run: bin/run.js
     husky-upgrade: lib/upgrader/bin.js
-  checksum: 3c8708887822c93094c4af22608df00a3bdd74784172d13cd08c5d1ed3e7a602f6016bce9982de206f060661f1ea801362edf5658c18fc4a3866d605c47ecaf9
+  checksum: 799b1484e47f868760a612d8578f0bc2cf8848a55719ad00bfbd6bec3d094afaca024631949157390a05616a1c83242c3d917f33c049d9161f7af3ec313b6870
   languageName: node
   linkType: hard
 
@@ -6904,7 +6911,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^3.12.1, js-yaml@npm:^3.13.1":
+"js-yaml@npm:^3.13.1":
   version: 3.14.1
   resolution: "js-yaml@npm:3.14.1"
   dependencies:
@@ -6913,6 +6920,17 @@ __metadata:
   bin:
     js-yaml: bin/js-yaml.js
   checksum: 46b61f889796a20d16b0b64580a01b6a02b2e45c1a2744906346da54d07e14cde764e887ab6d1512d8b2541c63711bd4b75859c28eb99605baf59fa173fc38c2
+  languageName: node
+  linkType: hard
+
+"js-yaml@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "js-yaml@npm:4.0.0"
+  dependencies:
+    argparse: ^2.0.1
+  bin:
+    js-yaml: bin/js-yaml.js
+  checksum: ee9b16cdbba690ec70f46d61737b28b35e26e6d51606c466de7fa876d3517de0cfdffd2e1ef21263d5ca3b32659d2e4c65255f50d6e236f022305bce72242d46
   languageName: node
   linkType: hard
 
@@ -7175,7 +7193,7 @@ __metadata:
     jest-matcher-utils: ^26.1.0
     jest-message-util: ^26.1.0
     jest-serializer-html: ^7.0.0
-    js-yaml: ^3.12.1
+    js-yaml: ^4.0.0
     json-stable-stringify: ^1.0.1
     jspngopt: ^0.2.0
     less: ^3.9.0
@@ -10334,8 +10352,8 @@ __metadata:
   linkType: hard
 
 "rollup@npm:^2.21.0":
-  version: 2.35.1
-  resolution: "rollup@npm:2.35.1"
+  version: 2.36.1
+  resolution: "rollup@npm:2.36.1"
   dependencies:
     fsevents: ~2.1.2
   dependenciesMeta:
@@ -10343,7 +10361,7 @@ __metadata:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: 01e8b621baf3b35e1a28e3679cf9bdd4c22c2e999a895343e0b1e02dfe735f92a9fe439042e1b35c981663e9a8b75c1d707e6c27d786170febbb503b83dfed39
+  checksum: bb48730bf382d6439012a1504a8ca2f676657b472e9fbf72f726701c3091325229e1501c75088f4feebf6c9eb54cfc01353a11b50d3b0b9fa23764aaf5fca38c
   languageName: node
   linkType: hard
 
@@ -10483,10 +10501,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver-regex@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "semver-regex@npm:2.0.0"
-  checksum: 9b96cc8bd559c1d46968b334ccc88115a2d9d2f7a2125d6838471114ed0c52057e77aae760fbe4932aee06687584733b32aed6d2c9654b2db33e383bfb8f26ce
+"semver-regex@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "semver-regex@npm:3.1.2"
+  checksum: 6a83740f3fc24379629be068e677c71c57e0d9df4977eb56d863f26a7830b85f14d9f1af71ca3a84df9ac70fcd9ce8821466064f5652ffa0dc343b50ded86698
   languageName: node
   linkType: hard
 
