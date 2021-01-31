@@ -7867,15 +7867,15 @@ __metadata:
   linkType: hard
 
 "mini-css-extract-plugin@npm:^1.0.0":
-  version: 1.3.4
-  resolution: "mini-css-extract-plugin@npm:1.3.4"
+  version: 1.3.5
+  resolution: "mini-css-extract-plugin@npm:1.3.5"
   dependencies:
     loader-utils: ^2.0.0
     schema-utils: ^3.0.0
     webpack-sources: ^1.1.0
   peerDependencies:
     webpack: ^4.4.0 || ^5.0.0
-  checksum: e6061da8b3454bb313e96721f377b663b110bbfae23ebb2f155e25a78dfe1dbc23e3d4b07902c6b12f0969ec951b437d4c88819cf6bdd84bcdfa8fe9df0f965c
+  checksum: b090fc7c19de63a7e7c216565af90ac449e11dbc2dd1efee6276f38b394d69322949e62fcba2129fea8dc868b49b4a2110667897609c9b8598ffca85fa89580e
   languageName: node
   linkType: hard
 
