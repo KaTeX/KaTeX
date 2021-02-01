@@ -137,7 +137,7 @@ const users = [
     },
     {
         caption: 'TiddlyWiki',
-        image: '/img/tiddlywiki-logo.svg',
+        image: '/img/tiddlywiki_logo.svg',
         infoLink: 'https://tiddlywiki.com/',
     },
     {
