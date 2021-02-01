@@ -125,6 +125,11 @@ const users = [
         image: 'https://s3.amazonaws.com/uploads.uservoice.com/logo/design_setting/116173/original/slides-symbol-150x150.png',
         infoLink: 'https://slides.com/',
     },
+       {
+        caption: 'Tamasha',
+        image: 'https://github.com/kookma/TW-Tamasha/blob/main/docs/tamasha.png',
+        infoLink: 'https://kookma.github.io/TW-Tamasha/',
+    }, 
     {
         caption: 'Spinning Numbers',
         image: 'https://spinningnumbers.org/i/sn_logo2.svg',
