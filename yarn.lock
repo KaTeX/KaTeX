@@ -2032,36 +2032,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@webpack-cli/configtest@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@webpack-cli/configtest@npm:1.0.0"
+"@webpack-cli/configtest@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@webpack-cli/configtest@npm:1.0.1"
   peerDependencies:
     webpack: 4.x.x || 5.x.x
     webpack-cli: 4.x.x
-  checksum: 7aac463cd48f42c523e4d5af540cdb00cb5ff867c471160e0c96845db5b3ec80f4c572128bd6911f2954507ee4a5b8aaa983a427b3a053a09d20743ced59a549
+  checksum: 6db91531c43658c7830767cd698e72dd2d569d85b306a9eedafc1d8a8935b0a9ecf3881b7fff21eca18695c3440e911f2020fa7b9ea29af41944f23efa54bd16
   languageName: node
   linkType: hard
 
-"@webpack-cli/info@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@webpack-cli/info@npm:1.2.1"
+"@webpack-cli/info@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "@webpack-cli/info@npm:1.2.2"
   dependencies:
     envinfo: ^7.7.3
   peerDependencies:
     webpack-cli: 4.x.x
-  checksum: 5d7533ed5a2b3cf5429730661b1dba47f96a3ee9a4f87fc4bbf889fac28a603bc73d4ee143df4cf5cd3e4e91d91ad6bfdfb76a786d346265f7a193c3612582e6
+  checksum: ee23161d9ea56be871e67596f9d65b8342de858b59cb6658870bda474deaa328ea0d34320344eac704b88673a373456584e08748f0a7d60226bf76c2e667e706
   languageName: node
   linkType: hard
 
-"@webpack-cli/serve@npm:^1.2.2":
-  version: 1.2.2
-  resolution: "@webpack-cli/serve@npm:1.2.2"
+"@webpack-cli/serve@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@webpack-cli/serve@npm:1.3.0"
   peerDependencies:
     webpack-cli: 4.x.x
   peerDependenciesMeta:
     webpack-dev-server:
       optional: true
-  checksum: 86dab170ba2f516e56005bc9a58d7e8c453064b897ed11fe18db23e02e69642ff61a9682e53593471285f3122eef276a46ee54ffb3c1a9608f073e28dc4e39f7
+  checksum: ce97bd9db98663375d62edbcd5711e057291e890c9e89254e4333fb9e6192252afca743b8a0fa087be00c6222db1c2e1d4da67707c6a679e1d9e1d7a3d001381
   languageName: node
   linkType: hard
 
@@ -3287,6 +3287,13 @@ __metadata:
   version: 6.2.1
   resolution: "commander@npm:6.2.1"
   checksum: 47856aae6f194404122e359d8463e5e1a18f7cbab26722ce69f1379be8514bd49a160ef81a983d3d2091e3240022643354101d1276c797dcdd0b5bfc3c3f04a3
+  languageName: node
+  linkType: hard
+
+"commander@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "commander@npm:7.0.0"
+  checksum: 46e60cb1e1ccc3e8d4bac5672d4be08cb60d0a0c22d0c352ba9f9713a11996e79a67216ace4dc32a04ee621c86c9a327f0c35126e4aaf3ede3004f78a009cb19
   languageName: node
   linkType: hard
 
@@ -12147,15 +12154,15 @@ __metadata:
   linkType: hard
 
 "webpack-cli@npm:^4.2.0":
-  version: 4.4.0
-  resolution: "webpack-cli@npm:4.4.0"
+  version: 4.5.0
+  resolution: "webpack-cli@npm:4.5.0"
   dependencies:
     "@discoveryjs/json-ext": ^0.5.0
-    "@webpack-cli/configtest": ^1.0.0
-    "@webpack-cli/info": ^1.2.1
-    "@webpack-cli/serve": ^1.2.2
+    "@webpack-cli/configtest": ^1.0.1
+    "@webpack-cli/info": ^1.2.2
+    "@webpack-cli/serve": ^1.3.0
     colorette: ^1.2.1
-    commander: ^6.2.0
+    commander: ^7.0.0
     enquirer: ^2.3.6
     execa: ^5.0.0
     fastest-levenshtein: ^1.0.12
@@ -12179,7 +12186,7 @@ __metadata:
       optional: true
   bin:
     webpack-cli: bin/cli.js
-  checksum: 0d1328369a1babcb5e90896d9579c13c18696f283e92feb29131fa9d64986e4359df37772a2a3ec15159b89efe5ab2ad77d16e2b735a458d10bb729aeadcecbc
+  checksum: dde382455aa3af9f38b48bfa85d4e3df39766b9478e7457e69b415bd96c30747fe8a16d2405be8a59654e9bbdd3b03296a75d8bdab1b7f2a3fda2028f4683568
   languageName: node
   linkType: hard
 
