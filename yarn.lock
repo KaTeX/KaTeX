@@ -12258,8 +12258,8 @@ __metadata:
   linkType: hard
 
 "webpack@npm:^5.8.0":
-  version: 5.19.0
-  resolution: "webpack@npm:5.19.0"
+  version: 5.21.2
+  resolution: "webpack@npm:5.21.2"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.46
@@ -12279,7 +12279,6 @@ __metadata:
     loader-runner: ^4.2.0
     mime-types: ^2.1.27
     neo-async: ^2.6.2
-    pkg-dir: ^5.0.0
     schema-utils: ^3.0.0
     tapable: ^2.1.1
     terser-webpack-plugin: ^5.1.1
@@ -12290,7 +12289,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: db179047c437b1e2880a818f0e674f7988ad1f622f270e109a3531742d89254f1b042678d7cb7e4662519c834d842c81eb21cb1e53b020e57792a99bf66944a8
+  checksum: 0f8ec63a22a9c6a347e97e6a511f87d00f0f20abf7b62b8147de84325396f5192202e3c83f8fbad95fa7f9c35604e5a3cb5264f7ae58009ba5d9520dce04a76b
   languageName: node
   linkType: hard
 
