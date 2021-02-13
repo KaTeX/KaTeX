@@ -4866,6 +4866,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"filter-obj@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "filter-obj@npm:1.1.0"
+  checksum: 1049ac0c306198edf2c090375f7a80545a01e798b4996dbde13398a263cd923b5eb8a240dfadb03260621249a404a686e1a55980c6e59af70ee3880323998703
+  languageName: node
+  linkType: hard
+
 "finalhandler@npm:~1.1.2":
   version: 1.1.2
   resolution: "finalhandler@npm:1.1.2"
@@ -9828,13 +9835,14 @@ __metadata:
   linkType: hard
 
 "query-string@npm:^6.2.0":
-  version: 6.13.8
-  resolution: "query-string@npm:6.13.8"
+  version: 6.14.0
+  resolution: "query-string@npm:6.14.0"
   dependencies:
     decode-uri-component: ^0.2.0
+    filter-obj: ^1.1.0
     split-on-first: ^1.0.0
     strict-uri-encode: ^2.0.0
-  checksum: 5d52ccd5988d60bb17990b287f2fa03d7d4eb3358f6716da7fc32c865196acf957cbdaa9272a36d60de80f06be67cbc7985c21432fecd75ab0166bbf06d87ff9
+  checksum: 70af3a82fe9babc51b72ed9d68cd5485754ee84456b8d1ab80c8f8fdda9302630513b91d96ed89e701cbdf04619bbcde1695b061ea47b91b099c9f79e4080bba
   languageName: node
   linkType: hard
 
