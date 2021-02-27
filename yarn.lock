@@ -4275,10 +4275,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"es-module-lexer@npm:^0.3.26":
-  version: 0.3.26
-  resolution: "es-module-lexer@npm:0.3.26"
-  checksum: f6a6bfb5f38e7ecdb3fb5e530a9998dcf988356757460cb5f3b86240f6150bf5084aa651984a295d820c0532d097ab5296dad73f408f70e846ad566b733910fa
+"es-module-lexer@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "es-module-lexer@npm:0.4.0"
+  checksum: 41d29cc3eb7e648c535bba09e6511834cbb9d06ed4747972ad102e605e1134567a39a3b3f482b9148693a5a95caf7ffe828db9d8f1ede833b836a5d9593f1933
   languageName: node
   linkType: hard
 
@@ -12275,8 +12275,8 @@ __metadata:
   linkType: hard
 
 "webpack@npm:^5.8.0":
-  version: 5.23.0
-  resolution: "webpack@npm:5.23.0"
+  version: 5.24.2
+  resolution: "webpack@npm:5.24.2"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.46
@@ -12287,7 +12287,7 @@ __metadata:
     browserslist: ^4.14.5
     chrome-trace-event: ^1.0.2
     enhanced-resolve: ^5.7.0
-    es-module-lexer: ^0.3.26
+    es-module-lexer: ^0.4.0
     eslint-scope: ^5.1.1
     events: ^3.2.0
     glob-to-regexp: ^0.4.1
@@ -12306,7 +12306,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: eace31deaec4e59051308c91a00dee4fca02242c72f4b1929948616dff03715680ec65d61e67dfd18726eb1be49a863d98a0149a0f62c8a253dbfba3b8fac4a6
+  checksum: 18408ddd3e5d5849179d6f5ebb44bad28783315da22a19a7f5ad9901e0ef96157a1747db52745fbdb25081f1f73162313088e4895b42f725e2b1221bdcec8a6f
   languageName: node
   linkType: hard
 
