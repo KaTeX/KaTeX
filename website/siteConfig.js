@@ -136,6 +136,11 @@ const users = [
         infoLink: 'https://stackedit.io/',
     },
     {
+        caption: 'TiddlyWiki',
+        image: '/img/tiddlywiki_logo.svg',
+        infoLink: 'https://tiddlywiki.com/',
+    },
+    {
         caption: 'Tutti Quanti Shelf',
         image: 'https://raw.githubusercontent.com/tonton-pixel/tutti-quanti-shelf/master/icons/icon.png',
         infoLink: 'https://github.com/tonton-pixel/tutti-quanti-shelf/',
