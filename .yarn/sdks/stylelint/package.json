@@ -1,6 +1,6 @@
 {
   "name": "stylelint",
-  "version": "13.8.0-pnpify",
+  "version": "13.11.0-pnpify",
   "main": "lib/index.js",
   "type": "commonjs"
 }
