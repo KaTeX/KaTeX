@@ -1,6 +1,7 @@
 ---
-id: support_table
+id: version-0.13.0-support_table
 title: Support Table
+original_id: support_table
 ---
 This is a list of TeX functions, sorted alphabetically. This list includes functions that KaTeX supports and some that it doesn't support. There is a similar page, with functions [sorted by type](supported.md).
 

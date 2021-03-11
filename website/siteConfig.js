@@ -136,6 +136,16 @@ const users = [
         infoLink: 'https://stackedit.io/',
     },
     {
+        caption: 'Tamasha',
+        image: 'https://github.com/kookma/TW-Tamasha/raw/main/docs/tamasha.png',
+        infoLink: 'https://kookma.github.io/TW-Tamasha/',
+    },
+    {
+        caption: 'TiddlyWiki',
+        image: '/img/tiddlywiki_logo.svg',
+        infoLink: 'https://tiddlywiki.com/',
+    },
+    {
         caption: 'Tutti Quanti Shelf',
         image: 'https://raw.githubusercontent.com/tonton-pixel/tutti-quanti-shelf/master/icons/icon.png',
         infoLink: 'https://github.com/tonton-pixel/tutti-quanti-shelf/',
