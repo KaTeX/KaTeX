@@ -3309,10 +3309,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"colorette@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "colorette@npm:1.2.1"
-  checksum: 1cc21ad4b84777a424794f78b6bb6a44b614ae17dcea91762199339f8047598e6d981249eeef7ea588c99eaf062be8fcdcd4866c112998922ed854db6dde96f9
+"colorette@npm:^1.2.1, colorette@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "colorette@npm:1.2.2"
+  checksum: e240f0c94b8d9f34b52bd17b50fc13a3b74f9e662edeaa2b0c65e06ec6b1fc6367fb42b834ec5a1d819d68b74a3d850f3bd3e284f9e614d6c4ffa122f83c6ec5
   languageName: node
   linkType: hard
 
@@ -7281,7 +7281,7 @@ __metadata:
     mini-css-extract-plugin: ^1.0.0
     mkdirp: ^1.0.4
     pako: ^2.0.0
-    postcss: ^7.0.32
+    postcss: ^8.0.0
     postcss-loader: ^4.0.0
     postcss-preset-env: ^6.7.0
     prettier: ^2.0.5
@@ -8068,6 +8068,15 @@ __metadata:
   bin:
     multicast-dns: cli.js
   checksum: 3a67f9a155f32a543e06ebc058cea63d8ee3122f652289cfc91ec24bf7450433a21a017640852e65f1548d4bcca2b8bd10c3d201e56f66945dc1f2554a7e7939
+  languageName: node
+  linkType: hard
+
+"nanoid@npm:^3.1.20":
+  version: 3.1.20
+  resolution: "nanoid@npm:3.1.20"
+  bin:
+    nanoid: bin/nanoid.cjs
+  checksum: 4788d36edcfec7bb32ddf33ed8f1f46df2867f70e9b1993bb131f7677e04ead2b621e5d614d2736308be18db1d54208d8ab207b4586bd5b052f71fb9d4c0ebea
   languageName: node
   linkType: hard
 
@@ -9771,6 +9780,17 @@ __metadata:
     source-map: ^0.6.1
     supports-color: ^6.1.0
   checksum: 8a979ea9799dd48399337708a395ddb8cf0e328515201ed35c99f5ba5eaa7688eae65764c570bf49b5be0b106226e2f222abc210de068b3d3da9a9a3bbb70567
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^8.0.0":
+  version: 8.2.8
+  resolution: "postcss@npm:8.2.8"
+  dependencies:
+    colorette: ^1.2.2
+    nanoid: ^3.1.20
+    source-map: ^0.6.1
+  checksum: 6e17d28833cf918a5ab306bfc7ec66b236dc51ed0f3de959491d40f6a171f5bd5f26de12f74e6bfeebaad44b0ac92b9f477a669d5f1fc07a27d67d8147a4bf6f
   languageName: node
   linkType: hard
 
