@@ -13,7 +13,7 @@
 # writing | (or >) as the first symbol of the value and then continuing
 # on the next line. See http://www.yaml.org/ for syntax details.
 
-Accents: \vec{A}\vec{x}\vec x^2\vec{x}_2^2\vec{A}^2\vec{xA}^2
+Accents: \vec{A}\vec{x}\vec x^2\vec{x}_2^2\vec{A}^2\vec{xA}^2\; \underbar{X}
 AccentsText: |
     \begin{array}{lccccc}
     \text{\'\i} & \text{\.\i} & \text{\`\i} & \text{\"\i} & \text{\H\i} & \text{\r\i} \\
@@ -86,6 +86,9 @@ Cases: |
         a &\text{if } b \\
         c &\text{if } d
     \end{rcases}⇒…
+CD:
+  tex: \begin{CD} A @<a<< B @>>b> C \\ @| @AcAA @VVdV \\ D @= E @>>> F \end{CD}
+  display: 1
 Colors:
     tex: \blue{a}\textcolor{#0f0}{b}\textcolor{red}{c}
     nolatex: different syntax and different scope
@@ -243,6 +246,7 @@ MathOp: a\mathop+b\mathop:c\mathop{\delta}e\mathop{\textrm{and}}f\mathrel{\matho
 MathRm: \mathrm{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathSf: \mathsf{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 MathScr: \mathscr{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
+MathtoolsMatrix: \begin{matrix*}[l] a & -1 \\ -1 & d \end{matrix*} \; \begin{pmatrix*}[r] a & -1 \\ -1 & d \end{pmatrix*}
 MathTt: \mathtt{Ax2k\breve{a}\omega\Omega\imath+\KaTeX}
 Mod: |
     \begin{array}{cc}
@@ -321,7 +325,11 @@ Phase: 120\text{V}\phase{-78.2^\circ}\;\Large\phase{78.2^\circ}
 Pmb: \mu\pmb{\mu}\pmb{=}\mu\pmb{+}\mu
 PrimeSpacing: f'+f_2'+f^{f'}
 PrimeSuper: x'^2+x'''^2+x'^2_3+x_3'^2
-Raisebox: \frac{a}{a\raisebox{0.5em}{b}} \cdot \frac{a\raisebox{-0.5em}{b}}{a} \cdot \sqrt{a\raisebox{0.5em}{b}} \cdot \sqrt{a\raisebox{-0.5em}{b}} \cdot \sqrt{a\raisebox{0.5em}{b}\raisebox{-0.5em}{b}}
+Raisebox: 
+    \begin{matrix}
+        \frac{a}{a\raisebox{0.5em}{b}} \cdot \frac{a\raisebox{-0.5em}{b}}{a} \cdot \sqrt{a\raisebox{0.5em}{b}} \cdot \sqrt{a\raisebox{-0.5em}{b}} \cdot \sqrt{a\raisebox{0.5em}{b}\raisebox{-0.5em}{b}} \\[2em]
+        a + \left(\vcenter{\hbox{$\frac{a+b}{\dfrac{c}{d}}$}}\right)
+    \end {matrix}
 ReactionArrows: |
     \begin{matrix}
         A \xrightleftarrows{} B \xrightequilibrium{} C \xleftequilibrium{} D \\

@@ -93,8 +93,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             base = inner[0];
             base.classes[0] = "mop"; // replace old mclass
         } else {
-            base = buildCommon.makeSpan(
-                ["mop"], buildCommon.tryCombineChars(inner), options);
+            base = buildCommon.makeSpan(["mop"], inner, options);
         }
     } else {
         // Otherwise, this is a text operator. Build the text from the
@@ -164,7 +163,7 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
         const operator = new mathMLTree.MathNode("mo",
             [mml.makeText("\u2061", "text")]);
         if (group.parentIsSupSub) {
-            node = new mathMLTree.MathNode("mo", [node, operator]);
+            node = new mathMLTree.MathNode("mrow", [node, operator]);
         } else {
             node = mathMLTree.newDocumentFragment([node, operator]);
         }

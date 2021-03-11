@@ -83,7 +83,7 @@ class Options {
     /**
      * The base size index.
      */
-    static BASESIZE = 6;
+    static BASESIZE: number = 6;
 
     constructor(data: OptionsData) {
         this.style = data.style;
@@ -242,7 +242,7 @@ class Options {
     /**
      * Create a new options objects with the given fontFamily.
      */
-    withTextFontFamily(fontFamily: string) {
+    withTextFontFamily(fontFamily: string): Options {
         return this.extend({
             fontFamily,
             font: "",

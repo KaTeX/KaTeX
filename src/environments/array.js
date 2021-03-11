@@ -2,6 +2,7 @@
 import buildCommon from "../buildCommon";
 import Style from "../Style";
 import defineEnvironment from "../defineEnvironment";
+import {parseCD} from "./cd";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
@@ -27,7 +28,7 @@ export type AlignSpec = { type: "separator", separator: string } | {
 };
 
 // Type to indicate column separation in MathML
-export type ColSeparationType = "align" | "alignat" | "gather" | "small";
+export type ColSeparationType = "align" | "alignat" | "gather" | "small" | "CD";
 
 // Helper functions
 function getHLines(parser: Parser): boolean[] {
@@ -48,10 +49,8 @@ function getHLines(parser: Parser): boolean[] {
 const validateAmsEnvironmentContext = context => {
     const settings = context.parser.settings;
     if (!settings.displayMode) {
-        throw new ParseError(`{${context.envName}} cannot be used inline.`);
-    } else if (settings.strict && !settings.topEnv) {
-        settings.reportNonstrict("textEnv",
-            `{${context.envName}} called from math mode.`);
+        throw new ParseError(`{${context.envName}} can be used only in` +
+            ` display mode.`);
     }
 };
 
@@ -257,7 +256,9 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     }
 
     // Vertical spacing
-    const baselineskip = 12 * pt; // see size10.clo
+    const baselineskip = group.colSeparationType === "CD"
+      ? calculateSize({number: 3, unit: "ex"}, options)
+      : 12 * pt; // see size10.clo
     // Default \jot from ltmath.dtx
     // TODO(edemaine): allow overriding \jot via \setlength (#687)
     const jot = 3 * pt;
@@ -517,7 +518,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     const gap = (group.arraystretch === 0.5)
         ? 0.1  // {smallmatrix}, {subarray}
         : 0.16 + group.arraystretch - 1 + (group.addJot ? 0.09 : 0);
-    table.setAttribute("rowspacing", gap + "em");
+    table.setAttribute("rowspacing", gap.toFixed(4) + "em");
 
     // MathML table lines go only between cells.
     // To place a line on an edge we'll use <menclose>, if necessary.
@@ -581,6 +582,8 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
         table.setAttribute("columnspacing", "0em");
     } else if (group.colSeparationType === "small") {
         table.setAttribute("columnspacing", "0.2778em");
+    } else if (group.colSeparationType === "CD") {
+        table.setAttribute("columnspacing", "0.5em");
     } else {
         table.setAttribute("columnspacing", "1em");
     }
@@ -755,6 +758,8 @@ defineEnvironment({
 
 // The matrix environments of amsmath builds on the array environment
 // of LaTeX, which is discussed above.
+// The mathtools package adds starred versions of the same environments.
+// These have an optional argument to choose left|center|right justification.
 defineEnvironment({
     type: "array",
     names: [
@@ -764,6 +769,12 @@ defineEnvironment({
         "Bmatrix",
         "vmatrix",
         "Vmatrix",
+        "matrix*",
+        "pmatrix*",
+        "bmatrix*",
+        "Bmatrix*",
+        "vmatrix*",
+        "Vmatrix*",
     ],
     props: {
         numArgs: 0,
@@ -776,11 +787,38 @@ defineEnvironment({
             "Bmatrix": ["\\{", "\\}"],
             "vmatrix": ["|", "|"],
             "Vmatrix": ["\\Vert", "\\Vert"],
-        }[context.envName];
+        }[context.envName.replace("*", "")];
         // \hskip -\arraycolsep in amsmath
-        const payload = {hskipBeforeAndAfter: false};
+        let colAlign = "c";
+        const payload = {
+            hskipBeforeAndAfter: false,
+            cols: [{type: "align", align: colAlign}],
+        };
+        if (context.envName.charAt(context.envName.length - 1) === "*") {
+            // It's one of the mathtools starred functions.
+            // Parse the optional alignment argument.
+            const parser = context.parser;
+            parser.consumeSpaces();
+            if (parser.fetch().text === "[") {
+                parser.consume();
+                parser.consumeSpaces();
+                colAlign = parser.fetch().text;
+                if ("lcr".indexOf(colAlign) === -1) {
+                    throw new ParseError("Expected l or c or r", parser.nextToken);
+                }
+                parser.consume();
+                parser.consumeSpaces();
+                parser.expect("]");
+                parser.consume();
+                payload.cols = [{type: "align", align: colAlign}];
+            }
+        }
         const res: ParseNode<"array"> =
             parseArray(context.parser, payload, dCellStyle(context.envName));
+        // Populate cols with the correct number of column alignment specs.
+        res.cols = new Array(res.body[0].length).fill(
+            {type: "align", align: colAlign}
+        );
         return delimiters ? {
             type: "leftright",
             mode: context.mode,
@@ -977,6 +1015,20 @@ defineEnvironment({
             leqno: context.parser.settings.leqno,
         };
         return parseArray(context.parser, res, "display");
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+defineEnvironment({
+    type: "array",
+    names: ["CD"],
+    props: {
+        numArgs: 0,
+    },
+    handler(context) {
+        validateAmsEnvironmentContext(context);
+        return parseCD(context.parser);
     },
     htmlBuilder,
     mathmlBuilder,

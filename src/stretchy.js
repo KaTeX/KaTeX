@@ -54,11 +54,14 @@ const stretchyCodePoint: {[string]: string} = {
     xrightleftarrows: "\u21c4",
     xrightequilibrium: "\u21cc",  // Not a perfect match.
     xleftequilibrium: "\u21cb",   // None better available.
+    "\\\\cdrightarrow": "\u2192",
+    "\\\\cdleftarrow": "\u2190",
+    "\\\\cdlongequal": "=",
 };
 
 const mathMLnode = function(label: string): mathMLTree.MathNode {
     const node = new mathMLTree.MathNode(
-        "mo", [new mathMLTree.TextNode(stretchyCodePoint[label.substr(1)])]);
+        "mo", [new mathMLTree.TextNode(stretchyCodePoint[label])]);
     node.setAttribute("stretchy", "true");
     return node;
 };
@@ -118,7 +121,9 @@ const katexImagesData: {
     underrightarrow: [["rightarrow"], 0.888, 522, "xMaxYMin"],
     underleftarrow: [["leftarrow"], 0.888, 522, "xMinYMin"],
     xrightarrow: [["rightarrow"], 1.469, 522, "xMaxYMin"],
+    "\\cdrightarrow": [["rightarrow"], 3.0, 522, "xMaxYMin"], // CD minwwidth2.5pc
     xleftarrow: [["leftarrow"], 1.469, 522, "xMinYMin"],
+    "\\cdleftarrow": [["leftarrow"], 3.0, 522, "xMinYMin"],
     Overrightarrow: [["doublerightarrow"], 0.888, 560, "xMaxYMin"],
     xRightarrow: [["doublerightarrow"], 1.526, 560, "xMaxYMin"],
     xLeftarrow: [["doubleleftarrow"], 1.526, 560, "xMinYMin"],
@@ -129,6 +134,7 @@ const katexImagesData: {
     xrightharpoonup: [["rightharpoon"], 0.888, 522, "xMaxYMin"],
     xrightharpoondown: [["rightharpoondown"], 0.888, 522, "xMaxYMin"],
     xlongequal: [["longequal"], 0.888, 334, "xMinYMin"],
+    "\\cdlongequal": [["longequal"], 3.0, 334, "xMinYMin"],
     xtwoheadleftarrow: [["twoheadleftarrow"], 0.888, 334, "xMinYMin"],
     xtwoheadrightarrow: [["twoheadrightarrow"], 0.888, 334, "xMaxYMin"],
 

@@ -18,7 +18,7 @@ class ParseError {
     constructor(
         message: string,               // The error message
         token?: ?Token | AnyParseNode, // An object providing position information
-    ) {
+    ): Error {
         let error = "KaTeX parse error: " + message;
         let start;
 

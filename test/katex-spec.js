@@ -849,13 +849,6 @@ describe("A color parser", function() {
         expect(newColorExpression).toParse();
     });
 
-    it("should have correct greediness", function() {
-        expect`\textcolor{red}a`.toParse();
-        expect`\textcolor{red}{\text{a}}`.toParse();
-        expect`\textcolor{red}\text{a}`.not.toParse();
-        expect`\textcolor{red}\frac12`.not.toParse();
-    });
-
     it("should use one-argument \\color by default", function() {
         expect(oldColorExpression).toParseLike`\textcolor{#fA6}{xy}`;
     });
@@ -876,6 +869,7 @@ describe("A color parser", function() {
         const macros = {};
         expect(oldColorExpression).toParseLike(r`\textcolor{#fA6}{x}y`, {
             colorIsTextColor: true,
+            globalGroup: true,
             macros: macros,
         });
         expect(macros).toEqual({});
@@ -1269,6 +1263,17 @@ describe("A begin/end parser", function() {
         const parse = getParsed`\def\arraystretch{1.5}\begin{matrix}a&b\\c&d\end{matrix}`;
         expect(parse).toMatchSnapshot();
     });
+
+    it("should allow an optional argument in {matrix*} and company.", function() {
+        expect("\\begin{matrix*}[r] a & -1 \\\\ -1 & d \\end{matrix*}").toBuild();
+        expect("\\begin{pmatrix*}[r] a & -1 \\\\ -1 & d \\end{pmatrix*}").toBuild();
+        expect("\\begin{bmatrix*}[r] a & -1 \\\\ -1 & d \\end{bmatrix*}").toBuild();
+        expect("\\begin{Bmatrix*}[r] a & -1 \\\\ -1 & d \\end{Bmatrix*}").toBuild();
+        expect("\\begin{vmatrix*}[r] a & -1 \\\\ -1 & d \\end{vmatrix*}").toBuild();
+        expect("\\begin{Vmatrix*}[r] a & -1 \\\\ -1 & d \\end{Vmatrix*}").toBuild();
+        expect("\\begin{matrix*} a & -1 \\\\ -1 & d \\end{matrix*}").toBuild();
+        expect("\\begin{matrix*}[] a & -1 \\\\ -1 & d \\end{matrix*}").not.toParse();
+    });
 });
 
 describe("A sqrt parser", function() {
@@ -1577,7 +1582,7 @@ describe("A font parser", function() {
         expect(bf.body.body[2].text).toEqual("c");
     });
 
-    it("should have the correct greediness", function() {
+    it("should be allowed in the argument", function() {
         expect`e^\mathbf{x}`.toParse();
     });
 
@@ -1604,6 +1609,36 @@ describe("A \\pmb builder", function() {
         expect("\\pmb{\\frac{x^2}{x_1}}").toBuild();
         expect("\\pmb{}").toBuild();
         expect("\\def\\x{1}\\pmb{\\x\\def\\x{2}}").toParseLike("\\pmb{1}");
+    });
+});
+
+describe("A raise parser", function() {
+    it("should parse and build text in \\raisebox", function() {
+        expect("\\raisebox{5pt}{text}").toBuild(strictSettings);
+        expect("\\raisebox{-5pt}{text}").toBuild(strictSettings);
+    });
+
+    it("should parse and build math in non-strict \\vcenter", function() {
+        expect("\\vcenter{\\frac a b}").toBuild(nonstrictSettings);
+    });
+
+    it("should fail to parse math in \\raisebox", function() {
+        expect("\\raisebox{5pt}{\\frac a b}").not.toParse(nonstrictSettings);
+        expect("\\raisebox{-5pt}{\\frac a b}").not.toParse(nonstrictSettings);
+    });
+
+    it("should fail to parse math in an \\hbox", function() {
+        expect("\\hbox{\\frac a b}").not.toParse(nonstrictSettings);
+    });
+
+    it("should fail to build, given an unbraced length", function() {
+        expect("\\raisebox5pt{text}").not.toBuild(strictSettings);
+        expect("\\raisebox-5pt{text}").not.toBuild(strictSettings);
+    });
+
+
+    it("should build math in an hbox when math mode is set", function() {
+        expect("a + \\vcenter{\\hbox{$\\frac{\\frac a b}c$}}").toBuild(strictSettings);
     });
 });
 
@@ -2096,6 +2131,7 @@ describe("An accent parser", function() {
         expect`\vec{x^2}`.toParse();
         expect`\vec{x}^2`.toParse();
         expect`\vec x`.toParse();
+        expect("\\underbar{X}").toParse();
     });
 
     it("should produce accents", function() {
@@ -2712,32 +2748,57 @@ describe("AMS environments", function() {
         expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.not.toParse(nonstrictSettings);
         expect`\begin{equation}a=b+c\end{equation}`.not.toParse(nonstrictSettings);
         expect`\begin{split}a &=b+c\\&=e+f\end{split}`.not.toParse(nonstrictSettings);
+        expect`\begin{CD}A @>a>> B \\@VbVV @AAcA\\C @= D\end{CD}`.not.toParse(nonstrictSettings);
     });
 
-    const nonStrictDisplay = new Settings({displayMode: true, strict: false});
-    it("should build if in non-strict display mode", () => {
-        expect`\begin{gather}a+b\\c+d\end{gather}`.toBuild(nonStrictDisplay);
-        expect`\begin{gather*}a+b\\c+d\end{gather*}`.toBuild(nonStrictDisplay);
-        expect`\begin{align}a&=b+c\\d+e&=f\end{align}`.toBuild(nonStrictDisplay);
-        expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.toBuild(nonStrictDisplay);
-        expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.toBuild(nonStrictDisplay);
-        expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.toBuild(nonStrictDisplay);
-        expect`\begin{equation}a=b+c\end{equation}`.toBuild(nonStrictDisplay);
-        expect`\begin{equation}\begin{split}a &=b+c\\&=e+f\end{split}\end{equation}`.toBuild(nonStrictDisplay);
-        expect`\begin{split}a &=b+c\\&=e+f\end{split}`.toBuild(nonStrictDisplay);
+    const displayMode = new Settings({displayMode: true});
+    it("should build if in display mode", () => {
+        expect`\begin{gather}a+b\\c+d\end{gather}`.toBuild(displayMode);
+        expect`\begin{gather*}a+b\\c+d\end{gather*}`.toBuild(displayMode);
+        expect`\begin{align}a&=b+c\\d+e&=f\end{align}`.toBuild(displayMode);
+        expect`\begin{align*}a&=b+c\\d+e&=f\end{align*}`.toBuild(displayMode);
+        expect`\begin{alignat}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat}`.toBuild(displayMode);
+        expect`\begin{alignat*}{2}10&x+ &3&y = 2\\3&x+&13&y = 4\end{alignat*}`.toBuild(displayMode);
+        expect`\begin{equation}a=b+c\end{equation}`.toBuild(displayMode);
+        expect`\begin{equation}\begin{split}a &=b+c\\&=e+f\end{split}\end{equation}`.toBuild(displayMode);
+        expect`\begin{split}a &=b+c\\&=e+f\end{split}`.toBuild(displayMode);
+        expect`\begin{CD}A @<a<< B @>>b> C @>>> D\\@. @| @AcAA @VVdV \\@. E @= F @>>> G\end{CD}`.toBuild(displayMode);
     });
 
     it("{equation} should fail if argument contains two rows.", () => {
-        expect`\begin{equation}a=\cr b+c\end{equation}`.not.toParse(nonStrictDisplay);
+        expect`\begin{equation}a=\cr b+c\end{equation}`.not.toParse(displayMode);
     });
     it("{equation} should fail if argument contains two columns.", () => {
-        expect`\begin{equation}a &=b+c\end{equation}`.not.toBuild(nonStrictDisplay);
+        expect`\begin{equation}a &=b+c\end{equation}`.not.toBuild(displayMode);
     });
     it("{split} should fail if argument contains three columns.", () => {
-        expect`\begin{equation}\begin{split}a &=b &+c\\&=e &+f\end{split}\end{equation}`.not.toBuild(nonStrictDisplay);
+        expect`\begin{equation}\begin{split}a &=b &+c\\&=e &+f\end{split}\end{equation}`.not.toBuild(displayMode);
     });
     it("{array} should fail if body contains more columns than specification.", () => {
-        expect`\begin{array}{2}a & b & c\\d & e  f\end{array}`.not.toBuild(nonStrictDisplay);
+        expect`\begin{array}{2}a & b & c\\d & e  f\end{array}`.not.toBuild(displayMode);
+    });
+});
+
+describe("The CD environment", function() {
+    it("should fail if not is display mode", function() {
+        expect(`\\begin{CD}A @<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(
+            new Settings({displayMode: false})
+        );
+    });
+    const displaySettings = new Settings({displayMode: true});
+    it("should fail if the character after '@' is not in <>AV=|.", function() {
+        expect(`\\begin{CD}A @X<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(displaySettings);
+    });
+    it("should fail if an arrow does not have its final character.", function() {
+        expect(`\\begin{CD}A @<a< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(displaySettings);
+        expect(`\\begin{CD}A @<a<< B @>>b C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).not.toParse(displaySettings);
+    });
+    it("should fail without an \\\\end.", function() {
+        expect(`\\begin{CD}A @<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G`).not.toParse(displaySettings);
+    });
+
+    it("should succeed without the flaws noted above.", function() {
+        expect(`\\begin{CD}A @<a<< B @>>b> C @>>> D\\\\@. @| @AcAA @VVdV \\\\@. E @= F @>>> G\\end{CD}`).toBuild(displaySettings);
     });
 });
 

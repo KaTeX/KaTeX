@@ -81,6 +81,11 @@ const users = [
         infoLink: 'https://fabiocolacio.github.io/Marker/',
     },
     {
+        caption: 'MathWills',
+        image: '/img/mathwills_logo.svg',
+        infoLink: 'https://www.mathwills.com/',
+    },
+    {
         caption: 'Messenger',
         image: 'https://en.facebookbrand.com/wp-content/uploads/2016/09/messenger_icon2.png',
         infoLink: 'https://www.messenger.com/',
@@ -129,6 +134,16 @@ const users = [
         caption: 'StackEdit',
         image: '/img/stackedit_logo.svg',
         infoLink: 'https://stackedit.io/',
+    },
+    {
+        caption: 'Tamasha',
+        image: 'https://github.com/kookma/TW-Tamasha/raw/main/docs/tamasha.png',
+        infoLink: 'https://kookma.github.io/TW-Tamasha/',
+    },
+    {
+        caption: 'TiddlyWiki',
+        image: '/img/tiddlywiki_logo.svg',
+        infoLink: 'https://tiddlywiki.com/',
     },
     {
         caption: 'Tutti Quanti Shelf',

@@ -327,6 +327,11 @@ const handleObject = (
             break;
         }
 
+        case "hbox": {
+            buildA11yStrings(tree.body, a11yStrings, atomType);
+            break;
+        }
+
         case "kern": {
             // No op: we don't attempt to present kerning information
             // to the screen reader.
@@ -546,6 +551,11 @@ const handleObject = (
                 `KaTeX-a11y: enclose node with ${tree.label} not supported yet`);
         }
 
+        case "vcenter": {
+            buildA11yStrings(tree.body, a11yStrings, atomType);
+            break;
+        }
+
         case "vphantom": {
             throw new Error("KaTeX-a11y: vphantom not implemented yet");
         }
@@ -643,6 +653,14 @@ const handleObject = (
             throw new Error("KaTeX-a11y: xArrow not implemented yet");
         }
 
+        case "cdlabel": {
+            throw new Error("KaTeX-a11y: cdlabel not implemented yet");
+        }
+
+        case "cdlabelparent": {
+            throw new Error("KaTeX-a11y: cdlabelparent not implemented yet");
+        }
+
         case "mclass": {
             // \neq and \ne are macros so we let "htmlmathml" render the mathmal
             // side of things and extract the text from that.
@@ -716,7 +734,10 @@ const flatten = function(array) {
     return result;
 };
 
-const renderA11yString = function(text: string, settings?: SettingsOptions) {
+const renderA11yString = function(
+    text: string,
+    settings?: SettingsOptions,
+): string {
 
     const tree = katex.__parse(text, settings);
     const a11yStrings = buildA11yStrings(tree, [], "normal");

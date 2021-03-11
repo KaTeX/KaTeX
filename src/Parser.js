@@ -145,7 +145,7 @@ export default class Parser {
         return parse;
     }
 
-    static endOfExpression = ["}", "\\endgroup", "\\end", "\\right", "&"];
+    static endOfExpression: string[] = ["}", "\\endgroup", "\\end", "\\right", "&"];
 
     // Lookup table for parsing numbers in base 8 through 16
     // with decimal separators as -1
@@ -291,9 +291,6 @@ export default class Parser {
         }
     }
 
-    // The greediness of a superscript or subscript
-    static SUPSUB_GREEDINESS = 1;
-
     /**
      * Handle a subscript or superscript with nice errors.
      */
@@ -304,7 +301,7 @@ export default class Parser {
         const symbol = symbolToken.text;
         this.consume();
         this.consumeSpaces(); // ignore spaces before sup/subscript argument
-        const group = this.parseGroup(name, Parser.SUPSUB_GREEDINESS);
+        const group = this.parseGroup(name);
 
         if (!group) {
             throw new ParseError(
@@ -349,7 +346,7 @@ export default class Parser {
     parseAtom(breakOnTokenText?: BreakToken): ?AnyParseNode {
         // The body of an atom is an implicit group, so that things like
         // \left(x\right)^2 work correctly.
-        const base = this.parseGroup("atom", null, breakOnTokenText);
+        const base = this.parseGroup("atom", breakOnTokenText);
 
         // In text mode, we don't have superscripts or subscripts
         if (this.mode === "text") {
@@ -446,8 +443,7 @@ export default class Parser {
      */
     parseFunction(
         breakOnTokenText?: BreakToken,
-        name?: string, // For error reporting.
-        greediness?: ?number,
+        name?: string, // For determining its context
     ): ?AnyParseNode {
         const token = this.fetch();
         const func = token.text;
@@ -457,7 +453,7 @@ export default class Parser {
         }
         this.consume(); // consume command token
 
-        if (greediness != null && funcData.greediness <= greediness) {
+        if (name && name !== "atom" && !funcData.allowedInArgument) {
             throw new ParseError(
                 "Got function '" + func + "' with no arguments" +
                 (name ? " as " + name : ""), token);
@@ -512,7 +508,6 @@ export default class Parser {
             return {args: [], optArgs: []};
         }
 
-        const baseGreediness = funcData.greediness;
         const args = [];
         const optArgs = [];
 
@@ -527,7 +522,7 @@ export default class Parser {
             }
 
             const arg = this.parseGroupOfType(`argument to '${func}'`,
-                argType, isOptional, baseGreediness);
+                argType, isOptional);
             if (isOptional) {
                 optArgs.push(arg);
             } else if (arg != null) {
@@ -547,7 +542,6 @@ export default class Parser {
         name: string,
         type: ?ArgType,
         optional: boolean,
-        greediness: ?number,
     ): ?AnyParseNode {
         switch (type) {
             case "color":
@@ -589,7 +583,7 @@ export default class Parser {
                 if (optional) {
                     throw new ParseError("A primitive argument cannot be optional");
                 }
-                const group = this.parseGroup(name, greediness);
+                const group = this.parseGroup(name);
                 if (group == null) {
                     throw new ParseError("Expected group as " + name, this.fetch());
                 }
@@ -1102,7 +1096,6 @@ export default class Parser {
      */
     parseGroup(
         name: string, // For error reporting.
-        greediness?: ?number,
         breakOnTokenText?: BreakToken,
     ): ?AnyParseNode {
         const firstToken = this.fetch();
@@ -1134,7 +1127,7 @@ export default class Parser {
         } else {
             // If there exists a function with this name, parse the function.
             // Otherwise, just return a nucleus
-            result = this.parseFunction(breakOnTokenText, name, greediness) ||
+            result = this.parseFunction(breakOnTokenText, name) ||
                 this.parseSymbol() || this.parseVariable();
             if (result == null && text[0] === "\\" &&
                     !implicitCommands.hasOwnProperty(text)) {

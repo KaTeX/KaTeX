@@ -67,7 +67,6 @@ export type SettingsOptions = {
     maxSize?: number;
     maxExpand?: number;
     globalGroup?: boolean;
-    topEnv?: boolean;
 };
 
 /**
@@ -95,7 +94,6 @@ export default class Settings {
     maxSize: number;
     maxExpand: number;
     globalGroup: boolean;
-    topEnv: boolean;
 
     constructor(options: SettingsOptions) {
         // allow null options
@@ -117,7 +115,6 @@ export default class Settings {
         this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
         this.maxExpand = Math.max(0, utils.deflt(options.maxExpand, 1000));
         this.globalGroup = utils.deflt(options.globalGroup, false);
-        this.topEnv = utils.deflt(options.topEnv, false);
     }
 
     /**
@@ -158,7 +155,7 @@ export default class Settings {
      * This is for the second category of `errorCode`s listed in the README.
      */
     useStrictBehavior(errorCode: string, errorMsg: string,
-                      token?: Token | AnyParseNode) {
+                      token?: Token | AnyParseNode): boolean {
         let strict = this.strict;
         if (typeof strict === "function") {
             // Allow return value of strict function to be boolean or string
@@ -196,7 +193,7 @@ export default class Settings {
      * If `context` has a `url` field, a `protocol` field will automatically
      * get added by this function (changing the specified object).
      */
-    isTrusted(context: AnyTrustContext) {
+    isTrusted(context: AnyTrustContext): boolean {
         if (context.url && !context.protocol) {
             context.protocol = utils.protocolFromUrl(context.url);
         }

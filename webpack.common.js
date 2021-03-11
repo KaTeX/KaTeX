@@ -4,8 +4,6 @@ const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 // $FlowIgnore
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-// $FlowIgnore
-const PnpWebpackPlugin = require('pnp-webpack-plugin');
 
 const {version} = require("./package.json");
 
@@ -68,11 +66,11 @@ function createConfig(target /*: Target */, dev /*: boolean */,
     }, {
         loader: 'postcss-loader',
         // $FlowIgnore
-        options: {plugins: [require('postcss-preset-env')()]},
+        options: {postcssOptions: {plugins: [require('postcss-preset-env')()]}},
     }];
     if (minimize) {
         // $FlowIgnore
-        cssLoaders[1].options.plugins.push(require('cssnano')());
+        cssLoaders[1].options.postcssOptions.plugins.push(require('cssnano')());
     }
 
     const lessOptions = {modifyVars: {
@@ -106,6 +104,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
             libraryExport: 'default',
             // Enable output modules to be used in browser or Node.
             // See: https://github.com/webpack/webpack/issues/6522
+            // https://github.com/webpack/webpack/pull/11987
             globalObject: "(typeof self !== 'undefined' ? self : this)",
             path: path.resolve(__dirname, 'dist'),
             publicPath: dev ? '/' : '',
@@ -168,11 +167,8 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         performance: {
             hints: false,
         },
-        resolve: {
-            plugins: [PnpWebpackPlugin],
-        },
-        resolveLoader: {
-            plugins: [PnpWebpackPlugin.moduleLoader(module)],
+        stats: {
+            colors: true,
         },
     };
 }

@@ -25,11 +25,12 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 
 import {PathNode, SvgNode, SymbolNode} from "./domTree";
-import {sqrtPath} from "./svgGeometry";
+import {sqrtPath, innerPath} from "./svgGeometry";
 import buildCommon from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
+import fontMetricsData from "../submodules/katex-fonts/fontMetricsData";
 
 import type Options from "./Options";
 import type {CharacterMetrics} from "./fontMetrics";
@@ -153,10 +154,10 @@ const makeLargeDelim = function(delim,
 };
 
 /**
- * Make an inner span with the given offset and in the given font. This is used
- * in `makeStackedDelim` to make the stacking pieces for the delimiter.
+ * Make a span from a font glyph with the given offset and in the given font.
+ * This is used in makeStackedDelim to make the stacking pieces for the delimiter.
  */
-const makeInner = function(
+const makeGlyphSpan = function(
     symbol: string,
     font: "Size1-Regular" | "Size4-Regular",
     mode: Mode,
@@ -169,17 +170,45 @@ const makeInner = function(
         sizeClass = "delim-size4";
     }
 
-    const inner = buildCommon.makeSpan(
+    const corner = buildCommon.makeSpan(
         ["delimsizinginner", sizeClass],
         [buildCommon.makeSpan([], [buildCommon.makeSymbol(symbol, font, mode)])]);
 
     // Since this will be passed into `makeVList` in the end, wrap the element
     // in the appropriate tag that VList uses.
-    return {type: "elem", elem: inner};
+    return {type: "elem", elem: corner};
 };
 
-// Helper for makeStackedDelim
-const lap = {type: "kern", size: -0.005};
+const makeInner = function(
+    ch: string,
+    height: number,
+    options: Options
+): VListElem {
+    // Create a span with inline SVG for the inner part of a tall stacked delimiter.
+    const width = fontMetricsData['Size4-Regular'][ch.charCodeAt(0)]
+        ? fontMetricsData['Size4-Regular'][ch.charCodeAt(0)][4].toFixed(3)
+        : fontMetricsData['Size1-Regular'][ch.charCodeAt(0)][4].toFixed(3);
+    const path = new PathNode("inner", innerPath(ch,  Math.round(1000 * height)));
+    const svgNode = new SvgNode([path], {
+        "width": width + "em",
+        "height": height + "em",
+        // Override CSS rule `.katex svg { width: 100% }`
+        "style": "width:" + width + "em",
+        "viewBox": "0 0 " + 1000 * width + " " + Math.round(1000 * height),
+        "preserveAspectRatio": "xMinYMin",
+    });
+    const span = buildCommon.makeSvgSpan([], [svgNode], options);
+    span.height = height;
+    span.style.height = height + "em";
+    span.style.width = width + "em";
+    return {type: "elem", elem: span};
+};
+
+// Helpers for makeStackedDelim
+const lapInEms = 0.008;
+const lap = {type: "kern", size: -1 * lapInEms};
+const verts = ["|", "\\lvert", "\\rvert", "\\vert"];
+const doubleVerts = ["\\|", "\\lVert", "\\rVert", "\\Vert"];
 
 /**
  * Make a stacked delimiter out of a given delimiter, with the total height at
@@ -223,6 +252,10 @@ const makeStackedDelim = function(
         top = "\\Uparrow";
         repeat = "\u2016";
         bottom = "\\Downarrow";
+    } else if (utils.contains(verts, delim)) {
+        repeat = "\u2223";
+    } else if (utils.contains(doubleVerts, delim)) {
+        repeat = "\u2225";
     } else if (delim === "[" || delim === "\\lbrack") {
         top = "\u23a1";
         repeat = "\u23a2";
@@ -331,74 +364,44 @@ const makeStackedDelim = function(
     // Calculate the depth
     const depth = realHeightTotal / 2 - axisHeight;
 
-    // This function differs from the TeX procedure in one way.
-    // We shift each repeat element downwards by 0.005em, to prevent a gap
-    // due to browser floating point rounding error.
-    // Then, at the last element-to element joint, we add one extra repeat
-    // element to cover the gap created by the shifts.
-    // Find the shift needed to align the upper end of the extra element at a point
-    // 0.005em above the lower end of the top element.
-    const shiftOfExtraElement = (repeatCount + 1) * 0.005 - repeatHeightTotal;
 
     // Now, we start building the pieces that will go into the vlist
-
-    // Keep a list of the inner pieces
-    const inners = [];
+    // Keep a list of the pieces of the stacked delimiter
+    const stack = [];
 
     // Add the bottom symbol
-    inners.push(makeInner(bottom, font, mode));
+    stack.push(makeGlyphSpan(bottom, font, mode));
+    stack.push(lap); // overlap
 
     if (middle === null) {
-        // Add that many symbols
-        for (let i = 0; i < repeatCount; i++) {
-            inners.push(lap); // overlap
-            inners.push(makeInner(repeat, font, mode));
-        }
+        // The middle section will be an SVG. Make it an extra 0.016em tall.
+        // We'll overlap by 0.008em at top and bottom.
+        const innerHeight = realHeightTotal - topHeightTotal - bottomHeightTotal
+            + 2 * lapInEms;
+        stack.push(makeInner(repeat, innerHeight, options));
     } else {
         // When there is a middle bit, we need the middle part and two repeated
         // sections
-        for (let i = 0; i < repeatCount; i++) {
-            inners.push(lap);
-            inners.push(makeInner(repeat, font, mode));
-        }
-        // Insert one extra repeat element.
-        inners.push({type: "kern", size: shiftOfExtraElement});
-        inners.push(makeInner(repeat, font, mode));
-        inners.push(lap);
+        const innerHeight = (realHeightTotal - topHeightTotal - bottomHeightTotal -
+            middleHeightTotal) / 2 + 2 * lapInEms;
+        stack.push(makeInner(repeat, innerHeight, options));
         // Now insert the middle of the brace.
-        inners.push(makeInner(middle, font, mode));
-        for (let i = 0; i < repeatCount; i++) {
-            inners.push(lap);
-            inners.push(makeInner(repeat, font, mode));
-        }
-    }
-
-    // To cover the gap create by the overlaps, insert one more repeat element,
-    // at a position that juts 0.005 above the bottom of the top element.
-    if ((repeat === "\u239c" || repeat === "\u239f") && repeatCount === 0) {
-        // Parentheses need a short repeat element in order to avoid an overrun.
-        // We'll make a 0.3em tall element from a SVG.
-        const overlap = buildCommon.svgData.leftParenInner[2] / 2;
-        inners.push({type: "kern", size: -overlap});
-        const pathName = repeat === "\u239c" ? "leftParenInner" : "rightParenInner";
-        const innerSpan = buildCommon.staticSvg(pathName, options);
-        inners.push({type: "elem", elem: innerSpan});
-        inners.push({type: "kern", size: -overlap});
-    } else {
-        inners.push({type: "kern", size: shiftOfExtraElement});
-        inners.push(makeInner(repeat, font, mode));
-        inners.push(lap);
+        stack.push(lap);
+        stack.push(makeGlyphSpan(middle, font, mode));
+        stack.push(lap);
+        stack.push(makeInner(repeat, innerHeight, options));
     }
 
     // Add the top symbol
-    inners.push(makeInner(top, font, mode));
+    stack.push(lap);
+    stack.push(makeGlyphSpan(top, font, mode));
 
     // Finally, build the vlist
     const newOptions = options.havingBaseStyle(Style.TEXT);
     const inner = buildCommon.makeVList({
         positionType: "bottom",
         positionData: depth,
-        children: inners,
+        children: stack,
     }, newOptions);
 
     return styleWrap(

@@ -74,6 +74,9 @@ export const buildExpression = function(
         }
     }
 
+    // Combine consecutive domTree.symbolNodes into a single symbolNode.
+    buildCommon.tryCombineChars(groups);
+
     // If `expression` is a partial group, let the parent handle spacings
     // to avoid processing groups multiple times.
     if (!isRealGroup) {
