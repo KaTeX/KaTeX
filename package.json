@@ -1,12 +1,12 @@
 {
   "name": "katex",
-  "version": "0.13.0",
+  "version": "0.0.0-development",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "homepage": "https://katex.org",
   "repository": {
     "type": "git",
-    "url": "git://github.com/KaTeX/KaTeX.git"
+    "url": "https://github.com/KaTeX/KaTeX.git"
   },
   "files": [
     "katex.js",
@@ -26,6 +26,8 @@
     "@babel/runtime": "^7.10.4",
     "@rollup/plugin-alias": "^3.1.1",
     "@rollup/plugin-babel": "^5.0.4",
+    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/git": "^9.0.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.1.0",
     "babel-loader": "^8.0.5",
@@ -71,6 +73,7 @@
     "rimraf": "^3.0.2",
     "rollup": "^2.21.0",
     "selenium-webdriver": "^3.6.0",
+    "semantic-release": "^17.4.1",
     "sri-toolbox": "^0.2.0",
     "style-loader": "^2.0.0",
     "stylelint": "^13.6.1",
@@ -101,7 +104,9 @@
     "analyze": "webpack --config webpack.analyze.js",
     "build": "rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c && webpack",
     "watch": "yarn build --watch",
-    "dist": "yarn test && yarn build && yarn dist:zip",
+    "postversion": "yarn dist && node update-sri.js package README.md contrib/*/README.md docs/*.md website/pages/index.html",
+    "semantic-release": "semantic-release",
+    "dist": "yarn build && yarn dist:zip",
     "dist:zip": "rimraf katex/ katex.tar.gz katex.zip && cp -R dist katex && tar czf katex.tar.gz katex && zip -rq katex.zip katex && rimraf katex/"
   },
   "dependencies": {

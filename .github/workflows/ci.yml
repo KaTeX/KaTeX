@@ -54,3 +54,34 @@ jobs:
       with:
         directory: ./coverage/
       timeout-minutes: 3
+
+  release:
+    runs-on: ubuntu-latest
+    # if: github.event_name == 'push'
+    needs: test
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+        fetch-depth: 0
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12'
+
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          .yarn/cache
+          .pnp.js
+        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
+        restore-keys: |
+          yarn-deps-v1-
+    - name: Run semantic-release
+      run: yarn run semantic-release --debug
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
