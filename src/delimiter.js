@@ -30,7 +30,7 @@ import buildCommon from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
-import fontMetricsData from "../submodules/katex-fonts/fontMetricsData";
+import fontMetricsData from "./fontMetricsData";
 
 import type Options from "./Options";
 import type {CharacterMetrics} from "./fontMetrics";

@@ -1,0 +1,112 @@
+name: Build fonts
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.check-image.outputs.result }}
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+        persist-credentials: false # minimize exposure and prevent accidental pushes
+
+    - name: Log into registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+
+    - name: Check image
+      id: check-image
+      uses: actions/github-script@v3
+      with:
+        github-token: ${{secrets.GH_TOKEN}}
+        result-encoding: string
+        script: |
+          /* eslint-disable camelcase, max-len */
+          const org = context.repo.owner;
+          const package_type = "docker";
+          const package_name = "fonts";
+          const version = "${{ hashFiles('dockers/fonts/Dockerfile') }}";
+
+          const packages = await github.request('GET /orgs/{org}/packages/{package_type}/{package_name}/versions', {
+              org,
+              package_type,
+              package_name,
+          });
+
+          core.setOutput("exists", packages.data.some(p => p.html_url.includes(version)));
+          return `${package_type}.pkg.github.com/${org}/${context.repo.repo}/${package_name}:${version}`.toLowerCase();
+
+    - name: Build image
+      if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
+      run: docker build dockers/fonts --tag ${{ steps.check-image.outputs.result }}
+
+    - name: Push image
+      if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
+      run: docker push ${{ steps.check-image.outputs.result }}
+
+  fonts:
+    runs-on: ubuntu-latest
+    needs: docker
+    container:
+      image: ${{ needs.docker.outputs.image }}
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        persist-credentials: false # minimize exposure and prevent accidental pushes
+
+    - name: Check font version
+      id: check-version
+      run: |
+        VERSION=$(< fonts/VERSION)
+        if [ "${{github.event_name}}" = "push" ]; then
+          SOURCE_DATE_EPOCH=$VERSION
+        else
+          SOURCE_DATE_EPOCH=$(git log -1 --format=%ct -- src/fonts)
+          if [ $VERSION = $SOURCE_DATE_EPOCH ]; then
+            echo "::set-output name=up-to-date::true"
+          fi
+        fi
+        echo "SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH" >> $GITHUB_ENV
+
+    - name: Build fonts
+      if: ${{ !steps.check-version.outputs.up-to-date }}
+      run: |
+        make -C src/fonts all
+        rm -f fonts/*.*
+        cp src/fonts/ttf/*.ttf fonts
+        cp src/fonts/woff/*.woff fonts
+        cp src/fonts/woff2/*.woff2 fonts
+        echo $SOURCE_DATE_EPOCH >> fonts/VERSION
+
+    - name: Run git diff
+      if: ${{ !steps.check-version.outputs.up-to-date }}
+      run: |
+        printf '[diff "font"]\n\tbinary = true\n\ttextconv = ttx -q -i -o -' >> ~/.gitconfig
+        git diff --exit-code
+
+    - name: Build metrics
+      if: failure()
+      run: ./dockers/fonts/buildMetrics.sh
+
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: fonts
+        path: fonts
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: metrics
+        path: src/fontMetricsData.js
