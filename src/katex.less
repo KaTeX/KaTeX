@@ -2,7 +2,7 @@
 @import "../submodules/katex-fonts/fonts.less";
 
 // The mu unit is defined as 1/18 em
-@mu: 1/18em;
+@mu: (1em / 18);
 
 // The version is dynamically set from package.json via webpack.common.js
 @version: "";
@@ -161,7 +161,7 @@
     // This value is also used in fontMetrics.js, if you change it make sure the
     // values match.
     @ptperem: 10;
-    @nulldelimiterspace: 1.2em / @ptperem;
+    @nulldelimiterspace: (1.2em / @ptperem);
 
     @muspace: 0.055556em;       // 1mu
     @thinspace: 0.16667em;      // 3mu
