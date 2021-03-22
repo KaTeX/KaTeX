@@ -44,7 +44,7 @@ jobs:
         persist-credentials: false # do not persist credentials
 
     - name: Use Node.js 14
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: '14'
 
@@ -54,7 +54,7 @@ jobs:
         path: |
           .yarn/cache
           .pnp.js
-        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
+        key: yarn-deps-v2-${{ hashFiles('yarn.lock') }}
         restore-keys: |
           yarn-deps-v1-
 

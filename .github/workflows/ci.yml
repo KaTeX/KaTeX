@@ -20,7 +20,7 @@ jobs:
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
     - name: Use Node.js 12.x
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: '12'
 
@@ -30,9 +30,9 @@ jobs:
         path: |
           .yarn/cache
           .pnp.js
-        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
+        key: yarn-deps-v2-${{ hashFiles('yarn.lock') }}
         restore-keys: |
-          yarn-deps-v1-
+          yarn-deps-v2-
 
     - name: Install dependencies
       run: yarn --immutable
@@ -68,7 +68,7 @@ jobs:
         fetch-depth: 0
 
     - name: Use Node.js 12.x
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: '12'
 
