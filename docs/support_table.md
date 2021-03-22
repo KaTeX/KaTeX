@@ -190,9 +190,9 @@ table td {
 |\boxminus|$\boxminus$||
 |\boxplus|$\boxplus$||
 |\boxtimes|$\boxtimes$||
-|\Bra|$\left\langle\psi\right\|$|`\Bra{\psi}`|
-|\bra|$\mathinner{\langle{\psi}\|}$|`\bra{\psi}`|
-|\braket|$\mathinner{\langle{\phi\|\psi}\rangle}$|`\braket{\phi|\psi}`|
+|\Bra|$\Bra{\psi}$|`\Bra{\psi}`|
+|\bra|$\bra{\psi}$|`\bra{\psi}`|
+|\braket|$\braket{\phi\vert\psi}$|`\braket{\phi\vert\psi}`|
 |\brace|${n\brace k}$|`{n\brace k}`|
 |\bracevert|<span style="color:firebrick;">Not supported</span>||
 |\brack|${n\brack k}$|`{n\brack k}`|
@@ -537,8 +537,8 @@ use `\ce` instead|
 |\KaTeX|$\KaTeX$||
 |\ker|$\ker$||
 |\kern|$I\kern-2.5pt R$|`I\kern-2.5pt R`|
-|\Ket|$\left\|\psi\right\rangle$|`\Ket{\psi}`|
-|\ket|$\mathinner{\|{\psi}\rangle}$|`\ket{\psi}`|
+|\Ket|$\Ket{\psi}$|`\Ket{\psi}`|
+|\ket|$\ket{\psi}$|`\ket{\psi}`|
 |\Koppa|<span style="color:firebrick;">Not supported</span>||
 |\koppa|<span style="color:firebrick;">Not supported</span>||
 
