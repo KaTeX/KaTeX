@@ -8744,7 +8744,7 @@ __metadata:
     postcss-loader: ^5.2.0
     postcss-preset-env: ^6.7.0
     prettier: ^2.0.5
-    query-string: ^6.2.0
+    query-string: ^7.0.0
     rimraf: ^3.0.2
     rollup: ^2.21.0
     selenium-webdriver: ^3.6.0
@@ -12556,7 +12556,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"query-string@npm:^6.2.0, query-string@npm:^6.8.2":
+"query-string@npm:^6.8.2":
   version: 6.14.1
   resolution: "query-string@npm:6.14.1"
   dependencies:
@@ -12565,6 +12565,18 @@ __metadata:
     split-on-first: ^1.0.0
     strict-uri-encode: ^2.0.0
   checksum: 5d651ac420f5298baf00bb71228ffac32ed342c09836a7d2b1df3cdc7870313339cf6927827370c654cf73571bd639af497a0d9ef677a3a11b7396de2f761aa4
+  languageName: node
+  linkType: hard
+
+"query-string@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "query-string@npm:7.0.0"
+  dependencies:
+    decode-uri-component: ^0.2.0
+    filter-obj: ^1.1.0
+    split-on-first: ^1.0.0
+    strict-uri-encode: ^2.0.0
+  checksum: bfdb88aee494c246b1ed2614cd55e5ada111860755e4fa79271cbc6dcc8198db8d9b21873489f83a06027f78d293f37989b4602d36a642ea632cf22713ecc63d
   languageName: node
   linkType: hard
 
