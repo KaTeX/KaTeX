@@ -6726,12 +6726,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hosted-git-info@npm:^3.0.0, hosted-git-info@npm:^3.0.6":
+"hosted-git-info@npm:^3.0.6":
   version: 3.0.8
   resolution: "hosted-git-info@npm:3.0.8"
   dependencies:
     lru-cache: ^6.0.0
   checksum: 686512459ccb7e7eac7833fc4e8e35a0533c0dda5f516025f276ecb620b316010b853c785439ac63702e044ab56b2485cf7e1b088c1f9a46675b9496f7a45683
+  languageName: node
+  linkType: hard
+
+"hosted-git-info@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "hosted-git-info@npm:4.0.1"
+  dependencies:
+    lru-cache: ^6.0.0
+  checksum: d32f706c34d3efbdf8532ecdd1d43775ff8a0a667a22ed816e3ba2046e7713527038c4225e72981257bb989fb66f8937a3d6355c4eb096897db58a68981373c1
   languageName: node
   linkType: hard
 
@@ -13414,9 +13423,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semantic-release@npm:17.4.1, semantic-release@npm:^17.4.1":
-  version: 17.4.1
-  resolution: "semantic-release@npm:17.4.1"
+"semantic-release@npm:17.4.2, semantic-release@npm:^17.4.1":
+  version: 17.4.2
+  resolution: "semantic-release@npm:17.4.2"
   dependencies:
     "@semantic-release/commit-analyzer": ^8.0.0
     "@semantic-release/error": ^2.2.0
@@ -13433,7 +13442,7 @@ __metadata:
     get-stream: ^6.0.0
     git-log-parser: ^1.2.0
     hook-std: ^2.0.0
-    hosted-git-info: ^3.0.0
+    hosted-git-info: ^4.0.0
     lodash: ^4.17.15
     marked: ^2.0.0
     marked-terminal: ^4.1.1
@@ -13448,7 +13457,7 @@ __metadata:
     yargs: ^16.2.0
   bin:
     semantic-release: bin/semantic-release.js
-  checksum: 60d6de3f6d2d3b9adec750e776e462ccbc48baebf20ce24236d22e72ffd12967d8d0355727ec607da60fba3933802ad6ea3dbd6a2e63803060d8da1b1499fbde
+  checksum: 200797a2aa33cb56a58ad13743887be084bac4afe4ce3816d652285bfd0601b0177ae50960c1544283e509c48464cf573df9717471ce9095cfe99ac5f630df85
   languageName: node
   linkType: hard
 
