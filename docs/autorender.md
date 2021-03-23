@@ -37,7 +37,16 @@ For example:
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         renderMathInElement(document.body, {
-            // ...options...
+          // customised options
+          // • auto-render specific keys, e.g.:
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          // • rendering keys, e.g.:
+          throwOnError : false
         });
     });
 </script>
@@ -67,8 +76,8 @@ function renderMathInElement(elem, options)
 nodes inside this element and render the math in them.
 
 `options` is an optional object argument that can have the same keys as [the
-object passed to `katex.render`](https://github.com/KaTeX/KaTeX/#rendering-options),
-in addition to two auto-render-specific keys:
+object passed to `katex.render`](options.html),
+in addition to five auto-render-specific keys:
 
 - `delimiters`: This is a list of delimiters to look for math, processed in
   the same order as the list. Each delimiter has three properties:
