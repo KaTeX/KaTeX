@@ -29,7 +29,7 @@ You can provide an object of options as the last argument to [`katex.render` and
     LaTeX would thereby comment out the end of math mode (e.g. `$`),
     causing an error.
   - `"htmlExtension"`: Use of HTML extension (`\html`-prefixed) commands,
-    which are provieded for HTML manipulation.
+    which are provided for HTML manipulation.
 
   A second category of `errorCode`s never throw errors, but their strictness
   affects the behavior of KaTeX:
