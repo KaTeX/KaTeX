@@ -18,6 +18,7 @@ coverage/
 docs/cli.md
 lib/core/metadata.js
 lib/core/MetadataBlog.js
+website/prev-versions.json
 website/translated_docs
 website/build/
 website/node_modules

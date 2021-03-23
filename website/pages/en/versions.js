@@ -13,11 +13,11 @@ const {Container} = require('../../core/CompLibrary');
 const CWD = process.cwd();
 
 const {title, baseUrl, repoUrl} = require(`${CWD}/siteConfig.js`);
-const versions = fs.existsSync(`${CWD}/versions.json`)
-    ? require(`${CWD}/versions.json`) : [];
+const {version: latestVersion} = require(`${CWD}/../package.json`);
+const prevVersions = fs.existsSync(`${CWD}/prev-versions.json`)
+    ? require(`${CWD}/prev-versions.json`) : [];
 
 function Versions(props) {
-    const latestVersion = versions[0];
     const language = props.language && props.language !== 'en' ?
         props.language + '/' : '';
     return (
@@ -47,47 +47,26 @@ function Versions(props) {
                 </tr>
               </tbody>
             </table>
-            <h3 id="rc">Latest Version</h3>
-            <p>
-              Here you can find the latest documentation and unreleased code.
-            </p>
-            <table className="versions">
-              <tbody>
-                <tr>
-                  <th>master</th>
-                  <td>
-                    <a
-                      href={`${baseUrl}docs/${language}next/node.html`}>
-                      Documentation
-                    </a>
-                  </td>
-                  <td>
-                    <a href={repoUrl}>Source Code</a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
             <h3 id="archive">Past Versions</h3>
             <p>
               Here you can find documentation for previous versions of KaTeX.
             </p>
             <table className="versions">
               <tbody>
-                {versions.map(
+                {prevVersions.map(
                   version =>
-                    version !== latestVersion && (
-                      <tr key={version}>
-                        <th>{version}</th>
+                    version.name !== latestVersion && (
+                      <tr key={version.name}>
+                        <th>{version.name}</th>
                         <td>
-                          <a
-                            href={`${baseUrl}docs/${
-                              language
-                            }${version}/node.html`}>
+                          <a href={`https://${
+                              version.id
+                            }--katex.netlify.app/docs/${language}`}>
                             Documentation
                           </a>
                         </td>
                         <td>
-                          <a href={`${repoUrl}/releases/tag/v${version}`}>
+                          <a href={`${repoUrl}/releases/tag/v${version.name}`}>
                             Release Notes
                           </a>
                         </td>
