@@ -15,7 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        submodules: recursive
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
     - name: Log into registry
