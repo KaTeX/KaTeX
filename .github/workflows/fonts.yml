@@ -9,6 +9,7 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    environment: docker
     outputs:
       image: ${{ steps.check-image.outputs.result }}
 
