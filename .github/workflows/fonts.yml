@@ -3,7 +3,7 @@ name: Build fonts
 on:
   push:
     branches: [ master ]
-  pull_request:
+  pull_request_target:
     branches: [ master ]
 
 jobs:
@@ -17,14 +17,15 @@ jobs:
       with:
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
-    - name: Log into registry
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+    - name: Check out Dockerfile from the pull request
+      if: github.event_name == 'pull_request_target'
+      run: git checkout "${{ format('refs/pull/{0}/merge', github.event.pull_request.number) }}" -- dockers/fonts/Dockerfile
 
     - name: Check image
       id: check-image
       uses: actions/github-script@v3
       with:
-        github-token: ${{secrets.GH_TOKEN}}
+        github-token: ${{ secrets.GH_READONLY_TOKEN }}
         result-encoding: string
         script: |
           /* eslint-disable camelcase, max-len */
@@ -46,6 +47,10 @@ jobs:
       if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
       run: docker build dockers/fonts --tag ${{ steps.check-image.outputs.result }}
 
+    - name: Log into registry
+      if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+
     - name: Push image
       if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
       run: docker push ${{ steps.check-image.outputs.result }}
@@ -57,13 +62,15 @@ jobs:
       image: ${{ needs.docker.outputs.image }}
       credentials:
         username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        password: ${{ secrets.GH_READONLY_TOKEN }}
 
     steps:
     - uses: actions/checkout@v2
       with:
+        ref: ${{ github.event_name == 'pull_request_target' && format('refs/pull/{0}/merge', github.event.pull_request.number) || '' }}
         fetch-depth: 0
-        persist-credentials: false # minimize exposure and prevent accidental pushes
+        token: ${{secrets.GH_READONLY_TOKEN}}
+        persist-credentials: false
 
     - name: Check font version
       id: check-version
