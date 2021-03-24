@@ -20,6 +20,7 @@ These libraries are maintained by third-parties.
 
 ### iOS
 - [KaTeX-iOS](https://github.com/ianarawjo/KaTeX-iOS): iOS UIView that renders TeX expressions with KaTeX
+- [KatexUtils](https://cocoapods.org/pods/KatexUtils): KaTeX solution for newer iOS version, supports CocoaPods integration
 
 ### Android
 - [KaTeXView](https://github.com/judemanutd/KaTeXView): An android library that uses Khan Academy KaTeX for TeX math rendering.
