@@ -9,9 +9,6 @@ on:
 jobs:
   screenshotter:
     runs-on: ubuntu-latest
-    if: |
-      !contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
-      !contains(toJSON(github.event.commits.*.message), '[ci skip]')
     strategy:
       matrix:
         browser: [chrome, firefox, safari]
