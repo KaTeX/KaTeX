@@ -1,27 +1,34 @@
 name: Fonts
 
 on:
-  push:
-    branches: [ master ]
   pull_request_target:
     branches: [ master ]
+    types: [ labeled ] # 'build fonts' label
 
 jobs:
   docker:
     runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'build fonts')
     outputs:
       image: ${{ steps.check-image.outputs.result }}
 
     steps:
     - uses: actions/checkout@v2
       with:
+        ref: ${{ format('refs/pull/{0}/merge', github.event.pull_request.number) }}
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
-    - name: Check out Dockerfile from the pull request
-      if: github.event_name == 'pull_request_target'
-      run: |
-        git fetch --depth=1 origin "${{ format('+refs/pull/{0}/merge:refs/remotes/pull/{0}/merge', github.event.pull_request.number) }}"
-        git checkout "${{ format('refs/remotes/pull/{0}/merge', github.event.pull_request.number) }}" -- dockers/fonts/Dockerfile
+    - name: Remove label
+      uses: actions/github-script@v3
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.issues.removeLabel({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: "build fonts",
+          });
 
     - name: Check image
       id: check-image
@@ -32,7 +39,6 @@ jobs:
         script: |
           /* eslint-disable camelcase, max-len, no-console */
           const org = context.repo.owner;
-          const package_type = "docker";
           const package_name = "fonts";
           const version = "${{ hashFiles('dockers/fonts/Dockerfile') }}";
 
@@ -40,7 +46,7 @@ jobs:
           try {
               packages = (await github.request('GET /orgs/{org}/packages/{package_type}/{package_name}/versions', {
                   org,
-                  package_type,
+                  package_type: "container",
                   package_name,
               })).data;
           } catch (e) {
@@ -49,19 +55,14 @@ jobs:
           }
 
           core.setOutput("exists", packages.some(p => p.html_url.includes(version)));
-          return `${package_type}.pkg.github.com/${org}/${context.repo.repo}/${package_name}:${version}`.toLowerCase();
+          return `ghcr.io/${org}/${package_name}:${version}`.toLowerCase();
 
-    - name: Build image
+    - name: Build and push image
       if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
-      run: docker build dockers/fonts --tag ${{ steps.check-image.outputs.result }}
-
-    - name: Log into registry
-      if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-
-    - name: Push image
-      if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
-      run: docker push ${{ steps.check-image.outputs.result }}
+      run: |
+        docker build dockers/fonts --tag ${{ steps.check-image.outputs.result }}
+        echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        docker push ${{ steps.check-image.outputs.result }}
 
   fonts:
     runs-on: ubuntu-latest
@@ -70,35 +71,18 @@ jobs:
       image: ${{ needs.docker.outputs.image }}
       credentials:
         username: ${{ github.actor }}
-        password: ${{ secrets.GH_READONLY_TOKEN }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
     - uses: actions/checkout@v2
       with:
-        ref: ${{ github.event_name == 'pull_request_target' && format('refs/pull/{0}/merge', github.event.pull_request.number) || '' }}
+        ref: ${{ format('refs/pull/{0}/merge', github.event.pull_request.number) }}
         fetch-depth: 0
-        token: ${{secrets.GH_READONLY_TOKEN}}
         persist-credentials: false
 
-    - name: Check font version
-      id: check-version
-      run: |
-        VERSION=$(cat fonts/VERSION)
-        if [ "${{github.event_name}}" = "push" ]; then
-          SOURCE_DATE_EPOCH=$VERSION
-        else
-          # TODO: merging the pull request will change the commit date
-          # we have to compare the version from the font file with the VERSION
-          SOURCE_DATE_EPOCH=$(git log -1 --format=%ct -- src/fonts)
-          if [ "$VERSION" = "$SOURCE_DATE_EPOCH" ]; then
-            echo "::set-output name=up-to-date::true"
-          fi
-        fi
-        echo "SOURCE_DATE_EPOCH=$SOURCE_DATE_EPOCH" >> $GITHUB_ENV
-
     - name: Build fonts
-      if: ${{ !steps.check-version.outputs.up-to-date }}
       run: |
+        export SOURCE_DATE_EPOCH=$(git log -1 --format=%ct -- src/fonts)
         make -C src/fonts all
         rm -f fonts/*.*
         cp src/fonts/ttf/*.ttf fonts
@@ -106,15 +90,13 @@ jobs:
         cp src/fonts/woff2/*.woff2 fonts
         echo $SOURCE_DATE_EPOCH > fonts/VERSION
 
+    - name: Build metrics
+      run: ./dockers/fonts/buildMetrics.sh
+
     - name: Run git diff
-      if: ${{ !steps.check-version.outputs.up-to-date }}
       run: |
         printf '[diff "font"]\n\tbinary = true\n\ttextconv = ttx -q -i -o -' >> ~/.gitconfig
         git diff --exit-code
-
-    - name: Build metrics
-      if: failure()
-      run: ./dockers/fonts/buildMetrics.sh
 
     - uses: actions/upload-artifact@v2
       if: failure()
