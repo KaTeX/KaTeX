@@ -1,4 +1,4 @@
-name: Build fonts
+name: Fonts
 
 on:
   push:
@@ -9,7 +9,6 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    environment: docker
     outputs:
       image: ${{ steps.check-image.outputs.result }}
 
@@ -20,7 +19,9 @@ jobs:
 
     - name: Check out Dockerfile from the pull request
       if: github.event_name == 'pull_request_target'
-      run: git checkout "${{ format('refs/pull/{0}/merge', github.event.pull_request.number) }}" -- dockers/fonts/Dockerfile
+      run: |
+        git fetch --depth=1 origin "${{ format('+refs/pull/{0}/merge:refs/remotes/pull/{0}/merge', github.event.pull_request.number) }}"
+        git checkout "${{ format('refs/remotes/pull/{0}/merge', github.event.pull_request.number) }}" -- dockers/fonts/Dockerfile
 
     - name: Check image
       id: check-image
@@ -29,19 +30,25 @@ jobs:
         github-token: ${{ secrets.GH_READONLY_TOKEN }}
         result-encoding: string
         script: |
-          /* eslint-disable camelcase, max-len */
+          /* eslint-disable camelcase, max-len, no-console */
           const org = context.repo.owner;
           const package_type = "docker";
           const package_name = "fonts";
           const version = "${{ hashFiles('dockers/fonts/Dockerfile') }}";
 
-          const packages = await github.request('GET /orgs/{org}/packages/{package_type}/{package_name}/versions', {
-              org,
-              package_type,
-              package_name,
-          });
+          let packages;
+          try {
+              packages = (await github.request('GET /orgs/{org}/packages/{package_type}/{package_name}/versions', {
+                  org,
+                  package_type,
+                  package_name,
+              })).data;
+          } catch (e) {
+              packages = [];
+              console.error(e);
+          }
 
-          core.setOutput("exists", packages.data.some(p => p.html_url.includes(version)));
+          core.setOutput("exists", packages.some(p => p.html_url.includes(version)));
           return `${package_type}.pkg.github.com/${org}/${context.repo.repo}/${package_name}:${version}`.toLowerCase();
 
     - name: Build image
@@ -80,6 +87,8 @@ jobs:
         if [ "${{github.event_name}}" = "push" ]; then
           SOURCE_DATE_EPOCH=$VERSION
         else
+          # TODO: merging the pull request will change the commit date
+          # we have to compare the version from the font file with the VERSION
           SOURCE_DATE_EPOCH=$(git log -1 --format=%ct -- src/fonts)
           if [ "$VERSION" = "$SOURCE_DATE_EPOCH" ]; then
             echo "::set-output name=up-to-date::true"
