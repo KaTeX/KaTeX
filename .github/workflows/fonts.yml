@@ -34,7 +34,8 @@ jobs:
       id: check-image
       uses: actions/github-script@v3
       with:
-        github-token: ${{ secrets.GH_READONLY_TOKEN }}
+        # https://github.community/t/github-token-has-no-access-to-new-container-rest-apis/170395
+        github-token: ${{ secrets.GH_PACKAGES_TOKEN }}
         result-encoding: string
         script: |
           /* eslint-disable camelcase, max-len, no-console */
@@ -61,7 +62,8 @@ jobs:
       if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
       run: |
         docker build dockers/fonts --tag ${{ steps.check-image.outputs.result }}
-        echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        # https://github.community/t/container-push-denied-with-actions-token-for-pr-event/170752
+        echo "${{ secrets.GH_PACKAGES_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
         docker push ${{ steps.check-image.outputs.result }}
 
   fonts:
