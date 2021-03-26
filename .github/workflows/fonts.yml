@@ -55,7 +55,7 @@ jobs:
               console.error(e);
           }
 
-          core.setOutput("exists", packages.some(p => p.html_url.includes(version)));
+          core.setOutput("exists", packages.some(p => p.metadata.container.tags.includes(version)));
           return `ghcr.io/${org}/${package_name}:${version}`.toLowerCase();
 
     - name: Build and push image
