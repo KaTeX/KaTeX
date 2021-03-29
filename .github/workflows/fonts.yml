@@ -58,13 +58,22 @@ jobs:
           core.setOutput("exists", packages.some(p => p.metadata.container.tags.includes(version)));
           return `ghcr.io/${org}/${package_name}:${version}`.toLowerCase();
 
-    - name: Build and push image
+    - name: Login to GitHub Container Registry
       if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
-      run: |
-        docker build dockers/fonts --tag ${{ steps.check-image.outputs.result }}
-        # https://github.community/t/container-push-denied-with-actions-token-for-pr-event/170752
-        echo "${{ secrets.GH_PACKAGES_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        docker push ${{ steps.check-image.outputs.result }}
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: KaTeX-bot
+        # https://github.community/t/cant-authenticate-with-actions-token-for-pr-event/170752
+        password: ${{ secrets.GH_PACKAGES_TOKEN }}
+
+    - name: Build and push
+      if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
+      uses: docker/build-push-action@v2
+      with:
+        context: dockers/fonts
+        tags: ${{ steps.check-image.outputs.result }}
+        push: true
 
   fonts:
     runs-on: ubuntu-latest
@@ -72,8 +81,9 @@ jobs:
     container:
       image: ${{ needs.docker.outputs.image }}
       credentials:
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        username: KaTeX-bot
+        # https://github.community/t/cant-authenticate-with-actions-token-for-pr-event/170752
+        password: ${{ secrets.GH_PACKAGES_TOKEN }}
 
     steps:
     - uses: actions/checkout@v2
