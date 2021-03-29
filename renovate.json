@@ -6,9 +6,6 @@
     ":prNotPending",
     "group:linters"
   ],
-  "git-submodules": {
-    "enabled": true
-  },
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["at any time"],

@@ -114,9 +114,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn test:lint",
-      "post-merge": "git submodule update --init --recursive",
-      "post-checkout": "git submodule update --init --recursive"
+      "pre-commit": "yarn test:lint"
     }
   },
   "jest": {
