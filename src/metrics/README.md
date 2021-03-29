@@ -15,9 +15,9 @@ There are several requirements for generating the metrics used by KaTeX.
   (using `easy_install` or `pip`: `pip install fonttools`)
   or with your package manager.
 
-Once you have these things, run
+Once you have these things, run the following command from the root directory:
 
-    sh buildMetrics.sh
+    sh ./docker/fonts/buildMetrics.sh
 
 which should generate new metrics and place them into `fontMetricsData.json`.
 You're done!

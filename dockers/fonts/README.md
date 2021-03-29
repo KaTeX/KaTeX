@@ -24,8 +24,8 @@ To remove all generated images, you can run
 
 #### Metrics
 
-The script `buildMetrics.sh` generates [metrics](fontMetricsData.js)
+The script `buildMetrics.sh` generates [metrics](../../src/fontMetricsData.js)
 (dimensions of each character) for the generated fonts.
-See [detailed requirements for running this script](src/metrics/).
+See [detailed requirements for running this script](../../src/metrics/).
 
 If there is a problem, file a bug report.
