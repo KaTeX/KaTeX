@@ -15,7 +15,6 @@ module.exports = function(wallaby) {
             "src/**/*.js",
             "test/**/*.js",
             "contrib/**/*.js",
-            "submodules/**/*.js",
             "katex.js",
 
             // These paths are excluded.

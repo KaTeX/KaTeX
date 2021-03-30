@@ -13,7 +13,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        submodules: recursive
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
     - name: Use Node.js 12.x
@@ -61,7 +60,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        submodules: recursive
         fetch-depth: 0
 
     - name: Use Node.js 12.x
