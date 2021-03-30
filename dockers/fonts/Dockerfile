@@ -1,40 +1,20 @@
-FROM ubuntu:14.04
-MAINTAINER xymostech <xymostech@gmail.com>
+FROM ubuntu:20.04
 
 # Install things
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get -y upgrade \
  && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     --no-install-recommends --auto-remove \
-    software-properties-common \
+    git \
     texlive \
-    wget \
     fontforge \
     mftrace \
-    man-db \
     build-essential \
-    python-fontforge \
-    python-dev \
-    python-pip \
-    pkg-config \
-    libharfbuzz-dev \
-    libfreetype6-dev \
+    python3-fontforge \
+    python3-dev \
+    python3-pip \
+    ttfautohint \
     libjson-perl \
- && add-apt-repository ppa:git-core/ppa \
- && apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get -y install \
-    --no-install-recommends --auto-remove \
-    git \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* \
- && pip install fonttools==3.28.0 brotli zopfli
-
-# Download and compile ttfautohint
-RUN wget "http://download.savannah.gnu.org/releases/freetype/ttfautohint-1.3.tar.gz" \
- && tar -xzf ttfautohint-*.tar.gz \
- && cd ttfautohint-*/ \
- && ./configure --without-qt \
- && make \
- && mv frontend/ttfautohint /usr/bin \
- && cd .. \
- && rm -r ttfautohint-*
+ && pip3 install fonttools==4.21.1 brotli zopfli

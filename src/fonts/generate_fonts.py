@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import sys
 import os
@@ -9,7 +9,7 @@ from fontTools.misc.timeTools import timestampNow
 sfnt.USE_ZOPFLI = True
 
 if len(sys.argv) < 2:
-    print "Usage: %s <font file>" % sys.argv[0]
+    print("Usage: %s <font file>" % sys.argv[0])
     sys.exit(1)
 
 font_file = sys.argv[1]
@@ -36,7 +36,7 @@ if 'GDEF' in font:
 font['name'].names = [record for record in font['name'].names if record.platformID != 1]
 font['cmap'].tables = [table for table in font['cmap'].tables if table.platformID != 1]
 
-font['name'].setName(unicode('Version ' + str(timestamp)), 5, 3, 1, 1033)
+font['name'].setName('Version ' + str(timestamp), 5, 3, 1, 1033)
 
 # fix OS/2 and hhea metrics
 glyf = font['glyf']

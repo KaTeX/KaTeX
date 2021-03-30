@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from fontTools.ttLib import TTFont
 import sys
@@ -76,7 +76,7 @@ def main():
         chars[u"\u0020"] = None  # space
         chars[u"\u00a0"] = None  # nbsp
 
-        for char, base_char in chars.iteritems():
+        for char, base_char in chars.items():
             code = ord(char)
             names = set(t.get(code) for t in cmap)
             if not names:
