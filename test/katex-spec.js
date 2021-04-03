@@ -678,7 +678,7 @@ describe("A text parser", function() {
     const noBraceTextExpression = r`\text x`;
     const nestedTextExpression =
         r`\text{a {b} \blue{c} \textcolor{#fff}{x} \llap{x}}`;
-    const spaceTextExpression = r`\text{  a \ }`;
+    const spaceTextExpression = r`\text{  a \  }`;
     const leadingSpaceTextExpression = r`\text {moo}`;
     const badTextExpression = r`\text{a b%}`;
     const badFunctionExpression = r`\text{\sqrt{x}}`;
@@ -722,10 +722,15 @@ describe("A text parser", function() {
         const parse = getParsed(spaceTextExpression)[0];
         const group = parse.body;
 
+        expect(group.length).toEqual(4);
         expect(group[0].type).toEqual("spacing");
         expect(group[1].type).toEqual("textord");
         expect(group[2].type).toEqual("spacing");
         expect(group[3].type).toEqual("spacing");
+    });
+
+    it("should handle backslash followed by newline", () => {
+        expect("\\text{\\ \t\r \n \t\r  }").toParseLike("\\text{\\ }");
     });
 
     it("should accept math mode tokens after its argument", function() {
