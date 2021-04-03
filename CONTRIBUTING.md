@@ -151,21 +151,6 @@ Flow by running `yarn test:flow`. See [Flow](https://flow.org/) for more details
  - commits should be squashed before merging
  - large pull requests should be broken into separate pull requests (or multiple logically cohesive commits), if possible
 
-## Working with submodules
-
-The fonts for KaTeX live in a submodule stored in `submodules/katex-fonts`.
-When you first clone the KaTeX repository, use
-`git submodule update --init --recursive` to download the corresponding
-fonts repository.  After running `yarn`, you should have Git hooks that
-will automatically run this command after switching to branches
-where `submodules/katex-fonts` point to different commits.
-
-When submitting pull requests that update katex-fonts, you'll need to submit
-two pull requests: one for [KaTeX/katex-fonts](https://github.com/KaTeX/katex-fonts) and one for [KaTeX/KaTeX](https://github.com/KaTeX/KaTeX).
-
-For more info about how to use git submodules,
-see https://chrisjean.com/git-submodules-adding-using-removing-and-updating/.
-
 ## CLA
 
 In order to contribute to KaTeX, you must first sign the CLA, found at www.khanacademy.org/r/cla
