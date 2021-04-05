@@ -30,13 +30,13 @@ Try out KaTeX [on the demo page](https://katex.org/#demo)!
 <!-- KaTeX requires the use of the HTML5 doctype. Without it, KaTeX may not render properly -->
 <html>
   <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.1/dist/katex.min.css" integrity="sha384-1BJlqF+SQDYEDcUxqjul0N2hTMUnr1PBU6FCWVus4+xHy3UrDNfw8zZQA4WZd6mG" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css" integrity="sha384-t5CR+zwDAROtph0PXGte6ia8heboACF9R5l/DiY+WZ3P2lxNgvJkQk5n7GPvLMYw" crossorigin="anonymous">
 
     <!-- The loading of KaTeX is deferred to speed up page rendering -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.1/dist/katex.min.js" integrity="sha384-nbcN4RJPOO/UAyqT09zMZjeBctwlknUoM0XYKNVYJWHhpbshDLRkr9BNnyxGl1EQ" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.js" integrity="sha384-FaFLTlohFghEIZkw6VGwmf9ISTubWAVYW8tG8+w2LAIftJEULZABrF9PPFv+tVkH" crossorigin="anonymous"></script>
 
     <!-- To automatically render math in text elements, include the auto-render extension: -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.1/dist/contrib/auto-render.min.js" integrity="sha384-vZTG03m+2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl" crossorigin="anonymous"
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/contrib/auto-render.min.js" integrity="sha384-bHBqxz8fokvgoJ/sc17HODNxa42TlaEhB+w8ZJXTc2nZf1VgEaFZeZvT4Mznfz0v" crossorigin="anonymous"
         onload="renderMathInElement(document.body);"></script>
   </head>
   ...

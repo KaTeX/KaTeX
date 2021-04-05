@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.1](https://github.com/KaTeX/KaTeX/compare/v0.13.0...v0.13.1) (2021-04-05)
+
+
+### Bug Fixes
+
+* Protect fraction bars from CSS border-color ([#2870](https://github.com/KaTeX/KaTeX/issues/2870)) ([2f62c0d](https://github.com/KaTeX/KaTeX/commit/2f62c0d8ee8135f4d5b7fe727add6ad25d5c86a0))
+
 ## [v0.12.0]
 ### Added
 - `globalGroup` option to place definitions in global scope (#2091)
