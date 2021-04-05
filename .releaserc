@@ -12,7 +12,7 @@
     }],
     "@semantic-release/npm",
     ["@semantic-release/git", {
-      "assets": ["dist", "docs", "package.json", "CHANGELOG.md", "README.md", "contrib/*/README.md", "website/pages/index.html"],
+      "assets": ["docs", "package.json", "CHANGELOG.md", "README.md", "contrib/*/README.md", "website/pages/index.html"],
       "message": "chore(release): ${nextRelease.version} [ci skip]\n\n${nextRelease.notes}",
     }],
     ["@semantic-release/github", {
