@@ -1,6 +1,6 @@
 # Copy-tex extension
 
-This extension modifes the copy/paste behavior in any browser supporting the
+This extension modifies the copy/paste behavior in any browser supporting the
 [Clipboard API](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardEvent)
 so that, when selecting and copying whole KaTeX-rendered elements, the text
 content of the resulting clipboard renders KaTeX elements as their LaTeX source
@@ -38,6 +38,7 @@ statement with `require('katex/contrib/copy-tex/katex2tex.js')`.
 ECMAScript module is also available:
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/npm/katex@0.13.1/dist/contrib/copy-tex.mjs" integrity="sha384-+gSYJ3yzY30+a6FGYJXOx9swmWs5oPKEi1AeCsAxsLexABlUXgHXkOkEZCj0Lz8U" crossorigin="anonymous"></script>
+```
 
 ### Known Issues
 
