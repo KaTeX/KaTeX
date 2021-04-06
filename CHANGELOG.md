@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.2](https://github.com/KaTeX/KaTeX/compare/v0.13.1...v0.13.2) (2021-04-06)
+
+
+### Bug Fixes
+
+* update version and SRI in dist/README.md ([#2905](https://github.com/KaTeX/KaTeX/issues/2905)) ([319c52d](https://github.com/KaTeX/KaTeX/commit/319c52db6433f5fc5327b1f3f32ff361e6a00e50))
+
 ## [0.13.1](https://github.com/KaTeX/KaTeX/compare/v0.13.0...v0.13.1) (2021-04-05)
 
 
