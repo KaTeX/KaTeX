@@ -62,7 +62,7 @@ ECMAScript module is also available:
 ```
 
 > You can use [`nomodule` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
-to provide a fallback for older browsers that do not support ES modules. -->
+to provide a fallback for older browsers that do not support ES modules.
 
 ## API
 This extension exposes a single function, `window.renderMathInElement`, with
