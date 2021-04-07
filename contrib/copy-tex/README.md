@@ -44,11 +44,6 @@ ECMAScript module is also available:
 
 This extension has been tested on Chrome, Firefox, Edge, and Safari.
 
-Microsoft Edge
-[does not seem to support](https://developer.microsoft.com/en-us/microsoft-edge/platform/status/clipboardapi/)
-text and HTML content in a single clipboard.  In this browser, this extension
-will just put the text content into the clipboard.
-
 Safari copies correctly, but the selection rectangle renders strangely
 (too big) when interacting with display math
 (because of the `user-select: all` CSS).
