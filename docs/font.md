@@ -2,7 +2,7 @@
 id: font
 title: Font
 ---
-By changing the variables in the `fonts.less` file at the [katex-fonts submodule](https://github.com/KaTeX/katex-fonts/),
+By changing the variables in the `src/fonts.less` file,
 several properties of the way fonts are used can be changed.
 
 ## Font size and lengths

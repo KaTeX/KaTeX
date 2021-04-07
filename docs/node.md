@@ -24,9 +24,9 @@ yarn global add katex
 ### Building from Source
 To build you will need Git, Node.js 10 or later, and Yarn.
 
-Clone a copy of the GitHub source repository and its submodules:
+Clone a copy of the GitHub source repository:
 ```bash
-git clone --recursive https://github.com/KaTeX/KaTeX.git
+git clone https://github.com/KaTeX/KaTeX.git
 cd KaTeX
 ```
 

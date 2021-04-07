@@ -40,3 +40,7 @@ website/.yarn/*
 !website/.yarn/plugins
 !website/.yarn/sdks
 !website/.yarn/versions
+
+fonts.tar
+fonts.tar.gz
+temp/
