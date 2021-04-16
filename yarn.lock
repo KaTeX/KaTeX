@@ -4519,16 +4519,15 @@ __metadata:
   linkType: hard
 
 "cssnano@npm:^5.0.0-rc.1":
-  version: 5.0.0
-  resolution: "cssnano@npm:5.0.0"
+  version: 5.0.1
+  resolution: "cssnano@npm:5.0.1"
   dependencies:
     cosmiconfig: ^7.0.0
     cssnano-preset-default: ^5.0.0
     is-resolvable: ^1.1.0
-    opencollective-postinstall: ^2.0.2
   peerDependencies:
     postcss: ^8.2.1
-  checksum: 674eeab7783e3440f8d5275d4d05fad843bde1c94e0b2edc774bdef1cf6ee5414e2cb91a12c28e6757e165ded263e1b0c6239c73aa019d6038bfbf9d975a0ee9
+  checksum: 2e3f5a2ef2ef4921c75e02b6eb40e75e64e6e0b0e69e4bb8bca055afeb8c7f28ea4aa7ee3d12e00264150a9698f808102cd156d024bd3b0f464cb1da2215bcb0
   languageName: node
   linkType: hard
 
