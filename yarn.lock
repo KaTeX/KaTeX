@@ -8870,14 +8870,14 @@ __metadata:
   linkType: hard
 
 "less-loader@npm:^8.0.0":
-  version: 8.1.0
-  resolution: "less-loader@npm:8.1.0"
+  version: 8.1.1
+  resolution: "less-loader@npm:8.1.1"
   dependencies:
     klona: ^2.0.4
   peerDependencies:
     less: ^3.5.0 || ^4.0.0
     webpack: ^5.0.0
-  checksum: 8be40f223aa873f303a8df8c0c262f298f942fca2d990229b4f45bf9f0b9212b53e71e5c54327cec07516f3a37b757e6ddee5f526c81203fb0f9d7db7eb8eb46
+  checksum: ec465dc8b153282a7f1014f925b71f4e6586af8ed3bb3b2533d471793855822e4236d2f3536cefbc1c132c19d08f7b0bf01bded5b87f2c694f865f13f6957cb5
   languageName: node
   linkType: hard
 
