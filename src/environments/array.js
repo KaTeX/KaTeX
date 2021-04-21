@@ -4,6 +4,7 @@ import Style from "../Style";
 import defineEnvironment from "../defineEnvironment";
 import {parseCD} from "./cd";
 import defineFunction from "../defineFunction";
+import {defineMacro} from "../macros";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import {assertNodeType, assertSymbolNodeType} from "../parseNode";
@@ -114,6 +115,22 @@ function parseArray(
     const rowGaps = [];
     const hLinesBeforeRow = [];
 
+    // amsmath uses \global\@eqnswtrue and \global\@eqnswfalse to represent
+    // whether this row should have an equation number.  Simulate this with
+    // a \@eqnsw macro set to 1 or 0.
+    const rowEqnNum = (addEqnNum ? [] : undefined);
+    function beginRow() {
+        if (rowEqnNum) {
+            parser.gullet.macros.set("\\@eqnsw", "1", true);
+        }
+    }
+    function endRow() {
+        if (rowEqnNum) {
+            rowEqnNum.push(parser.gullet.macros.get("\\@eqnsw") === "1");
+        }
+    }
+    beginRow();
+
     // Test for \hline at the top of the array.
     hLinesBeforeRow.push(getHLines(parser));
 
@@ -152,6 +169,7 @@ function parseArray(
             }
             parser.consume();
         } else if (next === "\\end") {
+            endRow();
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
             // the last line is empty.
             // NOTE: Currently, `cell` is the last item added into `row`.
@@ -181,6 +199,8 @@ function parseArray(
 
             row = [];
             body.push(row);
+            endRow();
+            beginRow();
         } else {
             throw new ParseError("Expected & or \\\\ or \\cr or \\end",
                                  parser.nextToken);
@@ -203,7 +223,7 @@ function parseArray(
         hskipBeforeAndAfter,
         hLinesBeforeRow,
         colSeparationType,
-        addEqnNum,
+        rowEqnNum,
         leqno,
     };
 }
@@ -336,13 +356,14 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     let colDescrNum;
 
     const eqnNumSpans = [];
-    if (group.addEqnNum) {
+    if (group.rowEqnNum) {
         // An environment with automatic equation numbers.
         // Create node(s) that will trigger CSS counter increment.
         for (r = 0; r < nr; ++r) {
             const rw = body[r];
             const shift = rw.pos - offset;
-            const eqnTag = buildCommon.makeSpan(["eqn-num"], [], options);
+            const eqnTag = buildCommon.makeSpan(
+              group.rowEqnNum[r] ? ["eqn-num"] : [], [], options);
             eqnTag.depth = rw.depth;
             eqnTag.height = rw.height;
             eqnNumSpans.push({type: "elem", elem: eqnTag, shift});
@@ -459,7 +480,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         }, options);
     }
 
-    if (!group.addEqnNum) {
+    if (eqnNumSpans.length === 0) {
         return buildCommon.makeSpan(["mord"], [body], options);
     } else {
         let eqnNumCol = buildCommon.makeVList({
@@ -488,7 +509,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
             row.push(new mathMLTree.MathNode("mtd",
                 [mml.buildGroup(rw[j], options)]));
         }
-        if (group.addEqnNum) {
+        if (group.rowEqnNum && group.rowEqnNum[i]) {
             row.unshift(glue);
             row.push(glue);
             if (group.leqno) {
@@ -1032,6 +1053,9 @@ defineEnvironment({
     htmlBuilder,
     mathmlBuilder,
 });
+
+defineMacro("\\nonumber", "\\gdef\\@eqnsw{0}");
+defineMacro("\\notag", "\\nonumber");
 
 // Catch \hline outside array environment
 defineFunction({
