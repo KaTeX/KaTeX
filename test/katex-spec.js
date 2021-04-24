@@ -3282,6 +3282,13 @@ describe("A macro expander", function() {
         expect('\\char"g').not.toParse();
     });
 
+    it("\\char escapes ~ correctly", () => {
+        const parsedBare = getParsed("~");
+        expect(parsedBare[0].type).toEqual("spacing");
+        const parsedChar = getParsed("\\char`\\~");
+        expect(parsedChar[0].type).toEqual("textord");
+    });
+
     it("should build Unicode private area characters", function() {
         expect`\gvertneqq\lvertneqq\ngeqq\ngeqslant\nleqq`.toBuild();
         expect`\nleqslant\nshortmid\nshortparallel\varsubsetneq`.toBuild();

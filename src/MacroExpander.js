@@ -395,6 +395,14 @@ export default class MacroExpander implements MacroContextInterface {
         if (definition == null) { // mainly checking for undefined here
             return definition;
         }
+        // If a single character has an associated catcode other than 13
+        // (active character), then don't expand it.
+        if (name.length === 1) {
+            const catcode = this.lexer.catcodes[name];
+            if (catcode != null && catcode !== 13) {
+                return;
+            }
+        }
         const expansion =
             typeof definition === "function" ? definition(this) : definition;
         if (typeof expansion === "string") {
