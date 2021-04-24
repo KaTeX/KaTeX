@@ -1267,9 +1267,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@netlify/zip-it-and-ship-it@npm:^3.3.0":
-  version: 3.4.0
-  resolution: "@netlify/zip-it-and-ship-it@npm:3.4.0"
+"@netlify/zip-it-and-ship-it@npm:^3.5.0":
+  version: 3.7.0
+  resolution: "@netlify/zip-it-and-ship-it@npm:3.7.0"
   dependencies:
     archiver: ^4.0.0
     array-flat-polyfill: ^1.0.1
@@ -1299,7 +1299,7 @@ __metadata:
     yargs: ^15.4.1
   bin:
     zip-it-and-ship-it: src/bin.js
-  checksum: 3e39650ae262c3e6cbbba7cc1d81cfcf3e354989a825508b0995b10afcf8b7796b831489c1dcfccf59ed2673bc8f90b30d481a1e8f520b86fca37df2b869d272
+  checksum: 2ad8bf6ecedbebbe23518ce7820d86431ef319c579fc8a6187664b14389619d640fa7f99a725cafb5e6ae3d43583627bc930a155996c3932877115c1556d5f6f
   languageName: node
   linkType: hard
 
@@ -6828,11 +6828,11 @@ __metadata:
   linkType: hard
 
 "netlify@npm:^6.1.14":
-  version: 6.1.18
-  resolution: "netlify@npm:6.1.18"
+  version: 6.1.20
+  resolution: "netlify@npm:6.1.20"
   dependencies:
     "@netlify/open-api": ^1.3.0
-    "@netlify/zip-it-and-ship-it": ^3.3.0
+    "@netlify/zip-it-and-ship-it": ^3.5.0
     backoff: ^2.5.0
     clean-deep: ^3.4.0
     flush-write-stream: ^2.0.0
@@ -6852,7 +6852,7 @@ __metadata:
     tempy: ^0.3.0
     through2-filter: ^3.0.0
     through2-map: ^3.0.0
-  checksum: 568070ecb10d1c105f5511b910a3f7e8d32a926f561f1e920a12cde055b5d9e48e68688c4a62c927eae97bbcc28ef26037bed11365ff32d6536d492f4fbc086e
+  checksum: e9a319be55c067b69df387d86993904e3be63cd40f13768e4127c28582b852051896ca7ce56f7bb228c73cbec991907a25a5c22148a080ec6e5db573e9195dc0
   languageName: node
   linkType: hard
 
