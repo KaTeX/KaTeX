@@ -82,3 +82,7 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        GIT_AUTHOR_NAME: KaTeX bot
+        GIT_AUTHOR_EMAIL: 33710906+KaTeX-bot@users.noreply.github.com
+        GIT_COMMITTER_NAME: KaTeX bot
+        GIT_COMMITTER_EMAIL: 33710906+KaTeX-bot@users.noreply.github.com
