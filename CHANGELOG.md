@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.3](https://github.com/KaTeX/KaTeX/compare/v0.13.2...v0.13.3) (2021-04-24)
+
+
+### Bug Fixes
+
+* Respect catcode in macro expansion and set ~'s catcode correctly ([#2949](https://github.com/KaTeX/KaTeX/issues/2949)) ([01ae7f8](https://github.com/KaTeX/KaTeX/commit/01ae7f8eef09bcddc6e327c2cb5a3460800652d5)), closes [#2924](https://github.com/KaTeX/KaTeX/issues/2924)
+* **array:** Keep single empty row in AMS environments ([#2947](https://github.com/KaTeX/KaTeX/issues/2947)) ([24332e0](https://github.com/KaTeX/KaTeX/commit/24332e053c0f33b37e6d30384b42232f321a6fc7)), closes [#2944](https://github.com/KaTeX/KaTeX/issues/2944)
+
 ## [0.13.2](https://github.com/KaTeX/KaTeX/compare/v0.13.1...v0.13.2) (2021-04-06)
 
 
