@@ -117,7 +117,8 @@ The `{array}` environment supports `|` and `:` vertical separators.
 
 The `{array}` environment does not yet support `\cline` or `\multicolumn`.
 
-`\tag` can not yet be applied to individual environment rows.
+`\tag` can be applied to individual rows of top-level environments
+(`align`, `align*`, `alignat`, `alignat*`, `gather`, `gather*`).
 
 <div class="katex-hopscotch">
 
