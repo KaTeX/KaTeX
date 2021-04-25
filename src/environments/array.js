@@ -69,7 +69,7 @@ function parseArray(
         cols,
         arraystretch,
         colSeparationType,
-        addEqnNum,
+        autoTag,
         singleRow,
         maxNumCols,
         leqno,
@@ -79,7 +79,7 @@ function parseArray(
         cols?: AlignSpec[],
         arraystretch?: number,
         colSeparationType?: ColSeparationType,
-        addEqnNum?: boolean,
+        autoTag?: boolean,
         singleRow?: boolean,
         maxNumCols?: number,
         leqno?: boolean,
@@ -118,15 +118,22 @@ function parseArray(
     // amsmath uses \global\@eqnswtrue and \global\@eqnswfalse to represent
     // whether this row should have an equation number.  Simulate this with
     // a \@eqnsw macro set to 1 or 0.
-    const rowEqnNum = (addEqnNum ? [] : undefined);
+    const tags = (autoTag ? [] : undefined);
     function beginRow() {
-        if (rowEqnNum) {
+        if (autoTag) {
             parser.gullet.macros.set("\\@eqnsw", "1", true);
         }
     }
     function endRow() {
-        if (rowEqnNum) {
-            rowEqnNum.push(parser.gullet.macros.get("\\@eqnsw") === "1");
+        if (autoTag != null) {
+            let manualTag = parser.gullet.macros.get("\\df@tag");
+            if (manualTag) {
+                tags.push(parser.subparse(manualTag.tokens));
+                parser.gullet.macros.set("\\df@tag", undefined, true);
+            } else {
+                tags.push(autoTag &&
+                    parser.gullet.macros.get("\\@eqnsw") === "1");
+            }
         }
     }
     beginRow();
@@ -223,7 +230,7 @@ function parseArray(
         hskipBeforeAndAfter,
         hLinesBeforeRow,
         colSeparationType,
-        rowEqnNum,
+        tags,
         leqno,
     };
 }
@@ -355,18 +362,25 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     let colSep;
     let colDescrNum;
 
-    const eqnNumSpans = [];
-    if (group.rowEqnNum) {
-        // An environment with automatic equation numbers.
-        // Create node(s) that will trigger CSS counter increment.
+    const tagSpans = [];
+    if (group.tags && group.tags.some((tag) => tag)) {
+        // An environment with manual tags and/or automatic equation numbers.
+        // Create node(s), the latter of which trigger CSS counter increment.
         for (r = 0; r < nr; ++r) {
             const rw = body[r];
             const shift = rw.pos - offset;
-            const eqnTag = buildCommon.makeSpan(
-              group.rowEqnNum[r] ? ["eqn-num"] : [], [], options);
-            eqnTag.depth = rw.depth;
-            eqnTag.height = rw.height;
-            eqnNumSpans.push({type: "elem", elem: eqnTag, shift});
+            let tagSpan;
+            if (group.tags[r] === true) {  // automatic numbering
+                tagSpan = buildCommon.makeSpan(["eqn-num"], [], options);
+            } else if (group.tags[r]) {  // manual \tag
+                tagSpan = buildCommon.makeSpan([],
+                    html.buildExpression(group.tags[r], options), options);
+            } else {  // \nonumber/\notag or starred environment
+                tagSpan = buildCommon.makeSpan([], [], options);
+            }
+            tagSpan.depth = rw.depth;
+            tagSpan.height = rw.height;
+            tagSpans.push({type: "elem", elem: tagSpan, shift});
         }
     }
 
@@ -480,12 +494,12 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         }, options);
     }
 
-    if (eqnNumSpans.length === 0) {
+    if (tagSpans.length === 0) {
         return buildCommon.makeSpan(["mord"], [body], options);
     } else {
         let eqnNumCol = buildCommon.makeVList({
             positionType: "individualShift",
-            children: eqnNumSpans,
+            children: tagSpans,
         }, options);
         eqnNumCol = buildCommon.makeSpan(["tag"], [eqnNumCol], options);
         return buildCommon.makeFragment([body, eqnNumCol]);
@@ -509,7 +523,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
             row.push(new mathMLTree.MathNode("mtd",
                 [mml.buildGroup(rw[j], options)]));
         }
-        if (group.rowEqnNum && group.rowEqnNum[i]) {
+        if (group.tags && group.tags[i]) {
             row.unshift(glue);
             row.push(glue);
             if (group.leqno) {
@@ -650,7 +664,11 @@ const alignedHandler = function(context, args) {
         {
             cols,
             addJot: true,
-            addEqnNum: context.envName === "align" || context.envName === "alignat",
+            autoTag:
+              context.envName === "align" || context.envName === "alignat" ?
+              true :
+              context.envName === "align*" || context.envName === "alignat*" ?
+              false : undefined,
             colSeparationType: separationType,
             maxNumCols: context.envName === "split" ? 2 : undefined,
             leqno: context.parser.settings.leqno,
@@ -997,7 +1015,8 @@ defineEnvironment({
             }],
             addJot: true,
             colSeparationType: "gather",
-            addEqnNum: context.envName === "gather",
+            autoTag: context.envName === "gather" ? true :
+                     context.envName === "gather*" ? false : undefined,
             leqno: context.parser.settings.leqno,
         };
         return parseArray(context.parser, res, "display");
@@ -1029,7 +1048,7 @@ defineEnvironment({
     handler(context) {
         validateAmsEnvironmentContext(context);
         const res = {
-            addEqnNum: context.envName === "equation",
+            autoTag: context.envName === "equation",
             singleRow: true,
             maxNumCols: 1,
             leqno: context.parser.settings.leqno,

@@ -54,6 +54,34 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
+     * Feed a new input as a set of token, specified in reverse order
+     * (e.g. from a MacroDefinition).
+     */
+    feedTokens(tokens: Token[]) {
+        for (let i = 0; i < tokens.length; i++) {
+            this.stack.push(tokens[i]);
+        }
+    }
+
+    /**
+     * Mechanism for pausing/clearing/restoring the current parsing job.
+     */
+    saveJob(): MacroExpanderJob {
+        return {
+            lexer: this.lexer,
+            stack: this.stack
+        }
+    }
+    clearJob() {
+        this.lexer = new Lexer('', this.settings);
+        this.stack = [];
+    }
+    restoreJob(state: MacroExpanderJob): Lexer {
+        this.lexer = state.lexer;
+        this.stack = state.stack;
+    }
+
+    /**
      * Switches between "text" and "math" modes.
      */
     switchMode(newMode: Mode) {

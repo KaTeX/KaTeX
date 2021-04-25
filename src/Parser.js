@@ -143,6 +143,24 @@ export default class Parser {
         return parse;
     }
 
+    /**
+     * Fully parse a separate sequence of tokens as a separate job.
+     */
+    subparse(tokens: Token[]): AnyParseNode[] {
+        const oldToken = this.nextToken;
+        this.consume();
+        const job = this.gullet.saveJob();
+        console.log(tokens);
+        this.gullet.clearJob();
+        this.gullet.feedTokens(tokens);
+        const parse = this.parseExpression(false);
+        console.log(this.gullet);
+        this.expect("EOF");
+        this.nextToken = oldToken;
+        this.gullet.restoreJob(job);
+        return parse;
+    }
+
     static endOfExpression: string[] = ["}", "\\endgroup", "\\end", "\\right", "&"];
 
     /**
