@@ -131,12 +131,12 @@ function parseArray(
         }
     }
     function endRow() {
-        if (autoTag != null) {
+        if (tags) {
             if (parser.gullet.macros.get("\\df@tag")) {
                 tags.push(parser.subparse([new Token("\\df@tag")]));
                 parser.gullet.macros.set("\\df@tag", undefined, true);
             } else {
-                tags.push(autoTag &&
+                tags.push(Boolean(autoTag) &&
                     parser.gullet.macros.get("\\@eqnsw") === "1");
             }
         }
@@ -374,14 +374,16 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         for (r = 0; r < nr; ++r) {
             const rw = body[r];
             const shift = rw.pos - offset;
+            const tag = group.tags[r];
             let tagSpan;
-            if (group.tags[r] === true) {  // automatic numbering
+            if (tag === true) {  // automatic numbering
                 tagSpan = buildCommon.makeSpan(["eqn-num"], [], options);
-            } else if (group.tags[r]) {  // manual \tag
-                tagSpan = buildCommon.makeSpan([],
-                    html.buildExpression(group.tags[r], options), options);
-            } else {  // \nonumber/\notag or starred environment
+            } else if (tag === false) {
+                // \nonumber/\notag or starred environment
                 tagSpan = buildCommon.makeSpan([], [], options);
+            } else {  // manual \tag
+                tagSpan = buildCommon.makeSpan([],
+                    html.buildExpression(tag, options, true), options);
             }
             tagSpan.depth = rw.depth;
             tagSpan.height = rw.height;
