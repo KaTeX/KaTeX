@@ -365,7 +365,7 @@ function setSize(reqW, reqH) {
 }
 
 function imageDimensions(img) {
-    const buf = new Buffer(img, "base64");
+    const buf = Buffer.from(img, "base64");
     return {
         buf: buf,
         width: buf.readUInt32BE(16),
