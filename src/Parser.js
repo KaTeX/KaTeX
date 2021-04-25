@@ -145,19 +145,22 @@ export default class Parser {
 
     /**
      * Fully parse a separate sequence of tokens as a separate job.
+     * Tokens should be specified in reverse order, as in a MacroDefinition.
      */
     subparse(tokens: Token[]): AnyParseNode[] {
+        // Save the next token from the current job.
         const oldToken = this.nextToken;
         this.consume();
-        const job = this.gullet.saveJob();
-        console.log(tokens);
-        this.gullet.clearJob();
+
+        // Run the new job, terminating it with an excess '}'
+        this.gullet.feedTokens([new Token("}")]);
         this.gullet.feedTokens(tokens);
         const parse = this.parseExpression(false);
-        console.log(this.gullet);
-        this.expect("EOF");
+        this.expect("}");
+
+        // Restore the next token from the current job.
         this.nextToken = oldToken;
-        this.gullet.restoreJob(job);
+
         return parse;
     }
 

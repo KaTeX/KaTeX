@@ -9,6 +9,7 @@ import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import {assertNodeType, assertSymbolNodeType} from "../parseNode";
 import {checkSymbolNodeType} from "../parseNode";
+import {Token} from "../Token";
 import {calculateSize} from "../units";
 import utils from "../utils";
 
@@ -115,10 +116,15 @@ function parseArray(
     const rowGaps = [];
     const hLinesBeforeRow = [];
 
+    // autoTag can be one of three values:
+    // * undefined: Regular (not-top-level) array; no tags on each row
+    // * true: Automatic equation numbering, overridable by \tag
+    // * false: Tags allowed on each row, but no automatic numbering
+    const tags = (autoTag != null ? [] : undefined);
+
     // amsmath uses \global\@eqnswtrue and \global\@eqnswfalse to represent
     // whether this row should have an equation number.  Simulate this with
     // a \@eqnsw macro set to 1 or 0.
-    const tags = (autoTag ? [] : undefined);
     function beginRow() {
         if (autoTag) {
             parser.gullet.macros.set("\\@eqnsw", "1", true);
@@ -126,9 +132,8 @@ function parseArray(
     }
     function endRow() {
         if (autoTag != null) {
-            let manualTag = parser.gullet.macros.get("\\df@tag");
-            if (manualTag) {
-                tags.push(parser.subparse(manualTag.tokens));
+            if (parser.gullet.macros.get("\\df@tag")) {
+                tags.push(parser.subparse([new Token("\\df@tag")]));
                 parser.gullet.macros.set("\\df@tag", undefined, true);
             } else {
                 tags.push(autoTag &&
@@ -200,13 +205,13 @@ function parseArray(
                 size = parser.parseSizeGroup(true);
             }
             rowGaps.push(size ? size.value : null);
+            endRow();
 
             // check for \hline(s) following the row separator
             hLinesBeforeRow.push(getHLines(parser));
 
             row = [];
             body.push(row);
-            endRow();
             beginRow();
         } else {
             throw new ParseError("Expected & or \\\\ or \\cr or \\end",
