@@ -72,6 +72,7 @@ function parseArray(
         colSeparationType,
         autoTag,
         singleRow,
+        emptySingleRow,
         maxNumCols,
         leqno,
     }: {|
@@ -82,6 +83,7 @@ function parseArray(
         colSeparationType?: ColSeparationType,
         autoTag?: boolean,
         singleRow?: boolean,
+        emptySingleRow?: boolean,
         maxNumCols?: number,
         leqno?: boolean,
     |},
@@ -183,10 +185,12 @@ function parseArray(
         } else if (next === "\\end") {
             endRow();
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
-            // the last line is empty.
+            // the last line is empty.  However, AMS environments keep the
+            // empty row if it's the only one.
             // NOTE: Currently, `cell` is the last item added into `row`.
             if (row.length === 1 && cell.type === "styling" &&
-                cell.body[0].body.length === 0) {
+                cell.body[0].body.length === 0 &&
+                (body.length > 1 || !emptySingleRow)) {
                 body.pop();
             }
             if (hLinesBeforeRow.length < body.length + 1) {
@@ -676,6 +680,7 @@ const alignedHandler = function(context, args) {
               true :
               context.envName === "align*" || context.envName === "alignat*" ?
               false : undefined,
+            emptySingleRow: true,
             colSeparationType: separationType,
             maxNumCols: context.envName === "split" ? 2 : undefined,
             leqno: context.parser.settings.leqno,
@@ -1024,6 +1029,7 @@ defineEnvironment({
             colSeparationType: "gather",
             autoTag: context.envName === "gather" ? true :
                      context.envName === "gather*" ? false : undefined,
+            emptySingleRow: true,
             leqno: context.parser.settings.leqno,
         };
         return parseArray(context.parser, res, "display");
@@ -1056,6 +1062,7 @@ defineEnvironment({
         validateAmsEnvironmentContext(context);
         const res = {
             autoTag: context.envName === "equation",
+            emptySingleRow: true,
             singleRow: true,
             maxNumCols: 1,
             leqno: context.parser.settings.leqno,

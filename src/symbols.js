@@ -582,13 +582,11 @@ defineSymbol(math, main, rel, "\u2192", "\\to");
 defineSymbol(math, ams, rel, "\u2271", "\\ngeq", true);
 defineSymbol(math, ams, rel, "\u2270", "\\nleq", true);
 defineSymbol(math, main, spacing, "\u00a0", "\\ ");
-defineSymbol(math, main, spacing, "\u00a0", "~");
 defineSymbol(math, main, spacing, "\u00a0", "\\space");
 // Ref: LaTeX Source 2e: \DeclareRobustCommand{\nobreakspace}{%
 defineSymbol(math, main, spacing, "\u00a0", "\\nobreakspace");
 defineSymbol(text, main, spacing, "\u00a0", "\\ ");
 defineSymbol(text, main, spacing, "\u00a0", " ");
-defineSymbol(text, main, spacing, "\u00a0", "~");
 defineSymbol(text, main, spacing, "\u00a0", "\\space");
 defineSymbol(text, main, spacing, "\u00a0", "\\nobreakspace");
 defineSymbol(math, main, spacing, null, "\\nobreak");
