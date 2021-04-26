@@ -2797,6 +2797,18 @@ describe("AMS environments", function() {
         expect`\begin{CD}A @<a<< B @>>b> C @>>> D\\@. @| @AcAA @VVdV \\@. E @= F @>>> G\end{CD}`.toBuild(displayMode);
     });
 
+    it("should build an empty environment", () => {
+        expect`\begin{gather}\end{gather}`.toBuild(displayMode);
+        expect`\begin{gather*}\end{gather*}`.toBuild(displayMode);
+        expect`\begin{align}\end{align}`.toBuild(displayMode);
+        expect`\begin{align*}\end{align*}`.toBuild(displayMode);
+        expect`\begin{alignat}{2}\end{alignat}`.toBuild(displayMode);
+        expect`\begin{alignat*}{2}\end{alignat*}`.toBuild(displayMode);
+        expect`\begin{equation}\end{equation}`.toBuild(displayMode);
+        expect`\begin{split}\end{split}`.toBuild(displayMode);
+        expect`\begin{CD}\end{CD}`.toBuild(displayMode);
+    });
+
     it("{equation} should fail if argument contains two rows.", () => {
         expect`\begin{equation}a=\cr b+c\end{equation}`.not.toParse(displayMode);
     });
@@ -3268,6 +3280,13 @@ describe("A macro expander", function() {
         expect("\\char'a").not.toParse();
         expect('\\char"g').not.toParse();
         expect('\\char"g').not.toParse();
+    });
+
+    it("\\char escapes ~ correctly", () => {
+        const parsedBare = getParsed("~");
+        expect(parsedBare[0].type).toEqual("spacing");
+        const parsedChar = getParsed("\\char`\\~");
+        expect(parsedChar[0].type).toEqual("textord");
     });
 
     it("should build Unicode private area characters", function() {
