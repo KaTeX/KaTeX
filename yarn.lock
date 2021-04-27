@@ -12340,13 +12340,13 @@ __metadata:
   linkType: hard
 
 "postcss@npm:^8.0.0, postcss@npm:^8.2.10":
-  version: 8.2.10
-  resolution: "postcss@npm:8.2.10"
+  version: 8.2.13
+  resolution: "postcss@npm:8.2.13"
   dependencies:
     colorette: ^1.2.2
     nanoid: ^3.1.22
     source-map: ^0.6.1
-  checksum: 83912f846376ceb501d887951bb3c7f5efc16452b124ba5ffbdd27f718dabd1edce8f6ef777a88aeb93366081cc2a3804581b2e6711a1e89ecaecb0dff2d2b73
+  checksum: df64697cbd6d8e501eac2eaed501dc9a9c848538b4b51c53bfe7ed62a91736e97135d1fe22384b69af11bb2387a6cb483f5eecd14b19ca192ab5497ed5522124
   languageName: node
   linkType: hard
 
