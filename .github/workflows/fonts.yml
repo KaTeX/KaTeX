@@ -11,6 +11,9 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'build fonts')
     outputs:
       image: ${{ steps.check-image.outputs.result }}
+    permissions:
+      contents: read
+      pull-requests: write # to remove label
 
     steps:
     - uses: actions/checkout@v2
