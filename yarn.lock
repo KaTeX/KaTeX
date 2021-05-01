@@ -4475,9 +4475,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cssnano-preset-default@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "cssnano-preset-default@npm:5.0.0"
+"cssnano-preset-default@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "cssnano-preset-default@npm:5.0.1"
   dependencies:
     css-declaration-sorter: 6.0.0
     cssnano-utils: ^2.0.0
@@ -4488,7 +4488,7 @@ __metadata:
     postcss-discard-duplicates: ^5.0.0
     postcss-discard-empty: ^5.0.0
     postcss-discard-overridden: ^5.0.0
-    postcss-merge-longhand: ^5.0.0
+    postcss-merge-longhand: ^5.0.1
     postcss-merge-rules: ^5.0.0
     postcss-minify-font-values: ^5.0.0
     postcss-minify-gradients: ^5.0.0
@@ -4510,7 +4510,7 @@ __metadata:
     postcss-unique-selectors: ^5.0.0
   peerDependencies:
     postcss: ^8.2.1
-  checksum: 7b369239ce8c1da1e5be52abc597c9867d8ac61d7855a4adba9e574b0716f80ff9f89bf9acdecc9329a03c1cd9d678b91e5e40b084b7588e243132a5af51395f
+  checksum: 9547c57caa83dfd7acc03c2d9c3983cd956c1c7e85fc30e31257fd577c7a2190f22925660fbac79225d0c0e1aeb71dd311cbc256c99453d8337d6d8d6447d0ef
   languageName: node
   linkType: hard
 
@@ -4524,15 +4524,15 @@ __metadata:
   linkType: hard
 
 "cssnano@npm:^5.0.0-rc.1":
-  version: 5.0.1
-  resolution: "cssnano@npm:5.0.1"
+  version: 5.0.2
+  resolution: "cssnano@npm:5.0.2"
   dependencies:
     cosmiconfig: ^7.0.0
-    cssnano-preset-default: ^5.0.0
+    cssnano-preset-default: ^5.0.1
     is-resolvable: ^1.1.0
   peerDependencies:
     postcss: ^8.2.1
-  checksum: 2e3f5a2ef2ef4921c75e02b6eb40e75e64e6e0b0e69e4bb8bca055afeb8c7f28ea4aa7ee3d12e00264150a9698f808102cd156d024bd3b0f464cb1da2215bcb0
+  checksum: fbd293d60cda6db6e8fc9623f8c5c1b7f164a158c776c97f356bf8abe887ab4dc59c2512987cbfaf291bf56d8fbcd57a703b51455d54d3f26d385262b0f83e12
   languageName: node
   linkType: hard
 
@@ -11826,16 +11826,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-merge-longhand@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "postcss-merge-longhand@npm:5.0.0"
+"postcss-merge-longhand@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "postcss-merge-longhand@npm:5.0.1"
   dependencies:
     css-color-names: ^1.0.1
     postcss-value-parser: ^4.1.0
     stylehacks: ^5.0.0
   peerDependencies:
     postcss: ^8.2.1
-  checksum: 5cdced49d52fb266f2a35fa55d3d1419dc5afe164643c4b816c97d85857be3e22d2693004a3a75015accf709684f7f8f2b903c4253394e1363ddabb8ebc20bca
+  checksum: 98aea255c33a27e1c1c2d09ca93d1c032ce639e620283470ec8180368ef84d22a7ff647947eb9b1f3dbdd2d095e86272bbe2a16c88bc09c9ed68a9f33c83d6b8
   languageName: node
   linkType: hard
 
