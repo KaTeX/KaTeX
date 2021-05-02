@@ -326,10 +326,10 @@ export default class Parser {
                     const limits = lex.text === "\\limits";
                     base.limits = limits;
                     base.alwaysHandleSupSub = true;
-                } else if (base && base.type === "operatorname"
-                        && base.alwaysHandleSupSub) {
-                    const limits = lex.text === "\\limits";
-                    base.limits = limits;
+                } else if (base && base.type === "operatorname") {
+                    if (base.alwaysHandleSupSub) {
+                        base.limits = lex.text === "\\limits";
+                    }
                 } else {
                     throw new ParseError(
                         "Limit controls must follow a math operator",
