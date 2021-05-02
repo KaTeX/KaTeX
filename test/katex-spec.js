@@ -3745,6 +3745,10 @@ describe("Unicode", function() {
         expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝◯⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toBuild(strictSettings);
     });
 
+    it("should build common ords", function() {
+        expect("§¶£¥∇∞⋅∠∡∢♠♡♢♣♭♮♯✓…⋮⋯⋱! ‼ ⦵").toBuild(strictSettings);
+    });
+
     it("should build delimiters", function() {
         expect("\\left\u230A\\frac{a}{b}\\right\u230B").toBuild();
         expect("\\left\u2308\\frac{a}{b}\\right\u2308").toBuild();
