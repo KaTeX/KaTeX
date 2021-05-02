@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.5](https://github.com/KaTeX/KaTeX/compare/v0.13.4...v0.13.5) (2021-05-02)
+
+
+### Bug Fixes
+
+* Support \S and \P in math mode ([#2977](https://github.com/KaTeX/KaTeX/issues/2977)) ([3f7163d](https://github.com/KaTeX/KaTeX/commit/3f7163daf57b5c0bd7441e029170305557f0ab4e))
+
 ## [0.13.4](https://github.com/KaTeX/KaTeX/compare/v0.13.3...v0.13.4) (2021-05-02)
 
 
