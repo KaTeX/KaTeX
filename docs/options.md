@@ -4,9 +4,9 @@ title: Options
 ---
 You can provide an object of options as the last argument to [`katex.render` and `katex.renderToString`](api.md). Available options are:
 
-- `displayMode`: `boolean`. If `true` the math will be rendered in display mode. If `false` the math will be rendered in inline mode. (default: `false`) Differences between the two modes include:
-  - Display mode puts math in display style, so `\int` and `\sum` are large, for example;
-  - Display mode centers math on its on line and disables line-wrap (you can customize this behavior with CSS).
+- `displayMode`: `boolean` (default: `false`). If `true` the math will be rendered in display mode. If `false` the math will be rendered in inline mode. Differences between the two modes include:
+  - Display mode starts in `\displaystyle`, so `\int` and `\sum` are large, for example; while inline mode starts in `\textstyle`, where subscripts and superscripts usually don't stack on top of operators like `\sum`. You can always manually switch between `\displaystyle` and `\textstyle` using those commands.
+  - Display mode centers math on its on line and disables line-wrap (though you can customize this behavior with custom CSS). In inline mode, KaTeX allows line breaks after outermost relations (like `=` or `<`) or binary operators (like `+` or `\times`), the same as TeX.
 - `output`: `string`. Determines the markup language of the output. The valid choices are:
   - `html`: Outputs KaTeX in HTML only.
   - `mathml`: Outputs KaTeX in MathML only.
