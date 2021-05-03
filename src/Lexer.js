@@ -28,8 +28,9 @@ import type Settings from "./Settings";
  * - does not match bare surrogate code units
  * - matches any BMP character except for those just described
  * - matches any valid Unicode surrogate pair
- * - matches a backslash followed by one or more letters
- * - matches a backslash followed by any BMP character, including newline
+ * - matches a backslash followed by one or more whitespace characters
+ * - matches a backslash followed by one or more letters then whitespace
+ * - matches a backslash followed by any BMP character
  * Just because the Lexer matches something doesn't mean it's valid input:
  * If there is no matching function or symbol definition, the Parser will
  * still reject the input.
