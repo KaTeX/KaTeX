@@ -39,9 +39,7 @@ const spaceRegexString = "[ \r\n\t]";
 const controlWordRegexString = "\\\\[a-zA-Z@]+";
 const controlSymbolRegexString = "\\\\[^\uD800-\uDFFF]";
 const controlWordWhitespaceRegexString =
-    `${controlWordRegexString}${spaceRegexString}*`;
-const controlWordWhitespaceRegex = new RegExp(
-    `^(${controlWordRegexString})${spaceRegexString}*$`);
+    `(${controlWordRegexString})${spaceRegexString}*`;
 const controlSpaceRegexString = "\\\\(\n|[ \r\t]+\n?)[ \r\t]*";
 const combiningDiacriticalMarkString = "[\u0300-\u036f]";
 export const combiningDiacriticalMarksEndRegex: RegExp =
@@ -97,7 +95,7 @@ export default class Lexer implements LexerInterface {
                 `Unexpected character: '${input[pos]}'`,
                 new Token(input[pos], new SourceLocation(this, pos, pos + 1)));
         }
-        let text = match[3] || (match[2] ? "\\ " : " ");
+        const text = match[6] || match[3] || (match[2] ? "\\ " : " ");
 
         if (this.catcodes[text] === 14) { // comment character
             const nlIndex = input.indexOf('\n', this.tokenRegex.lastIndex);
@@ -110,12 +108,6 @@ export default class Lexer implements LexerInterface {
                 this.tokenRegex.lastIndex = nlIndex + 1;
             }
             return this.lex();
-        }
-
-        // Trim any trailing whitespace from control word match
-        const controlMatch = text.match(controlWordWhitespaceRegex);
-        if (controlMatch) {
-            text = controlMatch[1];
         }
 
         return new Token(text, new SourceLocation(this, pos,
