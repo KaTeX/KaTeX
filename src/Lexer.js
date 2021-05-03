@@ -62,7 +62,8 @@ export default class Lexer implements LexerInterface {
     input: string;
     settings: Settings;
     tokenRegex: RegExp;
-    // category codes, only supports comment characters (14) for now
+    // Category codes. The lexer only supports comment characters (14) for now.
+    // MacroExpander additionally distinguishes active (13).
     catcodes: {[string]: number};
 
     constructor(input: string, settings: Settings) {
@@ -72,6 +73,7 @@ export default class Lexer implements LexerInterface {
         this.tokenRegex = new RegExp(tokenRegexString, 'g');
         this.catcodes = {
             "%": 14, // comment character
+            "~": 13, // active character
         };
     }
 

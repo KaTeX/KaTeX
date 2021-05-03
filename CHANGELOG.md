@@ -1,6 +1,132 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.5](https://github.com/KaTeX/KaTeX/compare/v0.13.4...v0.13.5) (2021-05-02)
+
+
+### Bug Fixes
+
+* Support \S and \P in math mode ([#2977](https://github.com/KaTeX/KaTeX/issues/2977)) ([3f7163d](https://github.com/KaTeX/KaTeX/commit/3f7163daf57b5c0bd7441e029170305557f0ab4e))
+
+## [0.13.4](https://github.com/KaTeX/KaTeX/compare/v0.13.3...v0.13.4) (2021-05-02)
+
+
+### Bug Fixes
+
+* Avoid crash when \operatorname has \limits ([#2979](https://github.com/KaTeX/KaTeX/issues/2979)) ([fbda0b1](https://github.com/KaTeX/KaTeX/commit/fbda0b1136cfe3f1a0c47f16a2a1e1e99c284ea8))
+
+## [0.13.3](https://github.com/KaTeX/KaTeX/compare/v0.13.2...v0.13.3) (2021-04-24)
+
+
+### Bug Fixes
+
+* Respect catcode in macro expansion and set ~'s catcode correctly ([#2949](https://github.com/KaTeX/KaTeX/issues/2949)) ([01ae7f8](https://github.com/KaTeX/KaTeX/commit/01ae7f8eef09bcddc6e327c2cb5a3460800652d5)), closes [#2924](https://github.com/KaTeX/KaTeX/issues/2924)
+* **array:** Keep single empty row in AMS environments ([#2947](https://github.com/KaTeX/KaTeX/issues/2947)) ([24332e0](https://github.com/KaTeX/KaTeX/commit/24332e053c0f33b37e6d30384b42232f321a6fc7)), closes [#2944](https://github.com/KaTeX/KaTeX/issues/2944)
+
+## [0.13.2](https://github.com/KaTeX/KaTeX/compare/v0.13.1...v0.13.2) (2021-04-06)
+
+
+### Bug Fixes
+
+* update version and SRI in dist/README.md ([#2905](https://github.com/KaTeX/KaTeX/issues/2905)) ([319c52d](https://github.com/KaTeX/KaTeX/commit/319c52db6433f5fc5327b1f3f32ff361e6a00e50))
+
+## [0.13.1](https://github.com/KaTeX/KaTeX/compare/v0.13.0...v0.13.1) (2021-04-05)
+
+
+### Bug Fixes
+
+* Protect fraction bars from CSS border-color ([#2870](https://github.com/KaTeX/KaTeX/issues/2870)) ([2f62c0d](https://github.com/KaTeX/KaTeX/commit/2f62c0d8ee8135f4d5b7fe727add6ad25d5c86a0))
+
+## [v0.13.0]
+### See https://github.com/KaTeX/KaTeX/issues/2490 for breaking changes and migration guide!
+
+### Bug Fixes
+- fix: Remove topEnv parameter. (#2712)
+- fix(builder): combine characters together in all expressions (#2080)
+- fix: Prevent global group from adversely affecting color. (#2703)
+- fix: Use SVGs to avoid gaps in tall delimiters. (#2698)
+- fix: rewrite of splitAtDelimiters.js -- new fix for #2523 (#2679)
+- fix: Improve MathML for math operators with subscripts (#2596)
+- fix: Remove premature CD screenshotter images (#2641)
+- fix: Support Armenian characters (#2618)
+- fix: MathML \lim\limits in Safari (#2556)
+- fix: Support MathML \oiint and \oiiint (#2461)
+- fix: \injlim typo (#2459)
+
+### Features
+- feat: Support \underbar (#2713)
+- feat: Add {CD} to auto-render. (#2710)
+- feat: Set Auto-render to recognize AMS environments without $$…$$ delimiters. (#2701)
+- feat: Support {CD} (#2396)
+- feat: Support \vcenter and \hbox (#2452)
+- feat(function): add `allowedInArgument` instead of `greediness` property (#2134)
+- feat: Support matrix*, pmatrix*, bmatrix*, Bmatrix*, vmatrix*, and  Vmatrix*. (#2488)
+- feat(macro): improve argument parsing (#2085)
+- feat: support AMS log-like symbols (#2429)
+- feat: support Unicode ◯, U+25EF (#2430)
+- feat: Support \phase (#2406)
+- feat: Support \mathstrut (#2416)
+- feat: support {equation}, {equation*}, and {split} (#2369)
+- feat(css): use postcss-preset-env (#2313)
+- feat: support {align}, {align*}, {alignat}, and {alignat*} (#2341)
+- Support {gather} and {gather*} (#2183)
+- feat: support MathML \big, \bigg, \Big, and \Bigg (#2332)
+- feat: support \angl and \angln (#2334)
+- Support \origof and \imageof (#2283)
+
+### Documentation
+- docs: Add TiddlyWiki to list of users (#2765)
+- docs: Fix fallback CSS classes (#2809)
+- docs: Rearrange environment documentation. (#2700)
+- docs: Explain how to make macros persist. (#2702)
+- docs: Revise placement of colonequals in Relations table (#2704)
+- docs: delete stray backtick (#2680)
+- docs: Add colonequals functions to docs (#2651)
+- docs: add new user link (#2597)
+- fix: typo in example on homepage (#2577)
+- docs: Add \char to support_table. (#2620)
+- docs: Update \operatorname in supported_table.md 0.12.0 (#2571)
+- docs: Fix documentation typo in operatorname* (#2570)
+- docs: add warning re:defer to mhchem documentation (#2485)
+- docs: update Gastby logo and link (#2481)
+- docs: add MonsterWriter to the users page (#2478)
+- docs: add comment re: \arrowvert (#2449)
+- docs: add link to Discussions (#2405)
+- Update \color documentation (#2370)
+- docs: add Marker as a KaTeX user (#2329)
+
+### Other Changes
+- ci: run screenshotter in container (#2644)
+- ci: setup CodeQL code scanning (#2645)
+- fix(browserslist): remove Chrome 49, Samsung 4, and Node (#2591)
+- chore: add devcontainer.json (#2545)
+- Configure Renovate (#2493)
+- ci: don't persist credentials and run scripts (#2450)
+- build: upgrade Yarn to 2.2.0 (#2477)
+- build: make vscode work with PnP (#2444)
+- refactor: Delete obsolete comment re: mn elements (#2472)
+- test: lint all js files and inline scripts in workflow (#2442)
+- refactor: Delete obsolete comment re: limsup (#2464)
+- ci: migrate to GitHub Actions from CircleCI, allow running Browserstack on forked repo via label (#2417)
+- ci: enable Dependabot for website, submodules, and GitHub Actions (#2424)
+- test: add missing screenshots for safari (#2423)
+- ci: fix Dependabot autofix (#2400)
+- chore: don't include `dist` in the release commit (#2385)
+- ci: autofix Dependabot commits (#2394)
+- chore(screenshotter): support Browserstack and test on Safari 13.1 (#2306)
+- chore: enable Gitpod (#2335)
+- chore: migrate to Yarn 2 (#2316)
+- test: mock console implementation (#2363)
+- Update LICENSE year (#2374)
+- test(screenshotter): move coverage to Jest (#2324)
+- Fix test/symgroups.js (#2314)
+- Use base revision provided by CircleCI (#2309)
+- Delete bower.json (#2372)
+- Enable a MathML option in the KaTeX demo. (#2371)
+- Create dependabot.yml (#2311)
+- Run screenshotter using Chrome 83 and Firefox 76 (#2304)
+
+
 ## [v0.12.0]
 ### Added
 - `globalGroup` option to place definitions in global scope (#2091)
