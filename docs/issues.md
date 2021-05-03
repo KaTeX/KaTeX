@@ -49,3 +49,32 @@ the version of the JavaScript file (katex.js), which is defined in `katex.versio
 If it is not loaded properly, it'll show:
 
 > The KaTeX stylesheet is not loaded!
+
+
+## CSS customization
+The CSS is customizable to some extent. For example, to make individual display equations scrollable horizontally:
+
+```CSS
+.katex-display { overflow: auto hidden }
+```
+
+To allow line-breaks in display equations:
+
+```CSS
+.katex-display { margin: 0.5em 0; }
+.katex-display > .base { margin: 0.25em 0 }
+.katex-display > .katex { white-space: normal }
+```
+
+To align display equations left, similar to Wikipedia's formatting:
+```CSS
+.katex-display {
+  margin-left: 1.6em;
+  text-align: initial;
+  text-align: inherit;
+}
+
+.katex-display > .katex {
+  text-align: inherit;
+}
+```
