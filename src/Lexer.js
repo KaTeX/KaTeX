@@ -31,6 +31,13 @@ import type Settings from "./Settings";
  * - matches a backslash followed by one or more whitespace characters
  * - matches a backslash followed by one or more letters then whitespace
  * - matches a backslash followed by any BMP character
+ * Capturing groups:
+ *   [1] regular whitespace
+ *   [2] backslash followed by whitespace
+ *   [3] anything else, which may include:
+ *     [4] left character of \verb*
+ *     [5] left character of \verb
+ *     [6] backslash followed by word, excluding any trailing whitespace
  * Just because the Lexer matches something doesn't mean it's valid input:
  * If there is no matching function or symbol definition, the Parser will
  * still reject the input.
