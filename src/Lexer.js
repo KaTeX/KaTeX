@@ -59,7 +59,6 @@ const tokenRegexString = `(${spaceRegexString}+)|` +  // whitespace
     `${combiningDiacriticalMarkString}*` +            // ...plus accents
     "|\\\\verb\\*([^]).*?\\4" +                       // \verb*
     "|\\\\verb([^*a-zA-Z]).*?\\5" +                   // \verb unstarred
-    "|\\\\operatorname\\*" +                          // \operatorname*
     `|${controlWordWhitespaceRegexString}` +          // \macroName + spaces
     `|${controlSymbolRegexString})`;                  // \\, \', etc.
 
