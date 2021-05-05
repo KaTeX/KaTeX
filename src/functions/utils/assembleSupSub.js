@@ -1,6 +1,7 @@
 // @flow
 import buildCommon from "../../buildCommon";
 import * as html from "../../buildHTML";
+import utils from "../../utils";
 import type {StyleInterface} from "../../Style";
 import type Options from "../../Options";
 import type {DomSpan, SymbolNode} from "../../domTree";
@@ -18,6 +19,7 @@ export const assembleSupSub = (
     baseShift: number,
 ): DomSpan => {
     base = buildCommon.makeSpan([], [base]);
+    const subIsSingleCharacter = utils.isCharacterBox(subGroup);
     let sub;
     let sup;
     // We manually have to handle the superscripts and subscripts. This,
@@ -105,7 +107,7 @@ export const assembleSupSub = (
         return base;
     }
 
-    if (sub && slant !== 0) {
+    if (sub && slant !== 0 && !subIsSingleCharacter) {
         // A negative margin-left was applied to the lower limit.
         // Avoid an overlap by placing a spacer on the left on the group.
         const spacer = buildCommon.makeSpan(["mspace"], [], options);
