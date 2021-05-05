@@ -1260,16 +1260,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@netlify/open-api@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@netlify/open-api@npm:1.3.0"
-  checksum: 3b77f46f99bad1abf8cd33257071178eebc1f21553ee187b4a3559729a0b5c76d00969204fb5413e5245a3bf3d09e4dc5d0445e18843e75f03b50ccede43c9e4
+"@netlify/open-api@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "@netlify/open-api@npm:2.3.1"
+  checksum: 2ce3b578438a56c38df812da876f6b6284b8efb058f95293c1abc2a9e48d0769294fdebedf9484a51db5c9c2da4e944ee63f3af3123b211df07126197e6ad727
   languageName: node
   linkType: hard
 
-"@netlify/zip-it-and-ship-it@npm:^3.5.0":
-  version: 3.7.0
-  resolution: "@netlify/zip-it-and-ship-it@npm:3.7.0"
+"@netlify/zip-it-and-ship-it@npm:^3.8.0":
+  version: 3.9.0
+  resolution: "@netlify/zip-it-and-ship-it@npm:3.9.0"
   dependencies:
     archiver: ^4.0.0
     array-flat-polyfill: ^1.0.1
@@ -1299,7 +1299,7 @@ __metadata:
     yargs: ^15.4.1
   bin:
     zip-it-and-ship-it: src/bin.js
-  checksum: 2ad8bf6ecedbebbe23518ce7820d86431ef319c579fc8a6187664b14389619d640fa7f99a725cafb5e6ae3d43583627bc930a155996c3932877115c1556d5f6f
+  checksum: 250d599d2773a22e0fd7f54639c45b1988dc8c69ff2ae4d5940d923e55ebc7ad71f1d34085438a3104727116eb462895d23a5aea33c0163bc750f6d88a9a1d1c
   languageName: node
   linkType: hard
 
@@ -6828,11 +6828,11 @@ __metadata:
   linkType: hard
 
 "netlify@npm:^6.1.14":
-  version: 6.1.20
-  resolution: "netlify@npm:6.1.20"
+  version: 6.1.24
+  resolution: "netlify@npm:6.1.24"
   dependencies:
-    "@netlify/open-api": ^1.3.0
-    "@netlify/zip-it-and-ship-it": ^3.5.0
+    "@netlify/open-api": ^2.3.1
+    "@netlify/zip-it-and-ship-it": ^3.8.0
     backoff: ^2.5.0
     clean-deep: ^3.4.0
     flush-write-stream: ^2.0.0
@@ -6852,7 +6852,7 @@ __metadata:
     tempy: ^0.3.0
     through2-filter: ^3.0.0
     through2-map: ^3.0.0
-  checksum: e9a319be55c067b69df387d86993904e3be63cd40f13768e4127c28582b852051896ca7ce56f7bb228c73cbec991907a25a5c22148a080ec6e5db573e9195dc0
+  checksum: 09f9d408b1779c11db4ea9e94a8c65bb83f8af3eb3243483100a90f503c9721c88cd2c73008d1fe492d85448233fb6d519fbb10ce2cf36f933d88f3af91940f7
   languageName: node
   linkType: hard
 
