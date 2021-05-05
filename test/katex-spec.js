@@ -2852,6 +2852,8 @@ describe("operatorname support", function() {
         expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}").toBuild();
         expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}_y x").toBuild();
         expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}\\limits_y x").toBuild();
+        // The following does not actually render with limits. But it does not crash either.
+        expect("\\operatorname{sn}\\limits_{b>c}(b+c)").toBuild();
     });
 });
 
@@ -3741,6 +3743,10 @@ describe("Unicode", function() {
 
     it("should build binary operators", function() {
         expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝◯⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toBuild(strictSettings);
+    });
+
+    it("should build common ords", function() {
+        expect("§¶£¥∇∞⋅∠∡∢♠♡♢♣♭♮♯✓…⋮⋯⋱! ‼ ⦵").toBuild(strictSettings);
     });
 
     it("should build delimiters", function() {
