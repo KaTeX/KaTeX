@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.6](https://github.com/KaTeX/KaTeX/compare/v0.13.5...v0.13.6) (2021-05-06)
+
+
+### Bug Fixes
+
+* Correctly parse \ followed by whitespace ([#2877](https://github.com/KaTeX/KaTeX/issues/2877)) ([c85250d](https://github.com/KaTeX/KaTeX/commit/c85250d14e7dcace95eca76a66973d10d1b6ee9f)), closes [#2860](https://github.com/KaTeX/KaTeX/issues/2860)
+
 ## [0.13.5](https://github.com/KaTeX/KaTeX/compare/v0.13.4...v0.13.5) (2021-05-02)
 
 
