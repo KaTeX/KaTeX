@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.8](https://github.com/KaTeX/KaTeX/compare/v0.13.7...v0.13.8) (2021-05-06)
+
+
+### Features
+
+* \operatornamewithlimits (and clean up \operatorname support) ([#2984](https://github.com/KaTeX/KaTeX/issues/2984)) ([e9b751b](https://github.com/KaTeX/KaTeX/commit/e9b751b72d08ff2ceed71062e3bf84c8020d684f))
+
 ## [0.13.7](https://github.com/KaTeX/KaTeX/compare/v0.13.6...v0.13.7) (2021-05-06)
 
 
