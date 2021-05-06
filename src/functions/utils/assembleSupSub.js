@@ -19,7 +19,7 @@ export const assembleSupSub = (
     baseShift: number,
 ): DomSpan => {
     base = buildCommon.makeSpan([], [base]);
-    const subIsSingleCharacter = utils.isCharacterBox(subGroup);
+    const subIsSingleCharacter = subGroup &&  utils.isCharacterBox(subGroup);
     let sub;
     let sup;
     // We manually have to handle the superscripts and subscripts. This,
