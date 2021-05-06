@@ -421,10 +421,10 @@ Direct Input: $+ - / * ⋅ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ ⊔ ⊕ 
 | $\argmin$ `\argmin` | $\lim$ `\lim`       | $\plim$ `\plim` | $\varliminf$ `\varliminf` |
 | $\det$ `\det`       | $\liminf$ `\liminf` | $\Pr$ `\Pr`     | $\varlimsup$ `\varlimsup` |
 | $\gcd$ `\gcd`       | $\limsup$ `\limsup` | $\projlim$ `\projlim` | $\varprojlim$ `\varprojlim` |
-| $\inf$ `\inf`       | $\max$ `\max`       | $\sup$ `\sup`   |$\operatorname*{f}$ `\operatorname*{f}`|
+| $\inf$ `\inf`       | $\max$ `\max`       | $\sup$ `\sup`   ||
+| $\operatorname*{f}$ `\operatorname*{f}` | $\operatornamewithlimits{f}$ `\operatornamewithlimits{f}` |||
 
-
-Functions in the bottom five rows of this table can take `\limits`.
+Functions in the bottom six rows of this table can take `\limits`.
 
 ### \sqrt
 
