@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.7](https://github.com/KaTeX/KaTeX/compare/v0.13.6...v0.13.7) (2021-05-06)
+
+
+### Bug Fixes
+
+* binom delimiter size in scriptscriptstyle. ([#2976](https://github.com/KaTeX/KaTeX/issues/2976)) ([980b004](https://github.com/KaTeX/KaTeX/commit/980b0040232f5b7d2162d4067ed4bce431933286))
+
 ## [0.13.6](https://github.com/KaTeX/KaTeX/compare/v0.13.5...v0.13.6) (2021-05-06)
 
 

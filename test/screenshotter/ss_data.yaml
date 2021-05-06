@@ -65,7 +65,7 @@ BinCancellation: |
         +1 & 1+ & 1+1 & (,) \\
         1++1 & 3\times) & 1+, & \left(,\right)
     \end{array}
-BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}
+BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}{\scriptscriptstyle \binom a b}
 BoldSpacing: \mathbf{A}^2+\mathbf{B}_3*\mathscr{C}'
 BoldSymbol: |
   \sum_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\omega}+ \boldsymbol{\int_\alpha^\beta} \boldsymbol{\Omega + {}} \\
