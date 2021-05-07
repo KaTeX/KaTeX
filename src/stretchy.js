@@ -61,7 +61,9 @@ const stretchyCodePoint: {[string]: string} = {
 
 const mathMLnode = function(label: string): mathMLTree.MathNode {
     const node = new mathMLTree.MathNode(
-        "mo", [new mathMLTree.TextNode(stretchyCodePoint[label.replace(/^\\/, '')])]);
+        "mo",
+        [new mathMLTree.TextNode(stretchyCodePoint[label.replace(/^\\/, '')])],
+    );
     node.setAttribute("stretchy", "true");
     return node;
 };
