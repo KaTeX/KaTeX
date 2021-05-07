@@ -231,7 +231,7 @@ exports[`A MathML builder should build the CD environment properly 1`] = `
               <mo stretchy="true"
                   minsize="3.0em"
               >
-                →
+                undefined
               </mo>
               <mpadded width="+0.6em"
                        lspace="0.3em"
@@ -371,7 +371,7 @@ exports[`A MathML builder should build the CD environment properly 1`] = `
               <mo stretchy="true"
                   minsize="3.0em"
               >
-                →
+                undefined
               </mo>
               <mpadded width="+0.6em"
                        lspace="0.3em"
