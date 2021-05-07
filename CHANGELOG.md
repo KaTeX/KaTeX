@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.9](https://github.com/KaTeX/KaTeX/compare/v0.13.8...v0.13.9) (2021-05-07)
+
+
+### Bug Fixes
+
+* MathML for stretchy accents. [#2990](https://github.com/KaTeX/KaTeX/issues/2990) ([#2991](https://github.com/KaTeX/KaTeX/issues/2991)) ([1cb6279](https://github.com/KaTeX/KaTeX/commit/1cb62799c6b9484df5c5ba500f5144f61a24288d))
+
 ## [0.13.8](https://github.com/KaTeX/KaTeX/compare/v0.13.7...v0.13.8) (2021-05-06)
 
 
