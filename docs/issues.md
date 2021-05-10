@@ -66,15 +66,3 @@ To allow line-breaks in display equations:
 .katex-display > .katex { white-space: normal }
 ```
 
-To align display equations left, similar to Wikipedia's formatting:
-```CSS
-.katex-display {
-  margin-left: 1.6em;
-  text-align: initial;
-  text-align: inherit;
-}
-
-.katex-display > .katex {
-  text-align: inherit;
-}
-```
