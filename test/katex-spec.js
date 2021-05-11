@@ -2245,6 +2245,15 @@ describe("A stretchy and non-shifty accent builder", function() {
     });
 });
 
+describe("A stretchy MathML builder", function() {
+    it("should properly render stretchy accents", function() {
+        const tex = `\\widetilde{ABCD}`;
+        const tree = getParsed(tex);
+        const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain('<mo stretchy="true">~</mo>');
+    });
+});
+
 describe("An under-accent parser", function() {
     it("should not fail", function() {
         expect("\\underrightarrow{x}").toParse();
