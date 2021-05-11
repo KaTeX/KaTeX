@@ -761,14 +761,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-block-scoping@npm:^7.13.16":
-  version: 7.13.16
-  resolution: "@babel/plugin-transform-block-scoping@npm:7.13.16"
+"@babel/plugin-transform-block-scoping@npm:^7.14.1":
+  version: 7.14.1
+  resolution: "@babel/plugin-transform-block-scoping@npm:7.14.1"
   dependencies:
     "@babel/helper-plugin-utils": ^7.13.0
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 4ada80ee426255e0ab75e6bf816477ecbcbef225d9110ba07b09addeae9addad1765541c405d711678f3ea7a926e26e2e6796c7f5d1d7ca7ef8b5e25080cfe58
+  checksum: 33b12be483e61dbadf604f5dca3437d5a1742696afe2088eb4f72f0d911906274c345e7bedbc28b1ba00a573b04d363cf86407f46e352487252089499801c4b6
   languageName: node
   linkType: hard
 
@@ -1131,8 +1131,8 @@ __metadata:
   linkType: hard
 
 "@babel/preset-env@npm:^7.10.4":
-  version: 7.14.0
-  resolution: "@babel/preset-env@npm:7.14.0"
+  version: 7.14.1
+  resolution: "@babel/preset-env@npm:7.14.1"
   dependencies:
     "@babel/compat-data": ^7.14.0
     "@babel/helper-compilation-targets": ^7.13.16
@@ -1171,7 +1171,7 @@ __metadata:
     "@babel/plugin-transform-arrow-functions": ^7.13.0
     "@babel/plugin-transform-async-to-generator": ^7.13.0
     "@babel/plugin-transform-block-scoped-functions": ^7.12.13
-    "@babel/plugin-transform-block-scoping": ^7.13.16
+    "@babel/plugin-transform-block-scoping": ^7.14.1
     "@babel/plugin-transform-classes": ^7.13.0
     "@babel/plugin-transform-computed-properties": ^7.13.0
     "@babel/plugin-transform-destructuring": ^7.13.17
@@ -1201,7 +1201,7 @@ __metadata:
     "@babel/plugin-transform-unicode-escapes": ^7.12.13
     "@babel/plugin-transform-unicode-regex": ^7.12.13
     "@babel/preset-modules": ^0.1.4
-    "@babel/types": ^7.14.0
+    "@babel/types": ^7.14.1
     babel-plugin-polyfill-corejs2: ^0.2.0
     babel-plugin-polyfill-corejs3: ^0.2.0
     babel-plugin-polyfill-regenerator: ^0.2.0
@@ -1209,7 +1209,7 @@ __metadata:
     semver: ^6.3.0
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 4bfbcbf9f5c8a632554f72d55071ab906d915c5eada2d079fbc3a521078d1f3c003fab4aa350af913e9260fdf3bacab3ab9f8bcb3d4add604868a211f5469c32
+  checksum: 0fbef490fdd5435727268c729e0371ec8ec95349e5a00f919ba0c142e06d95c48512fec10d6404c89c297c597ae1c45a687fa40eec33e70b97131b0c4b5355c0
   languageName: node
   linkType: hard
 
@@ -1292,13 +1292,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.0.0, @babel/types@npm:^7.12.1, @babel/types@npm:^7.12.13, @babel/types@npm:^7.13.0, @babel/types@npm:^7.13.12, @babel/types@npm:^7.14.0, @babel/types@npm:^7.3.0, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4, @babel/types@npm:^7.7.0":
-  version: 7.14.0
-  resolution: "@babel/types@npm:7.14.0"
+"@babel/types@npm:^7.0.0, @babel/types@npm:^7.12.1, @babel/types@npm:^7.12.13, @babel/types@npm:^7.13.0, @babel/types@npm:^7.13.12, @babel/types@npm:^7.14.0, @babel/types@npm:^7.14.1, @babel/types@npm:^7.3.0, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4, @babel/types@npm:^7.7.0":
+  version: 7.14.1
+  resolution: "@babel/types@npm:7.14.1"
   dependencies:
     "@babel/helper-validator-identifier": ^7.14.0
     to-fast-properties: ^2.0.0
-  checksum: 145b37e3779e8462e3b234b47f539cf2fcb29cf85bc21a96997969f75798dd8144cb8c14973fbfdf9a30410607dee19d4e240f2c4b8691867f9fe59cf708859f
+  checksum: 27965ef192ded329d8ae28ccd5e5addd02dc477ec46e54145e5cf0d054ad65b2fc760736865295c1819d502ec9598883c17f25efdbe896ad77b400136a1aa971
   languageName: node
   linkType: hard
 
@@ -3599,9 +3599,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30000981, caniuse-lite@npm:^1.0.30001102, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001219":
-  version: 1.0.30001219
-  resolution: "caniuse-lite@npm:1.0.30001219"
-  checksum: 0a45591af1ffdd86b5c67534adceeb792b088418aa32912249a5609f32d2ded35254d8b300775b43b4d9d9b81d2d40f1e8e1c4aeebe6c69ed549bc52b41f2b30
+  version: 1.0.30001223
+  resolution: "caniuse-lite@npm:1.0.30001223"
+  checksum: 0a19e4c3689048cf7f6a47d348cc6dc849a141ae814634cc2c9b37a91dc5ba019c08d67ddf3549323ae4b13c84cb2a796204128bcd19f0dbbe844dab0058b25e
   languageName: node
   linkType: hard
 
@@ -12393,13 +12393,13 @@ __metadata:
   linkType: hard
 
 "postcss@npm:^8.0.0, postcss@npm:^8.2.10":
-  version: 8.2.13
-  resolution: "postcss@npm:8.2.13"
+  version: 8.2.14
+  resolution: "postcss@npm:8.2.14"
   dependencies:
     colorette: ^1.2.2
     nanoid: ^3.1.22
     source-map: ^0.6.1
-  checksum: df64697cbd6d8e501eac2eaed501dc9a9c848538b4b51c53bfe7ed62a91736e97135d1fe22384b69af11bb2387a6cb483f5eecd14b19ca192ab5497ed5522124
+  checksum: 46bcc7c05f2b6b0e22e36af03e0244366871bd5cd9e3ca35e0ba2a87fb9080063322ee1dcef307d6e116fdac7c85941aaebd3755a3c88b4533bb8722b7bba4d2
   languageName: node
   linkType: hard
 
