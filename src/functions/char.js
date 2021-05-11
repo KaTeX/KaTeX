@@ -28,7 +28,9 @@ defineFunction({
         return {
             type: "textord",
             mode: parser.mode,
-            text: String.fromCharCode(code),
+            // String.fromCodePoint handles >16-bit code points, but is not
+            // supported on IE.  Use String.fromCharCode as a fallback.
+            text: (String.fromCodePoint || String.fromCharCode)(code),
         };
     },
 });
