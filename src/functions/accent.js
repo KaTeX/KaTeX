@@ -249,11 +249,16 @@ defineFunction({
     props: {
         numArgs: 1,
         allowedInText: true,
-        allowedInMath: false,
+        allowedInMath: true, // unless in strict mode
         argTypes: ["primitive"],
     },
     handler: (context, args) => {
         const base = args[0];
+
+        if (context.parser.mode === "math") {
+            context.parser.settings.reportNonstrict("mathVsTextAccents",
+                `LaTeX's accent ${context.funcName} works only in text mode`);
+        }
 
         return {
             type: "accent",
