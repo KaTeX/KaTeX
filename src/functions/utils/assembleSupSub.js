@@ -107,17 +107,13 @@ export const assembleSupSub = (
         return base;
     }
 
+    const parts = [finalGroup];
     if (sub && slant !== 0 && !subIsSingleCharacter) {
         // A negative margin-left was applied to the lower limit.
         // Avoid an overlap by placing a spacer on the left on the group.
         const spacer = buildCommon.makeSpan(["mspace"], [], options);
         spacer.style.marginRight = `${slant}em`;
-        return buildCommon.makeSpan(
-            ["mop", "op-limits"],
-            [spacer, finalGroup],
-            options
-        );
-    } else {
-        return buildCommon.makeSpan(["mop", "op-limits"], [finalGroup], options);
+        parts.unshift(spacer);
     }
+    return buildCommon.makeSpan(["mop", "op-limits"], parts, options);
 };
