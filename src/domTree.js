@@ -161,6 +161,8 @@ export interface HtmlDomNode extends VirtualNode {
     classes: string[];
     height: number;
     depth: number;
+    ascent?: number;
+    descent?: number;
     maxFontSize: number;
     style: CssStyle;
 
@@ -191,6 +193,8 @@ export class Span<ChildType: VirtualNode> implements HtmlDomNode {
     classes: string[];
     height: number;
     depth: number;
+    ascent: number;
+    descent: number;
     width: ?number;
     maxFontSize: number;
     style: CssStyle;
@@ -237,6 +241,8 @@ export class Anchor implements HtmlDomNode {
     classes: string[];
     height: number;
     depth: number;
+    ascent: number;
+    descent: number;
     maxFontSize: number;
     style: CssStyle;
 
@@ -277,6 +283,8 @@ export class Img implements VirtualNode {
     classes: string[];
     height: number;
     depth: number;
+    ascent: number;
+    descent: number;
     maxFontSize: number;
     style: CssStyle;
 
@@ -354,6 +362,8 @@ export class SymbolNode implements HtmlDomNode {
     maxFontSize: number;
     classes: string[];
     style: CssStyle;
+    ascent: number;
+    descent: number;
 
     constructor(
         text: string,
@@ -374,6 +384,8 @@ export class SymbolNode implements HtmlDomNode {
         this.classes = classes || [];
         this.style = style || {};
         this.maxFontSize = 0;
+        this.ascent = 0.8;
+        this.descent = 0.2;
 
         // Mark text from non-Latin scripts with specific classes so that we
         // can specify which fonts to use.  This allows us to render these

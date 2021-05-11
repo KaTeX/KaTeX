@@ -25,6 +25,8 @@ export class DocumentFragment<ChildType: VirtualNode>
     classes: string[];
     height: number;
     depth: number;
+    ascent: number;
+    descent: number;
     maxFontSize: number;
     style: CssStyle;          // Never used; needed for satisfying interface.
 
@@ -33,6 +35,8 @@ export class DocumentFragment<ChildType: VirtualNode>
         this.classes = [];
         this.height = 0;
         this.depth = 0;
+        this.ascent = 0;
+        this.descent = 0;
         this.maxFontSize = 0;
         this.style = {};
     }

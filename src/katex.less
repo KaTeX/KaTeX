@@ -221,15 +221,28 @@
     }
 
     .vbox {
+        line-height: 1.0;
         display: inline-flex;
         flex-direction: column;
-        align-items: baseline;
     }
 
     .hbox {
         display: inline-flex;
         flex-direction: row;
         width: 100%;
+    }
+
+    .cbox {
+        display: inline-flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+    }
+
+    .glue {
+        display: -ms-inline-flexbox;
+        -ms-flex: 1 1 0px;
+        flex: 1 1 0px;
     }
 
     .thinbox {
@@ -410,6 +423,9 @@
     }
 
     .accent {
+        > .vbox {
+            text-align: center;
+        }
         > .vlist-t {
             text-align: center;
         }
