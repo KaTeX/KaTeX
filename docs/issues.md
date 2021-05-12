@@ -52,17 +52,21 @@ If it is not loaded properly, it'll show:
 
 
 ## CSS customization
-The CSS is customizable to some extent. For example, to make individual display equations scrollable horizontally:
 
-```CSS
+KaTeX's CSS is customizable to some extent. For example, to make individual
+display equations scrollable horizontally:
+
+```css
 .katex-display { overflow: auto hidden }
 ```
 
-To allow line-breaks in display equations:
+To allow line breaks in display equations (unlike LaTeX):
 
-```CSS
-.katex-display { margin: 0.5em 0; }
-.katex-display > .base { margin: 0.25em 0 }
+```css
 .katex-display > .katex { white-space: normal }
+/* Add space between broken lines: */
+.katex-display > .base { margin: 0.25em 0 }
+/* Compensate by reducing space around display math */
+.katex-display { margin: 0.5em 0; }
 ```
 
