@@ -1,6 +1,55 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.10](https://github.com/KaTeX/KaTeX/compare/v0.13.9...v0.13.10) (2021-05-12)
+
+
+### Bug Fixes
+
+* Correct for negative margin in integrand lower limits ([#2987](https://github.com/KaTeX/KaTeX/issues/2987)) ([9b4acc9](https://github.com/KaTeX/KaTeX/commit/9b4acc971c4d3d0d05960ed2237a4bbcabde2e39))
+
+## [0.13.9](https://github.com/KaTeX/KaTeX/compare/v0.13.8...v0.13.9) (2021-05-07)
+
+
+### Bug Fixes
+
+* MathML for stretchy accents. [#2990](https://github.com/KaTeX/KaTeX/issues/2990) ([#2991](https://github.com/KaTeX/KaTeX/issues/2991)) ([1cb6279](https://github.com/KaTeX/KaTeX/commit/1cb62799c6b9484df5c5ba500f5144f61a24288d))
+
+## [0.13.8](https://github.com/KaTeX/KaTeX/compare/v0.13.7...v0.13.8) (2021-05-06)
+
+
+### Features
+
+* \operatornamewithlimits (and clean up \operatorname support) ([#2984](https://github.com/KaTeX/KaTeX/issues/2984)) ([e9b751b](https://github.com/KaTeX/KaTeX/commit/e9b751b72d08ff2ceed71062e3bf84c8020d684f))
+
+## [0.13.7](https://github.com/KaTeX/KaTeX/compare/v0.13.6...v0.13.7) (2021-05-06)
+
+
+### Bug Fixes
+
+* binom delimiter size in scriptscriptstyle. ([#2976](https://github.com/KaTeX/KaTeX/issues/2976)) ([980b004](https://github.com/KaTeX/KaTeX/commit/980b0040232f5b7d2162d4067ed4bce431933286))
+
+## [0.13.6](https://github.com/KaTeX/KaTeX/compare/v0.13.5...v0.13.6) (2021-05-06)
+
+
+### Bug Fixes
+
+* Correctly parse \ followed by whitespace ([#2877](https://github.com/KaTeX/KaTeX/issues/2877)) ([c85250d](https://github.com/KaTeX/KaTeX/commit/c85250d14e7dcace95eca76a66973d10d1b6ee9f)), closes [#2860](https://github.com/KaTeX/KaTeX/issues/2860)
+
+## [0.13.5](https://github.com/KaTeX/KaTeX/compare/v0.13.4...v0.13.5) (2021-05-02)
+
+
+### Bug Fixes
+
+* Support \S and \P in math mode ([#2977](https://github.com/KaTeX/KaTeX/issues/2977)) ([3f7163d](https://github.com/KaTeX/KaTeX/commit/3f7163daf57b5c0bd7441e029170305557f0ab4e))
+
+## [0.13.4](https://github.com/KaTeX/KaTeX/compare/v0.13.3...v0.13.4) (2021-05-02)
+
+
+### Bug Fixes
+
+* Avoid crash when \operatorname has \limits ([#2979](https://github.com/KaTeX/KaTeX/issues/2979)) ([fbda0b1](https://github.com/KaTeX/KaTeX/commit/fbda0b1136cfe3f1a0c47f16a2a1e1e99c284ea8))
+
 ## [0.13.3](https://github.com/KaTeX/KaTeX/compare/v0.13.2...v0.13.3) (2021-04-24)
 
 

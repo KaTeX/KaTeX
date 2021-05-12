@@ -678,7 +678,7 @@ describe("A text parser", function() {
     const noBraceTextExpression = r`\text x`;
     const nestedTextExpression =
         r`\text{a {b} \blue{c} \textcolor{#fff}{x} \llap{x}}`;
-    const spaceTextExpression = r`\text{  a \ }`;
+    const spaceTextExpression = r`\text{  a \  }`;
     const leadingSpaceTextExpression = r`\text {moo}`;
     const badTextExpression = r`\text{a b%}`;
     const badFunctionExpression = r`\text{\sqrt{x}}`;
@@ -722,10 +722,15 @@ describe("A text parser", function() {
         const parse = getParsed(spaceTextExpression)[0];
         const group = parse.body;
 
+        expect(group.length).toEqual(4);
         expect(group[0].type).toEqual("spacing");
         expect(group[1].type).toEqual("textord");
         expect(group[2].type).toEqual("spacing");
         expect(group[3].type).toEqual("spacing");
+    });
+
+    it("should handle backslash followed by newline", () => {
+        expect("\\text{\\ \t\r \n \t\r  }").toParseLike("\\text{\\ }");
     });
 
     it("should accept math mode tokens after its argument", function() {
@@ -2240,6 +2245,15 @@ describe("A stretchy and non-shifty accent builder", function() {
     });
 });
 
+describe("A stretchy MathML builder", function() {
+    it("should properly render stretchy accents", function() {
+        const tex = `\\widetilde{ABCD}`;
+        const tree = getParsed(tex);
+        const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain('<mo stretchy="true">~</mo>');
+    });
+});
+
 describe("An under-accent parser", function() {
     it("should not fail", function() {
         expect("\\underrightarrow{x}").toParse();
@@ -2852,6 +2866,8 @@ describe("operatorname support", function() {
         expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}").toBuild();
         expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}_y x").toBuild();
         expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}\\limits_y x").toBuild();
+        // The following does not actually render with limits. But it does not crash either.
+        expect("\\operatorname{sn}\\limits_{b>c}(b+c)").toBuild();
     });
 });
 
@@ -3741,6 +3757,10 @@ describe("Unicode", function() {
 
     it("should build binary operators", function() {
         expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝◯⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toBuild(strictSettings);
+    });
+
+    it("should build common ords", function() {
+        expect("§¶£¥∇∞⋅∠∡∢♠♡♢♣♭♮♯✓…⋮⋯⋱! ‼ ⦵").toBuild(strictSettings);
     });
 
     it("should build delimiters", function() {
