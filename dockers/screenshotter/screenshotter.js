@@ -494,7 +494,7 @@ function takeScreenshot(key) {
     function loadFonts() {
         driver.executeAsyncScript(
                 "var callback = arguments[arguments.length - 1]; " +
-                "load_fonts(callback);")
+                "load_fonts_and_images(callback);")
             .then(waitThenScreenshot);
     }
 

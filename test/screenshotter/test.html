@@ -31,8 +31,8 @@
     <span id="math"></span>
     <span id="post"></span>
     <script type="text/javascript">
-      function load_fonts(callback) {
-        if (!document.fonts || !document.fonts.load) {
+      function load_fonts_and_images(callback) {
+        if (!document.fonts || !document.fonts.load || !document.images || !document.images.load) {
           callback();
           return;
         }
@@ -55,6 +55,17 @@
         }
         load_font("Mincho");
         load_font("Batang");
+
+        document.images.forEach(function (img) {
+          results.push(new Promise(function (done, error) {
+            if (img.complete) {
+              done();
+            } else {
+              img.addEventListener('load', done);
+              img.addEventListener('error', error);
+            }
+          }));
+        });
 
         Promise.all(results).then(callback)
       }
