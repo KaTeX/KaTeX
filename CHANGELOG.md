@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.10](https://github.com/KaTeX/KaTeX/compare/v0.13.9...v0.13.10) (2021-05-12)
+
+
+### Bug Fixes
+
+* Correct for negative margin in integrand lower limits ([#2987](https://github.com/KaTeX/KaTeX/issues/2987)) ([9b4acc9](https://github.com/KaTeX/KaTeX/commit/9b4acc971c4d3d0d05960ed2237a4bbcabde2e39))
+
 ## [0.13.9](https://github.com/KaTeX/KaTeX/compare/v0.13.8...v0.13.9) (2021-05-07)
 
 
