@@ -1244,6 +1244,7 @@ describe("A begin/end parser", function() {
 
     it("should parse and build an empty environment", function() {
         expect`\begin{aligned}\end{aligned}`.toBuild();
+        expect`\begin{matrix}\end{matrix}`.toBuild();
     });
 
     it("should parse an environment with hlines", function() {
@@ -1309,6 +1310,13 @@ describe("A begin/end parser", function() {
         expect("\\begin{Vmatrix*}[r] a & -1 \\\\ -1 & d \\end{Vmatrix*}").toBuild();
         expect("\\begin{matrix*} a & -1 \\\\ -1 & d \\end{matrix*}").toBuild();
         expect("\\begin{matrix*}[] a & -1 \\\\ -1 & d \\end{matrix*}").not.toParse();
+    });
+
+    it("should allow blank columns", () => {
+        const parsed = getParsed`\begin{matrix*}[r] a \\ -1 & d \end{matrix*}`;
+        expect(parsed[0].cols).toEqual(
+            [{type: 'align', align: 'r'},
+             {type: 'align', align: 'r'}]);
     });
 });
 
