@@ -1260,16 +1260,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@netlify/open-api@npm:^2.3.1":
-  version: 2.3.1
-  resolution: "@netlify/open-api@npm:2.3.1"
-  checksum: 2ce3b578438a56c38df812da876f6b6284b8efb058f95293c1abc2a9e48d0769294fdebedf9484a51db5c9c2da4e944ee63f3af3123b211df07126197e6ad727
+"@netlify/open-api@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "@netlify/open-api@npm:2.4.0"
+  checksum: 2154bbe365476844636c2a472a66dc01bd9e6cfa638388482c47060f60ede9fde951e16a90d9da65fb82186dcbb50b405bb4f291572fc4ea2e36147337f4d79a
   languageName: node
   linkType: hard
 
-"@netlify/zip-it-and-ship-it@npm:^3.8.0":
-  version: 3.9.0
-  resolution: "@netlify/zip-it-and-ship-it@npm:3.9.0"
+"@netlify/zip-it-and-ship-it@npm:^3.10.0":
+  version: 3.10.0
+  resolution: "@netlify/zip-it-and-ship-it@npm:3.10.0"
   dependencies:
     archiver: ^4.0.0
     array-flat-polyfill: ^1.0.1
@@ -1278,7 +1278,7 @@ __metadata:
     del: ^5.1.0
     elf-cam: ^0.1.1
     end-of-stream: ^1.4.4
-    esbuild: ^0.11.0
+    esbuild: 0.11.10
     filter-obj: ^2.0.1
     find-up: ^4.1.0
     glob: ^7.1.6
@@ -1299,7 +1299,7 @@ __metadata:
     yargs: ^15.4.1
   bin:
     zip-it-and-ship-it: src/bin.js
-  checksum: 250d599d2773a22e0fd7f54639c45b1988dc8c69ff2ae4d5940d923e55ebc7ad71f1d34085438a3104727116eb462895d23a5aea33c0163bc750f6d88a9a1d1c
+  checksum: 0988ceb7b94500b21588cae3f886713dc17d8f48a20a8bb3be72e841a8a88d1e78ba9bc4ad20511b06f3db5fc18eefe97b2286e0ef5ef3a5edfdc617513cc138
   languageName: node
   linkType: hard
 
@@ -3850,12 +3850,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.11.0":
-  version: 0.11.12
-  resolution: "esbuild@npm:0.11.12"
+"esbuild@npm:0.11.10":
+  version: 0.11.10
+  resolution: "esbuild@npm:0.11.10"
   bin:
     esbuild: bin/esbuild
-  checksum: 06139e5fe1f960db65d093f8439f3da73f63f3ec7202bf08dd8ca64d60efe49335fec4f24e637fc815bf5f77c3a047b83c91c07a08f2c09ea2c5d79f2600ad85
+  checksum: d5df32620017febc2f7081b6c5d9d49bd79040bd527a0ae4683aa5e9c48b95afcf6362c30b97fc09fbceee7dcdc5c5397f89132f639bac0860205bae09d12931
   languageName: node
   linkType: hard
 
@@ -6828,11 +6828,11 @@ __metadata:
   linkType: hard
 
 "netlify@npm:^6.1.14":
-  version: 6.1.24
-  resolution: "netlify@npm:6.1.24"
+  version: 6.1.29
+  resolution: "netlify@npm:6.1.29"
   dependencies:
-    "@netlify/open-api": ^2.3.1
-    "@netlify/zip-it-and-ship-it": ^3.8.0
+    "@netlify/open-api": ^2.4.0
+    "@netlify/zip-it-and-ship-it": ^3.10.0
     backoff: ^2.5.0
     clean-deep: ^3.4.0
     flush-write-stream: ^2.0.0
@@ -6852,7 +6852,7 @@ __metadata:
     tempy: ^0.3.0
     through2-filter: ^3.0.0
     through2-map: ^3.0.0
-  checksum: 09f9d408b1779c11db4ea9e94a8c65bb83f8af3eb3243483100a90f503c9721c88cd2c73008d1fe492d85448233fb6d519fbb10ce2cf36f933d88f3af91940f7
+  checksum: 58456ff8c28d13bdef949a63c9aae17e4d3e7768185d734dedab72cfbd16f727b5d00ea3c8b93c622ba12d551d2edb672983a29a77a6372d7c45245f33181af0
   languageName: node
   linkType: hard
 
