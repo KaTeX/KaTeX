@@ -1,3 +1,5 @@
+import {strictSettings} from "./helpers";
+
 describe("Parser:", function() {
 
     describe("#handleInfixNodes", function() {
@@ -84,10 +86,14 @@ describe("Parser:", function() {
                 "Can't use function '\\sqrt' in text mode" +
                 " at position 7: \\text{\\̲s̲q̲r̲t̲2 is irrational…");
         });
-        it("rejects text-mode-only functions in math mode", function() {
-            expect`\'echec`.toFailWithParseError(
-                "Can't use function '\\'' in math mode" +
-                " at position 1: \\̲'̲echec");
+        it("rejects text-mode-only functions in math mode", () => {
+            expect`$`.toFailWithParseError(
+                "Can't use function '$' in math mode at position 1: $̲");
+        });
+        it("rejects strict-mode text-mode-only functions in math mode", () => {
+            expect`\'echec`.toFailWithParseError("LaTeX-incompatible input " +
+                "and strict mode is set to 'error': LaTeX's accent \\' works " +
+                "only in text mode [mathVsTextAccents]", strictSettings);
         });
     });
 
