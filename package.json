@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.13.9",
+  "version": "0.13.10",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "homepage": "https://katex.org",
@@ -46,7 +46,7 @@
     "eslint-plugin-react": "^7.20.3",
     "file-loader": "^6.0.0",
     "flow-bin": "^0.135.0",
-    "fs-extra": "^9.0.1",
+    "fs-extra": "^10.0.0",
     "got": "^11.8.0",
     "husky": "^4.2.5",
     "istanbul-lib-coverage": "^3.0.0",
