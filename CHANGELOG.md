@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.11](https://github.com/KaTeX/KaTeX/compare/v0.13.10...v0.13.11) (2021-05-14)
+
+
+### Bug Fixes
+
+* matrix environment with zero or inconsistent columns ([#3018](https://github.com/KaTeX/KaTeX/issues/3018)) ([f779bac](https://github.com/KaTeX/KaTeX/commit/f779bac684c16c8f513b57b37f855f0772dc20d1)), closes [#3017](https://github.com/KaTeX/KaTeX/issues/3017)
+
+
+### Features
+
+* Allow text-mode accents in math mode, except in strict mode ([#3009](https://github.com/KaTeX/KaTeX/issues/3009)) ([0e9acce](https://github.com/KaTeX/KaTeX/commit/0e9acce9bef7b8001067ef3aa3ed188418278b2d)), closes [#2983](https://github.com/KaTeX/KaTeX/issues/2983)
+
 ## [0.13.10](https://github.com/KaTeX/KaTeX/compare/v0.13.9...v0.13.10) (2021-05-12)
 
 
