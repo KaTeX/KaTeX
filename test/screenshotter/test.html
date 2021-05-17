@@ -32,6 +32,11 @@
     <span id="post"></span>
     <script type="text/javascript">
       function load_fonts_and_images(callback) {
+        if (typeof Promise === "undefined") {
+          callback();
+          return;
+        }
+
         var results = [];
 
         function load_font(name, style) {
