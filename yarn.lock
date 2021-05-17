@@ -11852,8 +11852,8 @@ __metadata:
   linkType: hard
 
 "postcss-loader@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "postcss-loader@npm:5.2.0"
+  version: 5.3.0
+  resolution: "postcss-loader@npm:5.3.0"
   dependencies:
     cosmiconfig: ^7.0.0
     klona: ^2.0.4
@@ -11861,7 +11861,7 @@ __metadata:
   peerDependencies:
     postcss: ^7.0.0 || ^8.0.1
     webpack: ^5.0.0
-  checksum: 669232a256aa44a08f37122f7645a4979f8ec9f87c387596e4970c39da96d1ae12cec077e915314d09262dcd584fc12592920298b21b1b6cbb562adadc3ce516
+  checksum: fd7a1a673b0e8f238392b3d449f2727767522febb2f60bfc9bb5cd4e373b07ba8df621f4e2fad92bf085765dcdea0f049497ae799ce1c9f1a592820275cc7e65
   languageName: node
   linkType: hard
 
