@@ -172,7 +172,8 @@ if (!seleniumURL && opts.container) {
         guessDockerIPs();
     }
     seleniumPort = cmd("docker", "port", opts.container, seleniumPort);
-    seleniumPort = seleniumPort.replace(/^.*:/, "");
+    // Docker can output two lines, such as "0.0.0.0:49156\n:::49156"
+    seleniumPort = seleniumPort.replace(/[^]*:([0-9]+)[^]*/, "$1");
 }
 if (!seleniumURL && seleniumIP) {
     seleniumURL = "http://" + seleniumIP + ":" + seleniumPort + "/wd/hub";
@@ -493,7 +494,7 @@ function takeScreenshot(key) {
     function loadFonts() {
         driver.executeAsyncScript(
                 "var callback = arguments[arguments.length - 1]; " +
-                "load_fonts(callback);")
+                "load_fonts_and_images(callback);")
             .then(waitThenScreenshot);
     }
 
