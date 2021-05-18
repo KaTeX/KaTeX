@@ -1,4 +1,4 @@
-FROM ubuntu:14.04.5
+FROM ubuntu:20.04
 MAINTAINER xymostech <xymostech@gmail.com>
 
 # Install things
