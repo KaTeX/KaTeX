@@ -8824,7 +8824,7 @@ __metadata:
     json-stable-stringify: ^1.0.1
     jspngopt: ^0.2.0
     less: ^4.0.0
-    less-loader: ^8.0.0
+    less-loader: ^9.0.0
     mini-css-extract-plugin: ^1.0.0
     mkdirp: ^1.0.4
     pako: ^2.0.0
@@ -8945,15 +8945,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"less-loader@npm:^8.0.0":
-  version: 8.1.1
-  resolution: "less-loader@npm:8.1.1"
+"less-loader@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "less-loader@npm:9.0.0"
   dependencies:
     klona: ^2.0.4
   peerDependencies:
     less: ^3.5.0 || ^4.0.0
     webpack: ^5.0.0
-  checksum: ec465dc8b153282a7f1014f925b71f4e6586af8ed3bb3b2533d471793855822e4236d2f3536cefbc1c132c19d08f7b0bf01bded5b87f2c694f865f13f6957cb5
+  checksum: d0a525edf91b2d4e9f022ca48198dc530e834a3d67a251141b60ed2dfc92448207e759f995aa0d4187b22d701a40d484197e9b6f6b93cfef05b8f9b3f4d207ae
   languageName: node
   linkType: hard
 
