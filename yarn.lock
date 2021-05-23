@@ -3579,7 +3579,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camelcase@npm:^6.0.0, camelcase@npm:^6.2.0":
+"camelcase@npm:^6.0.0":
   version: 6.2.0
   resolution: "camelcase@npm:6.2.0"
   checksum: 654700600a80cb1f06ab85b3e2fe80333f94b441884d40826becdac549774f51b0317c6dcb6040416df26241fa9481eb58d0c1659d4d6d5627dcd4259be61beb
@@ -4442,13 +4442,12 @@ __metadata:
   linkType: hard
 
 "css-loader@npm:^5.1.2":
-  version: 5.2.4
-  resolution: "css-loader@npm:5.2.4"
+  version: 5.2.5
+  resolution: "css-loader@npm:5.2.5"
   dependencies:
-    camelcase: ^6.2.0
     icss-utils: ^5.1.0
     loader-utils: ^2.0.0
-    postcss: ^8.2.10
+    postcss: ^8.2.15
     postcss-modules-extract-imports: ^3.0.0
     postcss-modules-local-by-default: ^4.0.0
     postcss-modules-scope: ^3.0.0
@@ -4458,7 +4457,7 @@ __metadata:
     semver: ^7.3.5
   peerDependencies:
     webpack: ^4.27.0 || ^5.0.0
-  checksum: 369839955849fdcae913b59797aa1cb419b4795d20ca52dd48531d66348701d48cdb6f1017b6feff037f1c05af93b80360e8e1fd115dab54eb896c5fd28fadfd
+  checksum: 2834d9e71e340fcc60bbcc2244bd086c8d9bf9acab961098aa914865895a229259c2ef7f7238b3a00b4382eb823c27c3b6c43cd1ba055fadf3ad18dde8844da6
   languageName: node
   linkType: hard
 
@@ -12403,7 +12402,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.0.0, postcss@npm:^8.2.10":
+"postcss@npm:^8.0.0, postcss@npm:^8.2.15":
   version: 8.2.15
   resolution: "postcss@npm:8.2.15"
   dependencies:
