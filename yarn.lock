@@ -5453,7 +5453,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-scope@npm:^5.1.1":
+"eslint-scope@npm:5.1.1, eslint-scope@npm:^5.1.1":
   version: 5.1.1
   resolution: "eslint-scope@npm:5.1.1"
   dependencies:
@@ -15626,13 +15626,13 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"watchpack@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "watchpack@npm:2.0.1"
+"watchpack@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "watchpack@npm:2.2.0"
   dependencies:
     glob-to-regexp: ^0.4.1
     graceful-fs: ^4.1.2
-  checksum: 398348c102eedfff10b96887ba9e9999a367c7dcc5beb2233e77a48cd9ffad6502c182a3aedb78b557dc0e9b54f1dee851d48bdda8a036c3fc051d0277c73bdd
+  checksum: 5d02acd83644d5b9df6cf0e213868afc10e1fd71b0dd372c505b0c8967c4812e57ee92420edb967e475c88360c9341b8949368aeaa65eb0331e6872fde792394
   languageName: node
   linkType: hard
 
@@ -15800,19 +15800,19 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"webpack-sources@npm:^2.1.1":
-  version: 2.2.0
-  resolution: "webpack-sources@npm:2.2.0"
+"webpack-sources@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "webpack-sources@npm:2.3.0"
   dependencies:
     source-list-map: ^2.0.1
     source-map: ^0.6.1
-  checksum: 7c4b797fa90d310872b70469dc04254e35571fb34530280a47b93edbe9cd6b0ffb79cf2b7565f4a18ff5b70315ff245d465ad35f952366cfd93c55d6445e2378
+  checksum: b929133f8b86fa91a42d2e557f2b2cd6136f62a50c10e32db9f37a63609cd4d1b3475772503c814baa2e25c02d3206110ec2add7a3aaf2794217fbf48664e72a
   languageName: node
   linkType: hard
 
 "webpack@npm:^5.8.0":
-  version: 5.37.1
-  resolution: "webpack@npm:5.37.1"
+  version: 5.38.1
+  resolution: "webpack@npm:5.38.1"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.47
@@ -15824,7 +15824,7 @@ resolve@^2.0.0-next.3:
     chrome-trace-event: ^1.0.2
     enhanced-resolve: ^5.8.0
     es-module-lexer: ^0.4.0
-    eslint-scope: ^5.1.1
+    eslint-scope: 5.1.1
     events: ^3.2.0
     glob-to-regexp: ^0.4.1
     graceful-fs: ^4.2.4
@@ -15835,14 +15835,14 @@ resolve@^2.0.0-next.3:
     schema-utils: ^3.0.0
     tapable: ^2.1.1
     terser-webpack-plugin: ^5.1.1
-    watchpack: ^2.0.0
-    webpack-sources: ^2.1.1
+    watchpack: ^2.2.0
+    webpack-sources: ^2.3.0
   peerDependenciesMeta:
     webpack-cli:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 5fe030ea3f3852d2a2d20157ec51c6fd1ee98039ff0cf3b5176bde9c5ffcf3183fafdf132b89ad9490c9abe996aff33db6448a24d9f683edd2a8e0f80bcdd95b
+  checksum: c6bc39fc5880782d9eb9f2a1621fb03f8ce5071a6078e216118702446061440d42bbf845fe1ad7318ca91b117f8dd1bd53a3beafa3c9942002af99d7e5398ad2
   languageName: node
   linkType: hard
 
