@@ -4515,9 +4515,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cssnano-preset-default@npm:^5.1.2":
-  version: 5.1.2
-  resolution: "cssnano-preset-default@npm:5.1.2"
+"cssnano-preset-default@npm:^5.1.3":
+  version: 5.1.3
+  resolution: "cssnano-preset-default@npm:5.1.3"
   dependencies:
     css-declaration-sorter: ^6.0.3
     cssnano-utils: ^2.0.1
@@ -4541,16 +4541,16 @@ __metadata:
     postcss-normalize-string: ^5.0.1
     postcss-normalize-timing-functions: ^5.0.1
     postcss-normalize-unicode: ^5.0.1
-    postcss-normalize-url: ^5.0.1
+    postcss-normalize-url: ^5.0.2
     postcss-normalize-whitespace: ^5.0.1
-    postcss-ordered-values: ^5.0.1
+    postcss-ordered-values: ^5.0.2
     postcss-reduce-initial: ^5.0.1
     postcss-reduce-transforms: ^5.0.1
     postcss-svgo: ^5.0.2
     postcss-unique-selectors: ^5.0.1
   peerDependencies:
     postcss: ^8.2.15
-  checksum: d8f76d7f4e59a1062fbf7abb9f929cc8d67d4384c6d97d8615c2e2c8e95f140ccd57bd394f3c3c8f98c693351e8efe6a55f4aa281b709c231a0e04029228bbe2
+  checksum: 81590cb54b12012c175a98d2e8d09b39574083974abae3abb55f67694f9db8b864707b21b16f2db8d89bb48d27375bb0f48449b3551f794f5bf558640d0c1113
   languageName: node
   linkType: hard
 
@@ -4564,15 +4564,15 @@ __metadata:
   linkType: hard
 
 "cssnano@npm:^5.0.0-rc.1":
-  version: 5.0.5
-  resolution: "cssnano@npm:5.0.5"
+  version: 5.0.6
+  resolution: "cssnano@npm:5.0.6"
   dependencies:
     cosmiconfig: ^7.0.0
-    cssnano-preset-default: ^5.1.2
+    cssnano-preset-default: ^5.1.3
     is-resolvable: ^1.1.0
   peerDependencies:
     postcss: ^8.2.15
-  checksum: 9aa3c957db2dad2dbd054f8450210333d93da25f094529ebc1b21bb69bd5512e5114a11c918375e18f03c3831e3ea556c347b177cbb7411ed08caa02acf1bc93
+  checksum: 086ad98e2c55f2307ab3ca15c584d2ed8924456c3893a755155778bf2203ba5318699fefb4e91e15e6e4c4b38cb364c889e366ca44c95b3a4c9d34c23fedb9a2
   languageName: node
   linkType: hard
 
@@ -10429,7 +10429,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"normalize-url@npm:^4.1.0, normalize-url@npm:^4.5.0":
+"normalize-url@npm:^4.1.0":
   version: 4.5.0
   resolution: "normalize-url@npm:4.5.0"
   checksum: 09794941dbe5c7b91caf6f3cd1ae167c27f6d09793e4a03601a68b62de7e8ee9e5de21a246130cdbab98b01481de292f9556d492444a527648f9cf1220e4b0df
@@ -10440,6 +10440,13 @@ __metadata:
   version: 5.3.0
   resolution: "normalize-url@npm:5.3.0"
   checksum: 126bcee51735bd975a3df3df008595fa4b6770f511494a05472519ca9e8e8caea62761f66d81c7cab28e758b201cdc656c1bc8a2c2c9d091bef661f32a182d6d
+  languageName: node
+  linkType: hard
+
+"normalize-url@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "normalize-url@npm:6.0.1"
+  checksum: 63fe38bbc1c1b41fcc4ba9f54411755ce75aaeb25624d3c95f6d84501ea7a0e4ddd79fbcfcf9e497de7952e3c4856cba8719e9417cfbdd8e082aea5c900f3de4
   languageName: node
   linkType: hard
 
@@ -12091,16 +12098,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-normalize-url@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "postcss-normalize-url@npm:5.0.1"
+"postcss-normalize-url@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "postcss-normalize-url@npm:5.0.2"
   dependencies:
     is-absolute-url: ^3.0.3
-    normalize-url: ^4.5.0
+    normalize-url: ^6.0.1
     postcss-value-parser: ^4.1.0
   peerDependencies:
     postcss: ^8.2.15
-  checksum: 6aba19eb7ead19df1c2fdc350ead4bf2552a430227a09f03899bc21ed442acb38f331f335bf3cd7784953d7c3f5863cdf8b4665f7a2366fcb5c9c775faebd923
+  checksum: 6a939267f58b5ed7c89e0771bded5dbf31342c0131ffd42d928afb110430622a08ce85b057fe66382407ce8ff4dbd448952278bacf61274c94afe516adaa74d5
   languageName: node
   linkType: hard
 
@@ -12115,15 +12122,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-ordered-values@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "postcss-ordered-values@npm:5.0.1"
+"postcss-ordered-values@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "postcss-ordered-values@npm:5.0.2"
   dependencies:
     cssnano-utils: ^2.0.1
     postcss-value-parser: ^4.1.0
   peerDependencies:
     postcss: ^8.2.15
-  checksum: bb1720395bfe96eac41e44a5dc09eb9b8c40e38fd39e11965ec6943baf0fbf862b851e2c67c385b7e94180e1751a9786d7c7672d28b36b7fa18db8418a5fb81e
+  checksum: 479311212309ec73d0e7bbc19fb81345f4eb8d69e504337e774adc3dd6403a53d99c0ed687989b0ddf4bbbfc981e8dfacefa1112fd22179bbf11e11525735eba
   languageName: node
   linkType: hard
 
