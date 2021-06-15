@@ -8937,14 +8937,14 @@ __metadata:
   linkType: hard
 
 "less-loader@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "less-loader@npm:9.0.0"
+  version: 9.1.0
+  resolution: "less-loader@npm:9.1.0"
   dependencies:
     klona: ^2.0.4
   peerDependencies:
     less: ^3.5.0 || ^4.0.0
     webpack: ^5.0.0
-  checksum: d0a525edf91b2d4e9f022ca48198dc530e834a3d67a251141b60ed2dfc92448207e759f995aa0d4187b22d701a40d484197e9b6f6b93cfef05b8f9b3f4d207ae
+  checksum: cb3364f6f66d8c153aff611c75646cc6a3a9932b5e63c5aeaecc7e11afa625349bd3d1e93c1dd8df6dd4ff9a8d0fcfcc83f3e3d1ffb2c34beea49e085e0e13ca
   languageName: node
   linkType: hard
 
