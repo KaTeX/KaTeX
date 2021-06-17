@@ -15,21 +15,24 @@
     src+: url('@{font-folder}/KaTeX_@{family}-@{family-suffix}.ttf') format('truetype')
 }
 
-.generate-suffix(@weight, @style) when (@weight = normal) and (@style = normal) {
+.generate-suffix(@weight, @style, @variant) when (@weight = normal) and (@style = normal) {
     @suffix: 'Regular';
 }
-.generate-suffix(@weight, @style) when (@weight = normal) and (@style = italic) {
+.generate-suffix(@weight, @style, @variant) when (@weight = normal) and (@style = italic) {
     @suffix: 'Italic';
 }
-.generate-suffix(@weight, @style) when (@weight = bold) and (@style = normal) {
+.generate-suffix(@weight, @style, @variant) when (@weight = bold) and (@style = normal) {
     @suffix: 'Bold';
 }
-.generate-suffix(@weight, @style) when (@weight = bold) and (@style = italic) {
+.generate-suffix(@weight, @style, @variant) when (@weight = bold) and (@style = italic) {
     @suffix: 'BoldItalic';
 }
+.generate-suffix(@weight, @style, @variant) when (@variant = small-caps) {
+    @suffix: 'SmallCaps';
+}
 
-.font-face(@family, @weight, @style) {
-    .generate-suffix(@weight, @style);
+.font-face(@family, @weight, @style, @variant: normal) {
+    .generate-suffix(@weight, @style, @variant);
     @font-face {
         font-family: 'KaTeX_@{family}';
         .use-woff2(@family, @suffix);
@@ -37,6 +40,7 @@
         .use-ttf(@family, @suffix);
         font-weight: @weight;
         font-style: @style;
+        font-variant: @variant;
     }
 }
 
@@ -48,7 +52,7 @@
 .font-face('Main', bold, normal);
 .font-face('Main', bold, italic);
 .font-face('Main', normal, italic);
-.font-face('Main', normal, normal);
+.font-face('Main', normal, normal, small-caps);
 //.font-face('Math', bold, normal);
 .font-face('Math', bold, italic);
 .font-face('Math', normal, italic);

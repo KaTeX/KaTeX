@@ -24,6 +24,7 @@ used_fonts=(
     KaTeX_Main-Bold
     KaTeX_Main-Italic
     KaTeX_Main-BoldItalic
+    KaTeX_Main-SmallCaps
     KaTeX_Math-Italic
     KaTeX_Math-BoldItalic
     KaTeX_SansSerif-Bold

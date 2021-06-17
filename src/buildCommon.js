@@ -657,6 +657,8 @@ const retrieveTextFontName = function(
     let fontStylesName;
     if (fontWeight === "textbf" && fontShape === "textit") {
         fontStylesName = "BoldItalic";
+    } else if (fontShape === "textsc") {
+        fontStylesName = "SmallCaps";
     } else if (fontWeight === "textbf") {
         fontStylesName = "Bold";
     } else if (fontWeight === "textit") {
@@ -695,6 +697,10 @@ const fontMap: {[string]: {| variant: FontVariant, fontName: string |}} = {
     "mathnormal": {
         variant: "italic",
         fontName: "Math-Italic",
+    },
+    "textsc": {
+        variant: "small-caps",
+        fontName: "Main-Regular",
     },
 
     // "boldsymbol" is missing because they require the use of multiple fonts:
