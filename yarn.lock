@@ -13517,9 +13517,9 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"semantic-release@npm:17.4.3, semantic-release@npm:^17.4.1":
-  version: 17.4.3
-  resolution: "semantic-release@npm:17.4.3"
+"semantic-release@npm:17.4.4, semantic-release@npm:^17.4.1":
+  version: 17.4.4
+  resolution: "semantic-release@npm:17.4.4"
   dependencies:
     "@semantic-release/commit-analyzer": ^8.0.0
     "@semantic-release/error": ^2.2.0
@@ -13551,7 +13551,7 @@ resolve@^2.0.0-next.3:
     yargs: ^16.2.0
   bin:
     semantic-release: bin/semantic-release.js
-  checksum: a670e0a551e5aa368a9fa8738334363d4931cfca3c0e490c52b926da2e0d7b7e6c7897c58b4640a4ff2c29db30bb51252bb68f8f844ceba0f54cc8a9df4db088
+  checksum: 4c78340c628c74aa2d76343086edd80f15233e25c735e924f203b22ca075bf1412488180aaf7a3e9c2d1e37a4dd0e9da7fcd59b8511e8b1fa9c1e7982d500988
   languageName: node
   linkType: hard
 
