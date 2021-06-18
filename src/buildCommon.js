@@ -657,12 +657,12 @@ const retrieveTextFontName = function(
     let fontStylesName;
     if (fontWeight === "textbf" && fontShape === "textit") {
         fontStylesName = "BoldItalic";
-    } else if (fontShape === "textsc") {
-        fontStylesName = "SmallCaps";
     } else if (fontWeight === "textbf") {
         fontStylesName = "Bold";
     } else if (fontWeight === "textit") {
         fontStylesName = "Italic";
+    } else if (fontShape === "textsc") {
+        fontStylesName = "SmallCaps";
     } else {
         fontStylesName = "Regular";
     }
