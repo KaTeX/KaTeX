@@ -5487,8 +5487,8 @@ __metadata:
   linkType: hard
 
 "eslint@npm:^7.4.0":
-  version: 7.28.0
-  resolution: "eslint@npm:7.28.0"
+  version: 7.29.0
+  resolution: "eslint@npm:7.29.0"
   dependencies:
     "@babel/code-frame": 7.12.11
     "@eslint/eslintrc": ^0.4.2
@@ -5531,7 +5531,7 @@ __metadata:
     v8-compile-cache: ^2.0.3
   bin:
     eslint: bin/eslint.js
-  checksum: 9d49d53ed56a1f1ccba9c71482722a91f2423432df70a3694d36ea478f0e3bb058034f170219f34f3d6b5cd5d47510b269b75e2b4117f88a3241b1db9cb95828
+  checksum: 812f8c5123860cf5bd877018ffd29abd52bbaaca55fdd616008c97da9bf47a20a7b7c7ecb7c8f753c06f77ea5d59480f3d6d76475699b2ea380237fbb7c6b3a2
   languageName: node
   linkType: hard
 
