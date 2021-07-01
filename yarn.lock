@@ -9977,15 +9977,15 @@ __metadata:
   linkType: hard
 
 "mini-css-extract-plugin@npm:^1.0.0":
-  version: 1.6.0
-  resolution: "mini-css-extract-plugin@npm:1.6.0"
+  version: 1.6.2
+  resolution: "mini-css-extract-plugin@npm:1.6.2"
   dependencies:
     loader-utils: ^2.0.0
     schema-utils: ^3.0.0
     webpack-sources: ^1.1.0
   peerDependencies:
     webpack: ^4.4.0 || ^5.0.0
-  checksum: c9c50bed4ffa0ce0099c26184ed6f5b8675be068252fb2a68b790d8afa58c896e0c36aae0e0601e5036fdc04ecad761e884ce4d27a75c8bd3fb69ff7b4c52f91
+  checksum: 53c162db80f2b58dcc1e85a2e1b52ffed73d3184ed5b8a037786d8562fbecf1b936397ea3873f3375356f8a6def27ec97867f9938356358d369d2a9e20a30718
   languageName: node
   linkType: hard
 
