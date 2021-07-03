@@ -699,6 +699,43 @@ export default class Parser {
         };
     }
 
+    parseNumberGroup() {
+        //const firstToken = this.fetch();
+        //const text = firstToken.text;
+        let value = 0;
+        /*if (text === "\\count") {
+            this.consume();
+            const number = this.parseNumberGroup();
+            value = this.gullet.macros.getCountRegister(number);
+        } else if (text[0] === "\\" && this.gullet.macros.isCountDefined(text)) {
+            this.consume();
+            value = this.gullet.macros.getCountRegister(text);
+        } else*/ {
+            const group = this.parseRegexGroup(
+                /^[\s-]*(?:\d+|'[0-7]+|"[\dA-Fa-f]+)$/, "number");
+            const match = /^([\s-]*)(\d+|'[0-7]+|"[\dA-Fa-f]+)$/.exec(group.text);
+
+            if (!match) {
+                throw new ParseError("Invalid number", group);
+            }
+            if (match[2][0] === "'") {
+                value = parseInt(match[2].substr(1), 8);
+            } else if (match[2][0] === '"') {
+                value = parseInt(match[2].substr(1), 16);
+            } else {
+                value = parseInt(match[2]);
+            }
+            if ((match[1].match(/-/g) || []).length % 2) {
+                value *= -1;
+            }
+        }
+        return {
+            type: "number",
+            mode: this.mode,
+            value,
+        };
+    }
+
     /**
      * Parses a size specification, consisting of magnitude and unit.
      */
@@ -891,6 +928,13 @@ export default class Parser {
                 n -= 1;
             }
         }
+    }
+
+    /**
+     * Parse special functions like \verb.
+     */
+    parseSpecial(): AnyParseNode {
+
     }
 
     /**

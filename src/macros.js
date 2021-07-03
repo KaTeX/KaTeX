@@ -293,6 +293,39 @@ defineMacro("\\newcommand", (context) => newcommand(context, false, true));
 defineMacro("\\renewcommand", (context) => newcommand(context, true, false));
 defineMacro("\\providecommand", (context) => newcommand(context, true, true));
 
+// Basic support for registers
+// const count = []; // TODO: compare with Int32Array
+// Ref: ltcounts.dtx
+const getCounter = (context, arg, existsOK: boolean, nonexistsOK: boolean) => {
+    const name = arg.map(token => token.text).join("");
+    if (!/^[a-zA-Z]+$/.test(name)) {
+        throw new ParseError(`Invalid counter name: ${name}`);
+    }
+
+    const counter = `\\c@${name}`;
+    const exists = context.isDefined(counter);
+    if (exists && !existsOK) {
+        throw new ParseError(`Counter '${name}' already defined`);
+    }
+    if (!exists && !nonexistsOK) {
+        throw new ParseError(`No counter '${name}' defined`);
+    }
+    return counter;
+};
+defineMacro("\\newcounter", (context) => {
+    const arg = context.consumeArgs(1)[0];
+    const counter = getCounter(context, arg, false, true);
+    context.macros.set(counter, {
+        tokens: 5,
+    });
+    return '';
+});
+defineMacro("\\setcounter", (context) => {
+    //const args = context.consumeArgs(2);
+    //const counter = getCounter(context, args[0], true, false);
+
+});
+
 //////////////////////////////////////////////////////////////////////
 // Grouping
 // \let\bgroup={ \let\egroup=}
