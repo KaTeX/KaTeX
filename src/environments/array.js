@@ -93,6 +93,7 @@ function parseArray(
     } else {
         parser.gullet.macros.set("\\\\", "\\cr");
     }
+    parser.gullet.macros.set("\\@eqnsw", addEqnNum.toString(), true);
 
     // Get current arraystretch if it's not set by the environment
     if (!arraystretch) {
@@ -171,6 +172,16 @@ function parseArray(
             }
             const cr = assertNodeType(parser.parseFunction(), "cr");
             rowGaps.push(cr.size);
+
+            // amsmath.dtx:
+            // \def\make@display@tag{%
+            //   \if@eqnsw \incr@eqnum \print@eqnum
+            //   \else \iftag@ \df@tag \global\let\df@tag\@empty \fi
+            //   \fi
+            if (parser.gullet.macros.get("\\@eqnsw") === "true") {
+                counter.increment();
+            }
+            parser.gullet.macros.set("\\@eqnsw", addEqnNum.toString(), true);
 
             // check for \hline(s) following the row separator
             hLinesBeforeRow.push(getHLines(parser));
