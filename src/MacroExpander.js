@@ -75,6 +75,14 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
+     * Ends all currently nested groups (if any), restoring values before the
+     * groups began.  Useful in case of an error in the middle of parsing.
+     */
+    endGroups() {
+        this.macros.endGroups();
+    }
+
+    /**
      * Returns the topmost token on the stack, without expanding it.
      * Similar in behavior to TeX's `\futurelet`.
      */
