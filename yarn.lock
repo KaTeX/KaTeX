@@ -4921,12 +4921,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"diffable-html@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "diffable-html@npm:4.0.0"
+"diffable-html@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "diffable-html@npm:4.1.0"
   dependencies:
     htmlparser2: ^3.9.2
-  checksum: d37f5370a13f5a55a621b8b7ee1e77b59ecb1f0d03cad331aa390b33b56d3a816668c1096e31fda9759c2d9525cdea709a0f0f4e489340a969694227b5a91767
+  checksum: 5522ca6d65693ab5008b8a33996762cbbf98a1aaf3b49db797a6cd7cc487693ad7fdab848e2bf0c7c8fa7a8927a4b572691fa6c7b1dd177f0388d8d13e53bc9e
   languageName: node
   linkType: hard
 
@@ -8386,11 +8386,11 @@ __metadata:
   linkType: hard
 
 "jest-serializer-html@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "jest-serializer-html@npm:7.0.0"
+  version: 7.1.0
+  resolution: "jest-serializer-html@npm:7.1.0"
   dependencies:
-    diffable-html: ^4.0.0
-  checksum: 21808d681e5f4ab0246e1eaeaba837637411ddc91823c3a3803da7ce80dc223a192b6091903eedd365224be34acac9fe935353c47711f343044307139efdf437
+    diffable-html: ^4.1.0
+  checksum: 329edf0e12d7c0af37bf7c857e7b6cc58b6205cd4f00e44011bd4f3501232cb07151889e2109ad6b1473ac480fd730fa4eaf6fa319b088d8d07fc67cbdaba6c8
   languageName: node
   linkType: hard
 
