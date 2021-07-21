@@ -1528,6 +1528,22 @@ $extra{'Main-Regular'} = {
     'Select(0u20D7)','SetRBearing(153,1)',    # \vec
   ],
 
+  capitalgreek => [
+    'Select(0u41)', 'Copy()', 'Select(0u0391)', 'Paste()',  # \Alpha = A
+    'Select(0u42)', 'Copy()', 'Select(0u0392)', 'Paste()',  # \Beta = B
+    'Select(0u45)', 'Copy()', 'Select(0u0395)', 'Paste()',  # \Epsilon = E
+    'Select(0u5A)', 'Copy()', 'Select(0u0396)', 'Paste()',  # \Zeta = Z
+    'Select(0u48)', 'Copy()', 'Select(0u0397)', 'Paste()',  # \Eta = H
+    'Select(0u49)', 'Copy()', 'Select(0u0399)', 'Paste()',  # \Iota = I
+    'Select(0u4B)', 'Copy()', 'Select(0u039A)', 'Paste()',  # \Kappa = K
+    'Select(0u4D)', 'Copy()', 'Select(0u039C)', 'Paste()',  # \Mu = M
+    'Select(0u4E)', 'Copy()', 'Select(0u039D)', 'Paste()',  # \Nu = N
+    'Select(0u4F)', 'Copy()', 'Select(0u039F)', 'Paste()',  # \Omicron = O
+    'Select(0u50)', 'Copy()', 'Select(0u03A1)', 'Paste()',  # \Rho = P
+    'Select(0u54)', 'Copy()', 'Select(0u03A4)', 'Paste()',  # \Tau = T
+    'Select(0u58)', 'Copy()', 'Select(0u03A7)', 'Paste()',  # \Chi = X
+  ],
+
 };
 
 $extra{'Main-Bold'} = {
@@ -1800,6 +1816,9 @@ $extra{'Main-Bold'} = {
     'Select(0uB0)',  'SetRBearing(-147,1)',   # \degree
     'Select(0u20D7)','SetRBearing(154,1)',    # \vec
   ],
+
+  capitalgreek => $extra{'Main-Regular'}{'capitalgreek'},
+
 };
 
 $extra{'Main-Italic'} = {
