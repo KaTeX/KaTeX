@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.13](https://github.com/KaTeX/KaTeX/compare/v0.13.12...v0.13.13) (2021-07-21)
+
+
+### Bug Fixes
+
+* add namespace for svg, making output XHTML+SVG+MathML compatible ([#2725](https://github.com/KaTeX/KaTeX/issues/2725)) ([35ff5ac](https://github.com/KaTeX/KaTeX/commit/35ff5ac2231b53fdb849f639611e0e44c01aa16b))
+
 ## [0.13.12](https://github.com/KaTeX/KaTeX/compare/v0.13.11...v0.13.12) (2021-07-21)
 
 
