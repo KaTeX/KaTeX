@@ -75,7 +75,7 @@
     "selenium-webdriver": "^3.6.0",
     "semantic-release": "^17.4.1",
     "sri-toolbox": "^0.2.0",
-    "style-loader": "^2.0.0",
+    "style-loader": "^3.0.0",
     "stylelint": "^13.6.1",
     "stylelint-config-standard": "^22.0.0",
     "terser-webpack-plugin": "^5.0.3",
