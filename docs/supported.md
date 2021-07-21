@@ -106,7 +106,7 @@ The auto-render extension will render the following environments even if they ar
 |:-----------------------------------------------|:------------------|
 | `darray`, `dcases`, `drcases`                  | … apply `displaystyle` |
 | `matrix*`, `pmatrix*`, `bmatrix*`<br>`Bmatrix*`, `vmatrix*`, `Vmatrix*` | … take an optional argument to set column<br>alignment, as in `\begin{matrix*}[r]`
-| `equation*`, `gather*`<br>`align*`, `alignat*` | … have no automatic numbering. |
+| `equation*`, `gather*`<br>`align*`, `alignat*` | … have no automatic numbering. Alternatively, you can use `\nonumber` or `\notag` to omit the numbering for a specific row of the equation. |
 | `gathered`, `aligned`, `alignedat`             | … do not need to be in display mode.<br> … have no automatic numbering.<br> … must be inside math delimiters in<br>order to be rendered by the auto-render<br>extension. |
 
 </div>
@@ -117,7 +117,8 @@ The `{array}` environment supports `|` and `:` vertical separators.
 
 The `{array}` environment does not yet support `\cline` or `\multicolumn`.
 
-`\tag` can not yet be applied to individual environment rows.
+`\tag` can be applied to individual rows of top-level environments
+(`align`, `align*`, `alignat`, `alignat*`, `gather`, `gather*`).
 
 <div class="katex-hopscotch">
 

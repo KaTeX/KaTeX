@@ -39,7 +39,8 @@ type ParseNodeTypes = {
         body: AnyParseNode[][], // List of rows in the (2D) array.
         rowGaps: (?Measurement)[],
         hLinesBeforeRow: Array<boolean[]>,
-        addEqnNum?: boolean,
+        // Whether each row should be automatically numbered, or an explicit tag
+        tags?: (boolean | AnyParseNode[])[],
         leqno?: boolean,
         isCD?: boolean,
     |},
