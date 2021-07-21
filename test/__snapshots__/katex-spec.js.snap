@@ -1,5 +1,193 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`\\tag support should include a targetable HTML id that omits unsafe characters 1`] = `
+[
+  {
+    "classes": [
+      "mord",
+      "mathnormal"
+    ],
+    "depth": 0,
+    "height": 0.43056,
+    "italic": 0,
+    "maxFontSize": 1,
+    "skew": 0.02778,
+    "style": {
+    },
+    "text": "x",
+    "width": 0.57153
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+    ],
+    "classes": [
+      "mspace"
+    ],
+    "depth": 0,
+    "height": 0,
+    "maxFontSize": 0,
+    "style": {
+      "marginRight": "0.2222222222222222em"
+    }
+  },
+  {
+    "classes": [
+      "mbin"
+    ],
+    "depth": 0.08333,
+    "height": 0.58333,
+    "italic": 0,
+    "maxFontSize": 1,
+    "skew": 0,
+    "style": {
+    },
+    "text": "+",
+    "width": 0.77778
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+    ],
+    "classes": [
+      "mspace"
+    ],
+    "depth": 0,
+    "height": 0,
+    "maxFontSize": 0,
+    "style": {
+      "marginRight": "0.2222222222222222em"
+    }
+  },
+  {
+    "classes": [
+      "mord",
+      "mathnormal"
+    ],
+    "depth": 0.19444,
+    "height": 0.43056,
+    "italic": 0.03588,
+    "maxFontSize": 1,
+    "skew": 0.05556,
+    "style": {
+    },
+    "text": "y",
+    "width": 0.49028
+  },
+  {
+    "attributes": {
+    },
+    "children": [
+      {
+        "classes": [
+          "mord",
+          "",
+          ""
+        ],
+        "depth": 0.25,
+        "height": 0.75,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0,
+        "style": {
+        },
+        "text": "(",
+        "width": 0.38889
+      },
+      {
+        "attributes": {
+        },
+        "children": [
+          {
+            "classes": [
+              "mord",
+              "",
+              ""
+            ],
+            "depth": 0.0391,
+            "height": 0.5391,
+            "italic": 0,
+            "maxFontSize": 1,
+            "skew": 0,
+            "style": {
+            },
+            "text": "<",
+            "width": 0.77778
+          },
+          {
+            "classes": [
+              "mord",
+              "",
+              ""
+            ],
+            "depth": 0,
+            "height": 0.69444,
+            "italic": 0,
+            "maxFontSize": 1,
+            "skew": 0,
+            "style": {
+            },
+            "text": "h",
+            "width": 0.55556
+          },
+          {
+            "classes": [
+              "mord",
+              "",
+              ""
+            ],
+            "depth": 0,
+            "height": 0.66786,
+            "italic": 0,
+            "maxFontSize": 1,
+            "skew": 0,
+            "style": {
+            },
+            "text": "i",
+            "width": 0.27778
+          }
+        ],
+        "classes": [
+          "mord"
+        ],
+        "depth": 0.0391,
+        "height": 0.69444,
+        "maxFontSize": 1,
+        "style": {
+        }
+      },
+      {
+        "classes": [
+          "mord",
+          "",
+          ""
+        ],
+        "depth": 0.25,
+        "height": 0.75,
+        "italic": 0,
+        "maxFontSize": 1,
+        "skew": 0,
+        "style": {
+        },
+        "text": ")",
+        "width": 0.38889
+      }
+    ],
+    "classes": [
+      "mord",
+      "text"
+    ],
+    "depth": 0.25,
+    "height": 0.75,
+    "maxFontSize": 1,
+    "style": {
+    }
+  }
+]
+`;
+
 exports[`A begin/end parser should grab \\arraystretch 1`] = `
 [
   {
