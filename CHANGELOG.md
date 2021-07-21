@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.12](https://github.com/KaTeX/KaTeX/compare/v0.13.11...v0.13.12) (2021-07-21)
+
+
+### Bug Fixes
+
+* Correct invalid box-sizing property, adjusting spacing of \angl ([#3053](https://github.com/KaTeX/KaTeX/issues/3053)) ([910e523](https://github.com/KaTeX/KaTeX/commit/910e523633da555a758dd176fb28ec139ed3b608)), closes [#3052](https://github.com/KaTeX/KaTeX/issues/3052)
+
 ## [0.13.11](https://github.com/KaTeX/KaTeX/compare/v0.13.10...v0.13.11) (2021-05-14)
 
 

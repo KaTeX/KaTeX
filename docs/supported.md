@@ -6,7 +6,7 @@ This is a list of TeX functions supported by KaTeX. It is sorted into logical gr
 
 There is a similar [Support Table](support_table.md), sorted alphabetically, that lists both supported and un-supported functions.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.css" integrity="sha384-Um5gpz1odJg5Z4HAmzPtgZKdTBHZdw8S29IecapCSB31ligYPhHQZMIlWLYQGVoc" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.12/dist/katex.min.css" integrity="sha384-RaIG8XSzu98vT1E+gXNQtp7oWEjkliSoIP8xaoJcygwMIRs6TzGe1S1pF0LCND5F" crossorigin="anonymous">
 <style>
 p {overflow-wrap: break-word;}
 table tr,
