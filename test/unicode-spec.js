@@ -9,6 +9,12 @@ describe("unicode", function() {
             .toBuild();
     });
 
+    it("should build Latin-1 inside \\text{} like accent commands", function() {
+        expect`\text{ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿÇç}`
+            .toParseLike`\text{\`A\'A\^A\~A\"A\r A\`E\'E\^E\"E\`I\'I\^I\"I\~N\`O\'O\^O\~O\"O\`U\'U\^U\"U\'Y\`a\'a\^a\~a\"a\r a\`e\'e\^e\"e\`ı\'ı\^ı\"ı\~n\`o\'o\^o\~o\"o\`u\'u\^u\"u\'y\"y\c C\c c}`;
+        // TODO(edemaine): A few characters don't have analogs yet.
+    });
+
     it("should not parse Latin-1 outside \\text{} with strict", function() {
         const chars = 'ÀÁÂÃÄÅÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝàáâãäåèéêëìíîïñòóôõöùúûüýÿÇÐÞçþ';
         for (const ch of chars) {

@@ -108,11 +108,9 @@ import metricMap from "./fontMetricsData";
 const extraCharacterMap = {
     // Latin-1
     'Å': 'A',
-    'Ç': 'C',
     'Ð': 'D',
     'Þ': 'o',
     'å': 'a',
-    'ç': 'c',
     'ð': 'd',
     'þ': 'o',
 

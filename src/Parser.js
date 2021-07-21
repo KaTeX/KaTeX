@@ -951,7 +951,8 @@ export default class Parser {
                 if (!unicodeAccents[accent]) {
                     throw new ParseError(`Unknown accent ' ${accent}'`, nucleus);
                 }
-                const command = unicodeAccents[accent][this.mode];
+                const command = unicodeAccents[accent][this.mode] ||
+                    unicodeAccents[accent].text;
                 if (!command) {
                     throw new ParseError(
                         `Accent ${accent} unsupported in ${this.mode} mode`,
