@@ -326,10 +326,10 @@ export default class Parser {
                     const limits = lex.text === "\\limits";
                     base.limits = limits;
                     base.alwaysHandleSupSub = true;
-                } else if (base && base.type === "operatorname"
-                        && base.alwaysHandleSupSub) {
-                    const limits = lex.text === "\\limits";
-                    base.limits = limits;
+                } else if (base && base.type === "operatorname") {
+                    if (base.alwaysHandleSupSub) {
+                        base.limits = lex.text === "\\limits";
+                    }
                 } else {
                     throw new ParseError(
                         "Limit controls must follow a math operator",
@@ -682,8 +682,10 @@ export default class Parser {
      */
     parseUrlGroup(optional: boolean): ?ParseNode<"url"> {
         this.gullet.lexer.setCatcode("%", 13); // active character
+        this.gullet.lexer.setCatcode("~", 12); // other character
         const res = this.parseStringGroup("url", optional);
         this.gullet.lexer.setCatcode("%", 14); // comment character
+        this.gullet.lexer.setCatcode("~", 13); // active character
         if (res == null) {
             return null;
         }

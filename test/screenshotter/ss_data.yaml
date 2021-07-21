@@ -65,7 +65,7 @@ BinCancellation: |
         +1 & 1+ & 1+1 & (,) \\
         1++1 & 3\times) & 1+, & \left(,\right)
     \end{array}
-BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}
+BinomTest: \dbinom{a}{b}\tbinom{a}{b}^{\binom{a}{b}+17}{\scriptscriptstyle \binom a b}
 BoldSpacing: \mathbf{A}^2+\mathbf{B}_3*\mathscr{C}'
 BoldSymbol: |
   \sum_{\boldsymbol{\alpha}}^{\boldsymbol{\beta}} \boldsymbol{\omega}+ \boldsymbol{\int_\alpha^\beta} \boldsymbol{\Omega + {}} \\
@@ -184,7 +184,8 @@ Integrands: |
     \begin{array}{l}
         \displaystyle \int + \oint + \iint + \oiint_i^n \\[0.6em]
         \displaystyle \iiint + \oiiint + \textstyle \int + \oint_i^n \\[0.6em]
-        \iint + \oiint + \iiint + \oiiint
+        \iint + \oiint + \iiint + \oiiint \\[0.6em]
+        \int\limits^x_{y + 4 - a} \int\limits^x_{y + 4 - a}
     \end{array}
 KaTeX:
     tex: \KaTeX, \large \KaTeX

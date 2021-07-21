@@ -44,7 +44,7 @@ if (process.env.NETLIFY_API_KEY) {
 
 // use KaTeX from CDN on the main page for Netlify production deploy
 if (process.env.CONTEXT === 'production') {
-    const version = require('../versions.json')[0];
+    const {version} = require('../../package.json');
     let indexHtml = fs.readFileSync('pages/index.html', 'utf8');
     indexHtml = indexHtml.replace(/(["'])static\/(katex|fonts)/g,
         `$1https://cdn.jsdelivr.net/npm/katex@${version}/dist/$2`);

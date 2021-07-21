@@ -28,8 +28,16 @@ import type Settings from "./Settings";
  * - does not match bare surrogate code units
  * - matches any BMP character except for those just described
  * - matches any valid Unicode surrogate pair
- * - matches a backslash followed by one or more letters
- * - matches a backslash followed by any BMP character, including newline
+ * - matches a backslash followed by one or more whitespace characters
+ * - matches a backslash followed by one or more letters then whitespace
+ * - matches a backslash followed by any BMP character
+ * Capturing groups:
+ *   [1] regular whitespace
+ *   [2] backslash followed by whitespace
+ *   [3] anything else, which may include:
+ *     [4] left character of \verb*
+ *     [5] left character of \verb
+ *     [6] backslash followed by word, excluding any trailing whitespace
  * Just because the Lexer matches something doesn't mean it's valid input:
  * If there is no matching function or symbol definition, the Parser will
  * still reject the input.
@@ -38,20 +46,19 @@ const spaceRegexString = "[ \r\n\t]";
 const controlWordRegexString = "\\\\[a-zA-Z@]+";
 const controlSymbolRegexString = "\\\\[^\uD800-\uDFFF]";
 const controlWordWhitespaceRegexString =
-    `${controlWordRegexString}${spaceRegexString}*`;
-const controlWordWhitespaceRegex = new RegExp(
-    `^(${controlWordRegexString})${spaceRegexString}*$`);
+    `(${controlWordRegexString})${spaceRegexString}*`;
+const controlSpaceRegexString = "\\\\(\n|[ \r\t]+\n?)[ \r\t]*";
 const combiningDiacriticalMarkString = "[\u0300-\u036f]";
 export const combiningDiacriticalMarksEndRegex: RegExp =
     new RegExp(`${combiningDiacriticalMarkString}+$`);
 const tokenRegexString = `(${spaceRegexString}+)|` +  // whitespace
+    `${controlSpaceRegexString}|` +                   // \whitespace
     "([!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
     `${combiningDiacriticalMarkString}*` +            // ...plus accents
     "|[\uD800-\uDBFF][\uDC00-\uDFFF]" +               // surrogate pair
     `${combiningDiacriticalMarkString}*` +            // ...plus accents
-    "|\\\\verb\\*([^]).*?\\3" +                       // \verb*
-    "|\\\\verb([^*a-zA-Z]).*?\\4" +                   // \verb unstarred
-    "|\\\\operatorname\\*" +                          // \operatorname*
+    "|\\\\verb\\*([^]).*?\\4" +                       // \verb*
+    "|\\\\verb([^*a-zA-Z]).*?\\5" +                   // \verb unstarred
     `|${controlWordWhitespaceRegexString}` +          // \macroName + spaces
     `|${controlSymbolRegexString})`;                  // \\, \', etc.
 
@@ -60,7 +67,8 @@ export default class Lexer implements LexerInterface {
     input: string;
     settings: Settings;
     tokenRegex: RegExp;
-    // category codes, only supports comment characters (14) for now
+    // Category codes. The lexer only supports comment characters (14) for now.
+    // MacroExpander additionally distinguishes active (13).
     catcodes: {[string]: number};
 
     constructor(input: string, settings: Settings) {
@@ -70,6 +78,7 @@ export default class Lexer implements LexerInterface {
         this.tokenRegex = new RegExp(tokenRegexString, 'g');
         this.catcodes = {
             "%": 14, // comment character
+            "~": 13, // active character
         };
     }
 
@@ -92,7 +101,7 @@ export default class Lexer implements LexerInterface {
                 `Unexpected character: '${input[pos]}'`,
                 new Token(input[pos], new SourceLocation(this, pos, pos + 1)));
         }
-        let text = match[2] || " ";
+        const text = match[6] || match[3] || (match[2] ? "\\ " : " ");
 
         if (this.catcodes[text] === 14) { // comment character
             const nlIndex = input.indexOf('\n', this.tokenRegex.lastIndex);
@@ -105,12 +114,6 @@ export default class Lexer implements LexerInterface {
                 this.tokenRegex.lastIndex = nlIndex + 1;
             }
             return this.lex();
-        }
-
-        // Trim any trailing whitespace from control word match
-        const controlMatch = text.match(controlWordWhitespaceRegex);
-        if (controlMatch) {
-            text = controlMatch[1];
         }
 
         return new Token(text, new SourceLocation(this, pos,

@@ -1,5 +1,6 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
+import {defineMacro} from "../macros";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import {SymbolNode} from "../domTree";
@@ -140,7 +141,7 @@ const mathmlBuilder: MathMLBuilder<"operatorname"> = (group, options) => {
 // amsopn.dtx: \mathop{#1\kern\z@\operator@font#3}\newmcodes@
 defineFunction({
     type: "operatorname",
-    names: ["\\operatorname", "\\operatorname*"],
+    names: ["\\operatorname@", "\\operatornamewithlimits"],
     props: {
         numArgs: 1,
     },
@@ -150,7 +151,7 @@ defineFunction({
             type: "operatorname",
             mode: parser.mode,
             body: ordargument(body),
-            alwaysHandleSupSub: (funcName === "\\operatorname*"),
+            alwaysHandleSupSub: (funcName === "\\operatornamewithlimits"),
             limits: false,
             parentIsSupSub: false,
         };
@@ -159,3 +160,5 @@ defineFunction({
     mathmlBuilder,
 });
 
+defineMacro("\\operatorname",
+  "\\@ifstar\\operatornamewithlimits\\operatorname@");

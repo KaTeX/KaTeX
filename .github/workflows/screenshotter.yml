@@ -14,9 +14,9 @@ jobs:
         browser: [chrome, firefox, safari]
         include:
         - browser: chrome
-          image: selenium/standalone-chrome:3.141.59-20210311
+          image: selenium/standalone-chrome:3.141.59-20210422
         - browser: firefox
-          image: selenium/standalone-firefox:3.141.59-20210311
+          image: selenium/standalone-firefox:3.141.59-20210422
         - browser: safari
           image: ylemkimon/selenium-proxy:latest
           browserstack:
@@ -40,7 +40,7 @@ jobs:
         persist-credentials: false # do not persist credentials
 
     - name: Use Node.js 14
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: '14'
 
