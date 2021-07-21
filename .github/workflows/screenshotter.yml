@@ -9,17 +9,14 @@ on:
 jobs:
   screenshotter:
     runs-on: ubuntu-latest
-    if: |
-      !contains(toJSON(github.event.commits.*.message), '[skip ci]') &&
-      !contains(toJSON(github.event.commits.*.message), '[ci skip]')
     strategy:
       matrix:
         browser: [chrome, firefox, safari]
         include:
         - browser: chrome
-          image: selenium/standalone-chrome:3.141.59-20201119
+          image: selenium/standalone-chrome:3.141.59-20210422
         - browser: firefox
-          image: selenium/standalone-firefox:3.141.59-20201119
+          image: selenium/standalone-firefox:3.141.59-20210422
         - browser: safari
           image: ylemkimon/selenium-proxy:latest
           browserstack:
@@ -40,11 +37,10 @@ jobs:
     - uses: actions/checkout@v2
       with:
         ref: ${{ github.event_name == 'pull_request_target' && format('refs/pull/{0}/merge', github.event.pull_request.number) || '' }}
-        submodules: recursive
         persist-credentials: false # do not persist credentials
 
     - name: Use Node.js 14
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v2
       with:
         node-version: '14'
 

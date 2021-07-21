@@ -1,0 +1,25 @@
+{
+  "plugins": [
+    ["@semantic-release/commit-analyzer", {
+      "releaseRules": [
+        {breaking: true, release: 'minor'},
+        {type: 'feat', release: 'patch'},
+      ],
+    }],
+    "@semantic-release/release-notes-generator",
+    ["@semantic-release/changelog", {
+      "changelogTitle": "# Changelog\nAll notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).",
+    }],
+    "@semantic-release/npm",
+    ["@semantic-release/git", {
+      "assets": ["docs", "package.json", "CHANGELOG.md", "README.md", "contrib/*/README.md", "website/pages/index.html"],
+      "message": "chore(release): ${nextRelease.version} [ci skip]\n\n${nextRelease.notes}",
+    }],
+    ["@semantic-release/github", {
+      "assets": [
+        {path: 'katex.tar.gz', label: 'tarball'},
+        {path: 'katex.zip', label: 'zip'},
+      ],
+    }],
+  ],
+}

@@ -1,6 +1,6 @@
 # Copy-tex extension
 
-This extension modifes the copy/paste behavior in any browser supporting the
+This extension modifies the copy/paste behavior in any browser supporting the
 [Clipboard API](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardEvent)
 so that, when selecting and copying whole KaTeX-rendered elements, the text
 content of the resulting clipboard renders KaTeX elements as their LaTeX source
@@ -21,8 +21,8 @@ provided by this extension).  Without this CSS, partially selected equations
 will just get the usual HTML copy/paste behavior.
 
 ```html
-<link href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/contrib/copy-tex.min.js" integrity="sha384-Ep9Es0VCjVn9dFeaN2uQxgGcGmG+pfZ4eBaHxUpxXDORrrVACZVOpywyzvFRGbmv" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/katex@0.13.12/dist/contrib/copy-tex.css" rel="stylesheet" type="text/css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.13.12/dist/contrib/copy-tex.min.js" integrity="sha384-Ep9Es0VCjVn9dFeaN2uQxgGcGmG+pfZ4eBaHxUpxXDORrrVACZVOpywyzvFRGbmv" crossorigin="anonymous"></script>
 ```
 
 See [index.html](index.html) for an example.
@@ -37,16 +37,12 @@ statement with `require('katex/contrib/copy-tex/katex2tex.js')`.
 
 ECMAScript module is also available:
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/contrib/copy-tex.mjs" integrity="sha384-+gSYJ3yzY30+a6FGYJXOx9swmWs5oPKEi1AeCsAxsLexABlUXgHXkOkEZCj0Lz8U" crossorigin="anonymous"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/katex@0.13.12/dist/contrib/copy-tex.mjs" integrity="sha384-+gSYJ3yzY30+a6FGYJXOx9swmWs5oPKEi1AeCsAxsLexABlUXgHXkOkEZCj0Lz8U" crossorigin="anonymous"></script>
+```
 
 ### Known Issues
 
 This extension has been tested on Chrome, Firefox, Edge, and Safari.
-
-Microsoft Edge
-[does not seem to support](https://developer.microsoft.com/en-us/microsoft-edge/platform/status/clipboardapi/)
-text and HTML content in a single clipboard.  In this browser, this extension
-will just put the text content into the clipboard.
 
 Safari copies correctly, but the selection rectangle renders strangely
 (too big) when interacting with display math

@@ -6,7 +6,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 
 If you know the shape of a character, but not its name, [Detexify](http://detexify.kirelabs.org/classify.html) can help.
 
-<link rel="stylesheet" href="/static/katex.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.12/dist/katex.min.css" integrity="sha384-RaIG8XSzu98vT1E+gXNQtp7oWEjkliSoIP8xaoJcygwMIRs6TzGe1S1pF0LCND5F" crossorigin="anonymous">
 <style>
 table tr,
 table td {
@@ -190,9 +190,9 @@ table td {
 |\boxminus|$\boxminus$||
 |\boxplus|$\boxplus$||
 |\boxtimes|$\boxtimes$||
-|\Bra|$\left\langle\psi\right\|$|`\Bra{\psi}`|
-|\bra|$\mathinner{\langle{\psi}\|}$|`\bra{\psi}`|
-|\braket|$\mathinner{\langle{\phi\|\psi}\rangle}$|`\braket{\phi|\psi}`|
+|\Bra|$\Bra{\psi}$|`\Bra{\psi}`|
+|\bra|$\bra{\psi}$|`\bra{\psi}`|
+|\braket|$\braket{\phi\vert\psi}$|`\braket{\phi\vert\psi}`|
 |\brace|${n\brace k}$|`{n\brace k}`|
 |\bracevert|<span style="color:firebrick;">Not supported</span>||
 |\brack|${n\brack k}$|`{n\brack k}`|
@@ -537,8 +537,8 @@ use `\ce` instead|
 |\KaTeX|$\KaTeX$||
 |\ker|$\ker$||
 |\kern|$I\kern-2.5pt R$|`I\kern-2.5pt R`|
-|\Ket|$\left\|\psi\right\rangle$|`\Ket{\psi}`|
-|\ket|$\mathinner{\|{\psi}\rangle}$|`\ket{\psi}`|
+|\Ket|$\Ket{\psi}$|`\Ket{\psi}`|
+|\ket|$\ket{\psi}$|`\ket{\psi}`|
 |\Koppa|<span style="color:firebrick;">Not supported</span>||
 |\koppa|<span style="color:firebrick;">Not supported</span>||
 
@@ -801,6 +801,7 @@ use `\ce` instead|
 |\ominus|$\ominus$||
 |\operatorname|$\operatorname{asin} x$|`\operatorname{asin} x`|
 |\operatorname\*|$\operatorname*{asin}\limits_y x$|`\operatorname*{asin}\limits_y x`|
+|\operatornamewithlimits|$\operatornamewithlimits{asin}\limits_y x$|`\operatornamewithlimits{asin}\limits_y x`|
 |\oplus|$\oplus$||
 |\or|<span style="color:firebrick;">Not supported</span>||
 |\origof|$\origof$||

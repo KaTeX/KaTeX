@@ -152,6 +152,8 @@ const htmlBuilder = (group, options) => {
     let delimSize;
     if (style.size === Style.DISPLAY.size) {
         delimSize = options.fontMetrics().delim1;
+    } else if (style.size === Style.SCRIPTSCRIPT.size) {
+        delimSize = options.havingStyle(Style.SCRIPT).fontMetrics().delim2;
     } else {
         delimSize = options.fontMetrics().delim2;
     }

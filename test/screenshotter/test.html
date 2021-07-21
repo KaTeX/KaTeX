@@ -12,11 +12,11 @@
       }
       @font-face {
         font-family: "Mincho";
-        src: url("/submodules/katex-test-fonts/mincho/font_1_honokamin.ttf") format("truetype");
+        src: url("fonts/mincho/font_1_honokamin.ttf") format("truetype");
       }
       @font-face {
         font-family: "Batang";
-        src: url("/submodules/katex-test-fonts/batang/batang.ttf") format("truetype");
+        src: url("fonts/batang/batang.ttf") format("truetype");
       }
       .katex .cjk_fallback {
           font-family: "Mincho",serif;
@@ -31,14 +31,16 @@
     <span id="math"></span>
     <span id="post"></span>
     <script type="text/javascript">
-      function load_fonts(callback) {
-        if (!document.fonts || !document.fonts.load) {
+      function load_fonts_and_images(callback) {
+        if (typeof Promise === "undefined") {
           callback();
           return;
         }
 
         var results = [];
+
         function load_font(name, style) {
+          if (!document.fonts || !document.fonts.load) return;
           // 10px is arbitrarily selected value
           results.push(document.fonts.load((style || "") + " 10px " + name));
         }
@@ -55,6 +57,18 @@
         }
         load_font("Mincho");
         load_font("Batang");
+
+        for (var i = 0; i < document.images.length; i++) {
+          var img = document.images[i];
+          results.push(new Promise(function (done, error) {
+            if (img.complete) {
+              done();
+            } else {
+              img.addEventListener('load', done);
+              img.addEventListener('error', error);
+            }
+          }));
+        };
 
         Promise.all(results).then(callback)
       }
