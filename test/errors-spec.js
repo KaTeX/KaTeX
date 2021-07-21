@@ -178,7 +178,7 @@ describe("Parser.expect calls:", function() {
         });
         it("complains about missing { for size", function() {
             expect`\rule{1em}[2em]`.toFailWithParseError(
-                   "Invalid size: '[' at position 11: \\rule{1em}[̲2em]");
+                   "Invalid base-10 digit [ at position 11: \\rule{1em}[̲2em]");
         });
         // Can't test for the [ of an optional group since it's optional
         it("complains about missing } for color", function() {
@@ -309,15 +309,15 @@ describe("Lexer:", function() {
     describe("#_innerLexSize", function() {
         it("reject size without unit", function() {
             expect`\rule{0}{2em}`.toFailWithParseError(
-                   "Invalid size: '0' at position 6: \\rule{̲0̲}̲{2em}");
+                   "Invalid unit at position 8: \\rule{0}̲{2em}");
         });
         it("reject size with bogus unit", function() {
             expect`\rule{1au}{2em}`.toFailWithParseError(
-                   "Invalid unit: 'au' at position 6: \\rule{̲1̲a̲u̲}̲{2em}");
+                   "Invalid unit at position 8: \\rule{1a̲u}{2em}");
         });
         it("reject size without number", function() {
             expect`\rule{em}{2em}`.toFailWithParseError(
-                   "Invalid size: 'em' at position 6: \\rule{̲e̲m̲}̲{2em}");
+                   "Invalid base-10 digit e at position 7: \\rule{e̲m}{2em}");
         });
     });
 

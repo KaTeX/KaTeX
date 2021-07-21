@@ -400,7 +400,7 @@ defineFunction({
     props: {
         numArgs: 6,
         allowedInArgument: true,
-        argTypes: ["math", "math", "size", "text", "math", "math"],
+        argTypes: ["math", "math", "size_or_blank", "text", "math", "math"],
     },
     handler({parser}, args) {
         const numer = args[4];
@@ -414,10 +414,10 @@ defineFunction({
         const rightDelim = rightNode.type === "atom" && rightNode.family === "close"
             ? delimFromValue(rightNode.text) : null;
 
-        const barNode = assertNodeType(args[2], "size");
+        const barNode = assertNodeType(args[2], "dimen");
         let hasBarLine;
         let barSize = null;
-        if (barNode.isBlank) {
+        if (barNode.value.unit === "blank") {
             // \genfrac acts differently than \above.
             // \genfrac treats an empty size group as a signal to use a
             // standard bar size. \above would see size = 0 and omit the bar.
@@ -464,7 +464,7 @@ defineFunction({
     names: ["\\above"],
     props: {
         numArgs: 1,
-        argTypes: ["size"],
+        argTypes: ["dimen"],
         infix: true,
     },
     handler({parser, funcName, token}, args) {
@@ -472,7 +472,7 @@ defineFunction({
             type: "infix",
             mode: parser.mode,
             replaceWith: "\\\\abovefrac",
-            size: assertNodeType(args[0], "size").value,
+            size: assertNodeType(args[0], "dimen").value,
             token,
         };
     },

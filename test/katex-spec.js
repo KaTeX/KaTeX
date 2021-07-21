@@ -641,7 +641,7 @@ describe("A genfrac builder", function() {
         expect("\\tfrac{x}{y}").toBuild();
         expect("\\cfrac{x}{y}").toBuild();
         expect("\\genfrac ( ] {0.06em}{0}{a}{b+c}").toBuild();
-        expect("\\genfrac ( ] {0.8pt}{}{a}{b+c}").toBuild();
+        expect("\\genfrac ( ] {}{}{a}{b+c}").toBuild();
         expect("\\genfrac {} {} {0.8pt}{}{a}{b+c}").toBuild();
         expect("\\genfrac [ {} {0.8pt}{}{a}{b+c}").toBuild();
     });
@@ -1050,48 +1050,12 @@ describe("A rule parser", function() {
 });
 
 describe("A kern parser", function() {
-    const emKern = r`\kern{1em}`;
-    const exKern = r`\kern{1ex}`;
-    const muKern = r`\mkern{1mu}`;
-    const abKern = r`a\kern{1em}b`;
-    const badUnitRule = r`\kern{1au}`;
-    const noNumberRule = r`\kern{em}`;
-
-    it("should list the correct units", function() {
-        const emParse = getParsed(emKern)[0];
-        const exParse = getParsed(exKern)[0];
-        const muParse = getParsed(muKern)[0];
-        const abParse = getParsed(abKern)[1];
-
-        expect(emParse.dimension.unit).toEqual("em");
-        expect(exParse.dimension.unit).toEqual("ex");
-        expect(muParse.dimension.unit).toEqual("mu");
-        expect(abParse.dimension.unit).toEqual("em");
-    });
-
-    it("should not parse invalid units", function() {
-        expect(badUnitRule).not.toParse();
-        expect(noNumberRule).not.toParse();
-    });
-
-    it("should parse negative sizes", function() {
-        const parse = getParsed`\kern{-1em}`[0];
-        expect(parse.dimension.number).toBeCloseTo(-1);
-    });
-
-    it("should parse positive sizes", function() {
-        const parse = getParsed`\kern{+1em}`[0];
-        expect(parse.dimension.number).toBeCloseTo(1);
-    });
-});
-
-describe("A non-braced kern parser", function() {
     const emKern = r`\kern1em`;
     const exKern = r`\kern 1 ex`;
     const muKern = r`\mkern 1mu`;
-    const abKern1 = r`a\mkern1mub`;
-    const abKern2 = r`a\mkern-1mub`;
-    const abKern3 = r`a\mkern-1mu b`;
+    const abKern1 = r`a\kern1emb`;
+    const abKern2 = r`a\kern-1emb`;
+    const abKern3 = r`a\kern-1em b`;
     const badUnitRule = r`\kern1au`;
     const noNumberRule = r`\kern em`;
 
@@ -1106,9 +1070,9 @@ describe("A non-braced kern parser", function() {
         expect(emParse.dimension.unit).toEqual("em");
         expect(exParse.dimension.unit).toEqual("ex");
         expect(muParse.dimension.unit).toEqual("mu");
-        expect(abParse1.dimension.unit).toEqual("mu");
-        expect(abParse2.dimension.unit).toEqual("mu");
-        expect(abParse3.dimension.unit).toEqual("mu");
+        expect(abParse1.dimension.unit).toEqual("em");
+        expect(abParse2.dimension.unit).toEqual("em");
+        expect(abParse3.dimension.unit).toEqual("em");
     });
 
     it("should parse elements on either side of a kern", function() {
@@ -1150,6 +1114,11 @@ describe("A non-braced kern parser", function() {
         expect(abParse[0].text).toEqual("a");
         expect(abParse[1].dimension.unit).toEqual("mu");
         expect(abParse[2].text).toEqual("b");
+    });
+
+    it("should not parse braced sizes in strict mode", function() {
+        expect`\kern{1em}`.not.toParse(strictSettings);
+        expect`\kern{1em}`.toParse(nonstrictSettings);
     });
 });
 
@@ -1706,7 +1675,6 @@ describe("A comment parser", function() {
     });
 
     it("should parse comments in size and color groups", () => {
-        expect("\\kern{1 %kern\nem}").toParse();
         expect("\\kern1 %kern\nem").toParse();
         expect("\\color{#f00%red\n}").toParse();
     });
@@ -3297,6 +3265,7 @@ describe("A macro expander", function() {
         expect("\\char`\\%").toParseLike("\\char37");
         expect("\\char`\\%").toParseLike("\\char'45");
         expect("\\char`\\%").toParseLike('\\char"25');
+        expect("\\char37\\relax1").toParseLike('\\char37 1');
         expect("\\char").not.toParse();
         expect("\\char`").not.toParse();
         expect("\\char'").not.toParse();
@@ -3529,7 +3498,7 @@ describe("A macro expander", function() {
     // \hspace.
     it("should treat \\hspace, \\hskip like \\kern", function() {
         expect`\hspace{1em}`.toParseLike`\kern1em`;
-        expect`\hskip{1em}`.toParseLike`\kern1em`;
+        expect`\hskip1em`.toParseLike`\kern1em`;
     });
 
     it("should expand \\limsup as expected", () => {

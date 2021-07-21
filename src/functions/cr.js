@@ -28,7 +28,7 @@ defineFunction({
             type: "cr",
             mode: parser.mode,
             newLine,
-            size: size && assertNodeType(size, "size").value,
+            size: size && assertNodeType(size, "dimen").value,
         };
     },
 

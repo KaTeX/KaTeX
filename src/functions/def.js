@@ -13,6 +13,9 @@ const globalMap = {
     "\\xdef": "\\xdef",
     "\\let": "\\\\globallet",
     "\\futurelet": "\\\\globalfuture",
+    "\\advance": "\\\\globaladvance",
+    "\\multiply": "\\\\globalmultiply",
+    "\\divide": "\\\\globaldivide",
 };
 
 const checkControlSequence = (tok) => {
@@ -73,6 +76,11 @@ defineFunction({
                 token.text = globalMap[token.text];
             }
             return assertNodeType(parser.parseFunction(), "internal");
+        } else {
+            const variable = parser.parseVariable(true);
+            if (variable != null) {
+                return variable;
+            }
         }
         throw new ParseError(`Invalid token after macro prefix`, token);
     },

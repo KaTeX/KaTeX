@@ -7,12 +7,13 @@
 
 import ParseError from "./ParseError";
 import Options from "./Options";
+import Style from "./Style";
 
 // This table gives the number of TeX pts in one of each *absolute* TeX unit.
 // Thus, multiplying a length by this number converts the length from units
 // into pts.  Dividing the result by ptPerEm gives the number of ems
 // *assuming* a font size of ptPerEm (normal size, normal style).
-const ptPerUnit = {
+export const ptPerUnit = {
     // https://en.wikibooks.org/wiki/LaTeX/Lengths and
     // https://tex.stackexchange.com/a/8263
     "pt": 1,            // TeX point
@@ -37,11 +38,17 @@ const relativeUnit = {
     "mu": true,
 };
 
+export const units: string[] = Object.keys(ptPerUnit)
+    .concat(Object.keys(relativeUnit));
+
 export type Measurement = {| number: number, unit: string |};
+
+export const zeroPt = {number: 0, unit: "pt"};
+export const zeroMu = {number: 0, unit: "mu"};
 
 /**
  * Determine whether the specified unit (either a string defining the unit
- * or a "size" parse node containing a unit field) is valid.
+ * or a "dimen" parse node containing a unit field) is valid.
  */
 export const validUnit = function(unit: string | Measurement): boolean {
     if (typeof unit !== "string") {
@@ -51,8 +58,8 @@ export const validUnit = function(unit: string | Measurement): boolean {
 };
 
 /*
- * Convert a "size" parse node (with numeric "number" and string "unit" fields,
- * as parsed by functions.js argType "size") into a CSS em value for the
+ * Convert a "dimen" parse node (with numeric "number" and string "unit" fields,
+ * as parsed by functions.js argType "dimen") into a CSS em value for the
  * current style/scale.  `options` gives the current options.
  */
 export const calculateSize = function(
@@ -95,4 +102,20 @@ export const calculateSize = function(
         }
     }
     return Math.min(sizeValue.number * scale, options.maxSize);
+};
+
+/*
+ * Convert a "dimen" parse node into the given unit.
+ */
+export const convertSize = function(
+        sizeValue: Measurement, unit: string): number {
+    // TODO: use current Options
+    const options = new Options({
+        style: Style.TEXT,
+        size: 5,
+        maxSize: Infinity,
+        minRuleThickness: 0,
+    });
+    return Math.round(calculateSize(sizeValue, options)
+        / calculateSize({number: 1, unit}, options));
 };
