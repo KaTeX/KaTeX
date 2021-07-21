@@ -30,6 +30,8 @@ const program = require("commander")
         "Render display math in leqno style (left-justified tags).")
     .option("--fleqn",
         "Render display math flush left.")
+    .option("--trust",
+        "Allow html extension.")
     .option("-t, --no-throw-on-error",
         "Render errors (in the color given by --error-color) instead of " +
         "throwing a ParseError exception when encountering an error.")
