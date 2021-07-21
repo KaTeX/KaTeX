@@ -1,9 +1,9 @@
-<!-- The title should folllow Angular Commit Message Conventions (https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines) -->
+<!-- PR title should follow Angular Commit Message Conventions (https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines) -->
 
-**What is the previous behavior?**
+**What is the previous behavior before this PR?**
 
 
-**What is the new behavior?**
+**What is the new behavior after this PR?**
 
 
 <!-- If this PR contains a breaking change, please uncomment following line -->
