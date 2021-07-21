@@ -42,7 +42,7 @@ config: $(CUSTOM).pl
 
 blacker: $(MFTRACE_MODIFIED)
 $(MFTRACE_MODIFIED):
-	$(PERL) makeBlacker 15 # values between 10 and 30 seem best
+	$(PERL) -I . makeBlacker 15 # values between 10 and 30 seem best
 
 pfa: $(MFTRACE_MODIFIED)
 	@echo "cmr10"
@@ -56,6 +56,9 @@ pfa: $(MFTRACE_MODIFIED)
 
 	@echo "cmex10"
 	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmex10
+
+	@echo "cmcsc10"
+	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmcsc10
 
 	@echo "cmbx10"
 	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmbx10
@@ -109,7 +112,7 @@ pfa: $(MFTRACE_MODIFIED)
 ff: pfa
 	mkdir -p ff otf
 	rm -f ff/* otf/*
-	$(PERL) makeFF
+	$(PERL) -I . makeFF
 
 .PHONY: fonts
 fonts: ff

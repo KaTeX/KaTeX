@@ -1076,7 +1076,7 @@ use `\ce` instead|
 |\textquoteright|$\text{\textquoteright}$|`\text{\textquoteright}`|
 |\textregistered|$\text{\textregistered}$|`\text{\textregistered}`|
 |\textrm|$\textrm{AaBb123}$|`\textrm{AaBb123}`|
-|\textsc|<span style="color:firebrick;">Not supported</span>|[Issue #471](https://github.com/KaTeX/KaTeX/issues/471)|
+|\textsc|$\textsc{AaBb123}$|`\textsc{AaBb123}`|
 |\textsf|$\textsf{AaBb123}$|`\textsf{AaBb123}`|
 |\textsl|<span style="color:firebrick;">Not supported</span>||
 |\textsterling|$\text{\textsterling}$|`\text{\textsterling}`|

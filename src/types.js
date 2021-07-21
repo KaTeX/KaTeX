@@ -33,4 +33,4 @@ export type BreakToken = "]" | "}" | "\\endgroup" | "$" | "\\)" | "\\\\" | "\\en
 // Math font variants.
 export type FontVariant = "bold" | "bold-italic" | "bold-sans-serif" |
     "double-struck" | "fraktur" | "italic" | "monospace" | "normal" | "sans-serif" |
-    "sans-serif-bold-italic" | "sans-serif-italic" | "script";
+    "sans-serif-bold-italic" | "sans-serif-italic" | "script" | "small-caps";
