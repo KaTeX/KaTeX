@@ -55,6 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     environment: release
+    concurrency: release
     needs: test
 
     steps:
