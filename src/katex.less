@@ -1,5 +1,5 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword */
-@import "../submodules/katex-fonts/fonts.less";
+@import "fonts.less";
 
 // The mu unit is defined as 1/18 em
 @mu: (1em / 18);
@@ -17,12 +17,14 @@
     // Prevent a rendering bug that misplaces \vec in Chrome.
     text-rendering: auto;
 
-    // Insulate fraction bars and rules from CSS that sets border-color.
-    border-color: currentColor;
+    * {
+        // Prevent background resetting on elements in Windows's high-contrast
+        // mode, while still allowing background/foreground setting on root .katex
+        -ms-high-contrast-adjust: none !important;
 
-    // Prevent background resetting on elements in Windows's high-contrast
-    // mode, while still allowing background/foreground setting on root .katex
-    * { -ms-high-contrast-adjust: none !important; }
+        // Insulate fraction bars and rules from CSS that sets border-color.
+        border-color: currentColor;
+    }
 
     .katex-version::after {
         content: @version;
@@ -591,7 +593,7 @@
 
     .angl {
         // from package actuarialangle, which is always used in a subscript.
-        box-sizing: border-content;
+        box-sizing: border-box;
         border-top: 0.049em solid;        // defaultRuleThickness in scriptstyle
         border-right: 0.049em solid;      // ditto
         margin-right: 0.03889em;          // 1 mu

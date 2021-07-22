@@ -1,0 +1,125 @@
+name: Fonts
+
+on:
+  pull_request_target:
+    branches: [ master ]
+    types: [ labeled ] # 'build fonts' label
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'build fonts')
+    outputs:
+      image: ${{ steps.check-image.outputs.result }}
+    permissions:
+      contents: read
+      pull-requests: write # to remove label
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ format('refs/pull/{0}/merge', github.event.pull_request.number) }}
+        persist-credentials: false # minimize exposure and prevent accidental pushes
+
+    - name: Remove label
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.issues.removeLabel({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: "build fonts",
+          });
+
+    - name: Check image
+      id: check-image
+      uses: actions/github-script@v4
+      with:
+        # https://github.community/t/github-token-has-no-access-to-new-container-rest-apis/170395
+        github-token: ${{ secrets.GH_PACKAGES_TOKEN }}
+        result-encoding: string
+        script: |
+          /* eslint-disable camelcase, max-len, no-console */
+          const org = context.repo.owner;
+          const package_name = "fonts";
+          const version = "${{ hashFiles('dockers/fonts/Dockerfile') }}";
+
+          let packages;
+          try {
+              packages = (await github.request('GET /orgs/{org}/packages/{package_type}/{package_name}/versions', {
+                  org,
+                  package_type: "container",
+                  package_name,
+              })).data;
+          } catch (e) {
+              packages = [];
+              console.error(e);
+          }
+
+          core.setOutput("exists", packages.some(p => p.metadata.container.tags.includes(version)));
+          return `ghcr.io/${org}/${package_name}:${version}`.toLowerCase();
+
+    - name: Login to GitHub Container Registry
+      if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: KaTeX-bot
+        # https://github.community/t/cant-authenticate-with-actions-token-for-pr-event/170752
+        password: ${{ secrets.GH_PACKAGES_TOKEN }}
+
+    - name: Build and push
+      if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
+      uses: docker/build-push-action@v2
+      with:
+        context: dockers/fonts
+        tags: ${{ steps.check-image.outputs.result }}
+        push: true
+
+  fonts:
+    runs-on: ubuntu-latest
+    needs: docker
+    container:
+      image: ${{ needs.docker.outputs.image }}
+      credentials:
+        username: KaTeX-bot
+        # https://github.community/t/cant-authenticate-with-actions-token-for-pr-event/170752
+        password: ${{ secrets.GH_PACKAGES_TOKEN }}
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ format('refs/pull/{0}/merge', github.event.pull_request.number) }}
+        fetch-depth: 0
+        persist-credentials: false
+
+    - name: Build fonts
+      run: |
+        export SOURCE_DATE_EPOCH=$(git log -1 --format=%ct -- src/fonts)
+        make -C src/fonts all
+        rm -f fonts/*.*
+        cp src/fonts/ttf/*.ttf fonts
+        cp src/fonts/woff/*.woff fonts
+        cp src/fonts/woff2/*.woff2 fonts
+        echo $SOURCE_DATE_EPOCH > fonts/VERSION
+
+    - name: Build metrics
+      run: ./dockers/fonts/buildMetrics.sh
+
+    - name: Run git diff
+      run: |
+        printf '[diff "font"]\n\tbinary = true\n\ttextconv = ttx -q -i -o -' >> ~/.gitconfig
+        git diff --exit-code
+
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: fonts
+        path: fonts
+    - uses: actions/upload-artifact@v2
+      if: failure()
+      with:
+        name: metrics
+        path: src/fontMetricsData.js

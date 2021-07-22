@@ -17,7 +17,7 @@ cleanup() {
 container=
 trap cleanup EXIT
 status=0
-for browserTag in "firefox:3.141.59-20201119" "chrome:3.141.59-20201119"; do
+for browserTag in "firefox:3.141.59-20210422" "chrome:3.141.59-20210422"; do
     browser=${browserTag%:*}
     image=selenium/standalone-${browserTag}
     echo "Starting container for ${image}"

@@ -6,9 +6,6 @@
     ":prNotPending",
     "group:linters"
   ],
-  "git-submodules": {
-    "enabled": true
-  },
   "lockFileMaintenance": {
     "enabled": true,
     "schedule": ["at any time"],
@@ -18,12 +15,6 @@
   "ignorePaths": ["dockers/texcmp/"],
   "regexManagers": [
     {
-      "fileMatch": ["^\\.github/workflows/[^/]+\\.ya?ml$"],
-      "matchStrings": ["uses: (?<depName>.*?)@(?<currentValue>.*?)\\s"],
-      "datasourceTemplate": "github-tags",
-      "versioningTemplate": "regex:^v(?<major>\\d+)$"
-    },
-    {
       "fileMatch": [
         "^\\.github/workflows/screenshotter\\.yml$",
         "^dockers/screenshotter/screenshotter\\.sh$"
@@ -31,7 +22,7 @@
       "matchStrings": ["[-\"](?<browserTag>[a-z]+):(?<currentValue>[\\d.\\-]+)[\"\\s]"],
       "datasourceTemplate": "docker",
       "depNameTemplate": "selenium/standalone-{{browserTag}}",
-      "versioningTemplate": "regex:^3\\.141\\.59-(?<patch>\\d+)$"
+      "versioningTemplate": "regex:^3\\.141\\.59-(?<major>\\d+)$"
     }, {
       "fileMatch": ["^\\.flowconfig$"],
       "matchStrings": ["\\[version\\]\\s*(?<currentValue>.*?)\\s"],
