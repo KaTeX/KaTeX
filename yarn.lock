@@ -8840,7 +8840,7 @@ __metadata:
     mkdirp: ^1.0.4
     pako: ^2.0.0
     postcss: ^8.0.0
-    postcss-loader: ^5.2.0
+    postcss-loader: ^6.0.0
     postcss-preset-env: ^6.7.0
     prettier: ^2.0.5
     query-string: ^7.0.0
@@ -11875,17 +11875,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-loader@npm:^5.2.0":
-  version: 5.3.0
-  resolution: "postcss-loader@npm:5.3.0"
+"postcss-loader@npm:^6.0.0":
+  version: 6.1.1
+  resolution: "postcss-loader@npm:6.1.1"
   dependencies:
     cosmiconfig: ^7.0.0
     klona: ^2.0.4
-    semver: ^7.3.4
+    semver: ^7.3.5
   peerDependencies:
     postcss: ^7.0.0 || ^8.0.1
     webpack: ^5.0.0
-  checksum: fd7a1a673b0e8f238392b3d449f2727767522febb2f60bfc9bb5cd4e373b07ba8df621f4e2fad92bf085765dcdea0f049497ae799ce1c9f1a592820275cc7e65
+  checksum: a166ecd835c62e2afc3d5f4fd77962f88e1319a6a5d84bd291167c43659cdfd4414bb332840577b464b8d8f69604b85c4ed26ac8695808c2ca336652706ed505
   languageName: node
   linkType: hard
 
@@ -13641,7 +13641,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.1.2, semver@npm:^7.2.1, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5":
+"semver@npm:^7.1.2, semver@npm:^7.2.1, semver@npm:^7.3.2, semver@npm:^7.3.5":
   version: 7.3.5
   resolution: "semver@npm:7.3.5"
   dependencies:
