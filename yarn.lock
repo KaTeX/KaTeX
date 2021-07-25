@@ -4046,7 +4046,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^6.0.0, commander@npm:^6.2.0":
+"commander@npm:^6.2.0":
   version: 6.2.1
   resolution: "commander@npm:6.2.1"
   checksum: 47856aae6f194404122e359d8463e5e1a18f7cbab26722ce69f1379be8514bd49a160ef81a983d3d2091e3240022643354101d1276c797dcdd0b5bfc3c3f04a3
@@ -4057,6 +4057,13 @@ __metadata:
   version: 7.2.0
   resolution: "commander@npm:7.2.0"
   checksum: bdc0eca5e25cd24af8440163d3c9a996785bbac4b49a590365699cdc1ed08cefbac8f268153208ab2bc5dc3cb1d3fb573fd1590c681e36e371342186bd331a4c
+  languageName: node
+  linkType: hard
+
+"commander@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "commander@npm:8.0.0"
+  checksum: 01b32f95cd7caf1af15a27e6d3685308704fae065e9c0666c6355c610d4bca0ad0cc557c1d6ab6c39fddacd02afc31dc3a00d9a4d2929c4b016079de222c05e3
   languageName: node
   linkType: hard
 
@@ -8811,7 +8818,7 @@ __metadata:
     browserslist: ^4.13.0
     browserstack-local: ^1.4.5
     caniuse-lite: ^1.0.30001102
-    commander: ^6.0.0
+    commander: ^8.0.0
     css-loader: ^5.1.2
     cssnano: ^5.0.0-rc.1
     eslint: ^7.4.0
