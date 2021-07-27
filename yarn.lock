@@ -8836,7 +8836,7 @@ __metadata:
     jspngopt: ^0.2.0
     less: ^4.0.0
     less-loader: ^9.0.0
-    mini-css-extract-plugin: ^1.0.0
+    mini-css-extract-plugin: ^2.0.0
     mkdirp: ^1.0.4
     pako: ^2.0.0
     postcss: ^8.0.0
@@ -10003,16 +10003,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mini-css-extract-plugin@npm:^1.0.0":
-  version: 1.6.2
-  resolution: "mini-css-extract-plugin@npm:1.6.2"
+"mini-css-extract-plugin@npm:^2.0.0":
+  version: 2.1.0
+  resolution: "mini-css-extract-plugin@npm:2.1.0"
   dependencies:
-    loader-utils: ^2.0.0
     schema-utils: ^3.0.0
-    webpack-sources: ^1.1.0
   peerDependencies:
-    webpack: ^4.4.0 || ^5.0.0
-  checksum: 53c162db80f2b58dcc1e85a2e1b52ffed73d3184ed5b8a037786d8562fbecf1b936397ea3873f3375356f8a6def27ec97867f9938356358d369d2a9e20a30718
+    webpack: ^5.0.0
+  checksum: b219c2a053f97b1756e73050a520c466ca849aff57fb995ee1331d844e871179aa299eb810c3445b18cae4babed9506680dfb203ed6e241efeb92b826aaefb1d
   languageName: node
   linkType: hard
 
@@ -13983,7 +13981,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"source-list-map@npm:^2.0.0, source-list-map@npm:^2.0.1":
+"source-list-map@npm:^2.0.1":
   version: 2.0.1
   resolution: "source-list-map@npm:2.0.1"
   checksum: d8d45f29987d00d995ccda308dcc78b710031a9958fdb5d26674d32220c952eb7a8562062638d91896628ae4eef30e1cd112a6a547563dfda0b013024c2a9bf7
@@ -15812,16 +15810,6 @@ resolve@^2.0.0-next.3:
     clone-deep: ^4.0.1
     wildcard: ^2.0.0
   checksum: 5e28f66f597cb34ac5f7ca0881cd3f106265091e47d7cda9ae00f4902283efdfdab36a70e34a9cf7b1467aac021178981513393b7dcddbb84caf11920f269379
-  languageName: node
-  linkType: hard
-
-"webpack-sources@npm:^1.1.0":
-  version: 1.4.3
-  resolution: "webpack-sources@npm:1.4.3"
-  dependencies:
-    source-list-map: ^2.0.0
-    source-map: ~0.6.1
-  checksum: 2a753b36adf0ddd4dadf6ff375824108a918d180c4ea5383b377526f543e6db0c1ecd40b4154bae8e94c4b209b7814d764879691a468fe230ef9eb32b27fdde4
   languageName: node
   linkType: hard
 
