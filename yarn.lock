@@ -5439,14 +5439,14 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-flowtype@npm:^5.2.0":
-  version: 5.8.0
-  resolution: "eslint-plugin-flowtype@npm:5.8.0"
+  version: 5.8.2
+  resolution: "eslint-plugin-flowtype@npm:5.8.2"
   dependencies:
     lodash: ^4.17.15
     string-natural-compare: ^3.0.1
   peerDependencies:
     eslint: ^7.1.0
-  checksum: 899c44a77286ed6ae227d3e212d509c54beff222cf8d724d7c6d62f2b336e286bb70d1a4d3e1c85c3a1b0929728eb8e3604231fb316a8b89d0fd407c1504d5e3
+  checksum: d11fdf77d43bb7656ef1ce030ff8b9b0374bca9445a1d23797196375c5823d1cfe6651a47038cc5fd8094e900b62a6b539410326b81dfe15555ec98750af230e
   languageName: node
   linkType: hard
 
