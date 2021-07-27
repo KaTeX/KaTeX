@@ -8849,7 +8849,7 @@ __metadata:
     selenium-webdriver: ^3.6.0
     semantic-release: ^17.4.1
     sri-toolbox: ^0.2.0
-    style-loader: ^2.0.0
+    style-loader: ^3.0.0
     stylelint: ^13.6.1
     stylelint-config-standard: ^22.0.0
     terser-webpack-plugin: ^5.0.3
@@ -14527,15 +14527,12 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"style-loader@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "style-loader@npm:2.0.0"
-  dependencies:
-    loader-utils: ^2.0.0
-    schema-utils: ^3.0.0
+"style-loader@npm:^3.0.0":
+  version: 3.2.1
+  resolution: "style-loader@npm:3.2.1"
   peerDependencies:
-    webpack: ^4.0.0 || ^5.0.0
-  checksum: ffc305488244ab499f91b05a1c94dd199b8b106d69e260ce38bd599819bbb352357e107bef3c319b775b9fb0eaed571cb68f8c7940e457553f85a980f4b630d8
+    webpack: ^5.0.0
+  checksum: 898b572015bddf88c7eb2b086f22ca2f4c4dba6b56463ba0aede9a6dfcc86d20e70979633b82385b4d7662da497fe0809000297cc55949423528b5b4a176d85f
   languageName: node
   linkType: hard
 
