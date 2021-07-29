@@ -678,7 +678,7 @@ describe("A text parser", function() {
     const noBraceTextExpression = r`\text x`;
     const nestedTextExpression =
         r`\text{a {b} \blue{c} \textcolor{#fff}{x} \llap{x}}`;
-    const spaceTextExpression = r`\text{  a \ }`;
+    const spaceTextExpression = r`\text{  a \  }`;
     const leadingSpaceTextExpression = r`\text {moo}`;
     const badTextExpression = r`\text{a b%}`;
     const badFunctionExpression = r`\text{\sqrt{x}}`;
@@ -722,10 +722,15 @@ describe("A text parser", function() {
         const parse = getParsed(spaceTextExpression)[0];
         const group = parse.body;
 
+        expect(group.length).toEqual(4);
         expect(group[0].type).toEqual("spacing");
         expect(group[1].type).toEqual("textord");
         expect(group[2].type).toEqual("spacing");
         expect(group[3].type).toEqual("spacing");
+    });
+
+    it("should handle backslash followed by newline", () => {
+        expect("\\text{\\ \t\r \n \t\r  }").toParseLike("\\text{\\ }");
     });
 
     it("should accept math mode tokens after its argument", function() {
@@ -1239,6 +1244,7 @@ describe("A begin/end parser", function() {
 
     it("should parse and build an empty environment", function() {
         expect`\begin{aligned}\end{aligned}`.toBuild();
+        expect`\begin{matrix}\end{matrix}`.toBuild();
     });
 
     it("should parse an environment with hlines", function() {
@@ -1304,6 +1310,13 @@ describe("A begin/end parser", function() {
         expect("\\begin{Vmatrix*}[r] a & -1 \\\\ -1 & d \\end{Vmatrix*}").toBuild();
         expect("\\begin{matrix*} a & -1 \\\\ -1 & d \\end{matrix*}").toBuild();
         expect("\\begin{matrix*}[] a & -1 \\\\ -1 & d \\end{matrix*}").not.toParse();
+    });
+
+    it("should allow blank columns", () => {
+        const parsed = getParsed`\begin{matrix*}[r] a \\ -1 & d \end{matrix*}`;
+        expect(parsed[0].cols).toEqual(
+            [{type: 'align', align: 'r'},
+             {type: 'align', align: 'r'}]);
     });
 });
 
@@ -2240,6 +2253,15 @@ describe("A stretchy and non-shifty accent builder", function() {
     });
 });
 
+describe("A stretchy MathML builder", function() {
+    it("should properly render stretchy accents", function() {
+        const tex = `\\widetilde{ABCD}`;
+        const tree = getParsed(tex);
+        const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain('<mo stretchy="true">~</mo>');
+    });
+});
+
 describe("An under-accent parser", function() {
     it("should not fail", function() {
         expect("\\underrightarrow{x}").toParse();
@@ -2797,6 +2819,18 @@ describe("AMS environments", function() {
         expect`\begin{CD}A @<a<< B @>>b> C @>>> D\\@. @| @AcAA @VVdV \\@. E @= F @>>> G\end{CD}`.toBuild(displayMode);
     });
 
+    it("should build an empty environment", () => {
+        expect`\begin{gather}\end{gather}`.toBuild(displayMode);
+        expect`\begin{gather*}\end{gather*}`.toBuild(displayMode);
+        expect`\begin{align}\end{align}`.toBuild(displayMode);
+        expect`\begin{align*}\end{align*}`.toBuild(displayMode);
+        expect`\begin{alignat}{2}\end{alignat}`.toBuild(displayMode);
+        expect`\begin{alignat*}{2}\end{alignat*}`.toBuild(displayMode);
+        expect`\begin{equation}\end{equation}`.toBuild(displayMode);
+        expect`\begin{split}\end{split}`.toBuild(displayMode);
+        expect`\begin{CD}\end{CD}`.toBuild(displayMode);
+    });
+
     it("{equation} should fail if argument contains two rows.", () => {
         expect`\begin{equation}a=\cr b+c\end{equation}`.not.toParse(displayMode);
     });
@@ -2840,6 +2874,8 @@ describe("operatorname support", function() {
         expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}").toBuild();
         expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}_y x").toBuild();
         expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}\\limits_y x").toBuild();
+        // The following does not actually render with limits. But it does not crash either.
+        expect("\\operatorname{sn}\\limits_{b>c}(b+c)").toBuild();
     });
 });
 
@@ -3268,6 +3304,13 @@ describe("A macro expander", function() {
         expect("\\char'a").not.toParse();
         expect('\\char"g').not.toParse();
         expect('\\char"g').not.toParse();
+    });
+
+    it("\\char escapes ~ correctly", () => {
+        const parsedBare = getParsed("~");
+        expect(parsedBare[0].type).toEqual("spacing");
+        const parsedChar = getParsed("\\char`\\~");
+        expect(parsedChar[0].type).toEqual("textord");
     });
 
     it("should build Unicode private area characters", function() {
@@ -3722,6 +3765,10 @@ describe("Unicode", function() {
 
     it("should build binary operators", function() {
         expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝◯⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toBuild(strictSettings);
+    });
+
+    it("should build common ords", function() {
+        expect("§¶£¥∇∞⋅∠∡∢♠♡♢♣♭♮♯✓…⋮⋯⋱! ‼ ⦵").toBuild(strictSettings);
     });
 
     it("should build delimiters", function() {
