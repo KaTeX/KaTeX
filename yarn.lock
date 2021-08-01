@@ -13981,13 +13981,6 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"source-list-map@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "source-list-map@npm:2.0.1"
-  checksum: d8d45f29987d00d995ccda308dcc78b710031a9958fdb5d26674d32220c952eb7a8562062638d91896628ae4eef30e1cd112a6a547563dfda0b013024c2a9bf7
-  languageName: node
-  linkType: hard
-
 "source-map-js@npm:^0.6.2":
   version: 0.6.2
   resolution: "source-map-js@npm:0.6.2"
@@ -15810,19 +15803,16 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"webpack-sources@npm:^2.3.1":
-  version: 2.3.1
-  resolution: "webpack-sources@npm:2.3.1"
-  dependencies:
-    source-list-map: ^2.0.1
-    source-map: ^0.6.1
-  checksum: 28b9bebf5e67f3cea733eede930aaf9c73c93a21cdf47c816daae001c5c4ec2b25cd8a1d5bcdd33bce3853b35498a10686582d6ad6f28468f00068ff6ae995a7
+"webpack-sources@npm:^3.1.1":
+  version: 3.1.2
+  resolution: "webpack-sources@npm:3.1.2"
+  checksum: 8c6d03b40e073992f590c9728073c11be100d464765c6252e56c50bcbf201302cc70facfb262da1b1297e0b37a843514a2eda561f3fe69cca6863cd3a27c2234
   languageName: node
   linkType: hard
 
 "webpack@npm:^5.8.0":
-  version: 5.46.0
-  resolution: "webpack@npm:5.46.0"
+  version: 5.47.1
+  resolution: "webpack@npm:5.47.1"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.50
@@ -15846,13 +15836,13 @@ resolve@^2.0.0-next.3:
     tapable: ^2.1.1
     terser-webpack-plugin: ^5.1.3
     watchpack: ^2.2.0
-    webpack-sources: ^2.3.1
+    webpack-sources: ^3.1.1
   peerDependenciesMeta:
     webpack-cli:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 7b54411588754f4a460138c4b238cc014fc396caed8354e95a47f2da525a98cc2e3c881a7e1007de9a84efe9608957db3148287168a5ba02c50d94c44764e6bc
+  checksum: a2769fc632f21f81a147d9f6224ba00c3807e19c9a307587f0f8e52de07d07bbbcb299f4343056e8a6b1bc214ca303ef9ad712c5d513245fcfdf0bfb6dca5a5a
   languageName: node
   linkType: hard
 
