@@ -1765,13 +1765,13 @@ __metadata:
   linkType: hard
 
 "@rollup/plugin-alias@npm:^3.1.1":
-  version: 3.1.4
-  resolution: "@rollup/plugin-alias@npm:3.1.4"
+  version: 3.1.5
+  resolution: "@rollup/plugin-alias@npm:3.1.5"
   dependencies:
     slash: ^3.0.0
   peerDependencies:
     rollup: ^1.20.0||^2.0.0
-  checksum: 5f41ce7b36f57c6b4eaea20f8a4cd448fd861fd55037341f07178bb110acbca00fc1c8cb1cb8edcd18cf155bd44b0083c5be8ba25032b33ad06cbea8d518ac0b
+  checksum: 376aa1bc66373d92764557ae5e6b2f63d49133a3f66c3522d9b7a4b975d46951d9c3c84466466d324126da4623b50336da9245d62f02fc38af7cd3274742dcb3
   languageName: node
   linkType: hard
 
