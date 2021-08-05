@@ -2497,6 +2497,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"acorn-import-assertions@npm:^1.7.6":
+  version: 1.7.6
+  resolution: "acorn-import-assertions@npm:1.7.6"
+  peerDependencies:
+    acorn: ^8
+  checksum: 767ab6b11605c51aa0993b4e63c72da96df10bfd48b788d346dca03a803ff914d479e47bd605e2a7c05f6e4aec502a812c70a31c16a020ab32f8289b3382e0f2
+  languageName: node
+  linkType: hard
+
 "acorn-jsx@npm:^5.3.1":
   version: 5.3.1
   resolution: "acorn-jsx@npm:5.3.1"
@@ -15803,16 +15812,16 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"webpack-sources@npm:^3.1.1":
-  version: 3.1.2
-  resolution: "webpack-sources@npm:3.1.2"
-  checksum: 8c6d03b40e073992f590c9728073c11be100d464765c6252e56c50bcbf201302cc70facfb262da1b1297e0b37a843514a2eda561f3fe69cca6863cd3a27c2234
+"webpack-sources@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "webpack-sources@npm:3.2.0"
+  checksum: 6813e2937fb9be8748702ac44052676e7f9d972cdd798e481d2bbc9f3512e0a668229c7f97a287d24d6f2e9e73dd4b71da0801d149656bbac532548b35c1b718
   languageName: node
   linkType: hard
 
 "webpack@npm:^5.8.0":
-  version: 5.47.1
-  resolution: "webpack@npm:5.47.1"
+  version: 5.48.0
+  resolution: "webpack@npm:5.48.0"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.50
@@ -15820,6 +15829,7 @@ resolve@^2.0.0-next.3:
     "@webassemblyjs/wasm-edit": 1.11.1
     "@webassemblyjs/wasm-parser": 1.11.1
     acorn: ^8.4.1
+    acorn-import-assertions: ^1.7.6
     browserslist: ^4.14.5
     chrome-trace-event: ^1.0.2
     enhanced-resolve: ^5.8.0
@@ -15836,13 +15846,13 @@ resolve@^2.0.0-next.3:
     tapable: ^2.1.1
     terser-webpack-plugin: ^5.1.3
     watchpack: ^2.2.0
-    webpack-sources: ^3.1.1
+    webpack-sources: ^3.2.0
   peerDependenciesMeta:
     webpack-cli:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: a2769fc632f21f81a147d9f6224ba00c3807e19c9a307587f0f8e52de07d07bbbcb299f4343056e8a6b1bc214ca303ef9ad712c5d513245fcfdf0bfb6dca5a5a
+  checksum: 43630f840a4d4202eee42ed47f8e59f8e8d417ced116563431829eb4530b87797a18260d15483d6f56b8b01a05dd6ab7a17f5f261fa1a0ed206f1195a00ab5cd
   languageName: node
   linkType: hard
 
