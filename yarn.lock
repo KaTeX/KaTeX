@@ -5439,14 +5439,14 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-flowtype@npm:^5.2.0":
-  version: 5.8.2
-  resolution: "eslint-plugin-flowtype@npm:5.8.2"
+  version: 5.9.0
+  resolution: "eslint-plugin-flowtype@npm:5.9.0"
   dependencies:
     lodash: ^4.17.15
     string-natural-compare: ^3.0.1
   peerDependencies:
     eslint: ^7.1.0
-  checksum: d11fdf77d43bb7656ef1ce030ff8b9b0374bca9445a1d23797196375c5823d1cfe6651a47038cc5fd8094e900b62a6b539410326b81dfe15555ec98750af230e
+  checksum: 1d5aea1f1e7c3c32c26351b9470c106bb3c42ec7b145098e448d34fcc2023b7af7417f0ec04594567431498492ad0c2e7a15d26a257a4823e345b984037e3039
   languageName: node
   linkType: hard
 
@@ -5506,8 +5506,8 @@ __metadata:
   linkType: hard
 
 "eslint@npm:^7.4.0":
-  version: 7.31.0
-  resolution: "eslint@npm:7.31.0"
+  version: 7.32.0
+  resolution: "eslint@npm:7.32.0"
   dependencies:
     "@babel/code-frame": 7.12.11
     "@eslint/eslintrc": ^0.4.3
@@ -5551,7 +5551,7 @@ __metadata:
     v8-compile-cache: ^2.0.3
   bin:
     eslint: bin/eslint.js
-  checksum: 38c000372bfafc3715da2d2b6db2a75d4b3b95ac2c20696d774185aa5b6118065a37d0a1292eaa91292e07f86d53a0993cf9bfb838a7a9b935524a125e21af98
+  checksum: e25f9159d3b6b7e826b190ebb38accf3ec1513e1811bd7df2e8de83313370d266b8b6a571491a9f092d254fc53b2c5cde14dd2196cf046e22970ef037a4c7f3d
   languageName: node
   linkType: hard
 
