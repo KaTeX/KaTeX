@@ -711,6 +711,11 @@ defineMacro("\\pmb", "\\html@mathml{" +
     "\\@binrel{#1}{\\mathrlap{#1}\\kern0.5px#1}}" +
     "{\\mathbf{#1}}");
 
+// See functions/operatorname.js
+// amstex.sty
+defineMacro("\\operatorname",
+    "\\@ifstar\\operatornamewithlimits\\operatorname@");
+
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
 

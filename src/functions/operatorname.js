@@ -1,6 +1,5 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
-import {defineMacro} from "../macros";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import {SymbolNode} from "../domTree";
@@ -159,6 +158,3 @@ defineFunction({
     htmlBuilder,
     mathmlBuilder,
 });
-
-defineMacro("\\operatorname",
-  "\\@ifstar\\operatornamewithlimits\\operatorname@");
