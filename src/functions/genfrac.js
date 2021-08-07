@@ -11,6 +11,29 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 import {calculateSize} from "../units";
 
+// Guesses at whether or not a size expression will evaluate to a positive
+// value, used to deduce `hasBarLine`. This is necessarily an approximation,
+// since in general the exact result of a size expression may require
+// information available only at render time, but in practice it is unlikely
+// that a complicated expression would be used to render without a bar line, so
+// we err on the side of returning `true` when we aren’t sure.
+const isProbablyPositive = (size) => {
+    if (size.type === "sum") {
+        if (size.operator === "+") {
+            // could be wrong if one of the operands is a large negative value
+            return isProbablyPositive(size.lhs) || isProbablyPositive(size.rhs);
+        } else {
+            // could be wrong if the RHS is a larger value
+            return isProbablyPositive(size.lhs);
+        }
+    } else if (size.type === "multiply") {
+        // could be wrong if the LHS is negative
+        return size.rhs > 0 && isProbablyPositive(size.lhs);
+    } else {
+        return size.number > 0;
+    }
+};
+
 const adjustStyle = (size, originalStyle) => {
     // Figure out what style this fraction should be in based on the
     // function used
@@ -424,7 +447,7 @@ defineFunction({
             hasBarLine = true;
         } else {
             barSize = barNode.value;
-            hasBarLine = barSize.number > 0;
+            hasBarLine = isProbablyPositive(barSize);
         }
 
         // Find out if we want displaystyle, textstyle, etc.
@@ -490,7 +513,7 @@ defineFunction({
         const barSize = assert(assertNodeType(args[1], "infix").size);
         const denom = args[2];
 
-        const hasBarLine = barSize.number > 0;
+        const hasBarLine = isProbablyPositive(barSize);
         return {
             type: "genfrac",
             mode: parser.mode,

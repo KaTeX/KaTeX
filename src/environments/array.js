@@ -260,7 +260,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
     // Vertical spacing
     const baselineskip = group.colSeparationType === "CD"
-      ? calculateSize({number: 3, unit: "ex"}, options)
+      ? calculateSize({type: "atom", number: 3, unit: "ex"}, options)
       : 12 * pt; // see size10.clo
     // Default \jot from ltmath.dtx
     // TODO(edemaine): allow overriding \jot via \setlength (#687)

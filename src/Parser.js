@@ -58,6 +58,7 @@ export default class Parser {
     settings: Settings;
     leftrightDepth: number;
     nextToken: ?Token;
+    keepingRelax: boolean;
 
     constructor(input: string, settings: Settings) {
         // Start in math mode
@@ -69,6 +70,8 @@ export default class Parser {
         this.settings = settings;
         // Count leftright depth (for \middle errors)
         this.leftrightDepth = 0;
+        // Whether `fetch` should keep or discard \relax tokens
+        this.keepingRelax = false;
     }
 
     /**
@@ -100,9 +103,30 @@ export default class Parser {
      */
     fetch(): Token {
         if (this.nextToken == null) {
-            this.nextToken = this.gullet.expandNextToken();
+            this.nextToken = this.gullet.expandNextToken(this.keepingRelax);
         }
         return this.nextToken;
+    }
+
+    /**
+     * Disables automatic skipping of \relax tokens. This is necessary when
+     * parsing certain TeX control sequences that accept an undelimited argument,
+     * such as \hskip: writing ‘\hskip 2pt \relax plus 2pt’ ensures the trailing
+     * ‘plus 2pt’ is treated as text, not part of the glue specification.
+     */
+    keepRelax() {
+        this.keepingRelax = true;
+    }
+
+    /**
+     * Reenables automatic skipping of \relax tokens. If the current lookahead
+     * token is \relax, it is consumed.
+     */
+    skipRelax() {
+        this.keepingRelax = false;
+        if (this.nextToken?.text === "\\relax" || this.nextToken?.treatAsRelax) {
+            this.consume();
+        }
     }
 
     /**
@@ -336,6 +360,10 @@ export default class Parser {
                         lex);
                 }
                 this.consume();
+            } else if (lex.text === "\\dimexpr") {
+                throw new ParseError(
+                    "\\dimexpr can only be used where a size is expected",
+                    lex);
             } else if (lex.text === "^") {
                 // We got a superscript start
                 if (superscript) {
@@ -634,34 +662,71 @@ export default class Parser {
     }
 
     /**
-     * Parses a size specification, consisting of magnitude and unit.
+     * Parses a (possibly optional) size argument.
      */
     parseSizeGroup(optional: boolean): ?ParseNode<"size"> {
-        let res;
-        let isBlank = false;
-        // don't expand before parseStringGroup
+        // don't expand before scanArgument
         this.gullet.consumeSpaces();
+
+        // Allow required arguments that aren’t wraped in {}, e.g. `\hskip 2pt`.
         if (!optional && this.gullet.future().text !== "{") {
-            res = this.parseRegexGroup(
-                /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2} *$/, "size");
-        } else {
-            res = this.parseStringGroup("size", optional);
+            return this.parseSize();
         }
-        if (!res) {
+
+        const argToken = this.gullet.scanArgument(optional);
+        if (!argToken) {
             return null;
         }
-        if (!optional && res.text.length === 0) {
+        if (!optional && this.fetch() === "EOF") {
             // Because we've tested for what is !optional, this block won't
-            // affect \kern, \hspace, etc. It will capture the mandatory arguments
-            // to \genfrac and \above.
-            res.text = "0pt";    // Enable \above{}
-            isBlank = true;      // This is here specifically for \genfrac
+            // affect \kern, \hspace, etc. It will capture the mandatory
+            // arguments to \genfrac and \above.
+            return {
+                type: "size",
+                mode: this.mode,
+                value: {type: "atom", number: 0, unit: "pt"}, // Enable \above{}
+                isBlank: true, // This is here specifically for \genfrac
+            };
         }
+
+        const res = this.parseSize();
+        this.consumeSpaces();
+        this.expect("EOF"); // expect the end of the argument
+        return res;
+    }
+
+    /**
+     * Parses a size, which the TeXbook calls <dimen>. Although we don’t support
+     * length registers, we do support ε-TeX’s \dimexpr expressions for
+     * performing arithmetic on sizes, which makes the grammar roughly:
+     *   <dimen> -> <number><unit of measure>
+     *       | \dimexpr<dimen expr><optional spaces or \relax>
+     */
+    parseSize(): ParseNode<"size"> {
+        this.consumeSpaces();
+        if (this.fetch().text === "\\dimexpr") {
+            this.consume();
+            this.keepRelax(); // \relax terminates a \dimexpr
+            const res = this._parseSizeExpr();
+            this.skipRelax();
+            return res;
+        } else {
+            return this._parseSizeAtom();
+        }
+    }
+
+    /**
+     * Parses an atomic size literal, which is a number followed by a unit name.
+     */
+    _parseSizeAtom(): ParseNode<"size"> {
+        const res = this.parseRegexGroup(
+            /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2} *$/, "size");
         const match = (/([-+]?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/).exec(res.text);
         if (!match) {
             throw new ParseError("Invalid size: '" + res.text + "'", res);
         }
         const data = {
+            type: "atom",
             number: +(match[1] + match[2]), // sign + magnitude, cast to number
             unit: match[3],
         };
@@ -672,8 +737,105 @@ export default class Parser {
             type: "size",
             mode: this.mode,
             value: data,
-            isBlank,
+            isBlank: false,
         };
+    }
+
+    /**
+     * Parses an argument to \dimexpr, as specified in the ε-TeX manual:
+     *   <dimen expr> -> <dimen term> | <dimen expr><add or sub><dimen term>
+     */
+    _parseSizeExpr(): ParseNode<"size"> {
+        let lhs = this._parseSizeTerm();
+
+        for (;;) {
+            this.consumeSpaces();
+            const nextToken = this.fetch().text;
+
+            if (nextToken === "+" || nextToken === "-") {
+                this.consume();
+                const rhs = this._parseSizeTerm();
+                lhs = {
+                    type: "size",
+                    mode: this.mode,
+                    value: {
+                        type: "sum",
+                        operator: nextToken,
+                        lhs: lhs.value,
+                        rhs: rhs.value,
+                    },
+                    isBlank: false,
+                };
+            } else {
+                return lhs;
+            }
+        }
+
+        // Flow is unable to figure out that this pathway is impossible.
+        // https://github.com/facebook/flow/issues/4808
+        throw new Error(); // eslint-disable-line no-unreachable
+    }
+
+    /**
+     * Parses a multiplicative term in \dimexpr, as specified in the ε-TeX manual:
+     *   <dimen term> -> <dimen factor> | <dimen term><mul or div><number>
+     */
+    _parseSizeTerm(): ParseNode<"size"> {
+        let lhs = this._parseSizeFactor();
+
+        for (;;) {
+            this.consumeSpaces();
+            const nextToken = this.fetch().text;
+
+            if (nextToken === "*" || nextToken === "/") {
+                this.consume();
+                this.consumeSpaces();
+                const rhs = this.parseRegexGroup(
+                    /^(?:\d+(?:\.\d*)?|\.\d*)$/, "number");
+                if (rhs.text === ".") {
+                    throw new ParseError("Invalid number: '" + rhs.text + "'", rhs);
+                }
+                lhs = {
+                    type: "size",
+                    mode: this.mode,
+                    value: {
+                        type: "multiply",
+                        operator: nextToken,
+                        lhs: lhs.value,
+                        rhs: +rhs.text,
+                    },
+                    isBlank: false,
+                };
+            } else {
+                return lhs;
+            }
+        }
+
+        // Flow is unable to figure out that this pathway is impossible.
+        // https://github.com/facebook/flow/issues/4808
+        throw new Error(); // eslint-disable-line no-unreachable
+    }
+
+    /**
+     * Parses a leaf term in \dimexpr, as specified in the ε-TeX manual:
+     *   <dimen factor> -> <dimen> | <left paren><dimen expr><right paren>
+     */
+    _parseSizeFactor(): ParseNode<"size"> {
+        this.consumeSpaces();
+
+        if (this.fetch().text === "(") {
+            this.consume();
+            const res = this._parseSizeExpr();
+            this.consumeSpaces();
+            this.expect(")");
+            return res;
+        }
+
+        const res = this.parseSize();
+        // `parseSize` might have just parsed a nested \dimexpr, which may have
+        // just consumed a \relax, so we need to explicitly keep them again.
+        this.keepRelax();
+        return res;
     }
 
     /**

@@ -12,7 +12,7 @@ const sizeData = function(str: string): Measurement {
     if (/^[-+]? *(\d+(\.\d*)?|\.\d+)$/.test(str)) {
         // str is a number with no unit specified.
         // default unit is bp, per graphix package.
-        return {number: +str, unit: "bp"};
+        return {type: "atom", number: +str, unit: "bp"};
     } else {
         const match = (/([-+]?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/).exec(str);
         if (!match) {
@@ -20,6 +20,7 @@ const sizeData = function(str: string): Measurement {
                 + "' in \\includegraphics");
         }
         const data = {
+            type: "atom",
             number: +(match[1] + match[2]), // sign + magnitude, cast to number
             unit: match[3],
         };
@@ -41,9 +42,10 @@ defineFunction({
         allowedInText: false,
     },
     handler: ({parser}, args, optArgs) => {
-        let width = {number: 0, unit: "em"};
-        let height = {number: 0.9, unit: "em"};    // sorta character sized.
-        let totalheight = {number: 0, unit: "em"};
+        let width = {type: "atom", number: 0, unit: "em"};
+        // sorta character sized.
+        let height = {type: "atom", number: 0.9, unit: "em"};
+        let totalheight = {type: "atom", number: 0, unit: "em"};
         let alt = "";
 
         if (optArgs[0]) {
@@ -104,17 +106,15 @@ defineFunction({
     },
     htmlBuilder: (group, options) => {
         const height = calculateSize(group.height, options);
-        let depth = 0;
+        const totalheight = calculateSize(group.totalheight, options);
 
-        if (group.totalheight.number > 0) {
-            depth = calculateSize(group.totalheight, options) - height;
+        let depth = 0;
+        if (totalheight > 0) {
+            depth = totalheight - height;
             depth = Number(depth.toFixed(2));
         }
 
-        let width = 0;
-        if (group.width.number > 0) {
-            width = calculateSize(group.width, options);
-        }
+        const width = Math.max(0, calculateSize(group.width, options));
 
         const style: CssStyle = {height: height + depth + "em"};
         if (width > 0) {
@@ -135,16 +135,17 @@ defineFunction({
         node.setAttribute("alt", group.alt);
 
         const height = calculateSize(group.height, options);
+        const totalheight = calculateSize(group.totalheight, options);
         let depth = 0;
-        if (group.totalheight.number > 0) {
-            depth = calculateSize(group.totalheight, options) - height;
+        if (totalheight > 0) {
+            depth = totalheight - height;
             depth = depth.toFixed(2);
             node.setAttribute("valign", "-" + depth + "em");
         }
         node.setAttribute("height", height + depth + "em");
 
-        if (group.width.number > 0) {
-            const width = calculateSize(group.width, options);
+        const width = calculateSize(group.width, options);
+        if (width > 0) {
             node.setAttribute("width", width + "em");
         }
         node.setAttribute("src", group.src);

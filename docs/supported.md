@@ -714,3 +714,12 @@ The effect of style and size:
 | others |$\rule{10pt}{10pt}$|$\scriptscriptstyle\rule{10pt}{10pt}$|$\huge\rule{10pt}{10pt}$
 
 </div>
+
+Units can be combined using `\dimexpr`, which is accepted in all places a size is expected:
+
+|||
+|:--------------------------------|:-----
+|`\rule{2em}{1em} \rule{10pt}{1em}`|$\rule{2em}{1em}\rule{10pt}{1em}$
+|`\rule{\dimexpr 2em + 10pt}{1em}` |$\rule{\dimexpr 2em + 10pt}{1em}$
+
+As the above example demonstrates, `\dimexpr` can be used to combine absolute and font-relative units, which is not always otherwise possible.

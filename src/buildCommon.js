@@ -18,7 +18,7 @@ import type {CharacterMetrics} from "./fontMetrics";
 import type {FontVariant, Mode} from "./types";
 import type {documentFragment as HtmlDocumentFragment} from "./domTree";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
-import type {Measurement} from "./units";
+import type {MeasurementExpr} from "./units";
 
 /**
  * Looks up the given symbol in fontMetrics, after applying any symbol
@@ -622,7 +622,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
 // Glue is a concept from TeX which is a flexible space between elements in
 // either a vertical or horizontal list. In KaTeX, at least for now, it's
 // static space between elements in a horizontal layout.
-const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
+const makeGlue = (measurement: MeasurementExpr, options: Options): DomSpan => {
     // Make an empty span for the space
     const rule = makeSpan(["mspace"], [], options);
     const size = calculateSize(measurement, options);

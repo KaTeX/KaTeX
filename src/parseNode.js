@@ -5,7 +5,7 @@ import type {AlignSpec, ColSeparationType} from "./environments/array";
 import type {Atom} from "./symbols";
 import type {Mode, StyleStr} from "./types";
 import type {Token} from "./Token";
-import type {Measurement} from "./units";
+import type {MeasurementExpr} from "./units";
 
 export type NodeType = $Keys<ParseNodeTypes>;
 export type ParseNode<TYPE: NodeType> = $ElementType<ParseNodeTypes, TYPE>;
@@ -37,7 +37,7 @@ type ParseNodeTypes = {
         cols?: AlignSpec[],
         arraystretch: number,
         body: AnyParseNode[][], // List of rows in the (2D) array.
-        rowGaps: (?Measurement)[],
+        rowGaps: (?MeasurementExpr)[],
         hLinesBeforeRow: Array<boolean[]>,
         addEqnNum?: boolean,
         leqno?: boolean,
@@ -113,7 +113,7 @@ type ParseNodeTypes = {
         type: "size",
         mode: Mode,
         loc?: ?SourceLocation,
-        value: Measurement,
+        value: MeasurementExpr,
         isBlank: boolean,
     |},
     "styling": {|
@@ -224,7 +224,7 @@ type ParseNodeTypes = {
         mode: Mode,
         loc?: ?SourceLocation,
         newLine: boolean,
-        size: ?Measurement,
+        size: ?MeasurementExpr,
     |},
     "delimsizing": {|
         type: "delimsizing",
@@ -268,7 +268,7 @@ type ParseNodeTypes = {
         leftDelim: ?string,
         rightDelim: ?string,
         size: StyleStr | "auto",
-        barSize: Measurement | null,
+        barSize: MeasurementExpr | null,
     |},
     "hbox": {|
         type: "hbox",
@@ -310,9 +310,9 @@ type ParseNodeTypes = {
         mode: Mode,
         loc?: ?SourceLocation,
         alt: string,
-        width: Measurement,
-        height: Measurement,
-        totalheight: Measurement,
+        width: MeasurementExpr,
+        height: MeasurementExpr,
+        totalheight: MeasurementExpr,
         src: string,
     |},
     "infix": {|
@@ -320,7 +320,7 @@ type ParseNodeTypes = {
         mode: Mode,
         loc?: ?SourceLocation,
         replaceWith: string,
-        size?: Measurement,
+        size?: MeasurementExpr,
         token: ?Token,
     |},
     "internal": {|
@@ -332,7 +332,7 @@ type ParseNodeTypes = {
         type: "kern",
         mode: Mode,
         loc?: ?SourceLocation,
-        dimension: Measurement,
+        dimension: MeasurementExpr,
     |},
     "lap": {|
         type: "lap",
@@ -417,16 +417,16 @@ type ParseNodeTypes = {
         type: "raisebox",
         mode: Mode,
         loc?: ?SourceLocation,
-        dy: Measurement,
+        dy: MeasurementExpr,
         body: AnyParseNode,
     |},
     "rule": {|
         type: "rule",
         mode: Mode,
         loc?: ?SourceLocation,
-        shift: ?Measurement,
-        width: Measurement,
-        height: Measurement,
+        shift: ?MeasurementExpr,
+        width: MeasurementExpr,
+        height: MeasurementExpr,
     |},
     "sizing": {|
         type: "sizing",

@@ -333,6 +333,7 @@ use `\ce` instead|
 |\diamonds|$\diamonds$||
 |\diamondsuit|$\diamondsuit$||
 |\dim|$\dim$||
+|\dimexpr|$\rule{\dimexpr 2em + 5pt}{1em}$|`\rule{\dimexpr 2em + 5pt}{1em}`|
 |\displaylines|<span style="color:firebrick;">Not supported</span>||
 |\displaystyle|$\displaystyle\sum_0^n$|`\displaystyle\sum_0^n`|
 |\div|$\div$||
@@ -443,6 +444,7 @@ use `\ce` instead|
 |\gggtr|$\gggtr$||
 |\gimel|$\gimel$||
 |\global|$\global\def\add#1#2{#1+#2} \add 2 3$|`\global\def\add#1#2{#1+#2} \add 2 3`|
+|\glueexpr|<span style="color:firebrick;">Not supported</span>||
 |\gnapprox|$\gnapprox$||
 |\gneq|$\gneq$||
 |\gneqq|$\gneqq$||
@@ -705,6 +707,7 @@ use `\ce` instead|
 |\mspace|<span style="color:firebrick;">Not supported</span>||
 |\Mu|$\Mu$||
 |\mu|$\mu$||
+|\muexpr|<span style="color:firebrick;">Not supported</span>||
 |\multicolumn|<span style="color:firebrick;">Not supported</span>|[Issue #269](https://github.com/KaTeX/KaTeX/issues/269)|
 |{multiline}|<span style="color:firebrick;">Not supported</span>||
 |\multimap|$\multimap$||
@@ -774,6 +777,7 @@ use `\ce` instead|
 |\ntrianglerighteq|$\ntrianglerighteq$||
 |\Nu|$\Nu$||
 |\nu|$\nu$||
+|\numexpr|<span style="color:firebrick;">Not supported</span>||
 |\nVDash|$\nVDash$||
 |\nVdash|$\nVdash$||
 |\nvDash|$\nvDash$||

@@ -1083,6 +1083,52 @@ describe("A kern parser", function() {
         const parse = getParsed`\kern{+1em}`[0];
         expect(parse.dimension.number).toBeCloseTo(1);
     });
+
+    it("should parse \\dimexpr expressions", function() {
+        const parse = getParsed`\kern{\dimexpr 1pt + (2.5em - .1cm) * 3}`[0];
+        expect(parse.dimension).toMatchObject({
+            operator: "+",
+            lhs: {unit: "pt"},
+            rhs: {
+                operator: "*",
+                lhs: {
+                    operator: "-",
+                    lhs: {unit: "em"},
+                    rhs: {unit: "cm"},
+                },
+            },
+        });
+        expect(parse.dimension.lhs.number).toBeCloseTo(1);
+        expect(parse.dimension.rhs.lhs.lhs.number).toBeCloseTo(2.5);
+        expect(parse.dimension.rhs.lhs.rhs.number).toBeCloseTo(0.1);
+        expect(parse.dimension.rhs.rhs).toBeCloseTo(3);
+    });
+
+    it("should parse nested \\dimexpr expressions", function() {
+        const parse = getParsed`\kern{
+            \dimexpr 2in + \dimexpr 5pt - 15sp \relax + \dimexpr 5em / 1.5}`[0];
+        expect(parse.dimension).toMatchObject({
+            operator: "+",
+            lhs: {
+                operator: "+",
+                lhs: {unit: "in"},
+                rhs: {
+                    operator: "-",
+                    lhs: {unit: "pt"},
+                    rhs: {unit: "sp"},
+                },
+            },
+            rhs: {
+                operator: "/",
+                lhs: {unit: "em"},
+            },
+        });
+        expect(parse.dimension.lhs.lhs.number).toBeCloseTo(2);
+        expect(parse.dimension.lhs.rhs.lhs.number).toBeCloseTo(5);
+        expect(parse.dimension.lhs.rhs.rhs.number).toBeCloseTo(15);
+        expect(parse.dimension.rhs.lhs.number).toBeCloseTo(5);
+        expect(parse.dimension.rhs.rhs).toBeCloseTo(1.5);
+    });
 });
 
 describe("A non-braced kern parser", function() {
@@ -1150,6 +1196,53 @@ describe("A non-braced kern parser", function() {
         expect(abParse[0].text).toEqual("a");
         expect(abParse[1].dimension.unit).toEqual("mu");
         expect(abParse[2].text).toEqual("b");
+    });
+
+    it("should parse \\dimexpr expressions", function() {
+        const parse = getParsed`\kern\dimexpr 1pt + (2.5em - .1cm) * 3`[0];
+        expect(parse.dimension).toMatchObject({
+            operator: "+",
+            lhs: {unit: "pt"},
+            rhs: {
+                operator: "*",
+                lhs: {
+                    operator: "-",
+                    lhs: {unit: "em"},
+                    rhs: {unit: "cm"},
+                },
+            },
+        });
+        expect(parse.dimension.lhs.number).toBeCloseTo(1);
+        expect(parse.dimension.rhs.lhs.lhs.number).toBeCloseTo(2.5);
+        expect(parse.dimension.rhs.lhs.rhs.number).toBeCloseTo(0.1);
+        expect(parse.dimension.rhs.rhs).toBeCloseTo(3);
+    });
+
+    it("should stop parsing a \\dimexpr expression at \\relax", function() {
+        const parse = getParsed`\kern\dimexpr 1em * 2 * 3 \relax * 4`;
+        expect(parse).toHaveLength(3);
+        expect(parse[0].dimension).toMatchObject({
+            operator: "*",
+            lhs: {
+                operator: "*",
+                lhs: {unit: "em"},
+            },
+        });
+        expect(parse[0].dimension.lhs.lhs.number).toBeCloseTo(1);
+        expect(parse[0].dimension.lhs.rhs).toBeCloseTo(2);
+        expect(parse[0].dimension.rhs).toBeCloseTo(3);
+    });
+
+    it("should only consume a single \\relax per \\dimexpr", function() {
+        const parse = getParsed`\kern\dimexpr 1em + \dimexpr 2em \relax\relax * 3`;
+        expect(parse).toHaveLength(3);
+        expect(parse[0].dimension).toMatchObject({
+            operator: "+",
+            lhs: {unit: "em"},
+            rhs: {unit: "em"},
+        });
+        expect(parse[0].dimension.lhs.number).toBeCloseTo(1);
+        expect(parse[0].dimension.rhs.number).toBeCloseTo(2);
     });
 });
 
