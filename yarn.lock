@@ -4456,23 +4456,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"css-loader@npm:^5.1.2":
-  version: 5.2.7
-  resolution: "css-loader@npm:5.2.7"
+"css-loader@npm:^6.0.0":
+  version: 6.2.0
+  resolution: "css-loader@npm:6.2.0"
   dependencies:
     icss-utils: ^5.1.0
-    loader-utils: ^2.0.0
     postcss: ^8.2.15
     postcss-modules-extract-imports: ^3.0.0
     postcss-modules-local-by-default: ^4.0.0
     postcss-modules-scope: ^3.0.0
     postcss-modules-values: ^4.0.0
     postcss-value-parser: ^4.1.0
-    schema-utils: ^3.0.0
     semver: ^7.3.5
   peerDependencies:
-    webpack: ^4.27.0 || ^5.0.0
-  checksum: e121c9310e3597003126844c3bb9e0635273e14065730ae62102fea5f594da948479c56503299ceee6bc942da1b125e24fec27b3b0d9ea64a83f27a88f10bba4
+    webpack: ^5.0.0
+  checksum: eacc4ef15790f78c585ccaf77c178cb3ae54f0d830138031927826e503511d884c24e73dbb9309310a29b8e222b98d6adad7b774f1da81fceb2c3aa6326d414c
   languageName: node
   linkType: hard
 
@@ -5979,18 +5977,6 @@ __metadata:
   dependencies:
     flat-cache: ^3.0.4
   checksum: af83a412143100405a995bb7d9a31982ebcfabe6c545dac2e787fc5580b2da74e253ef62968057fa5bbfaf0811a8b85623aeea776e16c77e3ce4c2488b0e4821
-  languageName: node
-  linkType: hard
-
-"file-loader@npm:^6.0.0":
-  version: 6.2.0
-  resolution: "file-loader@npm:6.2.0"
-  dependencies:
-    loader-utils: ^2.0.0
-    schema-utils: ^3.0.0
-  peerDependencies:
-    webpack: ^4.0.0 || ^5.0.0
-  checksum: 0f103418c072ec66c081a9908cd7824ee19905e18be16889cb050f5f373998afaf7ca4c2fd2df4cabf703a2cd526aefe59105930e3f8d266a5b35e6d5f5b3cf4
   languageName: node
   linkType: hard
 
@@ -8821,13 +8807,12 @@ __metadata:
     browserstack-local: ^1.4.5
     caniuse-lite: ^1.0.30001102
     commander: ^6.0.0
-    css-loader: ^5.1.2
+    css-loader: ^6.0.0
     cssnano: ^5.0.0-rc.1
     eslint: ^7.4.0
     eslint-plugin-actions: ^1.0.1
     eslint-plugin-flowtype: ^5.2.0
     eslint-plugin-react: ^7.20.3
-    file-loader: ^6.0.0
     flow-bin: ^0.135.0
     fs-extra: ^10.0.0
     got: ^11.8.0
@@ -9255,17 +9240,6 @@ __metadata:
     emojis-list: ^3.0.0
     json5: ^1.0.1
   checksum: 9fd690e57ad78d32ff2942383b4a7a175eba575280ba5aca3b4d03183fec34aa0db314f49bd3301adf7e60b02471644161bf53149e8f2d18fd6a52627e95a927
-  languageName: node
-  linkType: hard
-
-"loader-utils@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "loader-utils@npm:2.0.0"
-  dependencies:
-    big.js: ^5.2.2
-    emojis-list: ^3.0.0
-    json5: ^2.1.2
-  checksum: a1c2e48781e1501e126a32c39bc1fb1a7e2f02bd99e5aeb8853ddaf3c121fffefcc4579367f97ca6890b58369e571af1c9ec82e4e20db238d560ab359ff25c33
   languageName: node
   linkType: hard
 
