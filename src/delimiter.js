@@ -186,8 +186,8 @@ const makeInner = function(
 ): VListElem {
     // Create a span with inline SVG for the inner part of a tall stacked delimiter.
     const width = fontMetricsData['Size4-Regular'][ch.charCodeAt(0)]
-        ? fontMetricsData['Size4-Regular'][ch.charCodeAt(0)][4]
-        : fontMetricsData['Size1-Regular'][ch.charCodeAt(0)][4];
+        ? fontMetricsData['Size4-Regular'][ch.charCodeAt(0)][4].toFixed(5)
+        : fontMetricsData['Size1-Regular'][ch.charCodeAt(0)][4].toFixed(5);
     const path = new PathNode("inner", innerPath(ch,  Math.round(1000 * height)));
     const svgNode = new SvgNode([path], {
         "width": width + "em",
