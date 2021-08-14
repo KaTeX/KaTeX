@@ -3581,6 +3581,18 @@ describe("A macro expander", function() {
     it("should expand \\Ket as expected", () => {
         expect`\Ket{\psi}`.toParseLike`\left|\psi\right\rangle`;
     });
+
+    it("should expand \\Braket as expected", () => {
+        expect`\Braket{ ϕ | \frac{∂^2}{∂ t^2} | ψ }`.toParseLike`\left\langle ϕ\,\middle\vert\,\frac{∂^2}{∂ t^2}\,\middle\vert\, ψ\right\rangle`;
+    });
+
+    it("should expand \\set as expected", () => {
+        expect`\set{x|x<5}`.toParseLike`\{x\mid x<5\}`;
+    });
+
+    it("should expand \\Set as expected", () => {
+        expect`\Set{ x | x<\frac 1 2 }`.toParseLike`\left\{ x\,\middle\vert\, x<\frac 1 2 \right\}`;
+    });
 });
 
 describe("\\tag support", function() {

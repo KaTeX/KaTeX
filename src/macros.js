@@ -123,6 +123,27 @@ export function defineMacro(name: string, body: MacroDefinition) {
     builtinMacros[name] = body;
 }
 
+// helper function
+function recreateArgStr(context: MacroContextInterface): string {
+    // Recreate the macro's original argument string from the array of parse tokens.
+    const tokens = context.consumeArgs(1)[0];
+    let str = "";
+    // $FlowFixMe Flow doesn't know about .start
+    let expectedLoc = tokens[tokens.length - 1].loc.start;
+    for (let i = tokens.length - 1; i >= 0; i--) {
+        // $FlowFixMe
+        const actualLoc = tokens[i].loc.start;
+        if (actualLoc > expectedLoc) {
+            // context.consumeArgs has eaten a space.
+            str += " ";
+            expectedLoc = actualLoc;
+        }
+        str += tokens[i].text;
+        expectedLoc += tokens[i].text.length;
+    }
+    return str;
+}
+
 //////////////////////////////////////////////////////////////////////
 // macro tools
 
@@ -1018,6 +1039,20 @@ defineMacro("\\ket", "\\mathinner{|{#1}\\rangle}");
 defineMacro("\\braket", "\\mathinner{\\langle{#1}\\rangle}");
 defineMacro("\\Bra", "\\left\\langle#1\\right|");
 defineMacro("\\Ket", "\\left|#1\\right\\rangle");
+defineMacro("\\Braket",  function(context) {
+    const argStr = recreateArgStr(context);
+    return "\\left\\langle" + argStr.replace(/\|/g, "\\,\\middle\\vert\\,") +
+           "\\right\\rangle";
+});
+defineMacro("\\Set",  function(context) {
+    const argStr = recreateArgStr(context);
+    return "\\left\\{" + argStr.replace(/\|/, "\\,\\middle\\vert\\,") +
+           "\\right\\}";
+});
+defineMacro("\\set",  function(context) {
+    const argStr = recreateArgStr(context);
+    return "\\{" + argStr.replace(/\|/, "\\mid ") + "\\}";
+});
 
 //////////////////////////////////////////////////////////////////////
 // actuarialangle.dtx
