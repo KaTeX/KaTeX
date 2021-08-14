@@ -419,16 +419,18 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             const shift = row.pos - offset;
             elem.depth = row.depth;
             elem.height = row.height;
-            col.push({type: "elem", elem: elem, shift: shift});
+            col.push({
+                type: "elem",
+                elem: elem,
+                wrapperClasses: ["col-align-" + (colDescr.align || "c")],
+                shift: shift,
+            });
         }
 
         col = buildCommon.makeVList({
             positionType: "individualShift",
             children: col,
         }, options);
-        col = buildCommon.makeSpan(
-            ["col-align-" + (colDescr.align || "c")],
-            [col]);
         cols.push(col);
 
         if (c < nc - 1 || group.hskipBeforeAndAfter) {
@@ -444,18 +446,19 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
     // Add \hline(s), if any.
     if (hlines.length > 0) {
-        const line = buildCommon.makeLineSpan("hline", options, ruleThickness);
-        const dashes = buildCommon.makeLineSpan("hdashline", options,
+        const line = buildCommon.makeLineSpan(["rule"], options, ruleThickness);
+        const dashes = buildCommon.makeLineSpan(["rule", "hdashline"], options,
             ruleThickness);
         const vListElems = [{type: "elem", elem: body, shift: 0}];
         while (hlines.length > 0) {
             const hline = hlines.pop();
             const lineShift = hline.pos - offset;
-            if (hline.isDashed) {
-                vListElems.push({type: "elem", elem: dashes, shift: lineShift});
-            } else {
-                vListElems.push({type: "elem", elem: line, shift: lineShift});
-            }
+            vListElems.push({
+                type: "elem",
+                elem: hline.isDashed ? dashes : line,
+                wrapperClasses: ["hline"],
+                shift: lineShift,
+            });
         }
         body = buildCommon.makeVList({
             positionType: "individualShift",

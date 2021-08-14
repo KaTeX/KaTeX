@@ -199,6 +199,8 @@ const makeInner = function(
     });
     const span = buildCommon.makeSvgSpan([], [svgNode], options);
     span.height = height;
+    span.ascent = height;
+    span.descent = 0;
     span.style.height = height + "em";
     span.style.width = width + "em";
     return {type: "elem", elem: span};
@@ -369,8 +371,8 @@ const makeStackedDelim = function(
     // Keep a list of the pieces of the stacked delimiter
     const stack = [];
 
-    // Add the bottom symbol
-    stack.push(makeGlyphSpan(bottom, font, mode));
+    // Add the top symbol
+    stack.push(makeGlyphSpan(top, font, mode));
     stack.push(lap); // overlap
 
     if (middle === null) {
@@ -392,9 +394,9 @@ const makeStackedDelim = function(
         stack.push(makeInner(repeat, innerHeight, options));
     }
 
-    // Add the top symbol
+    // Add the bottom symbol
     stack.push(lap);
-    stack.push(makeGlyphSpan(top, font, mode));
+    stack.push(makeGlyphSpan(bottom, font, mode));
 
     // Finally, build the vlist
     const newOptions = options.havingBaseStyle(Style.TEXT);
@@ -515,6 +517,9 @@ const makeSqrtImage = function(
 
     span.height = texHeight;
     span.style.height = spanHeight + "em";
+    span.ascent = texHeight + emPad;
+    span.depth = 0;
+    span.descent = 0;
 
     return {
         span,

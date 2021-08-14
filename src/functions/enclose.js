@@ -32,38 +32,50 @@ const htmlBuilder = (group, options) => {
     // subjects that should get the "tall" treatment.
     const isSingleChar = utils.isCharacterBox(group.body);
 
-    if (label === "sout") {
-        img = buildCommon.makeSpan(["stretchy", "sout"]);
-        img.height = options.fontMetrics().defaultRuleThickness / scale;
-        imgShift = -0.5 * options.fontMetrics().xHeight;
+    if (label === "sout" || label == "phase") {
+        if (label === "sout") {
+            img = buildCommon.makeSpan(["stretchy", "sout"]);
+            img.height = options.fontMetrics().defaultRuleThickness / scale;
+            imgShift = -0.5 * options.fontMetrics().xHeight;
+        } else {
+            // Set a couple of dimensions from the steinmetz package.
+            const lineWeight = calculateSize({number: 0.6, unit: "pt"}, options);
+            const clearance = calculateSize({number: 0.35, unit: "ex"}, options);
 
-    } else if (label === "phase") {
-        // Set a couple of dimensions from the steinmetz package.
-        const lineWeight = calculateSize({number: 0.6, unit: "pt"}, options);
-        const clearance = calculateSize({number: 0.35, unit: "ex"}, options);
+            // Prevent size changes like \Huge from affecting line thickness
+            const newOptions = options.havingBaseSizing();
+            scale = scale / newOptions.sizeMultiplier;
 
-        // Prevent size changes like \Huge from affecting line thickness
-        const newOptions = options.havingBaseSizing();
-        scale = scale / newOptions.sizeMultiplier;
+            const angleHeight = inner.height + inner.depth + lineWeight + clearance;
+            // Reserve a left pad for the angle.
+            inner.style.paddingLeft = (angleHeight / 2 + lineWeight) + "em";
 
-        const angleHeight = inner.height + inner.depth + lineWeight + clearance;
-        // Reserve a left pad for the angle.
-        inner.style.paddingLeft = (angleHeight / 2 + lineWeight) + "em";
-
-        // Create an SVG
-        const viewBoxHeight = Math.floor(1000 * angleHeight * scale);
-        const path = phasePath(viewBoxHeight);
-        const svgNode = new SvgNode([new PathNode("phase", path)], {
-            "width": "400em",
-            "height": `${viewBoxHeight / 1000}em`,
-            "viewBox": `0 0 400000 ${viewBoxHeight}`,
-            "preserveAspectRatio": "xMinYMin slice",
+            // Create an SVG
+            const viewBoxHeight = Math.floor(1000 * angleHeight * scale);
+            const path = phasePath(viewBoxHeight);
+            const svgNode = new SvgNode([new PathNode("phase", path)], {
+                "width": "400em",
+                "height": `${viewBoxHeight / 1000}em`,
+                "viewBox": `0 0 400000 ${viewBoxHeight}`,
+                "preserveAspectRatio": "xMinYMin slice",
+            });
+            // Wrap it in a span with overflow: hidden.
+            img = buildCommon.makeSvgSpan(["hide-tail"], [svgNode], options);
+            img.style.height = angleHeight + "em";
+            img.ascent = angleHeight;
+            imgShift = inner.depth + lineWeight + clearance;
+        }
+        img.depth = 0;
+        img.descent = 0;
+        vlist = buildCommon.makeVList({
+            positionType: "individualShift",
+            children: [
+                {type: "elem", elem: inner, shift: 0},
+                {type: "elem", elem: img, shift: imgShift},
+            ],
+            options
         });
-        // Wrap it in a span with overflow: hidden.
-        img = buildCommon.makeSvgSpan(["hide-tail"], [svgNode], options);
-        img.style.height = angleHeight + "em";
-        imgShift = inner.depth + lineWeight + clearance;
-
+        return buildCommon.makeSpan(["mord"], [vlist], options);
     } else {
         // Add horizontal padding
         if (/cancel/.test(label)) {
@@ -130,21 +142,19 @@ const htmlBuilder = (group, options) => {
             ],
         }, options);
     } else {
-        const classes = /cancel|phase/.test(label) ? ["svg-align"] : [];
         vlist = buildCommon.makeVList({
             positionType: "individualShift",
             children: [
                 // Write the \cancel stroke on top of inner.
                 {
                     type: "elem",
-                    elem: inner,
-                    shift: 0,
+                    elem: img,
+                    shift: imgShift,
                 },
                 {
                     type: "elem",
-                    elem: img,
-                    shift: imgShift,
-                    wrapperClasses: classes,
+                    elem: inner,
+                    shift: 0,
                 },
             ],
         }, options);

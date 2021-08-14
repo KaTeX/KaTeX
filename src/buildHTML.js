@@ -276,6 +276,8 @@ export const buildGroup = function(
 
             groupNode.height *= multiplier;
             groupNode.depth *= multiplier;
+            groupNode.ascent *= multiplier;
+            groupNode.descent *= multiplier;
         }
 
         return groupNode;

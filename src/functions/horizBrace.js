@@ -46,25 +46,21 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
         vlist = buildCommon.makeVList({
             positionType: "firstBaseline",
             children: [
-                {type: "elem", elem: body},
-                {type: "kern", size: 0.1},
                 {type: "elem", elem: braceBody},
+                {type: "kern", size: 0.1},
+                {type: "elem", elem: body},
             ],
         }, options);
-        // $FlowFixMe: Replace this with passing "svg-align" into makeVList.
-        vlist.children[0].children[0].children[1].classes.push("svg-align");
     } else {
         vlist = buildCommon.makeVList({
             positionType: "bottom",
             positionData: body.depth + 0.1 + braceBody.height,
             children: [
-                {type: "elem", elem: braceBody},
-                {type: "kern", size: 0.1},
                 {type: "elem", elem: body},
+                {type: "kern", size: 0.1},
+                {type: "elem", elem: braceBody},
             ],
         }, options);
-        // $FlowFixMe: Replace this with passing "svg-align" into makeVList.
-        vlist.children[0].children[0].children[0].classes.push("svg-align");
     }
 
     if (supSubGroup) {
@@ -85,9 +81,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
             vlist = buildCommon.makeVList({
                 positionType: "firstBaseline",
                 children: [
-                    {type: "elem", elem: vSpan},
-                    {type: "kern", size: 0.2},
                     {type: "elem", elem: supSubGroup},
+                    {type: "kern", size: 0.2},
+                    {type: "elem", elem: vSpan},
                 ],
             }, options);
         } else {
@@ -96,9 +92,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
                 positionData: vSpan.depth + 0.2 + supSubGroup.height +
                     supSubGroup.depth,
                 children: [
-                    {type: "elem", elem: supSubGroup},
-                    {type: "kern", size: 0.2},
                     {type: "elem", elem: vSpan},
+                    {type: "kern", size: 0.2},
+                    {type: "elem", elem: supSubGroup},
                 ],
             }, options);
         }

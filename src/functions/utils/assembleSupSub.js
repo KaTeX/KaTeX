@@ -22,9 +22,17 @@ export const assembleSupSub = (
     let sup;
     // We manually have to handle the superscripts and subscripts. This,
     // aside from the kern calculations, is copied from supsub.
+    
+    // Shift the limits by the slant of the symbol. Note
+    // that we are supposed to shift the limits by 1/2 of the slant,
+    // but since we are centering the limits adding a full slant of
+    // margin will shift by 1/2 that.
     if (supGroup) {
         const elem = html.buildGroup(
             supGroup, options.havingStyle(style.sup()), options);
+        if (slant) {
+            elem.style.marginLeft = 2 * slant + "em";
+        }
 
         sup = {
             elem,
@@ -37,7 +45,10 @@ export const assembleSupSub = (
     if (subGroup) {
         const elem = html.buildGroup(
             subGroup, options.havingStyle(style.sub()), options);
-
+        if (slant) {
+            elem.style.marginRight = 2 * slant + "em";
+        }
+    
         sub = {
             elem,
             kern: Math.max(
@@ -60,29 +71,24 @@ export const assembleSupSub = (
             positionData: bottom,
             children: [
                 {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                {type: "elem", elem: sub.elem, marginLeft: -slant + "em"},
-                {type: "kern", size: sub.kern},
-                {type: "elem", elem: base},
+                {type: "elem", elem: sup.elem},
                 {type: "kern", size: sup.kern},
-                {type: "elem", elem: sup.elem, marginLeft: slant + "em"},
+                {type: "elem", elem: base},
+                {type: "kern", size: sub.kern},
+                {type: "elem", elem: sub.elem},
                 {type: "kern", size: options.fontMetrics().bigOpSpacing5},
             ],
         }, options);
     } else if (sub) {
         const top = base.height - baseShift;
-
-        // Shift the limits by the slant of the symbol. Note
-        // that we are supposed to shift the limits by 1/2 of the slant,
-        // but since we are centering the limits adding a full slant of
-        // margin will shift by 1/2 that.
         finalGroup = buildCommon.makeVList({
             positionType: "top",
             positionData: top,
             children: [
-                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                {type: "elem", elem: sub.elem, marginLeft: -slant + "em"},
-                {type: "kern", size: sub.kern},
                 {type: "elem", elem: base},
+                {type: "kern", size: sub.kern},
+                {type: "elem", elem: sub.elem},
+                {type: "kern", size: options.fontMetrics().bigOpSpacing5},
             ],
         }, options);
     } else if (sup) {
@@ -92,10 +98,10 @@ export const assembleSupSub = (
             positionType: "bottom",
             positionData: bottom,
             children: [
-                {type: "elem", elem: base},
-                {type: "kern", size: sup.kern},
-                {type: "elem", elem: sup.elem, marginLeft: slant + "em"},
                 {type: "kern", size: options.fontMetrics().bigOpSpacing5},
+                {type: "elem", elem: sup.elem},
+                {type: "kern", size: sup.kern},
+                {type: "elem", elem: base},
             ],
         }, options);
     } else {

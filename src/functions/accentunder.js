@@ -40,9 +40,9 @@ defineFunction({
             positionType: "top",
             positionData: innerGroup.height,
             children: [
-                {type: "elem", elem: accentBody, wrapperClasses: ["svg-align"]},
-                {type: "kern", size: kern},
                 {type: "elem", elem: innerGroup},
+                {type: "kern", size: kern},
+                {type: "elem", elem: accentBody},
             ],
         }, options);
 

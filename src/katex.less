@@ -170,79 +170,22 @@
     @mediumspace: 0.22222em;    // 4mu
     @thickspace: 0.27778em;     // 5mu
 
-    .vlist-t {
-        display: inline-table;
-        table-layout: fixed;
-        border-collapse: collapse;
-    }
-
-    .vlist-r {
-        display: table-row;
-    }
-
-    .vlist {
-        display: table-cell;
-        vertical-align: bottom;
-        position: relative;
-
-        > span {
-            display: block;
-            height: 0;
-            position: relative;
-
-            > span {
-                display: inline-block;
-            }
-
-            > .pstrut {
-                overflow: hidden;
-                width: 0;
-            }
-        }
-    }
-
-    .vlist-t2 {
-        margin-right: -2px;
-    }
-
-    .vlist-s {
-        // This cell solves Safari rendering problems. It has text content, so
-        // its baseline is used for the table. A very small font avoids line-box
-        // issues; absolute units prevent user font-size overrides from breaking
-        // rendering. Safari refuses to make the box zero-width, so we give it
-        // a known width and compensate with negative right margin on the
-        // inline-table. To prevent the "width: min-content" Chrome workaround
-        // from shrinking this box, we also set min-width.
-        display: table-cell;
-        vertical-align: bottom;
-        font-size: 1px;
-        width: 2px;
-        min-width: 2px;
-    }
-
     .vbox {
         line-height: 1.0;
         display: inline-flex;
         flex-direction: column;
+        align-items: center;  // horizontal alignment
     }
 
     .hbox {
         display: inline-flex;
         flex-direction: row;
+        justify-content: center; // horizontal alignment
         width: 100%;
-    }
-
-    .cbox {
-        display: inline-flex;
-        flex-direction: row;
-        align-items: center;
-        width: 100%;
-    }
-
-    .glue {
-        display: -ms-inline-flexbox;
-        -ms-flex: 1 1 0px;
-        flex: 1 1 0px;
+        > span {
+            display: inline-block;
+            position: relative;
+        }
     }
 
     .thinbox {
@@ -252,30 +195,30 @@
         max-width: 0; // necessary for Safari
     }
 
-    .msupsub {
-        text-align: left;
+    .mfrac > .vbox > span,
+    .col-align-c {
+        justify-content: center;
     }
 
-    .mfrac {
-        > span > span {
-            text-align: center;
-        }
-
-        .frac-line {
-            display: inline-block;
-            width: 100%;
-            border-bottom-style: solid;
-        }
+    .msupsub > .vbox > span,
+    .col-align-l {
+        justify-content: left;
     }
 
-    // Prevent Chrome from disappearing frac-lines, rules, etc.
-    .mfrac .frac-line,
-    .overline .overline-line,
-    .underline .underline-line,
-    .hline,
-    .hdashline,
+    .col-align-r {
+        justify-content: right;
+    }
+
     .rule {
+        display: block;
+        width: 100%;
+        border-bottom-style: solid;
+        // Prevent Chrome from disappearing frac-lines, rules, etc.
         min-height: 1px;
+    }
+
+    .hdashline {
+        border-bottom-style: dashed;
     }
 
     .mspace {
@@ -309,26 +252,6 @@
     .clap > .inner > span {
         margin-left: -50%;
         margin-right: 50%;
-    }
-
-    .rule {
-        display: inline-block;
-        border: solid 0;
-        position: relative;
-    }
-
-    .overline .overline-line,
-    .underline .underline-line,
-    .hline {
-        display: inline-block;
-        width: 100%;
-        border-bottom-style: solid;
-    }
-
-    .hdashline {
-        display: inline-block;
-        width: 100%;
-        border-bottom-style: dashed;
     }
 
     .sqrt {
@@ -423,14 +346,12 @@
     }
 
     .accent {
-        > .vbox {
-            text-align: center;
-        }
-        > .vlist-t {
-            text-align: center;
+        > .vbox > span {
+            display: inline-block;
         }
 
         .accent-body {
+            display: inline-block;
             position: relative; // so that 'left' can shift the accent
         }
 
@@ -455,22 +376,6 @@
         .arraycolsep {
             display: inline-block;
         }
-
-        .col-align-c > .vlist-t {
-            text-align: center;
-        }
-
-        .col-align-l > .vlist-t {
-            text-align: left;
-        }
-
-        .col-align-r > .vlist-t {
-            text-align: right;
-        }
-    }
-
-    .svg-align {
-        text-align: left;
     }
 
     svg {

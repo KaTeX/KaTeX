@@ -60,9 +60,9 @@ const htmlBuilder = (group, options) => {
     if (group.hasBarLine) {
         if (group.barSize) {
             ruleWidth = calculateSize(group.barSize, options);
-            rule = buildCommon.makeLineSpan("frac-line", options, ruleWidth);
+            rule = buildCommon.makeLineSpan(["rule"], options, ruleWidth);
         } else {
-            rule = buildCommon.makeLineSpan("frac-line", options);
+            rule = buildCommon.makeLineSpan(["rule"], options);
         }
         ruleWidth = rule.height;
         ruleSpacing = rule.height;
@@ -108,8 +108,8 @@ const htmlBuilder = (group, options) => {
         frac = buildCommon.makeVList({
             positionType: "individualShift",
             children: [
-                {type: "elem", elem: denomm, shift: denomShift},
                 {type: "elem", elem: numerm, shift: -numShift},
+                {type: "elem", elem: denomm, shift: denomShift},
             ],
         }, options);
     } else {
@@ -135,9 +135,9 @@ const htmlBuilder = (group, options) => {
         frac = buildCommon.makeVList({
             positionType: "individualShift",
             children: [
-                {type: "elem", elem: denomm, shift: denomShift},
-                {type: "elem", elem: rule,   shift: midShift},
                 {type: "elem", elem: numerm, shift: -numShift},
+                {type: "elem", elem: rule,   shift: midShift},
+                {type: "elem", elem: denomm, shift: denomShift},
             ],
         }, options);
     }

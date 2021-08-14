@@ -5,7 +5,7 @@
  * different kinds of domTree nodes in a consistent manner.
  */
 
-import {SymbolNode, Anchor, Span, PathNode, SvgNode, createClass, assertSpan} from "./domTree";
+import {SymbolNode, Anchor, Span, PathNode, SvgNode, createClass} from "./domTree";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols, {ligatures} from "./symbols";
 import {wideCharacterFont} from "./wide-character";
@@ -317,10 +317,10 @@ const sizeElementFromChildren = function(
             depth = child.depth;
         }
         if (child.ascent && child.ascent > ascent) {
-            ascent = child.ascent
+            ascent = child.ascent;
         }
         if (child.descent && child.descent > descent) {
-            descent = child.descent
+            descent = child.descent;
         }
         if (child.maxFontSize > maxFontSize) {
             maxFontSize = child.maxFontSize;
@@ -365,17 +365,20 @@ const makeSvgSpan = (
 ): SvgSpan => new Span(classes, children, options, style);
 
 const makeLineSpan = function(
-    className: string,
+    classes: string[],
     options: Options,
     thickness?: number,
 ): DomSpan {
-    const line = makeSpan([className], [], options);
+    const line = makeSpan(classes, [], options);
     line.height = Math.max(
         thickness || options.fontMetrics().defaultRuleThickness,
         options.minRuleThickness,
     );
+    line.ascent = line.height;
     line.style.borderBottomWidth = line.height + "em";
     line.maxFontSize = 1.0;
+    line.depth = 0;
+    line.descent = 0;
     return line;
 };
 
@@ -424,12 +427,51 @@ const wrapFragment = function(
 };
 
 
+/*
+ * KaTeX vertical alignment emulates TeX. KaTeX, like TeX, knows the height and
+ * depth of each glyph and uses that information to accurately place accents,
+ * fraction bars, etc. But KaTeX must work within HTML constraints.
+ *
+ * HTML vertical alignment of text is done via an inline formatting context.
+ * Ref: https://drafts.csswg.org/css-inline-3/#inline-formatting-context
+ *
+ * In brief, that means that HTML does not stack glyphs; it stacks line boxes.
+ * The top of a line box is the top of a font’s ascent metric, aka sTypoAscender.
+ * The box bottom is the bottom of a font’s descent metric, aka sTypoDescender.
+ * The ascent and descent are the same for every glyph in the font.
+ * Ref: https://drafts.csswg.org/css-inline-3/#ascent-descent
+ * You can find sTypoAscender with https://opentype.js.org/font-inspector.html
+ *
+ * Below is a sketch of the KaTeX font’s line box with a few KaTeX glyphs.
+ *
+ *                                   ┏━━━━
+ *                                   ┃
+ *      ┌────────────────────────────╂──────┐     Font ascent  = 0.8 em
+ *      │ ┃      ┃                   ┃      │     Font descent = 0.2 em
+ *      │ ┃      ┃          ━━━━━━   ┃      │     H height = 0.683 em
+ *      │ ┣━━━━━━┫  ╻    ╻           ┃      │     y height = 0.431 em
+ *      │ ┃      ┃  ┃    ┃           ┃      │     y depth  = 0.204 em
+ *      │ ┃      ┃  ╰━━━━┫           ┃      │     macron height  = 0.59 em
+ *      ├─┸──────┸───────╂───────────╂──────┤     Size2 [ height = 1.15 em
+ *      │                ┃           ┃      │     Size2 [ depth  = 0.65 em
+ *      └────────────━━━━╯───────────╂──────┘
+ *       not to scale                ┃
+ *                                   ┃
+ *                                   ┗━━━━
+ *
+ * KaTeX does vertical alignment by stacking line boxes inside a CSS flexbox.
+ * Inside the flexbox, we set CSS line-height to 1.0, so we can ignore "leading".
+ *
+ * Most glpyhs are shorter than the line box. When these boxes are stacked, we
+ * compensate by applying negative margin-top to the lower element.
+ * A few glyphs are taller than the line box. For these, we compensate via
+ * positive margin-top.
+ */
+
 // These are exact object types to catch typos in the names of the optional fields.
 export type VListElem = {|
     type: "elem",
     elem: HtmlDomNode,
-    marginLeft?: ?string,
-    marginRight?: string,
     wrapperClasses?: string[],
     wrapperStyle?: CssStyle,
 |};
@@ -437,15 +479,14 @@ type VListElemAndShift = {|
     type: "elem",
     elem: HtmlDomNode,
     shift: number,
-    marginLeft?: ?string,
-    marginRight?: string,
     wrapperClasses?: string[],
     wrapperStyle?: CssStyle,
 |};
 type VListKern = {| type: "kern", size: number |};
 
-// A list of child or kern nodes to be stacked on top of each other (i.e. the
-// first element will be at the bottom, and the last at the top).
+// A list of child or kern nodes to be stacked on top of each other.
+// Order of input: Start at the top and work down.
+//     Exception:  List may be in any order if positionType == "individualShift".
 type VListChild = VListElem | VListKern;
 
 type VListParam = {|
@@ -458,122 +499,62 @@ type VListParam = {|
     // "bottom": The positionData specifies the bottommost point of the vlist (note
     //           this is expected to be a depth, so positive values move down).
     // "shift": The vlist will be positioned such that its baseline is positionData
-    //          away from the baseline of the first child which MUST be an
+    //          away from the baseline of the last child which MUST be an
     //          "elem". Positive values move downwards.
     positionType: "top" | "bottom" | "shift",
     positionData: number,
     children: VListChild[],
 |} | {|
     // The vlist is positioned so that its baseline is aligned with the baseline
-    // of the first child which MUST be an "elem". This is equivalent to "shift"
+    // of the last child which MUST be an "elem". This is equivalent to "shift"
     // with positionData=0.
     positionType: "firstBaseline",
     children: VListChild[],
 |};
 
-
-// Computes the updated `children` list and the overall depth.
-//
-// This helper function for makeVList makes it easier to enforce type safety by
-// allowing early exits (returns) in the logic.
-const getVListChildrenAndDepth = function(params: VListParam): {
-    children: (VListChild | VListElemAndShift)[] | VListChild[],
-    depth: number,
-} {
-    if (params.positionType === "individualShift") {
-        const oldChildren = params.children;
-        const children: (VListChild | VListElemAndShift)[] = [oldChildren[0]];
-
-        // Add in kerns to the list of params.children to get each element to be
-        // shifted to the correct specified shift
-        const depth = -oldChildren[0].shift - oldChildren[0].elem.depth;
-        let currPos = depth;
-        for (let i = 1; i < oldChildren.length; i++) {
-            const diff = -oldChildren[i].shift - currPos -
-                oldChildren[i].elem.depth;
-            const size = diff -
-                (oldChildren[i - 1].elem.height +
-                 oldChildren[i - 1].elem.depth);
-
-            currPos = currPos + diff;
-
-            children.push({type: "kern", size});
-            children.push(oldChildren[i]);
-        }
-
-        return {children, depth};
-    }
-
-    let depth;
-    if (params.positionType === "top") {
-        // We always start at the bottom, so calculate the bottom by adding up
-        // all the sizes
-        let bottom = params.positionData;
-        for (let i = 0; i < params.children.length; i++) {
-            const child = params.children[i];
-            bottom -= child.type === "kern"
-                ? child.size
-                : child.elem.height + child.elem.depth;
-        }
-        depth = bottom;
-    } else if (params.positionType === "bottom") {
-        depth = -params.positionData;
-    } else {
-        const firstChild = params.children[0];
-        if (firstChild.type !== "elem") {
-            throw new Error('First child must have type "elem".');
-        }
-        if (params.positionType === "shift") {
-            depth = -firstChild.elem.depth - params.positionData;
-        } else if (params.positionType === "firstBaseline") {
-            depth = -firstChild.elem.depth;
-        } else {
-            throw new Error(`Invalid positionType ${params.positionType}.`);
-        }
-    }
-    return {children: params.children, depth};
-};
-
-const glue = options => {
-    return makeSpan(["glue"], [], options);
-}
-
-const getVListHeight = function(params: VListParam): number {
+const getVListHeight = function(params: VListParam): number[] {
+    // A helper function for makeVList.
     // Find the height at the top of the group.
     let overallHeight = 0;
-    
+    let iTop = -1;
+
     if (params.positionType === "individualShift") {
         const children: VListElemAndShift[] = params.children;
         for (let i = 0; i < children.length; i++) {
-            if (children[i].elem) {
-                const child: VListElemAndShift = children[i];
-                overallHeight = Math.max(overallHeight, child.elem.height + child.shift);
+            const child = children[i];
+            const elemHeight = child.elem.height - child.shift;
+            if (elemHeight > overallHeight) {
+                overallHeight = elemHeight;
+                iTop = i;
             }
         }
-        return overallHeight
+        return [overallHeight, iTop];
     }
 
     const children: VListChild[] = params.children;
     if (params.positionType === "top") {
         overallHeight = params.positionData;
     } else {
-        // children is ordered from bottom to top,
-        // so sum sizes to find overallHeight.
-        let pos = params.positionType === "bottom"
-          ? -params.positionData
-          : 0;
-        const firstChild = params.children[0];
-        if (firstChild.type !== "elem") {
-            throw new Error('First child must have type "elem".');
-        }
-        if (params.positionType === "shift") {
-            pos = firstChild.elem.height + params.positionData;
-        } else if (params.positionType === "firstBaseline") {
-            pos = firstChild.elem.height;
+        // Sum sizes to find overallHeight.
+        let pos = 0;
+        let iStart = 0;
+        if (params.positionType === "bottom") {
+            pos = -params.positionData;
+            iStart = children.length - 1;
         } else {
-            throw new Error(`Invalid positionType ${params.positionType}.`);
+            const lastChild = params.children[children.length - 1];
+            if (lastChild.type !== "elem") {
+                throw new Error('Last child must have type "elem".');
+            } else if (params.positionType === "shift") {
+                pos = lastChild.elem.height - params.positionData;
+            } else if (params.positionType === "firstBaseline") {
+                pos = lastChild.elem.height;
+            } else {
+                throw new Error(`Invalid positionType ${params.positionType}.`);
+            }
+            iStart = children.length - 2;
         }
-        for (let i = 1; i < children.length; i++) {
+        for (let i = iStart; i >= 0 ; i--) {
             const child = children[i];
             pos += child.type === "kern"
                 ? child.size
@@ -581,70 +562,60 @@ const getVListHeight = function(params: VListParam): number {
         }
         overallHeight = pos;
     }
-    return overallHeight;
-}
 
-
-/**
- * Makes a vertical list by stacking elements and kerns on top of each other.
- * Allows for many different ways of specifying the positioning method.
- *
- * See VListParam documentation above.
- */
- const makeVList = function(
-    params: VListParam,
-    options: Options,
-    needGlue: boolean = false,
-): DomSpan {
-    // This is the main KaTeX function for setting vertical alignment.
-    // Create a CSS vertical flexbox and populate it with DOM elements (boxes).
-    const children = params.children;
-    const overallHeight = getVListHeight(params);
-    // Track the position of the current TeX group.
-    let texPos = overallHeight;
-    // Track the position of the current DOM box.
-    let firstElem: VListElemAndShift;
-    let boxBottom = 0;
-    for (let i = children.length - 1; i >= 0; i--) {
+    // Which is the top element? (kerns don't count)
+    for (let i = 0; i < children.length; i++) {
         if (children[i].type === "elem") {
-            firstElem = children[i].elem;
-            boxBottom = overallHeight + firstElem.ascent - firstElem.height;
+            iTop = i;
             break;
         }
     }
 
+    return [overallHeight, iTop]    
+};
+
+/**
+ * This is the main KaTeX function for setting vertical alignment.
+ * Makes a vertical list by creating a CSS vertical flexbox and populating
+ * it with DOM elements (boxes).
+ * Allows for many different ways of specifying the positioning method.
+ *
+ * See VListParam documentation above.
+ */
+const makeVList = function(params: VListParam, options: Options): DomSpan {
+    const children = params.children;
+    const [overallHeight, iTop] = getVListHeight(params);
+    const topElem = children[iTop].elem;
+    const overallAscent = overallHeight - topElem.height + topElem.ascent;
+
+    // Track the position of the current TeX group.
+    let texPos = overallHeight;
+    // We'll start at the top and work down.
+    let ceiling = overallAscent;
+
     let overallDepth = 0;
     let overallBottom = 0;
     let margin = 0;
-    const stack: VListElemAndShift[] = [];
+    const stack: HtmlDomNode[] = [];
 
-    // chidren is ordered from the bottom element to the top element
-    // (except when positionType === "individualShift").
-    // A CSS flexbox is ordered from top to bottom.
-    // So start the main loop at the end and work backwards.
-    for (let i = children.length - 1; i >= 0; i--) {
-        const child = children[i]
+    for (const child of children) {
         if (child.type === "kern") {
             texPos -= child.size;
         } else {
             const elem = child.elem;
-            if (!elem.ascent) {
-                elem.ascent = elem.height;
-                elem.descent = elem.depth;
-            }
             const style = child.wrapperStyle || {};
             const classes = child.wrapperClasses || [];
-            const gottaGlue = needGlue && !classes.contain("rule");
-            classes.unshift(gottaGlue ? "hbox" : "cbox");
-            const hbox = gottaGlue
-              ? makeSpan(classes, [glue(), elem, glue()], options, style)
-              : makeSpan(classes, [elem], options, style);
-            const topPadding = elem.ascent - elem.height;
-            if (params.positionType === "individualShift") {
-                margin = boxBottom - (elem.shift + elem.ascent);
-                texPos = elem.shift - elem.depth;
+            if (!classes.includes("accent-parent")) {
+                classes.push("hbox");
+            }
+            const hbox = makeSpan(classes, [elem], options, style);
+            hbox.style.height = elem.ascent + elem.descent + "em";
+            if (child.hasOwnProperty("shift")) {
+                margin = ceiling - (-child.shift + elem.ascent);
+                texPos = -child.shift - elem.depth;
             }  else {
-                margin = boxBottom - (texPos + topPadding)
+                const topPadding = elem.ascent - elem.height;
+                margin = ceiling - (texPos + topPadding);
                 texPos -= elem.height + elem.depth;
             }
             if (Math.abs(margin) > 0.001) {
@@ -652,108 +623,22 @@ const getVListHeight = function(params: VListParam): number {
             }
             stack.push(hbox);
             overallDepth = Math.min(overallDepth, texPos);
-            boxBottom = texPos + elem.depth - elem.descent;
-            overallBottom = Math.min(overallBottom, boxBottom);
+            // The box bottom becomes the ceiling for the next box.
+            ceiling = texPos + elem.depth - elem.descent;
+            overallBottom = Math.min(overallBottom, ceiling);
         }
     }
 
+    // Create the flexbox.
     const vbox = makeSpan(['vbox'], stack, options);
-    vbox.style.verticalAlign = overallHeight + firstElem.ascent -
-        2 * firstElem.height - firstElem.descent + "em";
+    const verticalAlign = overallAscent - topElem.ascent;
+    vbox.style.verticalAlign = verticalAlign.toFixed(4) + "em";
     vbox.height = overallHeight;
-    vbox.ascent = overallHeight + firstElem.ascent - firstElem.height;
+    vbox.ascent = overallAscent;
     vbox.depth = -overallDepth;
     vbox.descent = -overallBottom;
     return vbox;
-}
-/*const makeVList = function(params: VListParam, options: Options): DomSpan {
-    const {children, depth} = getVListChildrenAndDepth(params);
-
-    // Create a strut that is taller than any list item. The strut is added to
-    // each item, where it will determine the item's baseline. Since it has
-    // `overflow:hidden`, the strut's top edge will sit on the item's line box's
-    // top edge and the strut's bottom edge will sit on the item's baseline,
-    // with no additional line-height spacing. This allows the item baseline to
-    // be positioned precisely without worrying about font ascent and
-    // line-height.
-    let pstrutSize = 0;
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i];
-        if (child.type === "elem") {
-            const elem = child.elem;
-            pstrutSize = Math.max(pstrutSize, elem.maxFontSize, elem.height);
-        }
-    }
-    pstrutSize += 2;
-    const pstrut = makeSpan(["pstrut"], []);
-    pstrut.style.height = pstrutSize + "em";
-
-    // Create a new list of actual children at the correct offsets
-    const realChildren = [];
-    let minPos = depth;
-    let maxPos = depth;
-    let currPos = depth;
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i];
-        if (child.type === "kern") {
-            currPos += child.size;
-        } else {
-            const elem = child.elem;
-            const classes = child.wrapperClasses || [];
-            const style = child.wrapperStyle || {};
-
-            const childWrap = makeSpan(classes, [pstrut, elem], undefined, style);
-            childWrap.style.top = (-pstrutSize - currPos - elem.depth) + "em";
-            if (child.marginLeft) {
-                childWrap.style.marginLeft = child.marginLeft;
-            }
-            if (child.marginRight) {
-                childWrap.style.marginRight = child.marginRight;
-            }
-
-            realChildren.push(childWrap);
-            currPos += elem.height + elem.depth;
-        }
-        minPos = Math.min(minPos, currPos);
-        maxPos = Math.max(maxPos, currPos);
-    }
-
-    // The vlist contents go in a table-cell with `vertical-align:bottom`.
-    // This cell's bottom edge will determine the containing table's baseline
-    // without overly expanding the containing line-box.
-    const vlist = makeSpan(["vlist"], realChildren);
-    vlist.style.height = maxPos + "em";
-
-    // A second row is used if necessary to represent the vlist's depth.
-    let rows;
-    if (minPos < 0) {
-        // We will define depth in an empty span with display: table-cell.
-        // It should render with the height that we define. But Chrome, in
-        // contenteditable mode only, treats that span as if it contains some
-        // text content. And that min-height over-rides our desired height.
-        // So we put another empty span inside the depth strut span.
-        const emptySpan = makeSpan([], []);
-        const depthStrut = makeSpan(["vlist"], [emptySpan]);
-        depthStrut.style.height = -minPos + "em";
-
-        // Safari wants the first row to have inline content; otherwise it
-        // puts the bottom of the *second* row on the baseline.
-        const topStrut = makeSpan(["vlist-s"], [new SymbolNode("\u200b")]);
-
-        rows = [makeSpan(["vlist-r"], [vlist, topStrut]),
-            makeSpan(["vlist-r"], [depthStrut])];
-    } else {
-        rows = [makeSpan(["vlist-r"], [vlist])];
-    }
-
-    const vtable = makeSpan(["vlist-t"], rows);
-    if (rows.length === 2) {
-        vtable.classes.push("vlist-t2");
-    }
-    vtable.height = maxPos;
-    vtable.depth = -minPos;
-    return vtable;
-}; */
+};
 
 // Glue is a concept from TeX which is a flexible space between elements in
 // either a vertical or horizontal list. In KaTeX, at least for now, it's
@@ -891,6 +776,9 @@ const staticSvg = function(value: string, options: Options): SvgSpan {
     span.height = height;
     span.style.height = height + "em";
     span.style.width = width + "em";
+    span.depth = 0;
+    span.ascent = height;
+    span.descent = 0;
     return span;
 };
 

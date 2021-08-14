@@ -135,9 +135,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
         accentBody = buildCommon.makeVList({
             positionType: "firstBaseline",
             children: [
-                {type: "elem", elem: body},
+                {type: "elem", elem: accentBody, wrapperClasses: ["accent-parent"]},
                 {type: "kern", size: -clearance},
-                {type: "elem", elem: accentBody},
+                {type: "elem", elem: body},
             ],
         }, options);
 
@@ -147,11 +147,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
         accentBody = buildCommon.makeVList({
             positionType: "firstBaseline",
             children: [
-                {type: "elem", elem: body},
                 {
                     type: "elem",
                     elem: accentBody,
-                    wrapperClasses: ["svg-align"],
                     wrapperStyle: skew > 0
                         ? {
                             width: `calc(100% - ${2 * skew}em)`,
@@ -159,6 +157,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
                         }
                         : undefined,
                 },
+                {type: "elem", elem: body},
             ],
         }, options);
     }

@@ -113,7 +113,10 @@ defineFunctionBuilders({
         const multiplier = options.sizeMultiplier;
         const marginRight = (0.5 / metrics.ptPerEm) / multiplier + "em";
 
-        let marginLeft = null;
+        if (supm) {
+            supm.style.marginRight = marginRight;
+        }
+
         if (subm) {
             // Subscripts shouldn't be shifted by the base's italic correction.
             // Account for that by shifting the subscript back the appropriate
@@ -122,9 +125,10 @@ defineFunctionBuilders({
                 group.base && group.base.type === "op" && group.base.name &&
                 (group.base.name === "\\oiint" || group.base.name === "\\oiiint");
             if (base instanceof SymbolNode || isOiint) {
-                // $FlowFixMe
-                marginLeft = -base.italic + "em";
+                subm.style.marginLeft = -1.5 * base.italic + "em";
             }
+
+            subm.style.marginRight = marginRight;
         }
 
         let supsub;
@@ -147,9 +151,8 @@ defineFunctionBuilders({
             }
 
             const vlistElem = [
-                {type: "elem", elem: subm, shift: subShift, marginRight,
-                    marginLeft},
-                {type: "elem", elem: supm, shift: -supShift, marginRight},
+                {type: "elem", elem: supm, shift: -supShift},
+                {type: "elem", elem: subm, shift: subShift},
             ];
 
             supsub = buildCommon.makeVList({
@@ -163,7 +166,7 @@ defineFunctionBuilders({
                 subm.height - 0.8 * metrics.xHeight);
 
             const vlistElem =
-                [{type: "elem", elem: subm, marginLeft, marginRight}];
+                [{type: "elem", elem: subm}];
 
             supsub = buildCommon.makeVList({
                 positionType: "shift",
@@ -178,7 +181,7 @@ defineFunctionBuilders({
             supsub = buildCommon.makeVList({
                 positionType: "shift",
                 positionData: -supShift,
-                children: [{type: "elem", elem: supm, marginRight}],
+                children: [{type: "elem", elem: supm}],
             }, options);
         } else {
             throw new Error("supsub must have either sup or sub.");

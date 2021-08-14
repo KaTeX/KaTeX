@@ -161,8 +161,8 @@ export interface HtmlDomNode extends VirtualNode {
     classes: string[];
     height: number;
     depth: number;
-    ascent?: number;
-    descent?: number;
+    ascent: number;
+    descent: number;
     maxFontSize: number;
     style: CssStyle;
 

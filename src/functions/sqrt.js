@@ -76,10 +76,10 @@ defineFunction({
         const body = buildCommon.makeVList({
             positionType: "firstBaseline",
             children: [
-                {type: "elem", elem: inner, wrapperClasses: ["svg-align"]},
-                {type: "kern", size: -(inner.height + imgShift)},
-                {type: "elem", elem: img},
                 {type: "kern", size: ruleWidth},
+                {type: "elem", elem: img},
+                {type: "kern", size: -(inner.height + imgShift)},
+                {type: "elem", elem: inner},
             ],
         }, options);
 

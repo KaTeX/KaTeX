@@ -26,7 +26,7 @@ defineFunction({
         const innerGroup = html.buildGroup(group.body, options);
 
         // Create the line to go below the body
-        const line = buildCommon.makeLineSpan("underline-line", options);
+        const line = buildCommon.makeLineSpan(["rule"], options);
 
         // Generate the vlist, with the appropriate kerns
         const defaultRuleThickness = options.fontMetrics().defaultRuleThickness;
@@ -34,10 +34,10 @@ defineFunction({
             positionType: "top",
             positionData: innerGroup.height,
             children: [
-                {type: "kern", size: defaultRuleThickness},
-                {type: "elem", elem: line},
-                {type: "kern", size: 3 * defaultRuleThickness},
                 {type: "elem", elem: innerGroup},
+                {type: "kern", size: 3 * defaultRuleThickness},
+                {type: "elem", elem: line},
+                {type: "kern", size: defaultRuleThickness},
             ],
         }, options);
 

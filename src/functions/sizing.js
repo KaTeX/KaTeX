@@ -35,10 +35,8 @@ export function sizingGroup(
 
         inner[i].height *= multiplier;
         inner[i].depth *= multiplier;
-        if (inner[i].ascent) {
-            inner[i].ascent *= multiplier;
-            inner[i].descent *= multiplier;
-        }
+        inner[i].ascent *= multiplier;
+        inner[i].descent *= multiplier;
     }
 
     return buildCommon.makeFragment(inner);

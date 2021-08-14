@@ -293,6 +293,9 @@ const svgSpan = function(
                 span: buildCommon.makeSpan(["stretchy"], spans, options),
                 minWidth,
                 height,
+                depth: 0,
+                ascent: height,
+                descent: 0,
             };
         }
     } // buildSvgSpan_()
@@ -305,6 +308,9 @@ const svgSpan = function(
     if (minWidth > 0) {
         span.style.minWidth = minWidth + "em";
     }
+    span.depth = 0;
+    span.ascent = height;
+    span.descent = 0;
 
     return span;
 };
@@ -366,6 +372,9 @@ const encloseSpan = function(
 
     img.height = totalHeight;
     img.style.height = totalHeight + "em";
+    img.depth = 0;
+    img.ascent = totalHeight;
+    img.descent = 0;
 
     return img;
 };
