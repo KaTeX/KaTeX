@@ -44,7 +44,7 @@
     "eslint-plugin-actions": "^1.0.1",
     "eslint-plugin-flowtype": "^5.2.0",
     "eslint-plugin-react": "^7.20.3",
-    "flow-bin": "^0.135.0",
+    "flow-bin": "^0.157.0",
     "fs-extra": "^10.0.0",
     "got": "^11.8.0",
     "husky": "^4.2.5",
