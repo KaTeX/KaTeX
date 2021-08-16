@@ -84,10 +84,6 @@ hover text.  For other available options, see the
 
 Learn more about using KaTeX [on the website](https://katex.org)!
 
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md)
-
 ## Contributors
 
 ### Code Contributors
