@@ -9704,12 +9704,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "marked@npm:2.0.1"
+"marked@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "marked@npm:3.0.0"
   bin:
     marked: bin/marked
-  checksum: dd6f468a96ddfd6efbfdaa2f0fa61899b2ce1f8dac0a93c13d847d0fca6872d1f32362d7fe097932aeabc1dfbd83e33bb009a159860f60551d4c6adbdc5a0faf
+  checksum: 24e49b706ea43c3d0db7e95ee7557ce23c74c31d55f400e155d3ac4cf13241fe9c2440ff0d485598632cbb44cbba0a71411548034a67bd70a24620d0b4e104f3
   languageName: node
   linkType: hard
 
@@ -13525,9 +13525,9 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"semantic-release@npm:17.4.4, semantic-release@npm:^17.4.1":
-  version: 17.4.4
-  resolution: "semantic-release@npm:17.4.4"
+"semantic-release@npm:17.4.5, semantic-release@npm:^17.4.1":
+  version: 17.4.5
+  resolution: "semantic-release@npm:17.4.5"
   dependencies:
     "@semantic-release/commit-analyzer": ^8.0.0
     "@semantic-release/error": ^2.2.0
@@ -13546,7 +13546,7 @@ resolve@^2.0.0-next.3:
     hook-std: ^2.0.0
     hosted-git-info: ^4.0.0
     lodash: ^4.17.21
-    marked: ^2.0.0
+    marked: ^3.0.0
     marked-terminal: ^4.1.1
     micromatch: ^4.0.2
     p-each-series: ^2.1.0
@@ -13559,7 +13559,7 @@ resolve@^2.0.0-next.3:
     yargs: ^16.2.0
   bin:
     semantic-release: bin/semantic-release.js
-  checksum: 4c78340c628c74aa2d76343086edd80f15233e25c735e924f203b22ca075bf1412488180aaf7a3e9c2d1e37a4dd0e9da7fcd59b8511e8b1fa9c1e7982d500988
+  checksum: 1361149a0ec02e261fe461c28cc26fe89151df92bc344f6dc3b87a8021bdb3d564ac2a7fc5efb947c6dfbe268d350505780184690413c314465bc147dcaa8b22
   languageName: node
   linkType: hard
 
