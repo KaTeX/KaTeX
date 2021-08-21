@@ -4001,10 +4001,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"colord@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "colord@npm:2.0.1"
-  checksum: 804a0c28ad58ae98ac36e5e7e903df66562821464189213bbf846499d93a2137e574c13b811dd8507fafa2564abe76ce8cb5e9abba05ebfe853a72371860edd6
+"colord@npm:^2.0.1, colord@npm:^2.6":
+  version: 2.7.0
+  resolution: "colord@npm:2.7.0"
+  checksum: 93811e757a95e71616d645c89f98c074e8f80201497569a610cad08d134cb42fa87db5e74325487e03f26a0c5a455a2f39943b3dd542e366a815f0599c65a69d
   languageName: node
   linkType: hard
 
@@ -4419,13 +4419,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"css-color-names@npm:^0.0.4":
-  version: 0.0.4
-  resolution: "css-color-names@npm:0.0.4"
-  checksum: 6842f38c3ae176f9beef3f92be258936aa508d5c4aa6dca48abfc324574eeda275e265dd0589d6e7a9a29768b6d6dd5ab7c4de27b8255c6142330fde84821af2
-  languageName: node
-  linkType: hard
-
 "css-color-names@npm:^1.0.1":
   version: 1.0.1
   resolution: "css-color-names@npm:1.0.1"
@@ -4540,9 +4533,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cssnano-preset-default@npm:^5.1.3":
-  version: 5.1.3
-  resolution: "cssnano-preset-default@npm:5.1.3"
+"cssnano-preset-default@npm:^5.1.4":
+  version: 5.1.4
+  resolution: "cssnano-preset-default@npm:5.1.4"
   dependencies:
     css-declaration-sorter: ^6.0.3
     cssnano-utils: ^2.0.1
@@ -4556,7 +4549,7 @@ __metadata:
     postcss-merge-longhand: ^5.0.2
     postcss-merge-rules: ^5.0.2
     postcss-minify-font-values: ^5.0.1
-    postcss-minify-gradients: ^5.0.1
+    postcss-minify-gradients: ^5.0.2
     postcss-minify-params: ^5.0.1
     postcss-minify-selectors: ^5.1.0
     postcss-normalize-charset: ^5.0.1
@@ -4575,7 +4568,7 @@ __metadata:
     postcss-unique-selectors: ^5.0.1
   peerDependencies:
     postcss: ^8.2.15
-  checksum: 81590cb54b12012c175a98d2e8d09b39574083974abae3abb55f67694f9db8b864707b21b16f2db8d89bb48d27375bb0f48449b3551f794f5bf558640d0c1113
+  checksum: 2c3e33496c2832e169070f0ad37226ab53d64274be8419f59fd37e826e2940772fc2789db9d4a07b95b1af4ec124dd010ef1209d1411b696730799bd185e6202
   languageName: node
   linkType: hard
 
@@ -4589,16 +4582,16 @@ __metadata:
   linkType: hard
 
 "cssnano@npm:^5.0.0-rc.1":
-  version: 5.0.7
-  resolution: "cssnano@npm:5.0.7"
+  version: 5.0.8
+  resolution: "cssnano@npm:5.0.8"
   dependencies:
-    cssnano-preset-default: ^5.1.3
+    cssnano-preset-default: ^5.1.4
     is-resolvable: ^1.1.0
     lilconfig: ^2.0.3
     yaml: ^1.10.2
   peerDependencies:
     postcss: ^8.2.15
-  checksum: b5a564ef50de31a7cf7c13e3608276fc835f979653de1376ece1aafd413472dd54d2f1b528d7d794af15759491fbf9f60b57b8b7d84d541df51c0862722fe115
+  checksum: 9dfcd57d9f887d986443f6ed55a07b17a4d28e1c288cdfe05f4a2c2065513d94236062e1cb2847c9835db29011828fc6eef2de38b6872fe9d9e94ce97487dd0f
   languageName: node
   linkType: hard
 
@@ -6791,13 +6784,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hex-color-regex@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "hex-color-regex@npm:1.1.0"
-  checksum: 89899f5f74cdef884e352fe8791018f2f112c338b97f3b486f7d5f4760a9c58181f688eb147937f9f2dd69c976a7296b53d1509c9a0871903eeb26a8382e486c
-  languageName: node
-  linkType: hard
-
 "hook-std@npm:^2.0.0":
   version: 2.0.0
   resolution: "hook-std@npm:2.0.0"
@@ -6839,20 +6825,6 @@ __metadata:
     readable-stream: ^2.0.1
     wbuf: ^1.1.0
   checksum: a22a28aa318167f29d65994ac28a238356142a3dcbcdcf20b0a87f14a746af7017596c91a895933d79ee68edf0303a4de5e629a2141cb1dbddb2cd9cad07418b
-  languageName: node
-  linkType: hard
-
-"hsl-regex@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "hsl-regex@npm:1.0.0"
-  checksum: b04a50c6c75fc4035e9e212a2c581dcae64289f0ad45bb010a32dd3899c9a5ac95c4d23507a89027aa7950a8a9241de0e6ad66bc87535f261c0eef4817222a1f
-  languageName: node
-  linkType: hard
-
-"hsla-regex@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "hsla-regex@npm:1.0.0"
-  checksum: 2460f935b556795a7cadc17978bc4cd90f74aaba05505f7040e7809336c68e757dcdcc2121004a4d926a6f04295cf68a575a81c0fd2d4e7280dc201a98eb2859
   languageName: node
   linkType: hard
 
@@ -7511,20 +7483,6 @@ __metadata:
   dependencies:
     cidr-regex: ^2.0.10
   checksum: 6869baf5e9434eba15745b6312c8d3500aaa34c741394c23a32a10ca7f988add1474169cab7d0790883bbdf85dc0353fcc6d0938a2030343958a1d7c84eda05b
-  languageName: node
-  linkType: hard
-
-"is-color-stop@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "is-color-stop@npm:1.1.0"
-  dependencies:
-    css-color-names: ^0.0.4
-    hex-color-regex: ^1.1.0
-    hsl-regex: ^1.0.0
-    hsla-regex: ^1.0.0
-    rgb-regex: ^1.0.1
-    rgba-regex: ^1.0.0
-  checksum: 0e3d46b1e1669891fe38f019188c6edc8b6239ba21b391c2f25bd1887975f11fed0764771adb550e30c7726f737547953c9260b411c9813e573b8b9434e760c4
   languageName: node
   linkType: hard
 
@@ -11934,16 +11892,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-minify-gradients@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "postcss-minify-gradients@npm:5.0.1"
+"postcss-minify-gradients@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "postcss-minify-gradients@npm:5.0.2"
   dependencies:
+    colord: ^2.6
     cssnano-utils: ^2.0.1
-    is-color-stop: ^1.1.0
     postcss-value-parser: ^4.1.0
   peerDependencies:
     postcss: ^8.2.15
-  checksum: b5a401d189dc2720513ec34f63a46389a49dcd0f94d98b351117dd404d00ba0d7f9845151490ac5f5598e832bcfcb760819895dc04e5f3ef18fd39c7a47d8868
+  checksum: 1d518ae8ada6f1a301f0ad5275710a352aec7a57c75958256d6b3239ebb96cbbe5d5628bb90144bdf250ea01cc6f33ab9aefdd46f2980b0f58f2ec6885b244c7
   languageName: node
   linkType: hard
 
@@ -13323,20 +13281,6 @@ resolve@^2.0.0-next.3:
   version: 1.0.4
   resolution: "reusify@npm:1.0.4"
   checksum: 08ef02ed0514f020a51131ba2e6c27c66ccebe25d49cfc83467a0d4054db4634a2853480d0895c710b645ab66af1a6fb3e183888306ae559413bd96c69f39ccd
-  languageName: node
-  linkType: hard
-
-"rgb-regex@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "rgb-regex@npm:1.0.1"
-  checksum: 7701e22ec451e55a919c88f61a8006c70d004cc06d09a3e4806b0ffaff2ac0138fbbb3896d0e21f716c745e4ad6ae62114bf0920a78c7381e994e57b73575baf
-  languageName: node
-  linkType: hard
-
-"rgba-regex@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "rgba-regex@npm:1.0.0"
-  checksum: 4ffb946276ee7d7259a518eae89a3c6cce99736449ebed2c88ab26a076543766c62194c7dd06b8e4f5375e91c6e9bd21ebfc3ddf4b143f3688f260cafd9d466b
   languageName: node
   linkType: hard
 
