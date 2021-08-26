@@ -649,8 +649,8 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
 
 // Convenience function for align, align*, aligned, alignat, alignat*, alignedat.
 const alignedHandler = function(context, args) {
-    const inline = (context.envName.indexOf("ed") === -1);
-    if (inline) {
+    const outer = (context.envName.indexOf("ed") === -1);
+    if (outer) {
         validateAmsEnvironmentContext(context);
     }
     const cols = [];
@@ -667,7 +667,7 @@ const alignedHandler = function(context, args) {
             // Use alignedat's already parsed optional argument; otherwise,
             // optional vertical alignment supported in all inline environments.
             allowVerticalAlign:
-              context.envName === "alignedat" ? args[0] : inline,
+              context.envName === "alignedat" ? args[0] : !outer,
         },
         "display"
     );
