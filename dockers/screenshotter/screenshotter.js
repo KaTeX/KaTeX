@@ -219,7 +219,7 @@ function startServer() {
         port,
         hot: false,
         liveReload: false,
-        injectClient: false,
+        client: false,
     };
     const compiler = webpack(webpackConfig);
     const wds = new WebpackDevServer(compiler, config);
