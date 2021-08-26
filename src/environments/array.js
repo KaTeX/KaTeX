@@ -351,8 +351,8 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
     const verticalAlign = group.verticalAlign;
     const offset = options.fontMetrics().axisHeight +
-        (verticalAlign === 't' ? totalHeight :
-         verticalAlign === 'b' ? 0 :
+        (verticalAlign === 't' ? 0 :
+         verticalAlign === 'b' ? totalHeight :
          /*verticalAlign == 'c'*/ totalHeight / 2);
     const colDescriptions = group.cols || [];
     const cols = [];
