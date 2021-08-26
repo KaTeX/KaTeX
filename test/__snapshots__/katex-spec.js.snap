@@ -137,7 +137,8 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
     "mode": "math",
     "rowGaps": [
       null
-    ]
+    ],
+    "verticalAlign": "c"
   }
 ]
 `;
