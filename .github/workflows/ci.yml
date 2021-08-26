@@ -25,7 +25,7 @@ jobs:
       with:
         path: |
           .yarn/cache
-          .pnp.js
+          .pnp.cjs
         key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
         restore-keys: |
           yarn-deps-v1-
@@ -73,7 +73,7 @@ jobs:
       with:
         path: |
           .yarn/cache
-          .pnp.js
+          .pnp.cjs
         key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
         restore-keys: |
           yarn-deps-v1-
