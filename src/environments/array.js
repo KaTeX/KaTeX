@@ -648,7 +648,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
 };
 
 // Convenience function for align, align*, aligned, alignat, alignat*, alignedat.
-const alignedHandler = function(context, args) {
+const alignedHandler = function(context, args, optArgs) {
     const outer = (context.envName.indexOf("ed") === -1);
     if (outer) {
         validateAmsEnvironmentContext(context);
@@ -666,16 +666,14 @@ const alignedHandler = function(context, args) {
             leqno: context.parser.settings.leqno,
             // Use alignedat's already parsed optional argument; otherwise,
             // optional vertical alignment supported in all inline environments.
-            allowVerticalAlign:
-              context.envName === "alignedat" ? args[0] : !outer,
+            allowVerticalAlign: optArgs.length ? (optArgs[0] || false) : !outer,
         },
         "display"
     );
 
     // Determining number of columns.
-    // 1. If an argument is given (beyond the optional argument to alignedat),
-    //    we use it as the number of columns, and make sure that each row
-    //    doesn't exceed that number.
+    // 1. If the first required argument is given, we use it as a number of
+    //    columns, and makes sure that each row doesn't exceed that number.
     // 2. Otherwise, just count number of columns = maximum number
     //    of cells in each row ("aligned" mode -- isAligned will be true).
     //
@@ -689,16 +687,13 @@ const alignedHandler = function(context, args) {
         mode: context.mode,
         body: [],
     };
-    const lastArg = args.length &&
-        !(context.envName === "alignedat" || args.length === 1) &&
-        args[args.length - 1];
-    if (lastArg && lastArg.type === "ordgroup") {
-        let arg = "";
-        for (let i = 0; i < lastArg.body.length; i++) {
-            const textord = assertNodeType(lastArg.body[i], "textord");
-            arg += textord.text;
+    if (args[0] && args[0].type === "ordgroup") {
+        let arg0 = "";
+        for (let i = 0; i < args[0].body.length; i++) {
+            const textord = assertNodeType(args[0].body[i], "textord");
+            arg0 += textord.text;
         }
-        numMaths = Number(arg);
+        numMaths = Number(arg0);
         numCols = numMaths * 2;
     }
     const isAligned = !numCols;

@@ -2806,16 +2806,20 @@ describe("An aligned environment", function() {
 
 describe("An alignedat environment", () => {
     it("should accept single number", () => {
-        expect`\begin{alignedat}5 a & b & c & d & e \end{alignedat}`.toBuild();
+        expect`\begin{alignedat}2 a & b & c & d \end{alignedat}`.toBuild();
+        expect`\begin{alignedat}2 a & b & c & d & e\end{alignedat}`.not.toBuild();
     });
 
     it("should accept braced number", () => {
-        expect`\begin{alignedat}{10} a & b & c & d & e \end{alignedat}`.toBuild();
+        expect`\begin{alignedat}{2} a & b & c & d \end{alignedat}`.toBuild();
+        expect`\begin{alignedat}{2} a & b & c & d & e \end{alignedat}`.not.toBuild();
     });
 
     it("should accept optional vertical alignment", () => {
-        expect`\begin{alignedat}[t]5 a & b & c & d & e \end{alignedat}`.toBuild();
-        expect`\begin{alignedat}[t]{10} a & b & c & d & e \end{alignedat}`.toBuild();
+        expect`\begin{alignedat}[t]2 a & b & c & d \end{alignedat}`.toBuild();
+        expect`\begin{alignedat}[t]2 a & b & c & d & e\end{alignedat}`.not.toBuild();
+        expect`\begin{alignedat}[t]{2} a & b & c & d \end{alignedat}`.toBuild();
+        expect`\begin{alignedat}[t]{2} a & b & c & d & e \end{alignedat}`.not.toBuild();
     });
 });
 
