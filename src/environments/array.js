@@ -85,7 +85,7 @@ function parseArray(
         emptySingleRow?: boolean,
         maxNumCols?: number,
         leqno?: boolean,
-        allowVerticalAlign?: boolean,
+        allowVerticalAlign?: boolean | AnyParseNode,
     |},
     style: StyleStr,
 ): ParseNode<"array"> {
@@ -120,12 +120,15 @@ function parseArray(
 
     // Check for optional [t|b|c] vertical alignment argument
     let verticalAlign = 'c';
-    const optArg = allowVerticalAlign && parser.parseGroupOfType(
-        "array vertical alignment", "raw", true);
-    const rawArg = optArg && assertNodeType(optArg, "raw");
-    if (rawArg) {
-        for (let i = 0; i < rawArg.string.length; ++i) {
-            const letter = rawArg.string[i];
+    const optArg = allowVerticalAlign === true ?
+        parser.parseGroupOfType("array vertical alignment", "original", true) :
+        allowVerticalAlign;
+    if (optArg) {
+        const ordGroup = assertNodeType(optArg, "ordgroup");
+        for (let i = 0; i < ordGroup.body.length; i++) {
+            const node = ordGroup.body[i];
+            // $FlowFixMe: Not every node type has a `text` property.
+            const letter = node.text;
             if (letter === "t" || letter === "b" || letter === "c") {
                 verticalAlign = letter;
                 break;
@@ -661,14 +664,18 @@ const alignedHandler = function(context, args) {
             colSeparationType: separationType,
             maxNumCols: context.envName === "split" ? 2 : undefined,
             leqno: context.parser.settings.leqno,
-            allowVerticalAlign: inline,
+            // Use alignedat's already parsed optional argument; otherwise,
+            // optional vertical alignment supported in all inline environments.
+            allowVerticalAlign:
+              context.envName === "alignedat" ? args[0] : inline,
         },
         "display"
     );
 
     // Determining number of columns.
-    // 1. If the first argument is given, we use it as a number of columns,
-    //    and makes sure that each row doesn't exceed that number.
+    // 1. If any arguments are given, we use the last argument as a number
+    //    of columns (allowing for the first argument to be optional),
+    //    and make sure that each row doesn't exceed that number.
     // 2. Otherwise, just count number of columns = maximum number
     //    of cells in each row ("aligned" mode -- isAligned will be true).
     //
@@ -682,13 +689,14 @@ const alignedHandler = function(context, args) {
         mode: context.mode,
         body: [],
     };
-    if (args[0] && args[0].type === "ordgroup") {
-        let arg0 = "";
-        for (let i = 0; i < args[0].body.length; i++) {
-            const textord = assertNodeType(args[0].body[i], "textord");
-            arg0 += textord.text;
+    const lastArg = args.length && args[args.length - 1];
+    if (lastArg && lastArg.type === "ordgroup") {
+        let arg = "";
+        for (let i = 0; i < lastArg.body.length; i++) {
+            const textord = assertNodeType(lastArg.body[i], "textord");
+            arg += textord.text;
         }
-        numMaths = Number(arg0);
+        numMaths = Number(arg);
         numCols = numMaths * 2;
     }
     const isAligned = !numCols;
@@ -1024,9 +1032,23 @@ defineEnvironment({
 // each columns.
 defineEnvironment({
     type: "array",
-    names: ["alignat", "alignat*", "alignedat"],
+    names: ["alignat", "alignat*"],
     props: {
         numArgs: 1,
+    },
+    handler: alignedHandler,
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+// alignedat has the optional vertical alignment argument
+// before the required argument, so needs to be defined separately.
+defineEnvironment({
+    type: "array",
+    names: ["alignedat"],
+    props: {
+        numArgs: 1,
+        numOptionalArgs: 1,
     },
     handler: alignedHandler,
     htmlBuilder,
