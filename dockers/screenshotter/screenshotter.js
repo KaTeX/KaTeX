@@ -223,23 +223,21 @@ function startServer() {
     };
     const compiler = webpack(webpackConfig);
     const wds = new WebpackDevServer(config, compiler);
-    wds.listen(port).then(server => {
-        server.once("listening", function() {
-            devServer = wds;
-            katexPort = port;
-            attempts = 0;
-            process.nextTick(opts.seleniumProxy ? getProxyDriver
-                : opts.browserstack ? startBrowserstackLocal : tryConnect);
-        });
-        server.on("error", function(err) {
-            if (devServer !== null) { // error after we started listening
-                throw err;
-            } else if (++attempts > 50) {
-                throw new Error("Failed to start up dev server");
-            } else {
-                process.nextTick(startServer);
-            }
-        });
+    wds.start(port).then(() => {
+        devServer = wds;
+        katexPort = port;
+        attempts = 0;
+        process.nextTick(opts.seleniumProxy ? getProxyDriver
+            : opts.browserstack ? startBrowserstackLocal : tryConnect);
+    })
+    .catch(() => {
+        if (devServer !== null) { // error after we started listening
+            throw err;
+        } else if (++attempts > 50) {
+            throw new Error("Failed to start up dev server");
+        } else {
+            process.nextTick(startServer);
+        }
     });
 }
 
