@@ -222,7 +222,7 @@ function startServer() {
         client: false,
     };
     const compiler = webpack(webpackConfig);
-    const wds = new WebpackDevServer(compiler, config);
+    const wds = new WebpackDevServer(config, compiler);
     wds.listen(port).then(server => {
         server.once("listening", function() {
             devServer = wds;
