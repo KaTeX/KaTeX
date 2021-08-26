@@ -230,7 +230,7 @@ function startServer() {
         process.nextTick(opts.seleniumProxy ? getProxyDriver
             : opts.browserstack ? startBrowserstackLocal : tryConnect);
     })
-    .catch(() => {
+    .catch((err) => {
         if (devServer !== null) { // error after we started listening
             throw err;
         } else if (++attempts > 50) {
