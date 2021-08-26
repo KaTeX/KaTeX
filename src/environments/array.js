@@ -673,9 +673,9 @@ const alignedHandler = function(context, args) {
     );
 
     // Determining number of columns.
-    // 1. If any arguments are given, we use the last argument as a number
-    //    of columns (allowing for the first argument to be optional),
-    //    and make sure that each row doesn't exceed that number.
+    // 1. If an argument is given (beyond the optional argument to alignedat),
+    //    we use it as the number of columns, and make sure that each row
+    //    doesn't exceed that number.
     // 2. Otherwise, just count number of columns = maximum number
     //    of cells in each row ("aligned" mode -- isAligned will be true).
     //
@@ -689,7 +689,9 @@ const alignedHandler = function(context, args) {
         mode: context.mode,
         body: [],
     };
-    const lastArg = args.length && args[args.length - 1];
+    const lastArg = args.length &&
+        !(context.envName === "alignedat" || args.length === 1) &&
+        args[args.length - 1];
     if (lastArg && lastArg.type === "ordgroup") {
         let arg = "";
         for (let i = 0; i < lastArg.body.length; i++) {
