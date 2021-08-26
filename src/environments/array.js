@@ -116,6 +116,21 @@ function parseArray(
     const rowGaps = [];
     const hLinesBeforeRow = [];
 
+    // Check for optional [t|b|c] vertical alignment argument
+    let verticalAlign = 'c';
+    const optArg = parser.parseGroupOfType(
+        "array vertical alignment", "raw", true);
+    const rawArg = optArg && assertNodeType(optArg, "raw");
+    if (rawArg) {
+        for (let i = 0; i < rawArg.string.length; ++i) {
+            const letter = rawArg.string[i];
+            if (letter === "t" || letter === "b" || letter === "c") {
+                verticalAlign = letter;
+                break;
+            }
+        }
+    }
+
     // Test for \hline at the top of the array.
     hLinesBeforeRow.push(getHLines(parser));
 
@@ -201,6 +216,7 @@ function parseArray(
         mode: parser.mode,
         addJot,
         arraystretch,
+        verticalAlign,
         body,
         cols,
         rowGaps,
@@ -333,7 +349,11 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         setHLinePos(hLinesBeforeRow[r + 1]);
     }
 
-    const offset = totalHeight / 2 + options.fontMetrics().axisHeight;
+    const verticalAlign = group.verticalAlign;
+    const offset = options.fontMetrics().axisHeight +
+        (verticalAlign === 't' ? totalHeight :
+         verticalAlign === 'b' ? 0 :
+         /*verticalAlign == 'c'*/ totalHeight / 2);
     const colDescriptions = group.cols || [];
     const cols = [];
     let colSep;
