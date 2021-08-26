@@ -26,9 +26,9 @@ jobs:
         path: |
           .yarn/cache
           .pnp.cjs
-        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
+        key: yarn-deps-v2-${{ hashFiles('yarn.lock') }}
         restore-keys: |
-          yarn-deps-v1-
+          yarn-deps-v2-
 
     - name: Install dependencies
       run: yarn --immutable
@@ -74,9 +74,9 @@ jobs:
         path: |
           .yarn/cache
           .pnp.cjs
-        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
+        key: yarn-deps-v2-${{ hashFiles('yarn.lock') }}
         restore-keys: |
-          yarn-deps-v1-
+          yarn-deps-v2-
     - name: Run semantic-release
       run: yarn run semantic-release --debug
       env:
