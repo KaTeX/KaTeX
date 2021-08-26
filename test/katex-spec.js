@@ -2712,6 +2712,12 @@ describe("An array environment", function() {
         ]);
     });
 
+    it("should accept optional vertical alignment", () => {
+        const parse = getParsed`\begin{array}{c}[t]1\\20\end{array}`;
+        expect(parse[0].type).toBe("array");
+        expect(parse[0].verticalAlign).toEqual("t");
+    });
+
 });
 
 describe("A subarray environment", function() {
@@ -2779,16 +2785,37 @@ describe("An aligned environment", function() {
     });
 
     it("should allow cells in brackets", function() {
-        expect`\begin{aligned}[a]&[b]\\ [c]&[d]\end{aligned}`.toParse();
+        expect`\begin{aligned}\relax[a]&[b]\\ [c]&[d]\end{aligned}`.toParse();
     });
 
     it("should forbid cells in brackets without space", function() {
-        expect`\begin{aligned}[a]&[b]\\[c]&[d]\end{aligned}`.not.toParse();
+        expect`\begin{aligned}\relax[a]&[b]\\[c]&[d]\end{aligned}`.not.toParse();
     });
 
     it("should not eat the last row when its first cell is empty", function() {
         const ae = getParsed`\begin{aligned}&E_1 & (1)\\&E_2 & (2)\\&E_3 & (3)\end{aligned}`[0];
         expect(ae.body).toHaveLength(3);
+    });
+
+    it("should accept optional vertical alignment", () => {
+        const parse = getParsed`\begin{aligned}[t]a\\b\end{aligned}`;
+        expect(parse[0].type).toBe("array");
+        expect(parse[0].verticalAlign).toEqual("t");
+    });
+});
+
+describe("An alignedat environment", () => {
+    it("should accept single number", () => {
+        expect`\begin{alignedat}5 a & b & c & d & e \end{alignedat}`.toBuild();
+    });
+
+    it("should accept braced number", () => {
+        expect`\begin{alignedat}{10} a & b & c & d & e \end{alignedat}`.toBuild();
+    });
+
+    it("should accept optional vertical alignment", () => {
+        expect`\begin{alignedat}[t]5 a & b & c & d & e \end{alignedat}`.toBuild();
+        expect`\begin{alignedat}[t]{10} a & b & c & d & e \end{alignedat}`.toBuild();
     });
 });
 
@@ -2842,6 +2869,12 @@ describe("AMS environments", function() {
     });
     it("{array} should fail if body contains more columns than specification.", () => {
         expect`\begin{array}{2}a & b & c\\d & e  f\end{array}`.not.toBuild(displayMode);
+    });
+
+    it("should ignore optional vertical alignment argument", () => {
+        const parse = getParsed(r`\begin{align}[t]a\\b\end{align}`, displayMode);
+        expect(parse[0].type).toBe("array");
+        expect(parse[0].verticalAlign).toEqual("c");
     });
 });
 
