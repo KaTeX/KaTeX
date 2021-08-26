@@ -73,6 +73,7 @@ function parseArray(
         emptySingleRow,
         maxNumCols,
         leqno,
+        allowVerticalAlign,
     }: {|
         hskipBeforeAndAfter?: boolean,
         addJot?: boolean,
@@ -84,6 +85,7 @@ function parseArray(
         emptySingleRow?: boolean,
         maxNumCols?: number,
         leqno?: boolean,
+        allowVerticalAlign?: boolean,
     |},
     style: StyleStr,
 ): ParseNode<"array"> {
@@ -118,7 +120,7 @@ function parseArray(
 
     // Check for optional [t|b|c] vertical alignment argument
     let verticalAlign = 'c';
-    const optArg = parser.parseGroupOfType(
+    const optArg = allowVerticalAlign && parser.parseGroupOfType(
         "array vertical alignment", "raw", true);
     const rawArg = optArg && assertNodeType(optArg, "raw");
     if (rawArg) {
@@ -644,7 +646,8 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
 
 // Convenience function for align, align*, aligned, alignat, alignat*, alignedat.
 const alignedHandler = function(context, args) {
-    if (context.envName.indexOf("ed") === -1) {
+    const inline = (context.envName.indexOf("ed") === -1);
+    if (inline) {
         validateAmsEnvironmentContext(context);
     }
     const cols = [];
@@ -658,6 +661,7 @@ const alignedHandler = function(context, args) {
             colSeparationType: separationType,
             maxNumCols: context.envName === "split" ? 2 : undefined,
             leqno: context.parser.settings.leqno,
+            allowVerticalAlign: inline,
         },
         "display"
     );
@@ -773,6 +777,8 @@ defineEnvironment({
             cols,
             hskipBeforeAndAfter: true, // \@preamble in lttab.dtx
             maxNumCols: cols.length,
+            // nccmath's darray environment doesn't support vertical alignment
+            allowVerticalAlign: context.envName === "array",
         };
         return parseArray(context.parser, res, dCellStyle(context.envName));
     },
@@ -1005,6 +1011,7 @@ defineEnvironment({
             addEqnNum: context.envName === "gather",
             emptySingleRow: true,
             leqno: context.parser.settings.leqno,
+            allowVerticalAlign: context.envName.indexOf('ed') !== -1,
         };
         return parseArray(context.parser, res, "display");
     },
