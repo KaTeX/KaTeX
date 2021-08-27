@@ -358,7 +358,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     const offset = options.fontMetrics().axisHeight +
         (verticalAlign === 't' ? 0 :
          verticalAlign === 'b' ? totalHeight :
-         /*verticalAlign == 'c'*/ totalHeight / 2);
+         /*verticalAlign === 'c'*/ totalHeight / 2);
     const colDescriptions = group.cols || [];
     const cols = [];
     let colSep;
@@ -673,7 +673,7 @@ const alignedHandler = function(context, args, optArgs) {
 
     // Determining number of columns.
     // 1. If the first required argument is given, we use it as a number of
-    //    columns, and makes sure that each row doesn't exceed that number.
+    //    columns, and make sure that each row doesn't exceed that number.
     // 2. Otherwise, just count number of columns = maximum number
     //    of cells in each row ("aligned" mode -- isAligned will be true).
     //
