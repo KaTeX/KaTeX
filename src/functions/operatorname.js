@@ -1,6 +1,6 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
-import {defineMacro} from "../macros";
+import defineMacro from "../defineMacro";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import {SymbolNode} from "../domTree";
