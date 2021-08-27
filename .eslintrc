@@ -6,14 +6,23 @@
     "extends": [
         "eslint:recommended",
         "plugin:flowtype/recommended",
-        "plugin:actions/recommended"
+        "plugin:actions/recommended",
+        "plugin:import/recommended"
     ],
     "rules": {
         "arrow-spacing": 2,
         "brace-style": [2, "1tbs", { "allowSingleLine": true }],
         // We'd possibly like to remove the 'properties': 'never' one day.
         "camelcase": [2, { "properties": "never" }],
-        "comma-dangle": [2, "always-multiline"],
+        // Require dangling commas for all but function calls
+        // (a feature added in ECMAScript 2017).
+        "comma-dangle": [2, {
+          "arrays": "always-multiline",
+          "objects": "always-multiline",
+          "imports": "always-multiline",
+          "exports": "always-multiline",
+          "functions": "only-multiline",
+        }],
         "comma-spacing": [2, { "before": false, "after": true }],
         "constructor-super": 2,
         "curly": 2,
@@ -71,7 +80,12 @@
         // Might be nice to turn this on one day, but since we don't
         // use jsdoc anywhere it seems silly to require it yet.
         "valid-jsdoc": 0,
-        "require-jsdoc": 0
+        "require-jsdoc": 0,
+        // We frequently `import` and `import type` from the same module.
+        "import/no-duplicates": 0,
+        // We use `import mod from "mod"` a lot.
+        "import/no-named-as-default": 0,
+        "import/no-named-as-default-member": 0,
     },
     "env": {
         "es6": true,
@@ -80,6 +94,12 @@
         "jest": true
     },
     "settings": {
+        "import/external-module-folders": [".yarn", "node_modules"],
+        "import/resolver": {
+            "webpack": {
+                "config-index": 0
+            }
+        },
         "react": {
             "version": "16.8"
         }
