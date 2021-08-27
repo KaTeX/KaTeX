@@ -103,7 +103,7 @@
     "clean-install": "yarn clean && yarn",
     "start": "webpack serve --config webpack.dev.js",
     "analyze": "webpack --config webpack.analyze.js",
-    "build": "rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c && webpack && node update-sri.js package dist/README.md",
+    "build": "rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c --failAfterWarnings && webpack && node update-sri.js package dist/README.md",
     "watch": "yarn build --watch",
     "postversion": "yarn dist && node update-sri.js package README.md contrib/*/README.md docs/*.md website/pages/index.html",
     "semantic-release": "semantic-release",
