@@ -77,6 +77,11 @@ jobs:
         key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
         restore-keys: |
           yarn-deps-v1-
+
+    - name: Install dependencies
+      run: yarn --immutable
+      env:
+        YARN_ENABLE_SCRIPTS: 0 # disable postinstall scripts
     - name: Run semantic-release
       run: yarn run semantic-release --debug
       env:
