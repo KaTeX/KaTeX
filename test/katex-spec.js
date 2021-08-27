@@ -2713,7 +2713,7 @@ describe("An array environment", function() {
     });
 
     it("should accept optional vertical alignment", () => {
-        const parse = getParsed`\begin{array}{c}[t]1\\20\end{array}`;
+        const parse = getParsed`\begin{array}[t]{c}1\\20\end{array}`;
         expect(parse[0].type).toBe("array");
         expect(parse[0].verticalAlign).toEqual("t");
     });

@@ -73,7 +73,7 @@ function parseArray(
         emptySingleRow,
         maxNumCols,
         leqno,
-        allowVerticalAlign,
+        verticalAlignSpec,
     }: {|
         hskipBeforeAndAfter?: boolean,
         addJot?: boolean,
@@ -85,7 +85,7 @@ function parseArray(
         emptySingleRow?: boolean,
         maxNumCols?: number,
         leqno?: boolean,
-        allowVerticalAlign?: boolean | AnyParseNode,
+        verticalAlignSpec?: AnyParseNode | null,
     |},
     style: StyleStr,
 ): ParseNode<"array"> {
@@ -120,11 +120,8 @@ function parseArray(
 
     // Check for optional [t|b|c] vertical alignment argument
     let verticalAlign = 'c';
-    const optArg = allowVerticalAlign === true ?
-        parser.parseGroupOfType("array vertical alignment", "original", true) :
-        allowVerticalAlign;
-    if (optArg) {
-        const ordGroup = assertNodeType(optArg, "ordgroup");
+    if (verticalAlignSpec) {
+        const ordGroup = assertNodeType(verticalAlignSpec, "ordgroup");
         for (let i = 0; i < ordGroup.body.length; i++) {
             const node = ordGroup.body[i];
             // $FlowFixMe: Not every node type has a `text` property.
@@ -649,8 +646,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
 
 // Convenience function for align, align*, aligned, alignat, alignat*, alignedat.
 const alignedHandler = function(context, args, optArgs) {
-    const outer = (context.envName.indexOf("ed") === -1);
-    if (outer) {
+    if (context.envName.indexOf("ed") === -1) {
         validateAmsEnvironmentContext(context);
     }
     const cols = [];
@@ -664,9 +660,8 @@ const alignedHandler = function(context, args, optArgs) {
             colSeparationType: separationType,
             maxNumCols: context.envName === "split" ? 2 : undefined,
             leqno: context.parser.settings.leqno,
-            // Use alignedat's already parsed optional argument; otherwise,
-            // optional vertical alignment supported in all inline environments.
-            allowVerticalAlign: optArgs.length ? (optArgs[0] || false) : !outer,
+            // Use aligned/alignedat's already parsed optional argument.
+            verticalAlignSpec: optArgs[0],
         },
         "display"
     );
@@ -748,8 +743,9 @@ defineEnvironment({
     names: ["array", "darray"],
     props: {
         numArgs: 1,
+        numOptionalArgs: 1,
     },
-    handler(context, args) {
+    handler(context, args, optArgs) {
         // Since no types are specified above, the two possibilities are
         // - The argument is wrapped in {} or [], in which case Parser's
         //   parseGroup() returns an "ordgroup" wrapping some symbol node.
@@ -782,8 +778,7 @@ defineEnvironment({
             cols,
             hskipBeforeAndAfter: true, // \@preamble in lttab.dtx
             maxNumCols: cols.length,
-            // nccmath's darray environment doesn't support vertical alignment
-            allowVerticalAlign: context.envName === "array",
+            verticalAlignSpec: optArgs[0],
         };
         return parseArray(context.parser, res, dCellStyle(context.envName));
     },
@@ -984,9 +979,23 @@ defineEnvironment({
 // so that \strut@ is the same as \strut.
 defineEnvironment({
     type: "array",
-    names: ["align", "align*", "aligned", "split"],
+    names: ["align", "align*", "split"],
     props: {
         numArgs: 0,
+    },
+    handler: alignedHandler,
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+// aligned has the optional vertical alignment argument,
+// so needs to be defined separately.
+defineEnvironment({
+    type: "array",
+    names: ["aligned"],
+    props: {
+        numArgs: 0,
+        numOptionalArgs: 1,
     },
     handler: alignedHandler,
     htmlBuilder,
@@ -996,30 +1005,47 @@ defineEnvironment({
 // A gathered environment is like an array environment with one centered
 // column, but where rows are considered lines so get \jot line spacing
 // and contents are set in \displaystyle.
+
+function gatheredHandler(context, args, optArgs) {
+    if (utils.contains(["gather", "gather*"], context.envName)) {
+        validateAmsEnvironmentContext(context);
+    }
+    const res = {
+        cols: [{
+            type: "align",
+            align: "c",
+        }],
+        addJot: true,
+        colSeparationType: "gather",
+        addEqnNum: context.envName === "gather",
+        emptySingleRow: true,
+        leqno: context.parser.settings.leqno,
+        verticalAlignSpec: optArgs[0],
+    };
+    return parseArray(context.parser, res, "display");
+}
+
 defineEnvironment({
     type: "array",
-    names: ["gathered", "gather", "gather*"],
+    names: ["gather", "gather*"],
     props: {
         numArgs: 0,
     },
-    handler(context) {
-        if (utils.contains(["gather", "gather*"], context.envName)) {
-            validateAmsEnvironmentContext(context);
-        }
-        const res = {
-            cols: [{
-                type: "align",
-                align: "c",
-            }],
-            addJot: true,
-            colSeparationType: "gather",
-            addEqnNum: context.envName === "gather",
-            emptySingleRow: true,
-            leqno: context.parser.settings.leqno,
-            allowVerticalAlign: context.envName.indexOf('ed') !== -1,
-        };
-        return parseArray(context.parser, res, "display");
+    handler: gatheredHandler,
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+// gathered has the optional vertical alignment argument,
+// so needs to be defined separately.
+defineEnvironment({
+    type: "array",
+    names: ["gathered"],
+    props: {
+        numArgs: 0,
+        numOptionalArgs: 1,
     },
+    handler: gatheredHandler,
     htmlBuilder,
     mathmlBuilder,
 });
