@@ -3,8 +3,9 @@
 import functions from "./functions";
 import MacroExpander, {implicitCommands} from "./MacroExpander";
 import symbols, {ATOMS, extraLatin} from "./symbols";
-import {validUnit} from "./units";
+import {convertSize, units, zeroPt, zeroMu} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
+import {assertNodeType} from "./parseNode";
 import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
@@ -15,10 +16,11 @@ import {Token} from "./Token";
 import unicodeAccents from /*preval*/ "./unicodeAccents";
 import unicodeSymbols from /*preval*/ "./unicodeSymbols";
 
-import type {ParseNode, AnyParseNode, SymbolParseNode, UnsupportedCmdParseNode}
-    from "./parseNode";
+import {multiplySize, multiply} from "./functions/arithmetic";
+import type {ParseNode, AnyParseNode, SymbolParseNode, NumericParseNode,
+    UnsupportedCmdParseNode} from "./parseNode";
 import type {Atom, Group} from "./symbols";
-import type {Mode, ArgType, BreakToken} from "./types";
+import type {Mode, ArgType, NumericType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
 import type {EnvSpec} from "./defineEnvironment";
 
@@ -144,6 +146,48 @@ export default class Parser {
     }
 
     static endOfExpression: string[] = ["}", "\\endgroup", "\\end", "\\right", "&"];
+
+    // Lookup table for parsing numbers in base 8 through 16
+    // with decimal separators as -1
+    static digitToNumber = {
+        "0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8,
+        "9": 9, "a": 10, "A": 10, "b": 11, "B": 11, "c": 12, "C": 12,
+        "d": 13, "D": 13, "e": 14, "E": 14, "f": 15, "F": 15, ".": -1, ",": -1,
+    };
+
+    static register = {
+        "\\count": "integer",
+        "\\dimen": "dimen",
+        "\\skip": "glue",
+        "\\muskip": "muglue",
+    };
+
+    static defaultRegister = {
+        integer: {
+            type: "integer",
+            mode: "text",
+            value: 0,
+        },
+        dimen: {
+            type: "dimen",
+            mode: "text",
+            value: zeroPt,
+        },
+        glue: {
+            type: "glue",
+            mode: "text",
+            value: zeroPt,
+            stretch: zeroPt,
+            shrink: zeroPt,
+        },
+        muglue: {
+            type: "glue",
+            mode: "math",
+            value: zeroMu,
+            stretch: zeroMu,
+            shrink: zeroMu,
+        },
+    };
 
     /**
      * Parses an "expression", which is a list of atoms.
@@ -502,8 +546,15 @@ export default class Parser {
         switch (type) {
             case "color":
                 return this.parseColorGroup(optional);
+            case "integer":
+                return this.parseIntegerOrVariable();
             case "size":
-                return this.parseSizeGroup(optional);
+            case "size_or_blank":
+            case "dimen":
+            case "mudimen":
+            case "glue":
+            case "muglue":
+                return this.parseSizeGroup(optional, type, name);
             case "url":
                 return this.parseUrlGroup(optional);
             case "math":
@@ -555,6 +606,121 @@ export default class Parser {
         while (this.fetch().text === " ") {
             this.consume();
         }
+    }
+
+    consumeKeyword(keywords: string[]): ?string {
+        this.gullet.scanning = true; // allow MacroExpander to return \relax
+        this.consumeSpaces();
+        const tokens = [];
+        for (let i = 0; keywords.length > 1 ||
+                (keywords.length === 1 && i < keywords[0].length); i++) {
+            const tok = this.fetch();
+            keywords = keywords.filter(keyword => keyword[i] === tok.text);
+            tokens.push(tok);
+            this.consume();
+        }
+        if (keywords.length) {
+            return keywords[0];
+        }
+        tokens.reverse();
+        if (tokens[0].text === "\\relax") { // expansion stopped by \relax
+            tokens.shift();
+        }
+        this.gullet.scanning = false;
+        this.gullet.pushTokens(tokens);
+        return null;
+    }
+
+    getVariable(): ?{|name: string, type: NumericType, value: NumericParseNode|} {
+        const token = this.fetch();
+        let name = token.text;
+        const registerType = Parser.register[name];
+        if (registerType) {
+            this.consume();
+            const number = assertNodeType(this.parseIntegerOrVariable(), "integer");
+            if (number.value < 0) {
+                throw new ParseError("Register number should be positive");
+            }
+            name += number.value;
+        }
+        const value = this.gullet.macros.get(name);
+        if (value != null && !value.tokens &&
+                typeof value !== "function" && typeof value !== "string") {
+            if (!registerType) {
+                this.consume();
+            }
+            return {
+                name,
+                type: value.type === "glue" && value.mode === "math"
+                    ? "muglue" : value.type,
+                value,
+            };
+        } else if (registerType) { // sparse, TODO: consider using a TypedArray
+            const defaultValue = Parser.defaultRegister[registerType];
+            this.gullet.macros.set(name, defaultValue);
+            return {name, type: registerType, value: defaultValue};
+        }
+        return null;
+    }
+
+    getVariableValue(
+        type: NumericType,
+        intToDimen: boolean,
+        negative?: boolean,
+    ): NumericParseNode {
+        const variable = this.getVariable();
+        if (variable == null) {
+            throw new ParseError(`Expected a ${type} variable`);
+        }
+        const varType = variable.type;
+        const varValue = variable.value;
+        if (type === varType) {
+            // <normal integer> -> <internal integer>
+            // <normal dimen> -> <internal dimen>
+            // <glue> -> <optional signs><internal glue>
+            return negative ? multiply(varValue, -1) : varValue;
+        } else if (type[0] === "m" &&
+                (varType !== "glue" || varValue.mode === "text")) { // not a muglue
+            throw new ParseError(`Can't coerce ${varType} into ${type}`);
+        }
+        let value;
+        if (varValue.type === "integer") {
+            if (!intToDimen) {
+                throw new ParseError("Can't coerce integer into dimen");
+            }
+            value = {
+                number: varValue.value,
+                unit: "sp",
+            };
+        } else {
+            value = varValue.value;
+        }
+        if (negative) {
+            value = multiplySize(value, -1);
+        }
+        if (type === "dimen" || type === "glue") {
+            // <coerced dimen> -> <internal glue>
+            // <coerced mudimen> -> <internal muglue>
+            // <internal unit> -> <internal integer> | <internal dimen>
+            //   | <internal glue>
+            // An internal glue value can be coerced to be a dimension
+            // by omitting the stretchability and shrinkability
+            // <glue> -> <dimen><stretch><shrink>
+            return {
+                type: "dimen",
+                mode: this.mode,
+                value,
+            };
+        }
+        // <coerced integer> -> <internal dimen> | <internal glue>
+        // An internal dimension can be “coerced” to be an integer
+        // by assuming units of scaled points.
+        value = convertSize(value, "sp");
+        return {
+            type: "integer",
+            mode: this.mode,
+            value,
+        };
     }
 
     /**
@@ -634,46 +800,238 @@ export default class Parser {
     }
 
     /**
+     * <number> -> <optional signs><unsigned number>
+     * <dimen> -> <optional signs><unsigned dimen>
+     * <mudimen> -> <optional signs><unsigned mudimen>
+     * <glue> -> <optional signs><internal glue>
+     * <muglue> -> <optional signs><internal muglue>
+     */
+    parseIntegerOrVariable(type: NumericType = "integer"): NumericParseNode  {
+        this.gullet.scanning = true; // allow MacroExpander to return \relax
+        // <optional signs> -> <optional spaces>
+        //   | <optional signs><plus or minus><optional spaces>
+        let negative = false;
+        this.consumeSpaces();
+        let token;
+        while ((token = this.fetch()).text === "+" || token.text === "-") {
+            if (token.text === "-") {
+                negative = !negative;
+            }
+            this.consume();
+            this.consumeSpaces();
+        }
+
+        // <unsigned number> -> <normal integer> | <coerced integer>
+        // <unsigned dimen> -> <normal dimen> | <coerced dimen>
+        // <unsigned mudimen> -> <normal mudimen> | <coerced mudimen>
+        // <normal dimen> -> <factor><unit of measure>
+        // <normal mudimen> -> <factor><mu unit>
+        // <factor> -> <normal integer> | <decimal constant>
+        let number = 0;
+        let base;
+        if (token.text[0] === "\\") {
+            this.gullet.scanning = false;
+            return this.getVariableValue(type, false, negative);
+        } else if (token.text === "'") {
+            // <normal integer> -> '<octal constant><one optional space>
+            base = 8;
+            this.consume();
+        } else if (token.text === '"') {
+            // <normal integer> -> "<hexademical constant><one optional space>
+            base = 16;
+            this.consume();
+        } else if (token.text === "`") {
+            // <normal integer> -> `<character token><one optional space>
+            // An alphabetic constant denotes the character code in
+            // a <character token>; TeX does not expand this token.
+            this.consume();
+            token = this.gullet.popToken();
+            if (token.text[0] === "\\") {
+                if (token.text.length > 2) {
+                    throw new ParseError("Improper alphabetic constant", token);
+                }
+                number = token.text.charCodeAt(1);
+            } else if (token.text === "EOF") {
+                throw new ParseError("Missing character token");
+            } else {
+                number = token.text.charCodeAt(0);
+            }
+        } else {
+            // <normal integer> -> <integer constant><one optional space>
+            // <decimal constant> -> <digit><decimal constant>
+            base = 10;
+        }
+        if (base) {
+            // Parse a number in the given base, starting with first `token`.
+            let digit;
+            let empty = true;
+            let decimal = type !== "integer" && base === 10 ? 0 : -1;
+            while ((digit = Parser.digitToNumber[this.fetch().text]) != null &&
+                   digit < base && (digit >= 0 || !decimal)) {
+                empty = false;
+                if (digit === -1) {
+                    decimal++;
+                } else {
+                    if (decimal > 0) {
+                        decimal++;
+                    }
+                    number *= base;
+                    number += digit;
+                }
+                this.consume();
+            }
+            if (empty) {
+                throw new ParseError(
+                    `Invalid base-${base} digit ${token.text}`, token);
+            }
+            if (decimal > 1) {
+                number /= Math.pow(10, decimal - 1);
+            }
+            token = this.fetch();
+            if (token.text === " " || token.text === "\\relax") {
+                // consume <one optional space> or \relax
+                this.consume();
+            }
+        }
+        this.gullet.scanning = false;
+        // The value of a <number> is the value of the corresponding <unsigned
+        // number>, times −1 for every minus sign in the <optional signs>.
+        return {
+            type: "integer",
+            mode: this.mode,
+            value: negative ? -number : number,
+        };
+    }
+
+    /**
+     * <dimen> -> <optional signs><unsigned dimen>
+     * <mudimen> -> <optional signs><unsigned mudimen>
+     */
+    parseDimenOrVariable(
+        type: NumericType = "dimen",
+        fil?: boolean,
+    ): ParseNode<"dimen"> | ParseNode<"glue"> {
+        const factor = this.parseIntegerOrVariable(type);
+        if (factor.type === "integer") {
+            if (type === "glue") {
+                type = "dimen";
+            } else if (type === "muglue") {
+                type = "mudimen";
+            }
+            // <unit of measure> -> <optional spaces><internal unit>
+            //   | <optional true><physical unit><one optional space>
+            // <internal unit> -> em<one optional space> | ex<one optional space>
+            //   | <internal integer> | <internal dimen> | <internal glue>
+            // <physical unit> -> pt | pc | in | bp | cm | mm | dd | cc | sp
+            // <mu unit> -> <optional spaces><internal muglue>
+            //   | mu<one optional space>
+            this.gullet.scanning = true; // allow MacroExpander to return \relax
+            const number = factor.value;
+
+            this.consumeSpaces();
+            let tok = this.fetch();
+            if (tok.text[0] === "\\") {
+                const internal = assertNodeType(
+                    this.getVariableValue(type, true), "dimen");
+                internal.value.number *= number;
+                this.gullet.scanning = false;
+                return internal;
+            }
+            let unit = this.consumeKeyword(fil ? units.concat("fil") : units);
+            if (unit == null) {
+                throw new ParseError("Invalid unit", this.fetch());
+            } else if (unit === "fil") { // fill and filll
+                this.gullet.scanning = true;
+                for (let i = 0; i < 2; i++) {
+                    if (this.fetch().text === "l") {
+                        unit += "l";
+                        this.consume();
+                    }
+                }
+            } else if ((type === "mudimen") !== (unit === "mu")) {
+                this.settings.reportNonstrict("mathVsTextUnits",
+                    `Expected ${type}, got ${unit} units`);
+            }
+
+            this.gullet.scanning = false;
+            tok = this.fetch();
+            if (tok.text === " " || tok.text === "\\relax") {
+                // consume <one optional space> or \relax
+                this.consume();
+            }
+            return {
+                type: "dimen",
+                mode: type === "mudimen" ? "math" : "text",
+                value: {number, unit},
+            };
+        }
+        return factor;
+    }
+
+    /**
+     * <glue> -> <optional signs><internal glue> | <dimen><stretch><shrink>
+     * <muglue> -> <optional signs><internal muglue>
+     *   | <mudimen><mustretch><mushrink>
+     */
+    parseGlue(type: NumericType = "glue"): ParseNode<"glue"> {
+        const dimen = this.parseDimenOrVariable(type);
+        if (dimen.type === "glue") {
+            return dimen;
+        }
+        type = type === "muglue" ? "mudimen" : "dimen";
+        const defaultDimen = type === "mudimen" ? zeroMu : zeroPt;
+        const stretch = this.consumeKeyword(["plus"]) != null
+            ? this.parseDimenOrVariable(type, true).value : defaultDimen;
+        const shrink = this.consumeKeyword(["minus"]) != null
+            ? this.parseDimenOrVariable(type, true).value : defaultDimen;
+        return {
+            type: "glue",
+            mode: type === "mudimen" ? "math" : "text",
+            value: dimen.value,
+            stretch,
+            shrink,
+        };
+    }
+
+    /**
      * Parses a size specification, consisting of magnitude and unit.
      */
-    parseSizeGroup(optional: boolean): ?ParseNode<"size"> {
-        let res;
-        let isBlank = false;
+    parseSizeGroup(
+        optional: boolean,
+        type: ArgType,
+        name?: string
+    ): ?ParseNode<"dimen"> | ParseNode<"glue"> {
         // don't expand before parseStringGroup
-        this.gullet.consumeSpaces();
-        if (!optional && this.gullet.future().text !== "{") {
-            res = this.parseRegexGroup(
-                /^[-+]? *(?:$|\d+|\d+\.\d*|\.\d*) *[a-z]{0,2} *$/, "size");
-        } else {
-            res = this.parseStringGroup("size", optional);
+        let primitive = type !== "size" && type !== "size_or_blank";
+        if (primitive) {
+            this.gullet.consumeSpaces();
+            const n = this.gullet.future();
+            if (n.text === "{" && !this.settings.useStrictBehavior("bracedSize",
+                    `Primitive ${type} should not be enclosed in braces.`, n)) {
+                primitive = false;
+            }
         }
-        if (!res) {
+        if (!primitive && this.gullet.scanArgument(optional) == null) {
             return null;
         }
-        if (!optional && res.text.length === 0) {
-            // Because we've tested for what is !optional, this block won't
-            // affect \kern, \hspace, etc. It will capture the mandatory arguments
-            // to \genfrac and \above.
-            res.text = "0pt";    // Enable \above{}
-            isBlank = true;      // This is here specifically for \genfrac
+
+        let res;
+        if (type === "size_or_blank" && this.fetch().text === "EOF") {
+            res = {
+                type: "dimen",
+                mode: this.mode,
+                value: {number: 0, unit: "blank"},
+            };
+        } else if (type === "glue" || type === "muglue") {
+            res = this.parseGlue(type);
+        } else {
+            res = this.parseDimenOrVariable(
+                type === "mudimen" ? "mudimen" : "dimen");
         }
-        const match = (/([-+]?) *(\d+(?:\.\d*)?|\.\d+) *([a-z]{2})/).exec(res.text);
-        if (!match) {
-            throw new ParseError("Invalid size: '" + res.text + "'", res);
+        if (!primitive) {
+            this.expect("EOF");
         }
-        const data = {
-            number: +(match[1] + match[2]), // sign + magnitude, cast to number
-            unit: match[3],
-        };
-        if (!validUnit(data)) {
-            throw new ParseError("Invalid unit: '" + data.unit + "'", res);
-        }
-        return {
-            type: "size",
-            mode: this.mode,
-            value: data,
-            isBlank,
-        };
+        return res;
     }
 
     /**
@@ -772,7 +1130,7 @@ export default class Parser {
             // If there exists a function with this name, parse the function.
             // Otherwise, just return a nucleus
             result = this.parseFunction(breakOnTokenText, name) ||
-                this.parseSymbol();
+                this.parseSymbol() || this.parseVariable();
             if (result == null && text[0] === "\\" &&
                     !implicitCommands.hasOwnProperty(text)) {
                 if (this.settings.throwOnError) {
@@ -971,5 +1329,42 @@ export default class Parser {
         }
         // $FlowFixMe
         return symbol;
+    }
+
+    parseVariable(global?: boolean): ?ParseNode<"internal"> {
+        // <simple assignment> -> <variable assignment>
+        // <variable assignment> -> <integer variable><equals><number>
+        //   | <dimen variable><equals><dimen>
+        //   | <glue variable><equals><glue>
+        //   | <muglue variable><equals><muglue>
+        // <equals> -> <optional spaces>|<optional spaces>=
+        const variable = this.getVariable();
+        if (variable == null)  {
+            return null;
+        }
+        this.consumeSpaces();
+        if (this.fetch().text === "=") { // consume optional equals
+            this.consume();
+        }
+        let value;
+        switch (variable.type) {
+            case "integer":
+                value = this.parseIntegerOrVariable();
+                break;
+            case "dimen":
+                value = this.parseDimenOrVariable();
+                break;
+            case "glue":
+            case "muglue":
+                value = this.parseGlue(variable.type);
+                break;
+            default:
+                throw new ParseError("Unknown register type");
+        }
+        this.gullet.macros.set(variable.name, value, global);
+        return {
+            type: "internal",
+            mode: this.mode,
+        };
     }
 }

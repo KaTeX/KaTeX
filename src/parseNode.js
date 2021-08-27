@@ -19,6 +19,11 @@ export type SymbolParseNode =
     ParseNode<"spacing"> |
     ParseNode<"textord">;
 
+export type NumericParseNode =
+    ParseNode<"integer"> |
+    ParseNode<"dimen"> |
+    ParseNode<"glue">;
+
 // ParseNode from `Parser.formatUnsupportedCmd`
 export type UnsupportedCmdParseNode = ParseNode<"color">;
 
@@ -109,12 +114,25 @@ type ParseNodeTypes = {
         loc?: ?SourceLocation,
         string: string,
     |},
-    "size": {|
-        type: "size",
+    "integer": {|
+        type: "integer",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        value: number,
+    |},
+    "dimen": {|
+        type: "dimen",
         mode: Mode,
         loc?: ?SourceLocation,
         value: Measurement,
-        isBlank: boolean,
+    |},
+    "glue": {|
+        type: "glue",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        value: Measurement,
+        shrink: Measurement,
+        stretch: Measurement,
     |},
     "styling": {|
         type: "styling",

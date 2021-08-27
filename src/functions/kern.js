@@ -7,45 +7,25 @@ import mathMLTree from "../mathMLTree";
 import {calculateSize} from "../units";
 import {assertNodeType} from "../parseNode";
 
-// TODO: \hskip and \mskip should support plus and minus in lengths
+const handler = ({parser, funcName}, args) => {
+    const size = assertNodeType(args[0], "dimen");
+    return {
+        type: "kern",
+        mode: parser.mode,
+        dimension: size.value,
+    };
+};
 
 defineFunction({
     type: "kern",
-    names: ["\\kern", "\\mkern", "\\hskip", "\\mskip"],
+    names: ["\\kern"],
     props: {
         numArgs: 1,
-        argTypes: ["size"],
+        argTypes: ["dimen"],
         primitive: true,
         allowedInText: true,
     },
-    handler({parser, funcName}, args) {
-        const size = assertNodeType(args[0], "size");
-        if (parser.settings.strict) {
-            const mathFunction = (funcName[1] === 'm');  // \mkern, \mskip
-            const muUnit = (size.value.unit === 'mu');
-            if (mathFunction) {
-                if (!muUnit) {
-                    parser.settings.reportNonstrict("mathVsTextUnits",
-                        `LaTeX's ${funcName} supports only mu units, ` +
-                        `not ${size.value.unit} units`);
-                }
-                if (parser.mode !== "math") {
-                    parser.settings.reportNonstrict("mathVsTextUnits",
-                        `LaTeX's ${funcName} works only in math mode`);
-                }
-            } else {  // !mathFunction
-                if (muUnit) {
-                    parser.settings.reportNonstrict("mathVsTextUnits",
-                        `LaTeX's ${funcName} doesn't support mu units`);
-                }
-            }
-        }
-        return {
-            type: "kern",
-            mode: parser.mode,
-            dimension: size.value,
-        };
-    },
+    handler,
     htmlBuilder(group, options) {
         return buildCommon.makeGlue(group.dimension, options);
     },
@@ -53,4 +33,46 @@ defineFunction({
         const dimension = calculateSize(group.dimension, options);
         return new mathMLTree.SpaceNode(dimension);
     },
+});
+
+defineFunction({
+    type: "kern",
+    names: ["\\mkern"],
+    props: {
+        numArgs: 1,
+        argTypes: ["mudimen"],
+    },
+    handler,
+});
+
+// TODO: \hskip and \mskip should support stretch and shrink
+// (plus and minus in lengths)
+const glueHandler = ({parser, funcName}, args) => {
+    const size = assertNodeType(args[0], "glue");
+    return {
+        type: "kern",
+        mode: parser.mode,
+        dimension: size.value,
+    };
+};
+
+defineFunction({
+    type: "kern",
+    names: ["\\hskip"],
+    props: {
+        numArgs: 1,
+        argTypes: ["glue"],
+        allowedInText: true,
+    },
+    handler: glueHandler,
+});
+
+defineFunction({
+    type: "kern",
+    names: ["\\mskip"],
+    props: {
+        numArgs: 1,
+        argTypes: ["muglue"],
+    },
+    handler: glueHandler,
 });

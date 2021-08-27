@@ -18,7 +18,7 @@ defineFunction({
         allowedInText: true,
     },
     handler({parser}, args) {
-        const amount = assertNodeType(args[0], "size").value;
+        const amount = assertNodeType(args[0], "dimen").value;
         const body = args[1];
         return {
             type: "raisebox",

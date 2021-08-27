@@ -12,6 +12,7 @@ import {Token} from "./Token";
 import ParseError from "./ParseError";
 import type Namespace from "./Namespace";
 
+import type {ParseNode} from "./parseNode";
 import type {Mode} from "./types";
 
 /**
@@ -112,7 +113,8 @@ export type MacroExpansion = {
 };
 
 export type MacroDefinition = string | MacroExpansion |
-    (MacroContextInterface => (string | MacroExpansion));
+    (MacroContextInterface => (string | MacroExpansion)) |
+    ParseNode<"integer"> | ParseNode<"dimen"> | ParseNode<"glue">;
 export type MacroMap = {[string]: MacroDefinition};
 
 const builtinMacros: MacroMap = {};
@@ -192,61 +194,6 @@ defineMacro("\\TextOrMath", function(context) {
     } else {
         return {tokens: args[1], numArgs: 0};
     }
-});
-
-// Lookup table for parsing numbers in base 8 through 16
-const digitToNumber = {
-    "0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8,
-    "9": 9, "a": 10, "A": 10, "b": 11, "B": 11, "c": 12, "C": 12,
-    "d": 13, "D": 13, "e": 14, "E": 14, "f": 15, "F": 15,
-};
-
-// TeX \char makes a literal character (catcode 12) using the following forms:
-// (see The TeXBook, p. 43)
-//   \char123  -- decimal
-//   \char'123 -- octal
-//   \char"123 -- hex
-//   \char`x   -- character that can be written (i.e. isn't active)
-//   \char`\x  -- character that cannot be written (e.g. %)
-// These all refer to characters from the font, so we turn them into special
-// calls to a function \@char dealt with in the Parser.
-defineMacro("\\char", function(context) {
-    let token = context.popToken();
-    let base;
-    let number = '';
-    if (token.text === "'") {
-        base = 8;
-        token = context.popToken();
-    } else if (token.text === '"') {
-        base = 16;
-        token = context.popToken();
-    } else if (token.text === "`") {
-        token = context.popToken();
-        if (token.text[0] === "\\") {
-            number = token.text.charCodeAt(1);
-        } else if (token.text === "EOF") {
-            throw new ParseError("\\char` missing argument");
-        } else {
-            number = token.text.charCodeAt(0);
-        }
-    } else {
-        base = 10;
-    }
-    if (base) {
-        // Parse a number in the given base, starting with first `token`.
-        number = digitToNumber[token.text];
-        if (number == null || number >= base) {
-            throw new ParseError(`Invalid base-${base} digit ${token.text}`);
-        }
-        let digit;
-        while ((digit = digitToNumber[context.future().text]) != null &&
-               digit < base) {
-            number *= base;
-            number += digit;
-            context.popToken();
-        }
-    }
-    return `\\@char{${number}}`;
 });
 
 // \newcommand{\macro}[args]{definition}
@@ -403,7 +350,7 @@ defineMacro("\u2209", "\\notin");
 
 // Unicode stacked relations
 defineMacro("\u2258", "\\html@mathml{" +
-    "\\mathrel{=\\kern{-1em}\\raisebox{0.4em}{$\\scriptsize\\frown$}}" +
+    "\\mathrel{=\\kern-1em\\raisebox{0.4em}{$\\scriptsize\\frown$}}" +
     "}{\\mathrel{\\char`\u2258}}");
 defineMacro("\u2259",
     "\\html@mathml{\\stackrel{\\tiny\\wedge}{=}}{\\mathrel{\\char`\u2258}}");
@@ -644,7 +591,7 @@ defineMacro("\\thinspace", "\\,");
 // \def\>{\mskip\medmuskip}
 // \renewcommand{\:}{\tmspace+\medmuskip{.2222em}}
 // TODO: \> and math mode of \: should use \medmuskip = 4mu plus 2mu minus 4mu
-defineMacro("\\>", "\\mskip{4mu}");
+defineMacro("\\>", "\\mskip4mu");
 defineMacro("\\:", "\\tmspace+{4mu}{.2222em}");
 // \let\medspace\:
 defineMacro("\\medspace", "\\:");

@@ -144,9 +144,9 @@ ExtensibleArrows: |
     \end{array}
 FractionTest: |
     \begin{array}{l}
-        \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2} 
+        \dfrac{a}{b}\frac{a}{b}\tfrac{a}{b}\;-\dfrac12\;1\tfrac12\;{1 \atop 2}
         \; {a \brace b} \; {a \brack b} \\[1em]
-        \genfrac \{ ]{0.8pt}{0}{a}{b} \; {a \above1.0pt b} \; \cfrac{1}{1+\cfrac{1}{x}} 
+        \genfrac \{ ]{0.8pt}{0}{a}{b} \; {a \above1.0pt b} \; \cfrac{1}{1+\cfrac{1}{x}}
          \xrightarrow[\dfrac g h]{\displaystyle\frac g h} \; \xrightarrow [2.\, \dfrac c d] {1.\, \displaystyle\frac c d}
     \end{array}
 Functions: \sin\cos\tan\ln\log
@@ -191,8 +191,7 @@ KaTeX:
     tex: \KaTeX, \large \KaTeX
     nolatex: \KaTeX not supported by LaTeX
 Kern:
-    tex: \frac{a\kern{1em}b}{c}a\kern{1em}b\kern{1ex}c\kern{-0.25em}d
-    nolatex: LaTeX fails to typeset this, “Missing number, treated as zero.”
+    tex: \frac{a\kern1emb}{c}a\kern1emb\kern1exc\kern-0.25emd
 Lap: |
     \begin{array}{l}
         ab\mathllap{f}cd\mathrlap{g}hij\mathclap{k}lm \; ab\llap{f}cd\rlap{g}hij\clap{k}lm \\
