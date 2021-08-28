@@ -1825,6 +1825,13 @@ $extra{'Main-Italic'} = {
   diacriticals => [
     'Select(0uB0)',  'SetRBearing(-160,1)',   # \degree
   ],
+
+  capitalgreek => $extra{'Main-Regular'}{'capitalgreek'},
+
+};
+
+$extra{'Main-BoldItalic'} = {
+  capitalgreek => $extra{'Main-Regular'}{'capitalgreek'},
 };
 
 $extra{'Size1'} = {

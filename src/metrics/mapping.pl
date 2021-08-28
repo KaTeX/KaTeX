@@ -87,6 +87,20 @@ $map{cmmi10} = {
     [7,8] => 0x3A5,         # \Upsilon, \Phi
     [9,0xA] => 0x3A8,       # \Psi, \Omega
 
+    0x41 => 0x0391,         # \Alpha = A
+    0x42 => 0x0392,         # \Beta = B
+    0x45 => 0x0395,         # \Epsilon = E
+    0x5A => 0x0396,         # \Zeta = Z
+    0x48 => 0x0397,         # \Eta = H
+    0x49 => 0x0399,         # \Iota = I
+    0x4B => 0x039A,         # \Kappa = K
+    0x4D => 0x039C,         # \Mu = M
+    0x4E => 0x039D,         # \Nu = N
+    0x4F => 0x039F,         # \Omicron = O
+    0x50 => 0x03A1,         # \Rho = P
+    0x54 => 0x03A4,         # \Tau = T
+    0x58 => 0x03A7,         # \Chi = X
+
     [0xB,0xE] => 0x3B1,     # \alpha, \beta, \gamma, \delta
     0xF => 0x3F5,           # \elpsilon
     [0x10,0x18] => 0x3B6,   # \zeta, \eta, \theta, \iota, \kappa, \lambda, \mu, \nu, \xi
@@ -528,6 +542,20 @@ $map{cmbxti10} = {
     [7,8] => 0x3A5,         # \Upsilon, \Phi
     [9,0xA] => 0x3A8,       # \Psi, \Omega
 
+    0x41 => 0x0391,         # \Alpha = A
+    0x42 => 0x0392,         # \Beta = B
+    0x45 => 0x0395,         # \Epsilon = E
+    0x5A => 0x0396,         # \Zeta = Z
+    0x48 => 0x0397,         # \Eta = H
+    0x49 => 0x0399,         # \Iota = I
+    0x4B => 0x039A,         # \Kappa = K
+    0x4D => 0x039C,         # \Mu = M
+    0x4E => 0x039D,         # \Nu = N
+    0x4F => 0x039F,         # \Omicron = O
+    0x50 => 0x03A1,         # \Rho = P
+    0x54 => 0x03A4,         # \Tau = T
+    0x58 => 0x03A7,         # \Chi = X
+
     0x10 => 0x131,          # \i
     0x11 => 0x237,          # \j
     0x12 => 0x2CB,          # \grave
@@ -585,6 +613,20 @@ $map{cmmib10} = {
     6 => 0x3A3,             # \Sigma
     [7,8] => 0x3A5,         # \Upsilon, \Phi
     [9,0xA] => 0x3A8,       # \Psi, \Omega
+
+    0x41 => 0x0391,         # \Alpha = A
+    0x42 => 0x0392,         # \Beta = B
+    0x45 => 0x0395,         # \Epsilon = E
+    0x5A => 0x0396,         # \Zeta = Z
+    0x48 => 0x0397,         # \Eta = H
+    0x49 => 0x0399,         # \Iota = I
+    0x4B => 0x039A,         # \Kappa = K
+    0x4D => 0x039C,         # \Mu = M
+    0x4E => 0x039D,         # \Nu = N
+    0x4F => 0x039F,         # \Omicron = O
+    0x50 => 0x03A1,         # \Rho = P
+    0x54 => 0x03A4,         # \Tau = T
+    0x58 => 0x03A7,         # \Chi = X
 
     [0xB,0xE] => 0x3B1,     # \alpha, \beta, \gamma, \delta
     0xF => 0x3F5,           # \elpsilon
