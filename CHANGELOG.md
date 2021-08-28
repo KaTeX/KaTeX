@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.15](https://github.com/KaTeX/KaTeX/compare/v0.13.14...v0.13.15) (2021-08-28)
+
+
+### Features
+
+* text-mode cedilla accent via \c ([#3036](https://github.com/KaTeX/KaTeX/issues/3036)) ([952fb84](https://github.com/KaTeX/KaTeX/commit/952fb844da9c99d5fca41a87b86e8857a677c899)), closes [#638](https://github.com/KaTeX/KaTeX/issues/638)
+
 ## [0.13.14](https://github.com/KaTeX/KaTeX/compare/v0.13.13...v0.13.14) (2021-08-28)
 
 

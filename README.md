@@ -31,13 +31,13 @@ Try out KaTeX [on the demo page](https://katex.org/#demo)!
 <!-- KaTeX requires the use of the HTML5 doctype. Without it, KaTeX may not render properly -->
 <html>
   <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.14/dist/katex.min.css" integrity="sha384-olCGZRyRuwqK7wUf99rH5baew52IfIXvG6tE1vC0WSCGyC8xoxN+mQdGm6Xa3EEy" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.15/dist/katex.min.css" integrity="sha384-RtYRMWwaQYIYL+Kh+AkP75V7VKNf+oNCT7kV5qXo1hNpn7fcOZ7zaM8Rd3eXu791" crossorigin="anonymous">
 
     <!-- The loading of KaTeX is deferred to speed up page rendering -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.14/dist/katex.min.js" integrity="sha384-rIL/+2u0s1C9mGY06v6oUFDSywqCk4P4hPV+5oIJ45eVj4JdqjNedesyl+6MOEXo" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.15/dist/katex.min.js" integrity="sha384-VwTxHK+WEJBZz1ePodO6xYLaNVXnP9nbjDXlxs3VgVLMX+VLxq6uWiD90jqTOwTP" crossorigin="anonymous"></script>
 
     <!-- To automatically render math in text elements, include the auto-render extension: -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.14/dist/contrib/auto-render.min.js" integrity="sha384-vZTG03m+2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl" crossorigin="anonymous"
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.15/dist/contrib/auto-render.min.js" integrity="sha384-vZTG03m+2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl" crossorigin="anonymous"
         onload="renderMathInElement(document.body);"></script>
   </head>
   ...
