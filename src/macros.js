@@ -4,124 +4,17 @@
  * This can be used to define some commands in terms of others.
  */
 
+// Export global macros object from defineMacro
+import defineMacro, {_macros} from "./defineMacro";
+const macros = _macros;
+export default macros;
+
 import fontMetricsData from "./fontMetricsData";
 import functions from "./functions";
 import symbols from "./symbols";
 import utils from "./utils";
-import {Token} from "./Token";
 import ParseError from "./ParseError";
-import type Namespace from "./Namespace";
 
-import type {Mode} from "./types";
-
-/**
- * Provides context to macros defined by functions. Implemented by
- * MacroExpander.
- */
-export interface MacroContextInterface {
-    mode: Mode;
-
-    /**
-     * Object mapping macros to their expansions.
-     */
-    macros: Namespace<MacroDefinition>;
-
-    /**
-     * Returns the topmost token on the stack, without expanding it.
-     * Similar in behavior to TeX's `\futurelet`.
-     */
-    future(): Token;
-
-    /**
-     * Remove and return the next unexpanded token.
-     */
-    popToken(): Token;
-
-    /**
-     * Consume all following space tokens, without expansion.
-     */
-    consumeSpaces(): void;
-
-    /**
-     * Expand the next token only once if possible.
-     */
-    expandOnce(expandableOnly?: boolean): Token | Token[];
-
-    /**
-     * Expand the next token only once (if possible), and return the resulting
-     * top token on the stack (without removing anything from the stack).
-     * Similar in behavior to TeX's `\expandafter\futurelet`.
-     */
-    expandAfterFuture(): Token;
-
-    /**
-     * Recursively expand first token, then return first non-expandable token.
-     */
-    expandNextToken(): Token;
-
-    /**
-     * Fully expand the given macro name and return the resulting list of
-     * tokens, or return `undefined` if no such macro is defined.
-     */
-    expandMacro(name: string): Token[] | void;
-
-    /**
-     * Fully expand the given macro name and return the result as a string,
-     * or return `undefined` if no such macro is defined.
-     */
-    expandMacroAsText(name: string): string | void;
-
-    /**
-     * Consume an argument from the token stream, and return the resulting array
-     * of tokens and start/end token.
-     */
-    consumeArg(delims?: ?string[]): MacroArg;
-
-    /**
-     * Consume the specified number of arguments from the token stream,
-     * and return the resulting array of arguments.
-     */
-    consumeArgs(numArgs: number): Token[][];
-
-    /**
-     * Determine whether a command is currently "defined" (has some
-     * functionality), meaning that it's a macro (in the current group),
-     * a function, a symbol, or one of the special commands listed in
-     * `implicitCommands`.
-     */
-    isDefined(name: string): boolean;
-
-    /**
-     * Determine whether a command is expandable.
-     */
-    isExpandable(name: string): boolean;
-}
-
-export type MacroArg = {
-    tokens: Token[],
-    start: Token,
-    end: Token
-};
-
-/** Macro tokens (in reverse order). */
-export type MacroExpansion = {
-    tokens: Token[],
-    numArgs: number,
-    delimiters?: string[][],
-    unexpandable?: boolean, // used in \let
-};
-
-export type MacroDefinition = string | MacroExpansion |
-    (MacroContextInterface => (string | MacroExpansion));
-export type MacroMap = {[string]: MacroDefinition};
-
-const builtinMacros: MacroMap = {};
-export default builtinMacros;
-
-// This function might one day accept an additional argument and do more things.
-export function defineMacro(name: string, body: MacroDefinition) {
-    builtinMacros[name] = body;
-}
 
 //////////////////////////////////////////////////////////////////////
 // macro tools

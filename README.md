@@ -7,6 +7,7 @@
 [![jsDelivr](https://data.jsdelivr.com/v1/package/npm/katex/badge?style=rounded)](https://www.jsdelivr.com/package/npm/katex)
 ![katex.min.js size](https://img.badgesize.io/https://unpkg.com/katex/dist/katex.min.js?compression=gzip)
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/KaTeX/KaTeX)
+[![Financial Contributors on Open Collective](https://opencollective.com/katex/all/badge.svg?label=financial+contributors)](https://opencollective.com/katex)
 
 KaTeX is a fast, easy-to-use JavaScript library for TeX math rendering on the web.
 
@@ -83,9 +84,35 @@ hover text.  For other available options, see the
 
 Learn more about using KaTeX [on the website](https://katex.org)!
 
-## Contributing
+## Contributors
 
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+### Code Contributors
+
+This project exists thanks to all the people who contribute code. If you'd like to help, see [our guide to contributing code](CONTRIBUTING.md).
+<a href="https://github.com/KaTeX/KaTeX/graphs/contributors"><img src="https://contributors-svg.opencollective.com/katex/contributors.svg?width=890&button=false" alt="Code contributors" /></a>
+
+### Financial Contributors
+
+Become a financial contributor and help us sustain our community.
+
+#### Individuals
+
+<a href="https://opencollective.com/katex"><img src="https://opencollective.com/katex/individuals.svg?width=890" alt="Contribute on Open Collective"></a>
+
+#### Organizations
+
+Support this project with your organization. Your logo will show up here with a link to your website.
+
+<a href="https://opencollective.com/katex/organization/0/website"><img src="https://opencollective.com/katex/organization/0/avatar.svg" alt="Organization 1"></a>
+<a href="https://opencollective.com/katex/organization/1/website"><img src="https://opencollective.com/katex/organization/1/avatar.svg" alt="Organization 2"></a>
+<a href="https://opencollective.com/katex/organization/2/website"><img src="https://opencollective.com/katex/organization/2/avatar.svg" alt="Organization 3"></a>
+<a href="https://opencollective.com/katex/organization/3/website"><img src="https://opencollective.com/katex/organization/3/avatar.svg" alt="Organization 4"></a>
+<a href="https://opencollective.com/katex/organization/4/website"><img src="https://opencollective.com/katex/organization/4/avatar.svg" alt="Organization 5"></a>
+<a href="https://opencollective.com/katex/organization/5/website"><img src="https://opencollective.com/katex/organization/5/avatar.svg" alt="Organization 6"></a>
+<a href="https://opencollective.com/katex/organization/6/website"><img src="https://opencollective.com/katex/organization/6/avatar.svg" alt="Organization 7"></a>
+<a href="https://opencollective.com/katex/organization/7/website"><img src="https://opencollective.com/katex/organization/7/avatar.svg" alt="Organization 8"></a>
+<a href="https://opencollective.com/katex/organization/8/website"><img src="https://opencollective.com/katex/organization/8/avatar.svg" alt="Organization 9"></a>
+<a href="https://opencollective.com/katex/organization/9/website"><img src="https://opencollective.com/katex/organization/9/avatar.svg" alt="Organization 10"></a>
 
 ## License
 
