@@ -95,7 +95,7 @@ jobs:
 
     - name: Verify screenshots and generate diffs and new screenshots
       run: yarn node dockers/screenshotter/screenshotter.js -b ${{ matrix.browser }} --verify --new ${{ job.services.selenium && format('-c {0}', job.services.selenium.id) || '' }}
-      timeout-minutes: 10
+      timeout-minutes: 20
 
     - name: Print Selenium Docker logs
       if: always() && job.services.selenium
