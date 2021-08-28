@@ -3313,6 +3313,12 @@ describe("A macro expander", function() {
         expect(parsedChar[0].type).toEqual("textord");
     });
 
+    it("\\char handles >16-bit characters", () => {
+        const parsed = getParsed('\\char"1d7d9');
+        expect(parsed[0].type).toEqual("textord");
+        expect(parsed[0].text).toEqual("𝟙");
+    });
+
     it("should build Unicode private area characters", function() {
         expect`\gvertneqq\lvertneqq\ngeqq\ngeqslant\nleqq`.toBuild();
         expect`\nleqslant\nshortmid\nshortparallel\varsubsetneq`.toBuild();
@@ -3431,6 +3437,12 @@ describe("A macro expander", function() {
     it("\\def doesn't change settings.macros", () => {
         const macros = {};
         expect`\def\foo{1}`.toParse(new Settings({macros}));
+        expect(macros["\\foo"]).toBeFalsy();
+    });
+
+    it("\\def doesn't change settings.macros on error", () => {
+        const macros = {};
+        expect`\def\foo{c^}\foo`.not.toParse(new Settings({macros}));
         expect(macros["\\foo"]).toBeFalsy();
     });
 

@@ -58,6 +58,16 @@ export default class Namespace<Value> {
     }
 
     /**
+     * Ends all currently nested groups (if any), restoring values before the
+     * groups began.  Useful in case of an error in the middle of parsing.
+     */
+    endGroups() {
+        while (this.undefStack.length > 0) {
+            this.endGroup();
+        }
+    }
+
+    /**
      * Detect whether `name` has a definition.  Equivalent to
      * `get(name) != null`.
      */

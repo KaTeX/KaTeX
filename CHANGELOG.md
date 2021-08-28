@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.16](https://github.com/KaTeX/KaTeX/compare/v0.13.15...v0.13.16) (2021-08-28)
+
+
+### Bug Fixes
+
+* \char support for >16-bit Unicode characters ([#3006](https://github.com/KaTeX/KaTeX/issues/3006)) ([ff1734f](https://github.com/KaTeX/KaTeX/commit/ff1734f7c4882fb350cb0e1f366f04ce63675643)), closes [#3004](https://github.com/KaTeX/KaTeX/issues/3004)
+* remove local macros upon parse error ([#3114](https://github.com/KaTeX/KaTeX/issues/3114)) ([a6f29e3](https://github.com/KaTeX/KaTeX/commit/a6f29e36121a31b46866d1985bbc86a06080fbd4)), closes [#3122](https://github.com/KaTeX/KaTeX/issues/3122)
+
 ## [0.13.15](https://github.com/KaTeX/KaTeX/compare/v0.13.14...v0.13.15) (2021-08-28)
 
 
