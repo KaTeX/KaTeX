@@ -6,7 +6,8 @@ RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     --no-install-recommends --auto-remove \
     git \
-    texlive \
+    texlive-base \
+    texlive-fonts-recommended \
     fontforge-nox=1:20190801~dfsg-4 \
     mftrace=1.2.20+git20190918.fd8fef5-2 \
     build-essential \
