@@ -3440,6 +3440,12 @@ describe("A macro expander", function() {
         expect(macros["\\foo"]).toBeFalsy();
     });
 
+    it("\\def doesn't change settings.macros on error", () => {
+        const macros = {};
+        expect`\def\foo{c^}\foo`.not.toParse(new Settings({macros}));
+        expect(macros["\\foo"]).toBeFalsy();
+    });
+
     it("\\def changes settings.macros with globalGroup", () => {
         const macros = {};
         expect`\gdef\foo{1}`.toParse(new Settings({macros, globalGroup: true}));
