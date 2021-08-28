@@ -37,6 +37,9 @@ jobs:
       run: yarn test:jest --coverage
       if: always()
 
+    - name: Build
+      run: yarn build
+
     - uses: codecov/codecov-action@v2
       with:
         directory: ./coverage/
