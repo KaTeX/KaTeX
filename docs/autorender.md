@@ -12,9 +12,9 @@ This extension isn't part of KaTeX proper, so the script needs to be included
 using a CDN:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.15/dist/katex.min.css" integrity="sha384-RtYRMWwaQYIYL+Kh+AkP75V7VKNf+oNCT7kV5qXo1hNpn7fcOZ7zaM8Rd3eXu791" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.15/dist/katex.min.js" integrity="sha384-VwTxHK+WEJBZz1ePodO6xYLaNVXnP9nbjDXlxs3VgVLMX+VLxq6uWiD90jqTOwTP" crossorigin="anonymous"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.15/dist/contrib/auto-render.min.js" integrity="sha384-vZTG03m+2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl" crossorigin="anonymous"
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.16/dist/katex.min.css" integrity="sha384-6LkG2wmY8FK9E0vU9OOr8UvLwsaqUg9SETfpq4uTCN1agNe8HRdE9ABlk+fVx6gZ" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.16/dist/katex.min.js" integrity="sha384-31El76TwmbHj4rF9DyLsygbq6xoIobG0W+jqXim+a3dU9W53tdH3A/ngRPxOzzaB" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.16/dist/contrib/auto-render.min.js" integrity="sha384-vZTG03m+2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl" crossorigin="anonymous"
     onload="renderMathInElement(document.body);"></script>
 ```
 
@@ -31,9 +31,9 @@ want to use a `defer` or `onload` attribute.
 For example:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.15/dist/katex.min.css" integrity="sha384-RtYRMWwaQYIYL+Kh+AkP75V7VKNf+oNCT7kV5qXo1hNpn7fcOZ7zaM8Rd3eXu791" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.15/dist/katex.min.js" integrity="sha384-VwTxHK+WEJBZz1ePodO6xYLaNVXnP9nbjDXlxs3VgVLMX+VLxq6uWiD90jqTOwTP" crossorigin="anonymous"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.15/dist/contrib/auto-render.min.js" integrity="sha384-vZTG03m+2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.16/dist/katex.min.css" integrity="sha384-6LkG2wmY8FK9E0vU9OOr8UvLwsaqUg9SETfpq4uTCN1agNe8HRdE9ABlk+fVx6gZ" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.16/dist/katex.min.js" integrity="sha384-31El76TwmbHj4rF9DyLsygbq6xoIobG0W+jqXim+a3dU9W53tdH3A/ngRPxOzzaB" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.16/dist/contrib/auto-render.min.js" integrity="sha384-vZTG03m+2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl" crossorigin="anonymous"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         renderMathInElement(document.body, {
@@ -54,9 +54,9 @@ For example:
 
 ECMAScript module is also available:
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.15/dist/katex.min.css" integrity="sha384-RtYRMWwaQYIYL+Kh+AkP75V7VKNf+oNCT7kV5qXo1hNpn7fcOZ7zaM8Rd3eXu791" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.16/dist/katex.min.css" integrity="sha384-6LkG2wmY8FK9E0vU9OOr8UvLwsaqUg9SETfpq4uTCN1agNe8HRdE9ABlk+fVx6gZ" crossorigin="anonymous">
 <script type="module">
-    import renderMathInElement from "https://cdn.jsdelivr.net/npm/katex@0.13.15/dist/contrib/auto-render.mjs";
+    import renderMathInElement from "https://cdn.jsdelivr.net/npm/katex@0.13.16/dist/contrib/auto-render.mjs";
     renderMathInElement(document.body);
 </script>
 ```
