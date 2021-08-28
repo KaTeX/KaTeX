@@ -167,7 +167,7 @@ GreekUnicode: |
     \begin{array}{l}
         αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω \\
         ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϝ \\
-        \mathbf{Ω}\mathbf{\Omega}}
+        \mathbf{Ω}\mathbf{\Omega}
     \end{array}
 GroupMacros:
     macros:
