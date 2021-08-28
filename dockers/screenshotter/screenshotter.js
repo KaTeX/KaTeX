@@ -234,6 +234,10 @@ async function startServer() {
     }
     const config = {
         ...webpackConfig.devServer,
+        static: [{
+            directory: path.join(__dirname, '../../static'),
+            watch: false,
+        }],
         port: katexPort,
         hot: false,
         liveReload: false,
