@@ -234,10 +234,7 @@ async function startServer() {
     }
     const config = {
         ...webpackConfig.devServer,
-        static: [{
-            directory: path.join(__dirname, '../../static'),
-            watch: false,
-        }],
+        static: [{directory: process.cwd(), watch: false}],
         port: katexPort,
         hot: false,
         liveReload: false,
