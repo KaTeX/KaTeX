@@ -3313,6 +3313,12 @@ describe("A macro expander", function() {
         expect(parsedChar[0].type).toEqual("textord");
     });
 
+    it("\\char handles >16-bit characters", () => {
+        const parsed = getParsed('\\char"1d7d9');
+        expect(parsed[0].type).toEqual("textord");
+        expect(parsed[0].text).toEqual("𝟙");
+    });
+
     it("should build Unicode private area characters", function() {
         expect`\gvertneqq\lvertneqq\ngeqq\ngeqslant\nleqq`.toBuild();
         expect`\nleqslant\nshortmid\nshortparallel\varsubsetneq`.toBuild();
