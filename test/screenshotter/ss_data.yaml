@@ -165,8 +165,8 @@ Gathered: |
 GreekLetters: \alpha\beta\gamma\omega
 GreekUnicode: |
     \begin{array}{l}
-        αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω \\
-        ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϝ \\
+        \scriptstyle αβγδεϵζηθϑικλμνξοπϖρϱςστυφϕχψω \\
+        \scriptstyle ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩϝ \\
         \mathbf{Ω}\mathbf{\Omega}
     \end{array}
 GroupMacros:
