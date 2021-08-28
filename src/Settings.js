@@ -10,7 +10,7 @@ import ParseError from "./ParseError";
 import {Token} from "./Token";
 
 import type {AnyParseNode} from "./parseNode";
-import type {MacroMap} from "./macros";
+import type {MacroMap} from "./defineMacro";
 
 export type StrictFunction =
     (errorCode: string, errorMsg: string, token?: Token | AnyParseNode) =>

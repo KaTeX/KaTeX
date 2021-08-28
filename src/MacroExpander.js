@@ -11,10 +11,10 @@ import {Token} from "./Token";
 import type {Mode} from "./types";
 import ParseError from "./ParseError";
 import Namespace from "./Namespace";
-import builtinMacros from "./macros";
+import macros from "./macros";
 
 import type {MacroContextInterface, MacroDefinition, MacroExpansion, MacroArg}
-    from "./macros";
+    from "./defineMacro";
 import type Settings from "./Settings";
 
 // List of commands that act like macros but aren't defined as a macro,
@@ -40,7 +40,7 @@ export default class MacroExpander implements MacroContextInterface {
         this.expansionCount = 0;
         this.feed(input);
         // Make new global namespace
-        this.macros = new Namespace(builtinMacros, settings.macros);
+        this.macros = new Namespace(macros, settings.macros);
         this.mode = mode;
         this.stack = []; // contains tokens in REVERSE order
     }

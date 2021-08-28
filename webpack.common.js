@@ -136,12 +136,10 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                 },
                 {
                     test: /\.(ttf|woff|woff2)$/,
-                    use: [{
-                        loader: 'file-loader',
-                        options: {
-                            name: 'fonts/[name].[ext]',
-                        },
-                    }],
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'fonts/[name][ext][query]',
+                    },
                 },
             ],
         },
