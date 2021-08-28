@@ -1,19 +1,6 @@
 #!/usr/bin/env bash
 shopt -s extglob
 
-usage() {
-    while [[ $# -gt 1 ]]; do
-        echo "$1" >&2
-        shift
-    done
-    echo "Usage: ${0##*/} [OPTIONS]"
-    echo ""
-    echo "OPTIONS:"
-    echo "  -h|--help         display this help"
-    echo "  --image NAME:TAG  use the named docker image [$IMAGE]"
-    exit $1
-}
-
 used_fonts=(
     KaTeX_AMS-Regular
     KaTeX_Caligraphic-Bold
