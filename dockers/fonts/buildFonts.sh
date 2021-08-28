@@ -54,7 +54,7 @@ CONTAINER=
 trap cleanup EXIT
 
 LAST_COMMIT_DATE="$(git log -1 --format=%ct -- src/fonts)"
-IMAGE="katex/fonts:DF-$(openssl sha1 $(dirname "$0")/Dockerfile | tail -c 9)"
+IMAGE="katex/fonts:DF-$(openssl sha1 dockers/fonts/Dockerfile | tail -c 9)"
 TMPFILE="$(mktemp "${TMPDIR:-/tmp}/mjf.XXXXXXXX")"
 FILE="$TMPFILE"
 pushd "src"
@@ -68,7 +68,7 @@ popd
 # build image if missing
 if [[ $(docker images "$IMAGE" | wc -l) -lt 2 ]]; then
     echo "Need to build docker image $IMAGE"
-    docker build --tag "$IMAGE" "$(dirname "$0")"
+    docker build --tag "$IMAGE" "dockers/fonts"
 fi
 
 CMDS="set -ex
