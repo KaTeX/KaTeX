@@ -19,6 +19,7 @@ const textFontWeights = {
 const textFontShapes = {
     "\\textit": "textit",
     "\\textup": "textup",
+    "\\textsc": "textsc",
 };
 
 const optionsWithFont = (group, options) => {
@@ -43,7 +44,7 @@ defineFunction({
         // Font weights
         "\\textbf", "\\textmd",
         // Font Shapes
-        "\\textit", "\\textup",
+        "\\textit", "\\textup", "\\textsc",
     ],
     props: {
         numArgs: 1,

@@ -38,7 +38,7 @@ const sizeAtStyle = function(size: number, style: StyleInterface): number {
 
 // In these types, "" (empty string) means "no change".
 export type FontWeight = "textbf" | "textmd" | "";
-export type FontShape = "textit" | "textup" | "";
+export type FontShape = "textit" | "textup" | "textsc" | "";
 
 export type OptionsData = {
     style: StyleInterface;
