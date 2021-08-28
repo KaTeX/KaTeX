@@ -1908,24 +1908,36 @@ $extra{'Typewriter'} = {
     'Select(0uA0)','Clear()',
     'SetRBearing(525)',
   ],
+
+  capitalgreek => $extra{'Main-Regular'}{'capitalgreek'},
+
 };
 
 $extra{"SansSerif-Regular"} = {
   diacriticals => [
     'Select(0uB0)',  'SetRBearing(-142,1)',   # \degree
   ],
+
+  capitalgreek => $extra{'Main-Regular'}{'capitalgreek'},
+
 };
 
 $extra{"SansSerif-Italic"} = {
   diacriticals => [
     'Select(0uB0)',  'SetRBearing(-113,1)',   # \degree
   ],
+
+  capitalgreek => $extra{'Main-Regular'}{'capitalgreek'},
+
 };
 
 $extra{"SansSerif-Bold"} = {
   diacriticals => [
     'Select(0uB0)',  'SetRBearing(-58,1)',   # \degree
   ],
+
+  capitalgreek => $extra{'Main-Regular'}{'capitalgreek'},
+
 };
 
 #########################################################################
