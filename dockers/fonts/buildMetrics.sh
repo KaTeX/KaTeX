@@ -3,5 +3,5 @@
 PERL="perl"
 PYTHON="python3"
 
-cd src/metrics
+cd $(dirname "$)")/../../src/metrics
 $PERL ./mapping.pl | $PYTHON ./extract_tfms.py | $PYTHON ./extract_ttfs.py | $PYTHON ./format_json.py --width > ../fontMetricsData.js
