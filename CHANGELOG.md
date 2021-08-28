@@ -1,6 +1,53 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.15](https://github.com/KaTeX/KaTeX/compare/v0.13.14...v0.13.15) (2021-08-28)
+
+
+### Features
+
+* text-mode cedilla accent via \c ([#3036](https://github.com/KaTeX/KaTeX/issues/3036)) ([952fb84](https://github.com/KaTeX/KaTeX/commit/952fb844da9c99d5fca41a87b86e8857a677c899)), closes [#638](https://github.com/KaTeX/KaTeX/issues/638)
+
+## [0.13.14](https://github.com/KaTeX/KaTeX/compare/v0.13.13...v0.13.14) (2021-08-28)
+
+
+### Bug Fixes
+
+* **fonts:** update fonts dependencies ([#2866](https://github.com/KaTeX/KaTeX/issues/2866)) ([ea409ea](https://github.com/KaTeX/KaTeX/commit/ea409eaf1d7f8fe712a966edc66c545ae5fe5425))
+
+## [0.13.13](https://github.com/KaTeX/KaTeX/compare/v0.13.12...v0.13.13) (2021-07-21)
+
+
+### Bug Fixes
+
+* add namespace for svg, making output XHTML+SVG+MathML compatible ([#2725](https://github.com/KaTeX/KaTeX/issues/2725)) ([35ff5ac](https://github.com/KaTeX/KaTeX/commit/35ff5ac2231b53fdb849f639611e0e44c01aa16b))
+
+## [0.13.12](https://github.com/KaTeX/KaTeX/compare/v0.13.11...v0.13.12) (2021-07-21)
+
+
+### Bug Fixes
+
+* Correct invalid box-sizing property, adjusting spacing of \angl ([#3053](https://github.com/KaTeX/KaTeX/issues/3053)) ([910e523](https://github.com/KaTeX/KaTeX/commit/910e523633da555a758dd176fb28ec139ed3b608)), closes [#3052](https://github.com/KaTeX/KaTeX/issues/3052)
+
+## [0.13.11](https://github.com/KaTeX/KaTeX/compare/v0.13.10...v0.13.11) (2021-05-14)
+
+
+### Bug Fixes
+
+* matrix environment with zero or inconsistent columns ([#3018](https://github.com/KaTeX/KaTeX/issues/3018)) ([f779bac](https://github.com/KaTeX/KaTeX/commit/f779bac684c16c8f513b57b37f855f0772dc20d1)), closes [#3017](https://github.com/KaTeX/KaTeX/issues/3017)
+
+
+### Features
+
+* Allow text-mode accents in math mode, except in strict mode ([#3009](https://github.com/KaTeX/KaTeX/issues/3009)) ([0e9acce](https://github.com/KaTeX/KaTeX/commit/0e9acce9bef7b8001067ef3aa3ed188418278b2d)), closes [#2983](https://github.com/KaTeX/KaTeX/issues/2983)
+
+## [0.13.10](https://github.com/KaTeX/KaTeX/compare/v0.13.9...v0.13.10) (2021-05-12)
+
+
+### Bug Fixes
+
+* Correct for negative margin in integrand lower limits ([#2987](https://github.com/KaTeX/KaTeX/issues/2987)) ([9b4acc9](https://github.com/KaTeX/KaTeX/commit/9b4acc971c4d3d0d05960ed2237a4bbcabde2e39))
+
 ## [0.13.9](https://github.com/KaTeX/KaTeX/compare/v0.13.8...v0.13.9) (2021-05-07)
 
 

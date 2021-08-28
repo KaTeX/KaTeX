@@ -22,7 +22,7 @@ katexConfig.devServer = {
     // Allow server to be accessed from anywhere, which is useful for
     // testing.  This potentially reveals the source code to the world,
     // but this should not be a concern for testing open-source software.
-    firewall: false,
+    allowedHosts: 'all',
     host: '0.0.0.0',
     port: PORT,
 };
