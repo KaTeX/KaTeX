@@ -505,7 +505,7 @@ export class SvgNode implements VirtualNode {
     }
 
     toMarkup(): string {
-        let markup = "<svg";
+        let markup = `<svg xmlns="http://www.w3.org/2000/svg"`;
 
         // Apply attributes
         for (const attr in this.attributes) {

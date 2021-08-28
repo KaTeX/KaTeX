@@ -1,6 +1,27 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.14](https://github.com/KaTeX/KaTeX/compare/v0.13.13...v0.13.14) (2021-08-28)
+
+
+### Bug Fixes
+
+* **fonts:** update fonts dependencies ([#2866](https://github.com/KaTeX/KaTeX/issues/2866)) ([ea409ea](https://github.com/KaTeX/KaTeX/commit/ea409eaf1d7f8fe712a966edc66c545ae5fe5425))
+
+## [0.13.13](https://github.com/KaTeX/KaTeX/compare/v0.13.12...v0.13.13) (2021-07-21)
+
+
+### Bug Fixes
+
+* add namespace for svg, making output XHTML+SVG+MathML compatible ([#2725](https://github.com/KaTeX/KaTeX/issues/2725)) ([35ff5ac](https://github.com/KaTeX/KaTeX/commit/35ff5ac2231b53fdb849f639611e0e44c01aa16b))
+
+## [0.13.12](https://github.com/KaTeX/KaTeX/compare/v0.13.11...v0.13.12) (2021-07-21)
+
+
+### Bug Fixes
+
+* Correct invalid box-sizing property, adjusting spacing of \angl ([#3053](https://github.com/KaTeX/KaTeX/issues/3053)) ([910e523](https://github.com/KaTeX/KaTeX/commit/910e523633da555a758dd176fb28ec139ed3b608)), closes [#3052](https://github.com/KaTeX/KaTeX/issues/3052)
+
 ## [0.13.11](https://github.com/KaTeX/KaTeX/compare/v0.13.10...v0.13.11) (2021-05-14)
 
 

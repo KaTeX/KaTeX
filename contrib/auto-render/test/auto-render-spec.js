@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import splitAtDelimiters from "../splitAtDelimiters";
 import renderMathInElement from "../auto-render";
 
