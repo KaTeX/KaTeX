@@ -937,12 +937,11 @@ const braketHelper = (one) => (context) => {
     };
 };
 defineMacro("\\bra@ket", braketHelper(false));
-defineMacro("\\bra@ket@one", braketHelper(true));
+defineMacro("\\bra@set", braketHelper(true));
 defineMacro("\\Braket",
     "\\bra@ket{\\left\\langle}{\\,\\middle\\vert\\,}{\\right\\rangle}");
-defineMacro("\\Set",
-    "\\bra@ket@one{\\left\\{}{\\,\\middle\\vert\\,}{\\right\\}}");
-defineMacro("\\set", "\\bra@ket@one{\\{}{\\mid}{\\}}");
+defineMacro("\\Set", "\\bra@set{\\left\\{}{\\,\\middle\\vert\\,}{\\right\\}}");
+defineMacro("\\set", "\\bra@set{\\{}{\\mid}{\\}}");
 
 //////////////////////////////////////////////////////////////////////
 // actuarialangle.dtx
