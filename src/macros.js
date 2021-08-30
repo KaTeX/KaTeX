@@ -912,23 +912,38 @@ defineMacro("\\braket", "\\mathinner{\\langle{#1}\\rangle}");
 defineMacro("\\Bra", "\\left\\langle#1\\right|");
 defineMacro("\\Ket", "\\left|#1\\right\\rangle");
 const braketHelper = (one) => (context) => {
-    const left = context.consumeArg();
-    const middle = context.consumeArg();
-    const right = context.consumeArg();
+    const left = context.consumeArg().tokens;
+    const middle = context.consumeArg().tokens;
+    const middleDouble = context.consumeArg().tokens;
+    const right = context.consumeArg().tokens;
+    const oldMiddle = context.macros.get("|");
+    const oldMiddleDouble = context.macros.get("\\|");
     context.macros.beginGroup();
-    context.macros.set("|", (context) => {
+    const midMacro = (double) => (context) => {
         if (one) {
-            // Only modify the first instance of |
-            context.macros.set("|", undefined);
+            // Only modify the first instance of | or \|
+            context.macros.set("|", oldMiddle);
+            context.macros.set("\\|", oldMiddleDouble);
+        }
+        let doubled = double;
+        if (!double && middleDouble.length) {
+            // Mimic \@ifnextchar
+            const nextToken = context.future();
+            if (nextToken.text === "|") {
+                context.popToken();
+                doubled = true;
+            }
         }
         return {
-            tokens: middle.tokens,
+            tokens: doubled ? middleDouble : middle,
             numArgs: 0,
         };
-    });
+    };
+    context.macros.set("|", midMacro(false));
+    context.macros.set("\\|", midMacro(true));
     const arg = context.consumeArg().tokens;
     const expanded = context.expandTokens([
-        ...right.tokens, ...arg, ...left.tokens,  // reversed
+        ...right, ...arg, ...left,  // reversed
     ]);
     context.macros.endGroup();
     return {
@@ -938,11 +953,12 @@ const braketHelper = (one) => (context) => {
 };
 defineMacro("\\bra@ket", braketHelper(false));
 defineMacro("\\bra@set", braketHelper(true));
-defineMacro("\\Braket",
-    "\\bra@ket{\\left\\langle}{\\,\\middle\\vert\\,}{\\right\\rangle}");
-defineMacro("\\Set",
-    "\\bra@set{\\left\\{\\:}{\\;\\middle\\vert\\;}{\\:\\right\\}}");
-defineMacro("\\set", "\\bra@set{\\lbrace\\,}{\\mid}{\\,\\rbrace}");
+defineMacro("\\Braket", "\\bra@ket{\\left\\langle}" +
+    "{\\,\\middle\\vert\\,}{\\,\\middle\\vert\\,}{\\right\\rangle}");
+defineMacro("\\Set", "\\bra@set{\\left\\{\\:}" +
+    "{\\;\\middle\\vert\\;}{\\;\\middle\\Vert\\;}{\\:\\right\\}}");
+defineMacro("\\set", // has no support for special || or \|
+    "\\bra@set{\\lbrace\\,}{\\mid}{}{\\,\\rbrace}");
 
 //////////////////////////////////////////////////////////////////////
 // actuarialangle.dtx
