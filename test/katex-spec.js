@@ -3599,11 +3599,19 @@ describe("A macro expander", function() {
     });
 
     it("should expand \\set as expected", () => {
-        expect`\set{x|x<5}`.toParseLike`\{x\mid x<5\}`;
+        expect`\set{x|x<5|S|}`.toParseLike`\{\,x\mid x<5|S|\,\}`;
+        // \set doesn't support special || or \| handling
+        expect`\set{x||x<5|S|}`.toParseLike`\{\,x\mid |x<5|S|\,\}`;
+        expect`\set{x\|x<5|S|}`.toParseLike`\{\,x\|x<5\mid S|\,\}`;
     });
 
     it("should expand \\Set as expected", () => {
-        expect`\Set{ x | x<\frac 1 2 }`.toParseLike`\left\{ x\,\middle\vert\, x<\frac 1 2 \right\}`;
+        expect`\Set{ x | x<\frac 1 2 |S| }`
+        .toParseLike`\left\{\: x\;\middle\vert\; x<\frac 1 2 |S| \:\right\}`;
+        expect`\Set{ x || x<\frac 1 2 |S| }`
+        .toParseLike`\left\{\: x\;\middle\Vert\; x<\frac 1 2 |S| \:\right\}`;
+        expect`\Set{ x \| x<\frac 1 2 |S| }`
+        .toParseLike`\left\{\: x\;\middle\Vert\; x<\frac 1 2 |S| \:\right\}`;
     });
 });
 

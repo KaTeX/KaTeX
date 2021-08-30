@@ -923,7 +923,9 @@ const braketHelper = (one) => (context) => {
         if (one) {
             // Only modify the first instance of | or \|
             context.macros.set("|", oldMiddle);
-            context.macros.set("\\|", oldMiddleDouble);
+            if (middleDouble.length) {
+                context.macros.set("\\|", oldMiddleDouble);
+            }
         }
         let doubled = double;
         if (!double && middleDouble.length) {
@@ -940,7 +942,9 @@ const braketHelper = (one) => (context) => {
         };
     };
     context.macros.set("|", midMacro(false));
-    context.macros.set("\\|", midMacro(true));
+    if (middleDouble.length) {
+        context.macros.set("\\|", midMacro(true));
+    }
     const arg = context.consumeArg().tokens;
     const expanded = context.expandTokens([
         ...right, ...arg, ...left,  // reversed
@@ -957,8 +961,8 @@ defineMacro("\\Braket", "\\bra@ket{\\left\\langle}" +
     "{\\,\\middle\\vert\\,}{\\,\\middle\\vert\\,}{\\right\\rangle}");
 defineMacro("\\Set", "\\bra@set{\\left\\{\\:}" +
     "{\\;\\middle\\vert\\;}{\\;\\middle\\Vert\\;}{\\:\\right\\}}");
-defineMacro("\\set", // has no support for special || or \|
-    "\\bra@set{\\lbrace\\,}{\\mid}{}{\\,\\rbrace}");
+defineMacro("\\set", "\\bra@set{\\{\\,}{\\mid}{}{\\,\\}}");
+    // has no support for special || or \|
 
 //////////////////////////////////////////////////////////////////////
 // actuarialangle.dtx
