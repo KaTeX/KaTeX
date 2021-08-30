@@ -72,6 +72,13 @@ export interface MacroContextInterface {
     expandMacroAsText(name: string): string | void;
 
     /**
+     * Fully expand the given token stream and return the resulting list of
+     * tokens.  Note that the input tokens are in reverse order, but the
+     * output tokens are in forward order.
+     */
+    expandTokens(tokens: Token[]): Token[];
+
+    /**
      * Consume an argument from the token stream, and return the resulting array
      * of tokens and start/end token.
      */
@@ -121,27 +128,6 @@ export default builtinMacros;
 // This function might one day accept an additional argument and do more things.
 export function defineMacro(name: string, body: MacroDefinition) {
     builtinMacros[name] = body;
-}
-
-// helper function
-function recreateArgStr(context: MacroContextInterface): string {
-    // Recreate the macro's original argument string from the array of parse tokens.
-    const tokens = context.consumeArgs(1)[0];
-    let str = "";
-    // $FlowFixMe Flow doesn't know about .start
-    let expectedLoc = tokens[tokens.length - 1].loc.start;
-    for (let i = tokens.length - 1; i >= 0; i--) {
-        // $FlowFixMe
-        const actualLoc = tokens[i].loc.start;
-        if (actualLoc > expectedLoc) {
-            // context.consumeArgs has eaten a space.
-            str += " ";
-            expectedLoc = actualLoc;
-        }
-        str += tokens[i].text;
-        expectedLoc += tokens[i].text.length;
-    }
-    return str;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -1039,20 +1025,38 @@ defineMacro("\\ket", "\\mathinner{|{#1}\\rangle}");
 defineMacro("\\braket", "\\mathinner{\\langle{#1}\\rangle}");
 defineMacro("\\Bra", "\\left\\langle#1\\right|");
 defineMacro("\\Ket", "\\left|#1\\right\\rangle");
-defineMacro("\\Braket",  function(context) {
-    const argStr = recreateArgStr(context);
-    return "\\left\\langle" + argStr.replace(/\|/g, "\\,\\middle\\vert\\,") +
-           "\\right\\rangle";
-});
-defineMacro("\\Set",  function(context) {
-    const argStr = recreateArgStr(context);
-    return "\\left\\{" + argStr.replace(/\|/, "\\,\\middle\\vert\\,") +
-           "\\right\\}";
-});
-defineMacro("\\set",  function(context) {
-    const argStr = recreateArgStr(context);
-    return "\\{" + argStr.replace(/\|/, "\\mid ") + "\\}";
-});
+const braketHelper = (one) => (context) => {
+    const left = context.consumeArg();
+    const middle = context.consumeArg();
+    const right = context.consumeArg();
+    context.macros.beginGroup();
+    context.macros.set("|", (context) => {
+        if (one) {
+            // Only modify the first instance of |
+            context.macros.set("|", undefined);
+        }
+        return {
+            tokens: middle.tokens,
+            numArgs: 0,
+        };
+    });
+    const arg = context.consumeArg().tokens;
+    const expanded = context.expandTokens([
+        ...right.tokens, ...arg, ...left.tokens,  // reversed
+    ]);
+    context.macros.endGroup();
+    return {
+        tokens: expanded.reverse(),
+        numArgs: 0,
+    };
+};
+defineMacro("\\bra@ket", braketHelper(false));
+defineMacro("\\bra@ket@one", braketHelper(true));
+defineMacro("\\Braket",
+    "\\bra@ket{\\left\\langle}{\\,\\middle\\vert\\,}{\\right\\rangle}");
+defineMacro("\\Set",
+    "\\bra@ket@one{\\left\\{}{\\,\\middle\\vert\\,}{\\right\\}}");
+defineMacro("\\set", "\\bra@ket@one{\\{}{\\mid}{\\}}");
 
 //////////////////////////////////////////////////////////////////////
 // actuarialangle.dtx
