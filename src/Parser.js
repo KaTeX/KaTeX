@@ -130,17 +130,24 @@ export default class Parser {
             this.gullet.macros.set("\\color", "\\textcolor");
         }
 
-        // Try to parse the input
-        const parse = this.parseExpression(false);
+        try {
+            // Try to parse the input
+            const parse = this.parseExpression(false);
 
-        // If we succeeded, make sure there's an EOF at the end
-        this.expect("EOF");
+            // If we succeeded, make sure there's an EOF at the end
+            this.expect("EOF");
 
-        // End the group namespace for the expression
-        if (!this.settings.globalGroup) {
-            this.gullet.endGroup();
+            // End the group namespace for the expression
+            if (!this.settings.globalGroup) {
+                this.gullet.endGroup();
+            }
+
+            return parse;
+
+        // Close any leftover groups in case of a parse error.
+        } finally {
+            this.gullet.endGroups();
         }
-        return parse;
     }
 
     static endOfExpression: string[] = ["}", "\\endgroup", "\\end", "\\right", "&"];
@@ -951,7 +958,8 @@ export default class Parser {
                 if (!unicodeAccents[accent]) {
                     throw new ParseError(`Unknown accent ' ${accent}'`, nucleus);
                 }
-                const command = unicodeAccents[accent][this.mode];
+                const command = unicodeAccents[accent][this.mode] ||
+                    unicodeAccents[accent].text;
                 if (!command) {
                     throw new ParseError(
                         `Accent ${accent} unsupported in ${this.mode} mode`,
