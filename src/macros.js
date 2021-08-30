@@ -940,8 +940,9 @@ defineMacro("\\bra@ket", braketHelper(false));
 defineMacro("\\bra@set", braketHelper(true));
 defineMacro("\\Braket",
     "\\bra@ket{\\left\\langle}{\\,\\middle\\vert\\,}{\\right\\rangle}");
-defineMacro("\\Set", "\\bra@set{\\left\\{}{\\,\\middle\\vert\\,}{\\right\\}}");
-defineMacro("\\set", "\\bra@set{\\{}{\\mid}{\\}}");
+defineMacro("\\Set",
+    "\\bra@set{\\left\\{\\:}{\\;\\middle\\vert\\;}{\\:\\right\\}}");
+defineMacro("\\set", "\\bra@set{\\lbrace\\,}{\\mid}{\\,\\rbrace}");
 
 //////////////////////////////////////////////////////////////////////
 // actuarialangle.dtx
