@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.17](https://github.com/KaTeX/KaTeX/compare/v0.13.16...v0.13.17) (2021-09-01)
+
+
+### Bug Fixes
+
+* **fonts:** remove hints from unknown symbols ([#3222](https://github.com/KaTeX/KaTeX/issues/3222)) ([9420f8a](https://github.com/KaTeX/KaTeX/commit/9420f8a2a98442158a9cd2b3fd650092d216d0a2)), closes [#3219](https://github.com/KaTeX/KaTeX/issues/3219)
+
 ## [0.13.16](https://github.com/KaTeX/KaTeX/compare/v0.13.15...v0.13.16) (2021-08-28)
 
 
