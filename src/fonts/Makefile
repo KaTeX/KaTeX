@@ -123,9 +123,9 @@ fonts: ff
 		\
 		echo "Hinting $$file"; \
 		if echo "$$file" | $(GREP) -q -e "Size[1-4]" -e "Typewriter"; then \
-			$(TTFAUTOHINT) --windows-compatibility --symbol ttf/$$file.ttf ttf/$$file.ttf.hinted; \
+			$(TTFAUTOHINT) -f none -S --windows-compatibility --symbol ttf/$$file.ttf ttf/$$file.ttf.hinted; \
 		else \
-			$(TTFAUTOHINT) --windows-compatibility ttf/$$file.ttf ttf/$$file.ttf.hinted; \
+			$(TTFAUTOHINT) -f none -S --windows-compatibility ttf/$$file.ttf ttf/$$file.ttf.hinted; \
 		fi; \
 		mv ttf/$$file.ttf.hinted ttf/$$file.ttf; \
 		\
