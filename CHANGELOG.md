@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.18](https://github.com/KaTeX/KaTeX/compare/v0.13.17...v0.13.18) (2021-09-02)
+
+
+### Features
+
+* unicode support for minus and asterisk operators ([#3227](https://github.com/KaTeX/KaTeX/issues/3227)) ([9dbfc1c](https://github.com/KaTeX/KaTeX/commit/9dbfc1c91725a9db348ce212488690147b9b9dd4)), closes [#3225](https://github.com/KaTeX/KaTeX/issues/3225)
+
 ## [0.13.17](https://github.com/KaTeX/KaTeX/compare/v0.13.16...v0.13.17) (2021-09-01)
 
 
