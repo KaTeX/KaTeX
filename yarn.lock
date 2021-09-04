@@ -9531,13 +9531,13 @@ __metadata:
   linkType: hard
 
 "mini-css-extract-plugin@npm:^2.0.0":
-  version: 2.2.0
-  resolution: "mini-css-extract-plugin@npm:2.2.0"
+  version: 2.2.2
+  resolution: "mini-css-extract-plugin@npm:2.2.2"
   dependencies:
     schema-utils: ^3.1.0
   peerDependencies:
     webpack: ^5.0.0
-  checksum: 783b5a8c1c6f0f67f1cf3bd289c7072fb0356a0c1f5ccd78c868d6c8fd9bd7c0e48d73b1827ca34cef35d79dd65fd95be6208dc40984cc32bc17c62a38ecf9e3
+  checksum: 8b4504b588ed35574d94fc1859db023f6883f5eb6f3ab4c3ae2b9beda8a222f3d76e32e4f3a36e84fee67fb1e1a5628f008935c17bd478e40ac5f118e907344e
   languageName: node
   linkType: hard
 
