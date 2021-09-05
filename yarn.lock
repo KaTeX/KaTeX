@@ -12828,14 +12828,14 @@ resolve@^2.0.0-next.3:
   linkType: hard
 
 "selenium-webdriver@npm:^4.0.0-beta.4":
-  version: 4.0.0-beta.4
-  resolution: "selenium-webdriver@npm:4.0.0-beta.4"
+  version: 4.0.0-rc-1
+  resolution: "selenium-webdriver@npm:4.0.0-rc-1"
   dependencies:
     jszip: ^3.6.0
     rimraf: ^3.0.2
     tmp: ^0.2.1
     ws: ">=7.4.6"
-  checksum: c57ec5b41f8ff4a81280d548f95e899a01f6cf6b0b46fb4f7a92440a710836a2994368561c0be43abd301f76c293e29dca68d959a9ae6c15fb03f5a040dee240
+  checksum: 10e74040a3fb1b55b295a21b74061cca85742cdc64922bd932339c66684a9f0cc9ec28abce5ea0548858332126c10e2e5cbed43080feab782ad45db2388c8fd8
   languageName: node
   linkType: hard
 
