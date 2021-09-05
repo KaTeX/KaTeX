@@ -1,5 +1,5 @@
 {
-    "parser": "babel-eslint",
+    "parser": "@babel/eslint-parser",
     "plugins": [
         "flowtype"
     ],
@@ -96,6 +96,11 @@
         }
     }, {
         "files": ["website/**/*.js"],
+        "parserOptions": {
+            "babelOptions": {
+                "presets": ["@babel/preset-react"]
+            }
+        },
         "extends": [
             "plugin:react/recommended"
         ],

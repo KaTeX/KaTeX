@@ -4,7 +4,7 @@ import Style from "../Style";
 import defineEnvironment from "../defineEnvironment";
 import {parseCD} from "./cd";
 import defineFunction from "../defineFunction";
-import {defineMacro} from "../macros";
+import defineMacro from "../defineMacro";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import {assertNodeType, assertSymbolNodeType} from "../parseNode";
@@ -866,7 +866,8 @@ defineEnvironment({
         const res: ParseNode<"array"> =
             parseArray(context.parser, payload, dCellStyle(context.envName));
         // Populate cols with the correct number of column alignment specs.
-        res.cols = new Array(res.body[0].length).fill(
+        const numCols = Math.max(0, ...res.body.map((row) => row.length));
+        res.cols = new Array(numCols).fill(
             {type: "align", align: colAlign}
         );
         return delimiters ? {

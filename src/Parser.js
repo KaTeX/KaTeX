@@ -130,17 +130,24 @@ export default class Parser {
             this.gullet.macros.set("\\color", "\\textcolor");
         }
 
-        // Try to parse the input
-        const parse = this.parseExpression(false);
+        try {
+            // Try to parse the input
+            const parse = this.parseExpression(false);
 
-        // If we succeeded, make sure there's an EOF at the end
-        this.expect("EOF");
+            // If we succeeded, make sure there's an EOF at the end
+            this.expect("EOF");
 
-        // End the group namespace for the expression
-        if (!this.settings.globalGroup) {
-            this.gullet.endGroup();
+            // End the group namespace for the expression
+            if (!this.settings.globalGroup) {
+                this.gullet.endGroup();
+            }
+
+            return parse;
+
+        // Close any leftover groups in case of a parse error.
+        } finally {
+            this.gullet.endGroups();
         }
-        return parse;
     }
 
     /**
@@ -347,10 +354,10 @@ export default class Parser {
                     const limits = lex.text === "\\limits";
                     base.limits = limits;
                     base.alwaysHandleSupSub = true;
-                } else if (base && base.type === "operatorname"
-                        && base.alwaysHandleSupSub) {
-                    const limits = lex.text === "\\limits";
-                    base.limits = limits;
+                } else if (base && base.type === "operatorname") {
+                    if (base.alwaysHandleSupSub) {
+                        base.limits = lex.text === "\\limits";
+                    }
                 } else {
                     throw new ParseError(
                         "Limit controls must follow a math operator",
@@ -972,7 +979,8 @@ export default class Parser {
                 if (!unicodeAccents[accent]) {
                     throw new ParseError(`Unknown accent ' ${accent}'`, nucleus);
                 }
-                const command = unicodeAccents[accent][this.mode];
+                const command = unicodeAccents[accent][this.mode] ||
+                    unicodeAccents[accent].text;
                 if (!command) {
                     throw new ParseError(
                         `Accent ${accent} unsupported in ${this.mode} mode`,

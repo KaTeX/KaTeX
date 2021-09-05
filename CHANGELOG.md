@@ -1,6 +1,117 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.18](https://github.com/KaTeX/KaTeX/compare/v0.13.17...v0.13.18) (2021-09-02)
+
+
+### Features
+
+* unicode support for minus and asterisk operators ([#3227](https://github.com/KaTeX/KaTeX/issues/3227)) ([9dbfc1c](https://github.com/KaTeX/KaTeX/commit/9dbfc1c91725a9db348ce212488690147b9b9dd4)), closes [#3225](https://github.com/KaTeX/KaTeX/issues/3225)
+
+## [0.13.17](https://github.com/KaTeX/KaTeX/compare/v0.13.16...v0.13.17) (2021-09-01)
+
+
+### Bug Fixes
+
+* **fonts:** remove hints from unknown symbols ([#3222](https://github.com/KaTeX/KaTeX/issues/3222)) ([9420f8a](https://github.com/KaTeX/KaTeX/commit/9420f8a2a98442158a9cd2b3fd650092d216d0a2)), closes [#3219](https://github.com/KaTeX/KaTeX/issues/3219)
+
+## [0.13.16](https://github.com/KaTeX/KaTeX/compare/v0.13.15...v0.13.16) (2021-08-28)
+
+
+### Bug Fixes
+
+* \char support for >16-bit Unicode characters ([#3006](https://github.com/KaTeX/KaTeX/issues/3006)) ([ff1734f](https://github.com/KaTeX/KaTeX/commit/ff1734f7c4882fb350cb0e1f366f04ce63675643)), closes [#3004](https://github.com/KaTeX/KaTeX/issues/3004)
+* remove local macros upon parse error ([#3114](https://github.com/KaTeX/KaTeX/issues/3114)) ([a6f29e3](https://github.com/KaTeX/KaTeX/commit/a6f29e36121a31b46866d1985bbc86a06080fbd4)), closes [#3122](https://github.com/KaTeX/KaTeX/issues/3122)
+
+## [0.13.15](https://github.com/KaTeX/KaTeX/compare/v0.13.14...v0.13.15) (2021-08-28)
+
+
+### Features
+
+* text-mode cedilla accent via \c ([#3036](https://github.com/KaTeX/KaTeX/issues/3036)) ([952fb84](https://github.com/KaTeX/KaTeX/commit/952fb844da9c99d5fca41a87b86e8857a677c899)), closes [#638](https://github.com/KaTeX/KaTeX/issues/638)
+
+## [0.13.14](https://github.com/KaTeX/KaTeX/compare/v0.13.13...v0.13.14) (2021-08-28)
+
+
+### Bug Fixes
+
+* **fonts:** update fonts dependencies ([#2866](https://github.com/KaTeX/KaTeX/issues/2866)) ([ea409ea](https://github.com/KaTeX/KaTeX/commit/ea409eaf1d7f8fe712a966edc66c545ae5fe5425))
+
+## [0.13.13](https://github.com/KaTeX/KaTeX/compare/v0.13.12...v0.13.13) (2021-07-21)
+
+
+### Bug Fixes
+
+* add namespace for svg, making output XHTML+SVG+MathML compatible ([#2725](https://github.com/KaTeX/KaTeX/issues/2725)) ([35ff5ac](https://github.com/KaTeX/KaTeX/commit/35ff5ac2231b53fdb849f639611e0e44c01aa16b))
+
+## [0.13.12](https://github.com/KaTeX/KaTeX/compare/v0.13.11...v0.13.12) (2021-07-21)
+
+
+### Bug Fixes
+
+* Correct invalid box-sizing property, adjusting spacing of \angl ([#3053](https://github.com/KaTeX/KaTeX/issues/3053)) ([910e523](https://github.com/KaTeX/KaTeX/commit/910e523633da555a758dd176fb28ec139ed3b608)), closes [#3052](https://github.com/KaTeX/KaTeX/issues/3052)
+
+## [0.13.11](https://github.com/KaTeX/KaTeX/compare/v0.13.10...v0.13.11) (2021-05-14)
+
+
+### Bug Fixes
+
+* matrix environment with zero or inconsistent columns ([#3018](https://github.com/KaTeX/KaTeX/issues/3018)) ([f779bac](https://github.com/KaTeX/KaTeX/commit/f779bac684c16c8f513b57b37f855f0772dc20d1)), closes [#3017](https://github.com/KaTeX/KaTeX/issues/3017)
+
+
+### Features
+
+* Allow text-mode accents in math mode, except in strict mode ([#3009](https://github.com/KaTeX/KaTeX/issues/3009)) ([0e9acce](https://github.com/KaTeX/KaTeX/commit/0e9acce9bef7b8001067ef3aa3ed188418278b2d)), closes [#2983](https://github.com/KaTeX/KaTeX/issues/2983)
+
+## [0.13.10](https://github.com/KaTeX/KaTeX/compare/v0.13.9...v0.13.10) (2021-05-12)
+
+
+### Bug Fixes
+
+* Correct for negative margin in integrand lower limits ([#2987](https://github.com/KaTeX/KaTeX/issues/2987)) ([9b4acc9](https://github.com/KaTeX/KaTeX/commit/9b4acc971c4d3d0d05960ed2237a4bbcabde2e39))
+
+## [0.13.9](https://github.com/KaTeX/KaTeX/compare/v0.13.8...v0.13.9) (2021-05-07)
+
+
+### Bug Fixes
+
+* MathML for stretchy accents. [#2990](https://github.com/KaTeX/KaTeX/issues/2990) ([#2991](https://github.com/KaTeX/KaTeX/issues/2991)) ([1cb6279](https://github.com/KaTeX/KaTeX/commit/1cb62799c6b9484df5c5ba500f5144f61a24288d))
+
+## [0.13.8](https://github.com/KaTeX/KaTeX/compare/v0.13.7...v0.13.8) (2021-05-06)
+
+
+### Features
+
+* \operatornamewithlimits (and clean up \operatorname support) ([#2984](https://github.com/KaTeX/KaTeX/issues/2984)) ([e9b751b](https://github.com/KaTeX/KaTeX/commit/e9b751b72d08ff2ceed71062e3bf84c8020d684f))
+
+## [0.13.7](https://github.com/KaTeX/KaTeX/compare/v0.13.6...v0.13.7) (2021-05-06)
+
+
+### Bug Fixes
+
+* binom delimiter size in scriptscriptstyle. ([#2976](https://github.com/KaTeX/KaTeX/issues/2976)) ([980b004](https://github.com/KaTeX/KaTeX/commit/980b0040232f5b7d2162d4067ed4bce431933286))
+
+## [0.13.6](https://github.com/KaTeX/KaTeX/compare/v0.13.5...v0.13.6) (2021-05-06)
+
+
+### Bug Fixes
+
+* Correctly parse \ followed by whitespace ([#2877](https://github.com/KaTeX/KaTeX/issues/2877)) ([c85250d](https://github.com/KaTeX/KaTeX/commit/c85250d14e7dcace95eca76a66973d10d1b6ee9f)), closes [#2860](https://github.com/KaTeX/KaTeX/issues/2860)
+
+## [0.13.5](https://github.com/KaTeX/KaTeX/compare/v0.13.4...v0.13.5) (2021-05-02)
+
+
+### Bug Fixes
+
+* Support \S and \P in math mode ([#2977](https://github.com/KaTeX/KaTeX/issues/2977)) ([3f7163d](https://github.com/KaTeX/KaTeX/commit/3f7163daf57b5c0bd7441e029170305557f0ab4e))
+
+## [0.13.4](https://github.com/KaTeX/KaTeX/compare/v0.13.3...v0.13.4) (2021-05-02)
+
+
+### Bug Fixes
+
+* Avoid crash when \operatorname has \limits ([#2979](https://github.com/KaTeX/KaTeX/issues/2979)) ([fbda0b1](https://github.com/KaTeX/KaTeX/commit/fbda0b1136cfe3f1a0c47f16a2a1e1e99c284ea8))
+
 ## [0.13.3](https://github.com/KaTeX/KaTeX/compare/v0.13.2...v0.13.3) (2021-04-24)
 
 

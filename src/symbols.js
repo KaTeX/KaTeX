@@ -144,8 +144,10 @@ defineSymbol(math, main, textord, "\u211c", "\\Re", true);
 defineSymbol(math, main, textord, "\u2661", "\\heartsuit", true);
 defineSymbol(math, main, textord, "\u2111", "\\Im", true);
 defineSymbol(math, main, textord, "\u2660", "\\spadesuit", true);
-defineSymbol(text, main, textord, "\u00a7", "\\S", true);
-defineSymbol(text, main, textord, "\u00b6", "\\P", true);
+defineSymbol(math, main, textord, "\u00a7", "\\S", true);
+defineSymbol(text, main, textord, "\u00a7", "\\S");
+defineSymbol(math, main, textord, "\u00b6", "\\P", true);
+defineSymbol(text, main, textord, "\u00b6", "\\P");
 
 // Math and Text
 defineSymbol(math, main, textord, "\u2020", "\\dag");
@@ -532,9 +534,9 @@ defineSymbol(math, main, mathord, "\u03d6", "\\varpi", true);
 defineSymbol(math, main, mathord, "\u03f1", "\\varrho", true);
 defineSymbol(math, main, mathord, "\u03c2", "\\varsigma", true);
 defineSymbol(math, main, mathord, "\u03c6", "\\varphi", true);
-defineSymbol(math, main, bin, "\u2217", "*");
+defineSymbol(math, main, bin, "\u2217", "*", true);
 defineSymbol(math, main, bin, "+", "+");
-defineSymbol(math, main, bin, "\u2212", "-");
+defineSymbol(math, main, bin, "\u2212", "-", true);
 defineSymbol(math, main, bin, "\u22c5", "\\cdot", true);
 defineSymbol(math, main, bin, "\u2218", "\\circ");
 defineSymbol(math, main, bin, "\u00f7", "\\div", true);
@@ -704,6 +706,7 @@ defineSymbol(text, main, accent, "\u02dc", "\\~"); // tilde
 defineSymbol(text, main, accent, "\u02c9", "\\="); // macron
 defineSymbol(text, main, accent, "\u02d8", "\\u"); // breve
 defineSymbol(text, main, accent, "\u02d9", "\\."); // dot above
+defineSymbol(text, main, accent, "\u00b8", "\\c"); // cedilla
 defineSymbol(text, main, accent, "\u02da", "\\r"); // ring above
 defineSymbol(text, main, accent, "\u02c7", "\\v"); // caron
 defineSymbol(text, main, accent, "\u00a8", '\\"'); // diaresis
@@ -873,7 +876,7 @@ for (let i = 0; i < 10; i++) {
 // but they are not actually in the font, nor are they supported by the
 // Unicode accent mechanism, so they fall back to Times font and look ugly.
 // TODO(edemaine): Fix this.
-export const extraLatin = "\u00c7\u00d0\u00de\u00e7\u00fe";
+export const extraLatin = "\u00d0\u00de\u00fe";
 for (let i = 0; i < extraLatin.length; i++) {
     const ch = extraLatin.charAt(i);
     defineSymbol(math, main, mathord, ch, ch);

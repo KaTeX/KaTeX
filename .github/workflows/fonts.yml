@@ -11,6 +11,9 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'build fonts')
     outputs:
       image: ${{ steps.check-image.outputs.result }}
+    permissions:
+      contents: read
+      pull-requests: write # to remove label
 
     steps:
     - uses: actions/checkout@v2
@@ -19,7 +22,7 @@ jobs:
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
     - name: Remove label
-      uses: actions/github-script@v3
+      uses: actions/github-script@v4
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
@@ -32,7 +35,7 @@ jobs:
 
     - name: Check image
       id: check-image
-      uses: actions/github-script@v3
+      uses: actions/github-script@v4
       with:
         # https://github.community/t/github-token-has-no-access-to-new-container-rest-apis/170395
         github-token: ${{ secrets.GH_PACKAGES_TOKEN }}
