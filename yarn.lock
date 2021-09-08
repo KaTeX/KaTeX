@@ -1939,20 +1939,20 @@ __metadata:
   linkType: hard
 
 "@semantic-release/git@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@semantic-release/git@npm:9.0.0"
+  version: 9.0.1
+  resolution: "@semantic-release/git@npm:9.0.1"
   dependencies:
     "@semantic-release/error": ^2.1.0
     aggregate-error: ^3.0.0
     debug: ^4.0.0
     dir-glob: ^3.0.0
-    execa: ^4.0.0
+    execa: ^5.0.0
     lodash: ^4.17.4
     micromatch: ^4.0.0
     p-reduce: ^2.0.0
   peerDependencies:
     semantic-release: ">=16.0.0 <18.0.0"
-  checksum: a62c964363f02ebf1c0b37c45cfa557dfddf9f64e3eead1aaa7b9df297581f3608c03592986946dabdc75b7891a04b86bfd18ac6b0bc1d6beefaed14656589d3
+  checksum: 00045da5b48ff09b4a3045c93f07c4bf7e7fb8355d9d4e306862a2a9a4233f728901e4949fac5fa7bed868e18931f8d5bbeae1dfc4cc298a20191789a8c70907
   languageName: node
   linkType: hard
 
