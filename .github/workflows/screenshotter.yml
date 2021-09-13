@@ -14,7 +14,7 @@ jobs:
         browser: [chrome, firefox, safari]
         include:
         - browser: chrome
-          image: selenium/standalone-chrome:3.141.59-20210422
+          image: selenium/standalone-chrome:3.141.59-20210830
         - browser: firefox
           image: selenium/standalone-firefox:3.141.59-20210422
         - browser: safari
