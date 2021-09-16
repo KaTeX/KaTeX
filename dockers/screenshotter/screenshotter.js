@@ -303,6 +303,7 @@ function buildDriver() {
         builder.usingServer(seleniumURL);
     }
     if (opts.seleniumCapabilities) {
+        // TODO: withCapabilities is deprecated
         builder.withCapabilities(opts.seleniumCapabilities);
     }
     return builder.build();
@@ -487,9 +488,13 @@ async function takeScreenshot(key) {
                 await collectCoverage();
             }
             await driver.get(url);
-            await driver.executeAsyncScript(
-                    "var callback = arguments[arguments.length - 1]; " +
-                    "load_fonts_and_images(callback);");
+            try {
+                await driver.executeAsyncScript(
+                        "var callback = arguments[arguments.length - 1]; " +
+                        "load_fonts_and_images(callback);");
+            } catch (e) {
+                console.error(e);
+            }
             driverReady = true;
         }
         if (opts.wait) {
