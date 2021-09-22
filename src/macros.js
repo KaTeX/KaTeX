@@ -973,3 +973,9 @@ defineMacro("\\grayH", "\\textcolor{##3b3e40}{#1}");
 defineMacro("\\grayI", "\\textcolor{##21242c}{#1}");
 defineMacro("\\kaBlue", "\\textcolor{##314453}{#1}");
 defineMacro("\\kaGreen", "\\textcolor{##71B307}{#1}");
+
+//////////////////////////////////////////////////////////////////////
+// derivative
+// https://ctan.org/pkg/derivative
+defineMacro("\\odv", "\\frac{\\mathrm{d}#1}{\\mathrm{d}#2}");
+defineMacro("\\pdv", "\\frac{\\partial #1}{\\partial #2}");
