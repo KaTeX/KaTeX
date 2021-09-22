@@ -787,6 +787,7 @@ use `\ce` instead|
 |\O|$\text{\O}$|`\text{\O}`|
 |\o|$\text{\o}$|`\text{\o}`|
 |\odot|$\odot$||
+|\odv|$\odv{y}{x}$|`\odv{y}{x}`|
 |\OE|$\text{\OE}$|`\text{\OE}`|
 |\oe|$\text{\oe}$|`\text{\oe}`|
 |\officialeuro|<span style="color:firebrick;">Not supported</span>||
@@ -833,6 +834,7 @@ use `\ce` instead|
 |\parallel|$\parallel$||
 |\part|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
 |\partial|$\partial$||
+|\pdv|$\pdv{y}{x}$|`\pdv{y}{x}`|
 |\perp|$\perp$||
 |\phantom|$\Gamma^{\phantom{i}j}_{i\phantom{j}k}$|`\Gamma^{\phantom{i}j}_{i\phantom{j}k}`|
 |\phase|$\phase{-78^\circ}$|`\phase{-78^\circ}`|
