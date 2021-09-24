@@ -283,14 +283,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-validator-identifier@npm:^7.12.11":
-  version: 7.12.11
-  resolution: "@babel/helper-validator-identifier@npm:7.12.11"
-  checksum: e604c6bf890704fc46c1ae13bf23afb242b810224ec3403bba67cdbf0d8dabfec4b82123d6dfb18135a0ee3f7f79218583c819363ebb5e04a0a49d8418db7fce
-  languageName: node
-  linkType: hard
-
-"@babel/helper-validator-identifier@npm:^7.14.9":
+"@babel/helper-validator-identifier@npm:^7.12.11, @babel/helper-validator-identifier@npm:^7.14.9":
   version: 7.14.9
   resolution: "@babel/helper-validator-identifier@npm:7.14.9"
   checksum: 58552531a7674363e74672434c312ddaf1545b8a43308e1a7f38db58bf79c796c095a6dab6a6105eb0d783b97441f6cbb525bb887f29a35f232fcdbd8cb240dc
@@ -1246,18 +1239,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.12.1, @babel/types@npm:^7.12.13, @babel/types@npm:^7.12.17, @babel/types@npm:^7.12.6, @babel/types@npm:^7.13.0, @babel/types@npm:^7.4.4":
-  version: 7.13.0
-  resolution: "@babel/types@npm:7.13.0"
-  dependencies:
-    "@babel/helper-validator-identifier": ^7.12.11
-    lodash: ^4.17.19
-    to-fast-properties: ^2.0.0
-  checksum: 3dbb08add345325a49e1deebefa8d3774a8ab055c4be675c339a389358f4b3443652ded4bfdb230b342c6af12593a6fd3fb95156564e7ec84081018815896821
-  languageName: node
-  linkType: hard
-
-"@babel/types@npm:^7.8.3":
+"@babel/types@npm:^7.12.1, @babel/types@npm:^7.12.13, @babel/types@npm:^7.12.17, @babel/types@npm:^7.12.6, @babel/types@npm:^7.13.0, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
   version: 7.15.0
   resolution: "@babel/types@npm:7.15.0"
   dependencies:
@@ -6164,8 +6146,8 @@ __metadata:
   linkType: hard
 
 "netlify@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "netlify@npm:8.0.0"
+  version: 8.0.1
+  resolution: "netlify@npm:8.0.1"
   dependencies:
     "@netlify/open-api": ^2.5.0
     lodash.camelcase: ^4.3.0
@@ -6174,7 +6156,7 @@ __metadata:
     omit.js: ^2.0.2
     p-wait-for: ^3.2.0
     qs: ^6.9.6
-  checksum: 886c29647f04ab3720189722ce0a5492cd1b52f8a7dbb36d3abbb9773947138783d1ef24d419d34d710be6c4cea45ee612f8c722335b702309c7684c15ec0e6a
+  checksum: 74c3fb8ace3508b5d4067f820b47e5a11d994656407160943f9dbfc045b65f3d10f589d25209834e501baca809195d9c75273f91a2e64961ddb0b046543c3f93
   languageName: node
   linkType: hard
 
