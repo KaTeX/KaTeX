@@ -44,7 +44,7 @@
     "cssnano": "^5.0.0-rc.1",
     "eslint": "^7.4.0",
     "eslint-plugin-actions": "^1.0.1",
-    "eslint-plugin-flowtype": "^5.2.0",
+    "eslint-plugin-flowtype": "^6.0.0",
     "eslint-plugin-react": "^7.20.3",
     "flow-bin": "^0.135.0",
     "fs-extra": "^10.0.0",
