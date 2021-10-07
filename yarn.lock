@@ -8252,8 +8252,8 @@ __metadata:
   linkType: hard
 
 "less@npm:^4.0.0":
-  version: 4.1.1
-  resolution: "less@npm:4.1.1"
+  version: 4.1.2
+  resolution: "less@npm:4.1.2"
   dependencies:
     copy-anything: ^2.0.1
     errno: ^0.1.1
@@ -8264,7 +8264,7 @@ __metadata:
     needle: ^2.5.2
     parse-node-version: ^1.0.1
     source-map: ~0.6.0
-    tslib: ^1.10.0
+    tslib: ^2.3.0
   dependenciesMeta:
     errno:
       optional: true
@@ -8282,7 +8282,7 @@ __metadata:
       optional: true
   bin:
     lessc: bin/lessc
-  checksum: 56872a0b8e9dc58abba585c7b771b42b628ce841e962b1c5c66f0e73eb6c4ce7f4a8e7fe857568c84d17c91e2a384af272bf13a9dcd945e5a2bd08094063d961
+  checksum: d3cbc3e18a8313e44f7feaf5fce1728b25911e116a8b9f7206e1f7bf5660902ddaf470b58e68a52288488c8a337433b7de686a3d2405ce49155c2280191983de
   languageName: node
   linkType: hard
 
@@ -13353,10 +13353,17 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"tslib@npm:^1.10.0, tslib@npm:^1.9.0":
+"tslib@npm:^1.9.0":
   version: 1.13.0
   resolution: "tslib@npm:1.13.0"
   checksum: 50e9327361f94f328c0715582a7f725f69838ab3c2559d143643c5367262fe14552768ba8cfc65bc7dc924a619aea599b3a28b6653458cdca77bbebaf9bc8df4
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.3.0":
+  version: 2.3.1
+  resolution: "tslib@npm:2.3.1"
+  checksum: de17a98d4614481f7fcb5cd53ffc1aaf8654313be0291e1bfaee4b4bb31a20494b7d218ff2e15017883e8ea9626599b3b0e0229c18383ba9dce89da2adf15cb9
   languageName: node
   linkType: hard
 
