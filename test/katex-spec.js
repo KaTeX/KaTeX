@@ -636,14 +636,14 @@ describe("An over/brace/brack parser", function() {
 
 describe("A genfrac builder", function() {
     it("should not fail", function() {
-        expect("\\frac{x}{y}").toBuild();
-        expect("\\dfrac{x}{y}").toBuild();
-        expect("\\tfrac{x}{y}").toBuild();
-        expect("\\cfrac{x}{y}").toBuild();
-        expect("\\genfrac ( ] {0.06em}{0}{a}{b+c}").toBuild();
-        expect("\\genfrac ( ] {0.8pt}{}{a}{b+c}").toBuild();
-        expect("\\genfrac {} {} {0.8pt}{}{a}{b+c}").toBuild();
-        expect("\\genfrac [ {} {0.8pt}{}{a}{b+c}").toBuild();
+        expect`\frac{x}{y}`.toBuild();
+        expect`\dfrac{x}{y}`.toBuild();
+        expect`\tfrac{x}{y}`.toBuild();
+        expect`\cfrac{x}{y}`.toBuild();
+        expect`\genfrac ( ] {0.06em}{0}{a}{b+c}`.toBuild();
+        expect`\genfrac ( ] {0.8pt}{}{a}{b+c}`.toBuild();
+        expect`\genfrac {} {} {0.8pt}{}{a}{b+c}`.toBuild();
+        expect`\genfrac [ {} {0.8pt}{}{a}{b+c}`.toBuild();
     });
 });
 
@@ -730,7 +730,7 @@ describe("A text parser", function() {
     });
 
     it("should handle backslash followed by newline", () => {
-        expect("\\text{\\ \t\r \n \t\r  }").toParseLike("\\text{\\ }");
+        expect`\text{\\ \t\r \n \t\r  }`.toParseLike("\\text{\\ }");
     });
 
     it("should accept math mode tokens after its argument", function() {
@@ -1302,13 +1302,13 @@ describe("A begin/end parser", function() {
     });
 
     it("should allow an optional argument in {matrix*} and company.", function() {
-        expect("\\begin{matrix*}[r] a & -1 \\\\ -1 & d \\end{matrix*}").toBuild();
-        expect("\\begin{pmatrix*}[r] a & -1 \\\\ -1 & d \\end{pmatrix*}").toBuild();
-        expect("\\begin{bmatrix*}[r] a & -1 \\\\ -1 & d \\end{bmatrix*}").toBuild();
-        expect("\\begin{Bmatrix*}[r] a & -1 \\\\ -1 & d \\end{Bmatrix*}").toBuild();
-        expect("\\begin{vmatrix*}[r] a & -1 \\\\ -1 & d \\end{vmatrix*}").toBuild();
-        expect("\\begin{Vmatrix*}[r] a & -1 \\\\ -1 & d \\end{Vmatrix*}").toBuild();
-        expect("\\begin{matrix*} a & -1 \\\\ -1 & d \\end{matrix*}").toBuild();
+        expect`\begin{matrix*}[r] a & -1 \\\\ -1 & d \\end{matrix*}`.toBuild();
+        expect`\begin{pmatrix*}[r] a & -1 \\\\ -1 & d \\end{pmatrix*}`.toBuild();
+        expect`\begin{bmatrix*}[r] a & -1 \\\\ -1 & d \\end{bmatrix*}`.toBuild();
+        expect`\begin{Bmatrix*}[r] a & -1 \\\\ -1 & d \\end{Bmatrix*}`.toBuild();
+        expect`\begin{vmatrix*}[r] a & -1 \\\\ -1 & d \\end{vmatrix*}`.toBuild();
+        expect`\begin{Vmatrix*}[r] a & -1 \\\\ -1 & d \\end{Vmatrix*}`.toBuild();
+        expect`\begin{matrix*} a & -1 \\\\ -1 & d \\end{matrix*}`.toBuild();
         expect("\\begin{matrix*}[] a & -1 \\\\ -1 & d \\end{matrix*}").not.toParse();
     });
 
@@ -1339,7 +1339,7 @@ describe("A sqrt parser", function() {
     });
 
     it("should build sized square roots", function() {
-        expect("\\Large\\sqrt[3]{x}").toBuild();
+        expect`\Large\\sqrt[3]{x}`.toBuild();
     });
 
     it("should expand argument if optional argument doesn't exist", function() {
@@ -1647,23 +1647,23 @@ describe("A font parser", function() {
 
 describe("A \\pmb builder", function() {
     it("should not fail", function() {
-        expect("\\pmb{\\mu}").toBuild();
-        expect("\\pmb{=}").toBuild();
-        expect("\\pmb{+}").toBuild();
-        expect("\\pmb{\\frac{x^2}{x_1}}").toBuild();
+        expect`\pmb{\\mu}`.toBuild();
+        expect`\pmb{=}`.toBuild();
+        expect`\pmb{+}`.toBuild();
+        expect`\pmb{\\frac{x^2}{x_1}}`.toBuild();
         expect("\\pmb{}").toBuild();
-        expect("\\def\\x{1}\\pmb{\\x\\def\\x{2}}").toParseLike("\\pmb{1}");
+        expect`\def\\x{1}\\pmb{\\x\\def\\x{2}}`.toParseLike("\\pmb{1}");
     });
 });
 
 describe("A raise parser", function() {
     it("should parse and build text in \\raisebox", function() {
-        expect("\\raisebox{5pt}{text}").toBuild(strictSettings);
-        expect("\\raisebox{-5pt}{text}").toBuild(strictSettings);
+        expect`\raisebox{5pt}{text}`.toBuild(strictSettings);
+        expect`\raisebox{-5pt}{text}`.toBuild(strictSettings);
     });
 
     it("should parse and build math in non-strict \\vcenter", function() {
-        expect("\\vcenter{\\frac a b}").toBuild(nonstrictSettings);
+        expect`\vcenter{\\frac a b}`.toBuild(nonstrictSettings);
     });
 
     it("should fail to parse math in \\raisebox", function() {
@@ -1706,9 +1706,9 @@ describe("A comment parser", function() {
     });
 
     it("should parse comments in size and color groups", () => {
-        expect("\\kern{1 %kern\nem}").toParse();
+        expect`\kern{1 %kern\nem}`.toParse();
         expect("\\kern1 %kern\nem").toParse();
-        expect("\\color{#f00%red\n}").toParse();
+        expect`\color{#f00%red\n}`.toParse();
     });
 
     it("should parse comments before an expression", () => {
@@ -1735,8 +1735,8 @@ describe("A comment parser", function() {
     });
 
     it("should not produce or consume space", () => {
-        expect("\\text{hello% comment 1\nworld}").toParseLike`\text{helloworld}`;
-        expect("\\text{hello% comment\n\nworld}").toParseLike`\text{hello world}`;
+        expect`\text{hello% comment 1\nworld}`.toParseLike`\text{helloworld}`;
+        expect`\text{hello% comment\n\nworld}`.toParseLike`\text{hello world}`;
     });
 
     it("should not include comments in the output", () => {
@@ -2176,7 +2176,7 @@ describe("An accent parser", function() {
         expect`\vec{x^2}`.toParse();
         expect`\vec{x}^2`.toParse();
         expect`\vec x`.toParse();
-        expect("\\underbar{X}").toParse();
+        expect`\underbar{X}`.toParse();
     });
 
     it("should produce accents", function() {
@@ -2264,8 +2264,8 @@ describe("A stretchy MathML builder", function() {
 
 describe("An under-accent parser", function() {
     it("should not fail", function() {
-        expect("\\underrightarrow{x}").toParse();
-        expect("\\underrightarrow{x^2}").toParse();
+        expect`\underrightarrow{x}`.toParse();
+        expect`\underrightarrow{x^2}`.toParse();
         expect("\\underrightarrow{x}^2").toParse();
         expect("\\underrightarrow x").toParse();
     });
@@ -2285,7 +2285,7 @@ describe("An under-accent parser", function() {
 
 describe("An under-accent builder", function() {
     it("should not fail", function() {
-        expect("\\underrightarrow{x}").toBuild();
+        expect`\underrightarrow{x}`.toBuild();
         expect("\\underrightarrow{x}^2").toBuild();
         expect("\\underrightarrow{x}_2").toBuild();
         expect("\\underrightarrow{x}_2^2").toBuild();
@@ -2302,11 +2302,11 @@ describe("An under-accent builder", function() {
 
 describe("An extensible arrow parser", function() {
     it("should not fail", function() {
-        expect("\\xrightarrow{x}").toParse();
-        expect("\\xrightarrow{x^2}").toParse();
+        expect`\xrightarrow{x}`.toParse();
+        expect`\xrightarrow{x^2}`.toParse();
         expect("\\xrightarrow{x}^2").toParse();
         expect("\\xrightarrow x").toParse();
-        expect("\\xrightarrow[under]{over}").toParse();
+        expect`\xrightarrow[under]{over}`.toParse();
     });
 
     it("should produce xArrow", function() {
@@ -2324,11 +2324,11 @@ describe("An extensible arrow parser", function() {
 
 describe("An extensible arrow builder", function() {
     it("should not fail", function() {
-        expect("\\xrightarrow{x}").toBuild();
+        expect`\xrightarrow{x}`.toBuild();
         expect("\\xrightarrow{x}^2").toBuild();
         expect("\\xrightarrow{x}_2").toBuild();
         expect("\\xrightarrow{x}_2^2").toBuild();
-        expect("\\xrightarrow[under]{over}").toBuild();
+        expect`\xrightarrow[under]{over}`.toBuild();
     });
 
     it("should produce mrell", function() {
@@ -2870,8 +2870,8 @@ describe("The CD environment", function() {
 
 describe("operatorname support", function() {
     it("should not fail", function() {
-        expect("\\operatorname{x*Π∑\\Pi\\sum\\frac a b}").toBuild();
-        expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}").toBuild();
+        expect`\operatorname{x*Π∑\\Pi\\sum\\frac a b}`.toBuild();
+        expect`\operatorname*{x*Π∑\\Pi\\sum\\frac a b}`.toBuild();
         expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}_y x").toBuild();
         expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}\\limits_y x").toBuild();
         // The following does not actually render with limits. But it does not crash either.
@@ -2884,7 +2884,7 @@ describe("href and url commands", function() {
 
     it("should parse its input", function() {
         expect`\href{http://example.com/}{\sin}`.toBuild(trustSettings);
-        expect("\\url{http://example.com/}").toBuild(trustSettings);
+        expect`\url{http://example.com/}`.toBuild(trustSettings);
     });
 
     it("should allow empty URLs", function() {
@@ -2980,7 +2980,7 @@ describe("href and url commands", function() {
 
 describe("A raw text parser", function() {
     it("should return null for a omitted optional string", function() {
-        expect("\\includegraphics{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}").toParse();
+        expect`\includegraphics{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}`.toParse();
     });
 });
 
@@ -3720,7 +3720,7 @@ describe("Unicode accents", function() {
 
     it("should parse combining characters", function() {
         expect("A\u0301C\u0301").toParseLike(r`Á\acute C`, nonstrictSettings);
-        expect("\\text{A\u0301C\u0301}").toParseLike(r`\text{Á\'C}`, strictSettings);
+        expect`\text{A\u0301C\u0301}`.toParseLike(r`\text{Á\'C}`, strictSettings);
     });
 
     it("should parse multi-accented characters", function() {
@@ -3759,7 +3759,7 @@ describe("Unicode", function() {
 
     it("should parse symbols", function() {
         expect("£¥ℂℍℑℎℓℕ℘ℙℚℜℝℤℲℵðℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼⋮\u00B7\u00A9").toBuild(strictSettings);
-        expect("\\text{£¥ℂℍℎ\u00A9\u00AE\uFE0F}").toBuild(strictSettings);
+        expect`\text{£¥ℂℍℎ\u00A9\u00AE\uFE0F}`.toBuild(strictSettings);
     });
 
     it("should build Greek capital letters", function() {
