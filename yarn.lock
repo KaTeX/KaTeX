@@ -4393,8 +4393,8 @@ __metadata:
   linkType: hard
 
 "css-loader@npm:^6.0.0":
-  version: 6.3.0
-  resolution: "css-loader@npm:6.3.0"
+  version: 6.4.0
+  resolution: "css-loader@npm:6.4.0"
   dependencies:
     icss-utils: ^5.1.0
     postcss: ^8.2.15
@@ -4406,7 +4406,7 @@ __metadata:
     semver: ^7.3.5
   peerDependencies:
     webpack: ^5.0.0
-  checksum: af23ad314c69b278da476a65b4912f11b2f9402496dad109b8fa7fe987666889c2f67f3996441d4fc485cae3b4349cdb4e0ec7c8b1d79344eac3d19664bb6a32
+  checksum: e842905fce973517dab8ae1e1f6412691c9b4164fbaf94f10ef2ec073c9aa97b5cf9a753a45965fd44aab6528e068be85fd2f8437c6126a823399458dff04282
   languageName: node
   linkType: hard
 
