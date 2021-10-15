@@ -4096,14 +4096,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^6.0.0, commander@npm:^6.2.0":
+"commander@npm:^6.0.0":
   version: 6.2.1
   resolution: "commander@npm:6.2.1"
   checksum: d7090410c0de6bc5c67d3ca41c41760d6d268f3c799e530aafb73b7437d1826bbf0d2a3edac33f8b57cc9887b4a986dce307fa5557e109be40eadb7c43b21742
   languageName: node
   linkType: hard
 
-"commander@npm:^7.0.0, commander@npm:^7.1.0":
+"commander@npm:^7.0.0, commander@npm:^7.1.0, commander@npm:^7.2.0":
   version: 7.2.0
   resolution: "commander@npm:7.2.0"
   checksum: 53501cbeee61d5157546c0bef0fedb6cdfc763a882136284bed9a07225f09a14b82d2a84e7637edfd1a679fb35ed9502fd58ef1d091e6287f60d790147f68ddc
@@ -13841,13 +13841,13 @@ resolve@^2.0.0-next.3:
   linkType: hard
 
 "webpack-bundle-analyzer@npm:^4.0.0":
-  version: 4.4.2
-  resolution: "webpack-bundle-analyzer@npm:4.4.2"
+  version: 4.5.0
+  resolution: "webpack-bundle-analyzer@npm:4.5.0"
   dependencies:
     acorn: ^8.0.4
     acorn-walk: ^8.0.0
     chalk: ^4.1.0
-    commander: ^6.2.0
+    commander: ^7.2.0
     gzip-size: ^6.0.0
     lodash: ^4.17.20
     opener: ^1.5.2
@@ -13855,7 +13855,7 @@ resolve@^2.0.0-next.3:
     ws: ^7.3.1
   bin:
     webpack-bundle-analyzer: lib/bin/analyzer.js
-  checksum: 6d7957a87ee16f6b87e65f85e8b9a40998aefcddf3e15215fd4bc1ddf8c332ab4706f2f4deb0b3a0483eb27d0dae381db1b82b2ec34136e2ad0e651714b260fb
+  checksum: 158e96810ec213d5665ca1c0b257097db44e1f11c4befefab8352b9e5b10890fcb3e3fc1f7bb400dd58762a8edce5621c92afeca86eb4687d2eb64e93186bfcb
   languageName: node
   linkType: hard
 
