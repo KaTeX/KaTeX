@@ -8254,14 +8254,14 @@ __metadata:
   linkType: hard
 
 "less-loader@npm:^10.0.0":
-  version: 10.1.0
-  resolution: "less-loader@npm:10.1.0"
+  version: 10.2.0
+  resolution: "less-loader@npm:10.2.0"
   dependencies:
     klona: ^2.0.4
   peerDependencies:
     less: ^3.5.0 || ^4.0.0
     webpack: ^5.0.0
-  checksum: c88b6369ed7be932dbef21f5163ff8a0596b15679660e2832adac28eea8d8395dc396312569f4c9015a51367dc51806b7d8ed3d865db1c8d55250d67b4803f71
+  checksum: 42a2b56a9d474c066b22423e8ed82821ed6dbc5effad8d84b2a3d8651fb4c5027f32ac770a0fe4810e3e6d0595be576a2f7f2341f2603bdf795cff4e94d7340b
   languageName: node
   linkType: hard
 
