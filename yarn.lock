@@ -5282,14 +5282,14 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-flowtype@npm:^6.0.0":
-  version: 6.1.0
-  resolution: "eslint-plugin-flowtype@npm:6.1.0"
+  version: 6.1.1
+  resolution: "eslint-plugin-flowtype@npm:6.1.1"
   dependencies:
     lodash: ^4.17.21
     string-natural-compare: ^3.0.1
   peerDependencies:
     eslint: ^7.32.0
-  checksum: a3c865273150d6d37243ec4c70e350bf52027df3c11c22af387b78ad3a45ede32eeeaa2b07d5545a7fab6f1e75321282be0337f9561000f25dc089587508abe4
+  checksum: 26bab35c86d0196d078cb01294a2a63976ed8617eed05c99eb13745b54d75f6aa1cdda754aa6e343d89a4fb11e95855da84131fbc1502cb45701c8c02e8d84df
   languageName: node
   linkType: hard
 
@@ -8254,14 +8254,14 @@ __metadata:
   linkType: hard
 
 "less-loader@npm:^10.0.0":
-  version: 10.1.0
-  resolution: "less-loader@npm:10.1.0"
+  version: 10.2.0
+  resolution: "less-loader@npm:10.2.0"
   dependencies:
     klona: ^2.0.4
   peerDependencies:
     less: ^3.5.0 || ^4.0.0
     webpack: ^5.0.0
-  checksum: c88b6369ed7be932dbef21f5163ff8a0596b15679660e2832adac28eea8d8395dc396312569f4c9015a51367dc51806b7d8ed3d865db1c8d55250d67b4803f71
+  checksum: 42a2b56a9d474c066b22423e8ed82821ed6dbc5effad8d84b2a3d8651fb4c5027f32ac770a0fe4810e3e6d0595be576a2f7f2341f2603bdf795cff4e94d7340b
   languageName: node
   linkType: hard
 
@@ -13699,7 +13699,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"v8-compile-cache@npm:^2.0.3, v8-compile-cache@npm:^2.2.0, v8-compile-cache@npm:^2.3.0":
+"v8-compile-cache@npm:^2.0.3, v8-compile-cache@npm:^2.3.0":
   version: 2.3.0
   resolution: "v8-compile-cache@npm:2.3.0"
   checksum: adb0a271eaa2297f2f4c536acbfee872d0dd26ec2d76f66921aa7fc437319132773483344207bdbeee169225f4739016d8d2dbf0553913a52bb34da6d0334f8e
@@ -13880,8 +13880,8 @@ resolve@^2.0.0-next.3:
   linkType: hard
 
 "webpack-cli@npm:^4.8.0":
-  version: 4.9.0
-  resolution: "webpack-cli@npm:4.9.0"
+  version: 4.9.1
+  resolution: "webpack-cli@npm:4.9.1"
   dependencies:
     "@discoveryjs/json-ext": ^0.5.0
     "@webpack-cli/configtest": ^1.1.0
@@ -13894,7 +13894,6 @@ resolve@^2.0.0-next.3:
     import-local: ^3.0.2
     interpret: ^2.2.0
     rechoir: ^0.7.0
-    v8-compile-cache: ^2.2.0
     webpack-merge: ^5.7.3
   peerDependencies:
     webpack: 4.x.x || 5.x.x
@@ -13909,7 +13908,7 @@ resolve@^2.0.0-next.3:
       optional: true
   bin:
     webpack-cli: bin/cli.js
-  checksum: bc378a23773510c9a6a58669fe782f7849b50cbb78a948723583e7b059eae2f49888eb6dba398361af916b3d56195d99cdb494a595a2ecc95a5638e99b59c923
+  checksum: 2aff0349c15e54d616e1fd6dc1f59be16ec1a630f652f948c0b4b108776d1889446e3498e83d9d514bf1b28c5125a8b87c4aeb5dceb41b593ba90765af673c4f
   languageName: node
   linkType: hard
 
