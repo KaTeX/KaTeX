@@ -43,7 +43,7 @@ const program = require("commander")
         "instead of LaTeX's one-argument \\color mode change.")
     .option("-S, --strict",
         "Turn on strict / LaTeX faithfulness mode, which throws an error " +
-        "if the input uses features that are not supported by LaTeX")
+        "if the input uses features that are not supported by LaTeX.")
     .option("-s, --max-size <n>",
         "If non-zero, all user-specified sizes, e.g. in " +
         "\\rule{500em}{500em}, will be capped to maxSize ems. " +
@@ -64,8 +64,7 @@ const program = require("commander")
     .option("-f, --macro-file <path>",
         "Read macro definitions, one per line, from the given file.")
     .option("-T, --trust",
-        "Trust all inputs for rendering raw HTML. For more fine-grained " +
-        "control, see the 'trust' option")
+        "Trust the input, enabling all HTML features such as \\url.")
     .option("-i, --input <path>", "Read LaTeX input from the given file.")
     .option("-o, --output <path>", "Write html output to the given file.");
 
