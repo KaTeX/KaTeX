@@ -12864,11 +12864,11 @@ resolve@^2.0.0-next.3:
   linkType: hard
 
 "style-loader@npm:^3.0.0":
-  version: 3.3.0
-  resolution: "style-loader@npm:3.3.0"
+  version: 3.3.1
+  resolution: "style-loader@npm:3.3.1"
   peerDependencies:
     webpack: ^5.0.0
-  checksum: edad553a1ae74af9afb4dd582774d484e8e4e5f8c9593a921b0f3f0e2cdb3a58c4b44a3afb43021956804042eaffd68d5dc4f956d4c5f633e7e67eda6a750042
+  checksum: 470feef680f59e2fce4d6601b5c55b88c01ad8d1dd693c528ffd591ff5fd7c01a4eff3bdbe62f26f847d6bd2430c9ab594be23307cfe7a3446ab236683f0d066
   languageName: node
   linkType: hard
 
