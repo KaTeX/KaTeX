@@ -381,8 +381,10 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
                 separator.style.borderRightWidth = `${ruleThickness}em`;
                 separator.style.borderRightStyle = lineType;
                 separator.style.margin = `0 -${ruleThickness / 2}em`;
-                separator.style.verticalAlign =
-                    -(totalHeight - offset) + "em";
+                const shift = totalHeight - offset;
+                if (shift) {
+                    separator.style.verticalAlign = -shift + "em";
+                }
 
                 cols.push(separator);
             } else {
