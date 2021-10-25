@@ -63,7 +63,7 @@ const program = require("commander")
         }, [])
     .option("-f, --macro-file <path>",
         "Read macro definitions, one per line, from the given file.")
-    .option("--trust",
+    .option("-T, --trust",
         "Trust all inputs for rendering raw HTML. For more fine-grained " +
         "control, see the 'trust' option")
     .option("-i, --input <path>", "Read LaTeX input from the given file.")
