@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.20](https://github.com/KaTeX/KaTeX/compare/v0.13.19...v0.13.20) (2021-10-26)
+
+
+### Performance Improvements
+
+* Avoid vertical-align:0em style ([#3358](https://github.com/KaTeX/KaTeX/issues/3358)) ([6d6d627](https://github.com/KaTeX/KaTeX/commit/6d6d627ca49244d53928b6e0e1a238495cef4bd2)), closes [#3351](https://github.com/KaTeX/KaTeX/issues/3351)
+
 ## [0.13.19](https://github.com/KaTeX/KaTeX/compare/v0.13.18...v0.13.19) (2021-10-26)
 
 
