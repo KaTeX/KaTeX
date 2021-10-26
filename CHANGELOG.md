@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.19](https://github.com/KaTeX/KaTeX/compare/v0.13.18...v0.13.19) (2021-10-26)
+
+
+### Features
+
+* **cli:** --trust flag for trusting cli input ([#3339](https://github.com/KaTeX/KaTeX/issues/3339)) ([503f7d7](https://github.com/KaTeX/KaTeX/commit/503f7d79f9b346585248dfe7451b8d635bd3328d)), closes [#2428](https://github.com/KaTeX/KaTeX/issues/2428)
+
 ## [0.13.18](https://github.com/KaTeX/KaTeX/compare/v0.13.17...v0.13.18) (2021-09-02)
 
 
