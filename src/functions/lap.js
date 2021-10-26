@@ -47,7 +47,9 @@ defineFunction({
         // This code resolved issue #1153
         const strut = buildCommon.makeSpan(["strut"]);
         strut.style.height = (node.height + node.depth) + "em";
-        strut.style.verticalAlign = -node.depth + "em";
+        if (node.depth) {
+            strut.style.verticalAlign = -node.depth + "em";
+        }
         node.children.unshift(strut);
 
         // Next, prevent vertical misplacement when next to something tall.
