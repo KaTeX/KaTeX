@@ -302,7 +302,9 @@ function buildHTMLUnbreakable(children, options) {
     // falls at the depth of the expression.
     const strut = makeSpan(["strut"]);
     strut.style.height = (body.height + body.depth) + "em";
-    strut.style.verticalAlign = -body.depth + "em";
+    if (body.depth) {
+        strut.style.verticalAlign = -body.depth + "em";
+    }
     body.children.unshift(strut);
 
     return body;
@@ -396,7 +398,9 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
     if (tagChild) {
         const strut = tagChild.children[0];
         strut.style.height = (htmlNode.height + htmlNode.depth) + "em";
-        strut.style.verticalAlign = (-htmlNode.depth) + "em";
+        if (htmlNode.depth) {
+            strut.style.verticalAlign = (-htmlNode.depth) + "em";
+        }
     }
 
     return htmlNode;

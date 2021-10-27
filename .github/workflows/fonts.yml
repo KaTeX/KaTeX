@@ -22,11 +22,11 @@ jobs:
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
     - name: Remove label
-      uses: actions/github-script@v4
+      uses: actions/github-script@v5
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          github.issues.removeLabel({
+          github.rest.issues.removeLabel({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -35,7 +35,7 @@ jobs:
 
     - name: Check image
       id: check-image
-      uses: actions/github-script@v4
+      uses: actions/github-script@v5
       with:
         # https://github.community/t/github-token-has-no-access-to-new-container-rest-apis/170395
         github-token: ${{ secrets.GH_PACKAGES_TOKEN }}
@@ -48,7 +48,7 @@ jobs:
 
           let packages;
           try {
-              packages = (await github.request('GET /orgs/{org}/packages/{package_type}/{package_name}/versions', {
+              packages = (await github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg({
                   org,
                   package_type: "container",
                   package_name,

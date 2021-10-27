@@ -74,10 +74,14 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
         // TODO(emily): Find a better way to get the skew
     }
 
+    const accentBelow = group.label === "\\c";
+
     // calculate the amount of space between the body and the accent
-    let clearance = Math.min(
-        body.height,
-        options.fontMetrics().xHeight);
+    let clearance = accentBelow
+        ? body.height + body.depth
+        : Math.min(
+            body.height,
+            options.fontMetrics().xHeight);
 
     // Build the accent
     let accentBody;
@@ -100,6 +104,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
             // shift the accent over to a place we don't want.
             accent.italic = 0;
             width = accent.width;
+            if (accentBelow) {
+                clearance += accent.depth;
+            }
         }
 
         accentBody = buildCommon.makeSpan(["accent-body"], [accent]);
@@ -243,20 +250,27 @@ defineFunction({
     type: "accent",
     names: [
         "\\'", "\\`", "\\^", "\\~", "\\=", "\\u", "\\.", '\\"',
-        "\\r", "\\H", "\\v", "\\textcircled",
+        "\\c", "\\r", "\\H", "\\v", "\\textcircled",
     ],
     props: {
         numArgs: 1,
         allowedInText: true,
-        allowedInMath: false,
+        allowedInMath: true, // unless in strict mode
         argTypes: ["primitive"],
     },
     handler: (context, args) => {
         const base = args[0];
+        let mode = context.parser.mode;
+
+        if (mode === "math") {
+            context.parser.settings.reportNonstrict("mathVsTextAccents",
+                `LaTeX's accent ${context.funcName} works only in text mode`);
+            mode = "text";
+        }
 
         return {
             type: "accent",
-            mode: context.parser.mode,
+            mode: mode,
             label: context.funcName,
             isStretchy: false,
             isShifty: true,

@@ -1244,6 +1244,7 @@ describe("A begin/end parser", function() {
 
     it("should parse and build an empty environment", function() {
         expect`\begin{aligned}\end{aligned}`.toBuild();
+        expect`\begin{matrix}\end{matrix}`.toBuild();
     });
 
     it("should parse an environment with hlines", function() {
@@ -1309,6 +1310,13 @@ describe("A begin/end parser", function() {
         expect("\\begin{Vmatrix*}[r] a & -1 \\\\ -1 & d \\end{Vmatrix*}").toBuild();
         expect("\\begin{matrix*} a & -1 \\\\ -1 & d \\end{matrix*}").toBuild();
         expect("\\begin{matrix*}[] a & -1 \\\\ -1 & d \\end{matrix*}").not.toParse();
+    });
+
+    it("should allow blank columns", () => {
+        const parsed = getParsed`\begin{matrix*}[r] a \\ -1 & d \end{matrix*}`;
+        expect(parsed[0].cols).toEqual(
+            [{type: 'align', align: 'r'},
+             {type: 'align', align: 'r'}]);
     });
 });
 
@@ -3305,6 +3313,12 @@ describe("A macro expander", function() {
         expect(parsedChar[0].type).toEqual("textord");
     });
 
+    it("\\char handles >16-bit characters", () => {
+        const parsed = getParsed('\\char"1d7d9');
+        expect(parsed[0].type).toEqual("textord");
+        expect(parsed[0].text).toEqual("𝟙");
+    });
+
     it("should build Unicode private area characters", function() {
         expect`\gvertneqq\lvertneqq\ngeqq\ngeqslant\nleqq`.toBuild();
         expect`\nleqslant\nshortmid\nshortparallel\varsubsetneq`.toBuild();
@@ -3423,6 +3437,12 @@ describe("A macro expander", function() {
     it("\\def doesn't change settings.macros", () => {
         const macros = {};
         expect`\def\foo{1}`.toParse(new Settings({macros}));
+        expect(macros["\\foo"]).toBeFalsy();
+    });
+
+    it("\\def doesn't change settings.macros on error", () => {
+        const macros = {};
+        expect`\def\foo{c^}\foo`.not.toParse(new Settings({macros}));
         expect(macros["\\foo"]).toBeFalsy();
     });
 

@@ -381,8 +381,10 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
                 separator.style.borderRightWidth = `${ruleThickness}em`;
                 separator.style.borderRightStyle = lineType;
                 separator.style.margin = `0 -${ruleThickness / 2}em`;
-                separator.style.verticalAlign =
-                    -(totalHeight - offset) + "em";
+                const shift = totalHeight - offset;
+                if (shift) {
+                    separator.style.verticalAlign = -shift + "em";
+                }
 
                 cols.push(separator);
             } else {
@@ -823,7 +825,8 @@ defineEnvironment({
         const res: ParseNode<"array"> =
             parseArray(context.parser, payload, dCellStyle(context.envName));
         // Populate cols with the correct number of column alignment specs.
-        res.cols = new Array(res.body[0].length).fill(
+        const numCols = Math.max(0, ...res.body.map((row) => row.length));
+        res.cols = new Array(numCols).fill(
             {type: "align", align: colAlign}
         );
         return delimiters ? {

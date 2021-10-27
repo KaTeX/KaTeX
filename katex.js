@@ -28,7 +28,7 @@ import type {AnyParseNode} from "./src/parseNode";
 import type {DomSpan} from "./src/domTree";
 
 import {defineSymbol} from './src/symbols';
-import {defineMacro} from './src/macros';
+import defineMacro from './src/defineMacro';
 import {setFontMetrics} from './src/fontMetrics';
 
 declare var __VERSION__: string;

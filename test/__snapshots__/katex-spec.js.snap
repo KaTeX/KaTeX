@@ -1089,7 +1089,7 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
   >
     <span class="base">
       <span class="strut"
-            style="height:0.84425em;vertical-align:0em;"
+            style="height:0.84425em;"
       >
       </span>
       <span class="mord mockEasternArabicFont-Regular">
@@ -1170,7 +1170,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
   >
     <span class="base">
       <span class="strut"
-            style="height:0.68333em;vertical-align:0em;"
+            style="height:0.68333em;"
       >
       </span>
       <span class="mord mathnormal"
@@ -1208,7 +1208,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
     </span>
     <span class="base">
       <span class="strut"
-            style="height:0.69444em;vertical-align:0em;"
+            style="height:0.69444em;"
       >
       </span>
       <span class="mord mathnormal">
@@ -1219,7 +1219,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
     </span>
     <span class="base">
       <span class="strut"
-            style="height:0.43056em;vertical-align:0em;"
+            style="height:0.43056em;"
       >
       </span>
       <span class="mord mathnormal">
