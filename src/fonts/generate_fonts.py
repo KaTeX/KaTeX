@@ -38,13 +38,19 @@ font['cmap'].tables = [table for table in font['cmap'].tables if table.platformI
 # fix OS/2 and hhea metrics
 glyf = font['glyf']
 ascent = int(max(glyf[c].yMax for c in font.getGlyphOrder() if hasattr(glyf[c], "yMax")))
-descent = -int(min(glyf[c].yMin for c in font.getGlyphOrder() if hasattr(glyf[c], "yMin")))
+descent = int(min(glyf[c].yMin for c in font.getGlyphOrder() if hasattr(glyf[c], "yMin")))
 
+font['OS/2'].sTypoAscender = ascent
+font['OS/2'].sTypoDescender = descent
 font['OS/2'].usWinAscent = ascent
-font['OS/2'].usWinDescent = descent
+font['OS/2'].usWinDescent = -descent
 
 font['hhea'].ascent = ascent
-font['hhea'].descent = -descent
+font['hhea'].descent = descent
+
+# USE_TYPO_METRICS flag for cross-platform line height determination
+font['OS/2'].version = 4
+font['OS/2'].fsSelection = 1<<7
 
 # save TTF
 font.save(font_file, reorderTables=None)
