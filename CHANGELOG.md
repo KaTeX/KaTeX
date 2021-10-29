@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.21](https://github.com/KaTeX/KaTeX/compare/v0.13.20...v0.13.21) (2021-10-29)
+
+
+### Bug Fixes
+
+* **fonts:** fix the timestamp of fonts to the epoch ([#3370](https://github.com/KaTeX/KaTeX/issues/3370)) ([dde05db](https://github.com/KaTeX/KaTeX/commit/dde05db6b775d8726a6654db13de26410195be48))
+
 ## [0.13.20](https://github.com/KaTeX/KaTeX/compare/v0.13.19...v0.13.20) (2021-10-26)
 
 
