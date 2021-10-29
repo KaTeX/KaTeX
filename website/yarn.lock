@@ -283,14 +283,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-validator-identifier@npm:^7.12.11":
-  version: 7.12.11
-  resolution: "@babel/helper-validator-identifier@npm:7.12.11"
-  checksum: e604c6bf890704fc46c1ae13bf23afb242b810224ec3403bba67cdbf0d8dabfec4b82123d6dfb18135a0ee3f7f79218583c819363ebb5e04a0a49d8418db7fce
-  languageName: node
-  linkType: hard
-
-"@babel/helper-validator-identifier@npm:^7.14.9":
+"@babel/helper-validator-identifier@npm:^7.12.11, @babel/helper-validator-identifier@npm:^7.14.9":
   version: 7.14.9
   resolution: "@babel/helper-validator-identifier@npm:7.14.9"
   checksum: 58552531a7674363e74672434c312ddaf1545b8a43308e1a7f38db58bf79c796c095a6dab6a6105eb0d783b97441f6cbb525bb887f29a35f232fcdbd8cb240dc
@@ -1246,18 +1239,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.12.1, @babel/types@npm:^7.12.13, @babel/types@npm:^7.12.17, @babel/types@npm:^7.12.6, @babel/types@npm:^7.13.0, @babel/types@npm:^7.4.4":
-  version: 7.13.0
-  resolution: "@babel/types@npm:7.13.0"
-  dependencies:
-    "@babel/helper-validator-identifier": ^7.12.11
-    lodash: ^4.17.19
-    to-fast-properties: ^2.0.0
-  checksum: 3dbb08add345325a49e1deebefa8d3774a8ab055c4be675c339a389358f4b3443652ded4bfdb230b342c6af12593a6fd3fb95156564e7ec84081018815896821
-  languageName: node
-  linkType: hard
-
-"@babel/types@npm:^7.8.3":
+"@babel/types@npm:^7.12.1, @babel/types@npm:^7.12.13, @babel/types@npm:^7.12.17, @babel/types@npm:^7.12.6, @babel/types@npm:^7.13.0, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
   version: 7.15.0
   resolution: "@babel/types@npm:7.15.0"
   dependencies:
@@ -1277,10 +1259,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@netlify/open-api@npm:^2.5.0":
-  version: 2.5.0
-  resolution: "@netlify/open-api@npm:2.5.0"
-  checksum: d3ced4a3fdaec49da8cec91e9d3ddb9ffd0807d588c878dd25c261dc1a503e30463282933878d8cc5d48f4fbb320b8822380c7063c6fdafd815e0dd21912bf97
+"@netlify/open-api@npm:^2.5.2":
+  version: 2.5.2
+  resolution: "@netlify/open-api@npm:2.5.2"
+  checksum: 499a85c742cfc5e8ebbf3067642e1a4c4af212636a0bc5f2d1f5066664f11c0b361860a842f7dd39bf8ca96192d9215ac7fa307cc84ff3803dd04cec782d5119
   languageName: node
   linkType: hard
 
@@ -6164,17 +6146,17 @@ __metadata:
   linkType: hard
 
 "netlify@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "netlify@npm:8.0.0"
+  version: 8.0.3
+  resolution: "netlify@npm:8.0.3"
   dependencies:
-    "@netlify/open-api": ^2.5.0
+    "@netlify/open-api": ^2.5.2
     lodash.camelcase: ^4.3.0
     micro-api-client: ^3.3.0
     node-fetch: ^2.6.1
     omit.js: ^2.0.2
     p-wait-for: ^3.2.0
     qs: ^6.9.6
-  checksum: 886c29647f04ab3720189722ce0a5492cd1b52f8a7dbb36d3abbb9773947138783d1ef24d419d34d710be6c4cea45ee612f8c722335b702309c7684c15ec0e6a
+  checksum: 04772d2b0671509977211c0041cc34f38acfc1c185b071f6cb0993e467490575d72fbfa99cbcc075ff256efb1f2c27ad6933c4a497b3b5ae1ee537551de9d40e
   languageName: node
   linkType: hard
 

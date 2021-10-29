@@ -1,6 +1,41 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.21](https://github.com/KaTeX/KaTeX/compare/v0.13.20...v0.13.21) (2021-10-29)
+
+
+### Bug Fixes
+
+* **fonts:** fix the timestamp of fonts to the epoch ([#3370](https://github.com/KaTeX/KaTeX/issues/3370)) ([dde05db](https://github.com/KaTeX/KaTeX/commit/dde05db6b775d8726a6654db13de26410195be48))
+
+## [0.13.20](https://github.com/KaTeX/KaTeX/compare/v0.13.19...v0.13.20) (2021-10-26)
+
+
+### Performance Improvements
+
+* Avoid vertical-align:0em style ([#3358](https://github.com/KaTeX/KaTeX/issues/3358)) ([6d6d627](https://github.com/KaTeX/KaTeX/commit/6d6d627ca49244d53928b6e0e1a238495cef4bd2)), closes [#3351](https://github.com/KaTeX/KaTeX/issues/3351)
+
+## [0.13.19](https://github.com/KaTeX/KaTeX/compare/v0.13.18...v0.13.19) (2021-10-26)
+
+
+### Features
+
+* **cli:** --trust flag for trusting cli input ([#3339](https://github.com/KaTeX/KaTeX/issues/3339)) ([503f7d7](https://github.com/KaTeX/KaTeX/commit/503f7d79f9b346585248dfe7451b8d635bd3328d)), closes [#2428](https://github.com/KaTeX/KaTeX/issues/2428)
+
+## [0.13.18](https://github.com/KaTeX/KaTeX/compare/v0.13.17...v0.13.18) (2021-09-02)
+
+
+### Features
+
+* unicode support for minus and asterisk operators ([#3227](https://github.com/KaTeX/KaTeX/issues/3227)) ([9dbfc1c](https://github.com/KaTeX/KaTeX/commit/9dbfc1c91725a9db348ce212488690147b9b9dd4)), closes [#3225](https://github.com/KaTeX/KaTeX/issues/3225)
+
+## [0.13.17](https://github.com/KaTeX/KaTeX/compare/v0.13.16...v0.13.17) (2021-09-01)
+
+
+### Bug Fixes
+
+* **fonts:** remove hints from unknown symbols ([#3222](https://github.com/KaTeX/KaTeX/issues/3222)) ([9420f8a](https://github.com/KaTeX/KaTeX/commit/9420f8a2a98442158a9cd2b3fd650092d216d0a2)), closes [#3219](https://github.com/KaTeX/KaTeX/issues/3219)
+
 ## [0.13.16](https://github.com/KaTeX/KaTeX/compare/v0.13.15...v0.13.16) (2021-08-28)
 
 
