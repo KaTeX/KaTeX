@@ -13,7 +13,7 @@ require "custom.cfg.pl";
 $map{cmr10} = {
   "Main-Regular" => [
     [0,1] => 0x393,         # \Gamma, \Delta
-    2 => 0x398,             # \Theta
+    2 => 0x393,             # \Theta
     3 => 0x39B,             # \Lambda
     4 => 0x39E,             # \Xi
     5 => 0x3A0,             # \Pi
