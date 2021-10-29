@@ -1062,7 +1062,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-react-jsx@npm:^7.14.5":
+"@babel/plugin-transform-react-jsx@npm:^7.14.5, @babel/plugin-transform-react-jsx@npm:^7.14.9":
   version: 7.14.9
   resolution: "@babel/plugin-transform-react-jsx@npm:7.14.9"
   dependencies:
@@ -8013,6 +8013,8 @@ __metadata:
     "@babel/core": ^7.10.4
     "@babel/eslint-parser": ^7.15.0
     "@babel/plugin-proposal-class-properties": ^7.10.4
+    "@babel/plugin-syntax-flow": ^7.14.5
+    "@babel/plugin-transform-react-jsx": ^7.14.9
     "@babel/plugin-transform-runtime": ^7.10.4
     "@babel/preset-env": ^7.10.4
     "@babel/preset-flow": ^7.10.4
