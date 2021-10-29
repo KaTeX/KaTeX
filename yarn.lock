@@ -8063,6 +8063,7 @@ __metadata:
     p-retry: ^4.6.1
     pako: ^2.0.0
     postcss: ^8.0.0
+    postcss-less: ^5.0.0
     postcss-loader: ^6.0.0
     postcss-preset-env: ^6.7.0
     prettier: ^2.0.5
@@ -10468,6 +10469,13 @@ __metadata:
     postcss: ^7.0.2
     postcss-values-parser: ^2.0.0
   checksum: 598229a7a05803b18cccde28114833e910367c5954341bea03c7d7b7b5a667dfb6a77ef9dd4a16d80fdff8b10dd44c478602a7d56e43687c8687af3710b4706f
+  languageName: node
+  linkType: hard
+
+"postcss-less@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "postcss-less@npm:5.0.0"
+  checksum: 98d164774327d84573e86511e238ee5489b5950615f47e947cbfbbb038c5f0c377216babb0367d509b2834a21cad1a4420617653b3ee30f46df168ad4f9e2cb7
   languageName: node
   linkType: hard
 
