@@ -43,7 +43,7 @@ table td {
 |$\text{\`{a}}$ <code>\\`{a}</code>|$\text{\={a}}$ `\={a}`|$\text{\"{a}}$ `\"{a}`|$\text{\v{a}}$ `\v{a}`
 |$\text{\^{a}}$ `\^{a}`|$\text{\u{a}}$ `\u{a}`|$\text{\r{a}}$ `\r{a}`|
 
-See also [letters](#letters)
+See also [letters and unicode](#letters-and-unicode).
 
 ## Delimiters
 
