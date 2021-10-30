@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.14.1](https://github.com/KaTeX/KaTeX/compare/v0.14.0...v0.14.1) (2021-10-30)
+
+
+### Bug Fixes
+
+* **Settings:** use schema ([#3375](https://github.com/KaTeX/KaTeX/issues/3375)) ([b58a432](https://github.com/KaTeX/KaTeX/commit/b58a43212e4178ed46cf8e42d67e88b9c8df9c24))
+
 # [0.14.0](https://github.com/KaTeX/KaTeX/compare/v0.13.24...v0.14.0) (2021-10-30)
 
 
