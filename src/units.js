@@ -96,3 +96,11 @@ export const calculateSize = function(
     }
     return Math.min(sizeValue.number * scale, options.maxSize);
 };
+
+/**
+ * Round `n` to 4 decimal places, or to the nearest 1/10,000th em. See
+ * https://github.com/KaTeX/KaTeX/pull/2460.
+ */
+export const makeEm = function(n: number): string {
+    return +n.toFixed(4) + "em";
+};
