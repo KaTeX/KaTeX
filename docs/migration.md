@@ -3,6 +3,11 @@ id: migration
 title: Migration Guide
 ---
 
+## v0.14.0
+
+With module loaders that support conditional exports and ECMAScript modules,
+`import katex from 'katex';` will import the ECMAScript module.
+
 ## v0.13.0
 
 ### Macro arguments
@@ -27,8 +32,3 @@ They are no longer allowed as an argument to primitive commands, such as `\sqrt`
 (without the optional argument) and super/subscript. For example,
 `\sqrt\textcolor{red}{x}` no longer works and should be changed to
 `\sqrt{\textcolor{red}{x}}`.
-
-## v0.14.0
-
-With module loaders that support conditional exports and ECMAScript modules,
-`import katex from 'katex';` will import the ECMAScript module.
