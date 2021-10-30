@@ -2,7 +2,7 @@ name: Fonts
 
 on:
   pull_request_target:
-    branches: [ master ]
+    branches: [ main ]
     types: [ labeled ] # 'build fonts' label
 
 jobs:
@@ -92,7 +92,6 @@ jobs:
     - uses: actions/checkout@v2
       with:
         ref: ${{ format('refs/pull/{0}/merge', github.event.pull_request.number) }}
-        fetch-depth: 0
         persist-credentials: false
 
     - name: Build fonts

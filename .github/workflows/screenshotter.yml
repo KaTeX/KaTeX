@@ -2,9 +2,9 @@ name: Screenshotter
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request_target:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   screenshotter:
