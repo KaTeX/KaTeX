@@ -92,7 +92,6 @@ jobs:
     - uses: actions/checkout@v2
       with:
         ref: ${{ format('refs/pull/{0}/merge', github.event.pull_request.number) }}
-        fetch-depth: 0
         persist-credentials: false
 
     - name: Build fonts
