@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.22](https://github.com/KaTeX/KaTeX/compare/v0.13.21...v0.13.22) (2021-10-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commander to v8 [skip netlify] ([#3374](https://github.com/KaTeX/KaTeX/issues/3374)) ([4df1922](https://github.com/KaTeX/KaTeX/commit/4df1922ae9d99927ef9a497209f1691200f39829))
+
 ## [0.13.21](https://github.com/KaTeX/KaTeX/compare/v0.13.20...v0.13.21) (2021-10-29)
 
 

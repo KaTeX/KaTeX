@@ -73,7 +73,7 @@ if (require.main !== module) {
     return;
 }
 
-const options = program.parse(process.argv);
+const options = program.parse(process.argv).opts();
 
 function readMacros() {
     if (options.macroFile) {

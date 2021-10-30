@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.13.21",
+  "version": "0.13.22",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "homepage": "https://katex.org",
@@ -117,7 +117,7 @@
     "dist:zip": "rimraf katex/ katex.tar.gz katex.zip && cp -R dist katex && tar czf katex.tar.gz katex && zip -rq katex.zip katex && rimraf katex/"
   },
   "dependencies": {
-    "commander": "^6.0.0"
+    "commander": "^8.0.0"
   },
   "husky": {
     "hooks": {

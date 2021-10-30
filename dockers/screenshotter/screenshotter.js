@@ -73,7 +73,8 @@ const opts = require("commander")
     .option("--browserstack", "Use Browserstack. The username and access key"
         + " should be set as enviroment variable BROWSERSTACK_USER and"
         + " BROWSERSTACK_ACCESS_KEY")
-    .parse(process.argv);
+    .parse(process.argv)
+    .opts();
 
 let listOfCases;
 if (opts.include) {
