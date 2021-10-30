@@ -74,7 +74,7 @@ type Schema = {
          */
         description?: string;
         /**
-         * The function to process the argument.
+         * The function to process the option.
          */
         processor?: (any) => any,
         /**
@@ -157,6 +157,7 @@ export const SETTINGS_SCHEMA: Schema = {
             " `\\sqrt` top lines, `{array}` vertical lines, `\\hline`, " +
             "`\\hdashline`, `\\underline`, `\\overline`, and the borders of " +
             "`\\fbox`, `\\boxed`, and `\\fcolorbox`.",
+        processor: (t) => Math.max(0, t),
         cli: "--min-rule-thickness <size>",
         cliProcessor: parseFloat,
     },
@@ -194,6 +195,7 @@ export const SETTINGS_SCHEMA: Schema = {
         description: "Limit the number of macro expansions to the specified " +
             "number, to prevent e.g. infinite macro loops. If set to Infinity, " +
             "the macro expander will try to fully expand as in LaTeX.",
+        processor: (n) => Math.max(0, n),
         cli: "-e, --max-expand <n>",
         cliProcessor: (n) => (n === "Infinity" ? Infinity : parseInt(n)),
     },
