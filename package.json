@@ -3,6 +3,33 @@
   "version": "0.13.23",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
+  "exports": {
+    ".": {
+      "require": "./dist/katex.js",
+      "import": "./dist/katex.mjs"
+    },
+    "./contrib/auto-render": {
+      "require": "./dist/contrib/auto-render.js",
+      "import": "./dist/contrib/auto-render.mjs"
+    },
+    "./contrib/mhchem": {
+      "require": "./dist/contrib/mhchem.js",
+      "import": "./dist/contrib/mhchem.mjs"
+    },
+    "./contrib/copy-tex": {
+      "require": "./dist/contrib/copy-tex.js",
+      "import": "./dist/contrib/copy-tex.mjs"
+    },
+    "./contrib/mathtex-script-type": {
+      "require": "./dist/contrib/mathtex-script-type.js",
+      "import": "./dist/contrib/mathtex-script-type.mjs"
+    },
+    "./contrib/render-a11y-string": {
+      "require": "./dist/contrib/render-a11y-string.js",
+      "import": "./dist/contrib/render-a11y-string.mjs"
+    },
+    "./*": "./*"
+  },
   "homepage": "https://katex.org",
   "repository": {
     "type": "git",
