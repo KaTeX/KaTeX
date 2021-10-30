@@ -39,8 +39,10 @@ const htmlBuilder = (group, options) => {
 
     } else if (label === "phase") {
         // Set a couple of dimensions from the steinmetz package.
-        const lineWeight = calculateSize({number: 0.6, unit: "pt"}, options);
-        const clearance = calculateSize({number: 0.35, unit: "ex"}, options);
+        const lineWeight = calculateSize(
+            {type: "atom", number: 0.6, unit: "pt"}, options);
+        const clearance = calculateSize(
+            {type: "atom", number: 0.35, unit: "ex"}, options);
 
         // Prevent size changes like \Huge from affecting line thickness
         const newOptions = options.havingBaseSizing();

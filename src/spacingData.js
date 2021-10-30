@@ -5,14 +5,17 @@
 import type {Measurement} from "./units";
 
 const thinspace: Measurement = {
+    type: "atom",
     number: 3,
     unit: "mu",
 };
 const mediumspace: Measurement = {
+    type: "atom",
     number: 4,
     unit: "mu",
 };
 const thickspace: Measurement = {
+    type: "atom",
     number: 5,
     unit: "mu",
 };

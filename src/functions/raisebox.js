@@ -39,8 +39,8 @@ defineFunction({
     mathmlBuilder(group, options) {
         const node = new mathMLTree.MathNode(
             "mpadded", [mml.buildGroup(group.body, options)]);
-        const dy = group.dy.number + group.dy.unit;
-        node.setAttribute("voffset", dy);
+        const dy = calculateSize(group.dy, options);
+        node.setAttribute("voffset", dy + "em");
         return node;
     },
 });

@@ -309,15 +309,15 @@ describe("Lexer:", function() {
     describe("#_innerLexSize", function() {
         it("reject size without unit", function() {
             expect`\rule{0}{2em}`.toFailWithParseError(
-                   "Invalid size: '0' at position 6: \\rule{̲0̲}̲{2em}");
+                   "Invalid size: '0' at position 7: \\rule{0̲}{2em}");
         });
         it("reject size with bogus unit", function() {
             expect`\rule{1au}{2em}`.toFailWithParseError(
-                   "Invalid unit: 'au' at position 6: \\rule{̲1̲a̲u̲}̲{2em}");
+                   "Invalid unit: 'au' at position 7: \\rule{1̲a̲u̲}{2em}");
         });
         it("reject size without number", function() {
             expect`\rule{em}{2em}`.toFailWithParseError(
-                   "Invalid size: 'em' at position 6: \\rule{̲e̲m̲}̲{2em}");
+                   "Invalid size: 'e' at position 7: \\rule{e̲m}{2em}");
         });
     });
 

@@ -25,6 +25,7 @@ export const implicitCommands = {
     "_": true,           // Parser.js
     "\\limits": true,    // Parser.js
     "\\nolimits": true,  // Parser.js
+    "\\dimexpr": true,   // Parser.js
 };
 
 export default class MacroExpander implements MacroContextInterface {
@@ -328,7 +329,7 @@ export default class MacroExpander implements MacroContextInterface {
     /**
      * Recursively expand first token, then return first non-expandable token.
      */
-    expandNextToken(): Token {
+    expandNextToken(keepRelax?: boolean): Token {
         for (;;) {
             const expanded = this.expandOnce();
             // expandOnce returns Token if and only if it's fully expanded.
@@ -337,7 +338,8 @@ export default class MacroExpander implements MacroContextInterface {
                 // null return value couldn't get implemented as a function).
                 // the token after \noexpand is interpreted as if its meaning
                 // were ‘\relax’
-                if (expanded.text === "\\relax" || expanded.treatAsRelax) {
+                if (!keepRelax &&
+                      (expanded.text === "\\relax" || expanded.treatAsRelax)) {
                     this.stack.pop();
                 } else {
                     return this.stack.pop();  // === expanded
