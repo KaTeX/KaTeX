@@ -89,7 +89,7 @@ class Footer extends React.Component {
               />
             </a>
             <section className="copyright">
-                Licensed under <a href="https://github.com/KaTeX/KaTeX/blob/master/LICENSE">MIT License</a><br/>
+                Licensed under <a href="https://github.com/KaTeX/KaTeX/blob/main/LICENSE">MIT License</a><br/>
                 {this.props.config.copyright}
             </section>
           </footer>

@@ -2,7 +2,7 @@ name: Fonts
 
 on:
   pull_request_target:
-    branches: [ master ]
+    branches: [ main ]
     types: [ labeled ] # 'build fonts' label
 
 jobs:

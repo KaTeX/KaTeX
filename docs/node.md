@@ -88,7 +88,7 @@ Note, however, that you do not need to include `katex.js` on the client.
 
 ## Using mhchem extension
 
-The [mhchem extension](https://github.com/Khan/KaTeX/tree/master/contrib/mhchem)
+The [mhchem extension](https://github.com/KaTeX/KaTeX/tree/main/contrib/mhchem)
 adds its features by modifying the `katex` module.  So you can use KaTeX with
 mhchem in Node as follows:
 
