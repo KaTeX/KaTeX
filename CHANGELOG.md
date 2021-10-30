@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.23](https://github.com/KaTeX/KaTeX/compare/v0.13.22...v0.13.23) (2021-10-30)
+
+
+### Bug Fixes
+
+* **fonts:** correct width of \cong glyph, fix \boldsymbol{\cong} ([#3206](https://github.com/KaTeX/KaTeX/issues/3206)) ([35db4ff](https://github.com/KaTeX/KaTeX/commit/35db4ff40337cc2e2dfebeac1458d6aa9afc8bab)), closes [#2199](https://github.com/KaTeX/KaTeX/issues/2199)
+
 ## [0.13.22](https://github.com/KaTeX/KaTeX/compare/v0.13.21...v0.13.22) (2021-10-30)
 
 
