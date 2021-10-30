@@ -40,8 +40,6 @@ glyf = font['glyf']
 ascent = int(max(glyf[c].yMax for c in font.getGlyphOrder() if hasattr(glyf[c], "yMax")))
 descent = int(min(glyf[c].yMin for c in font.getGlyphOrder() if hasattr(glyf[c], "yMin")))
 
-font['OS/2'].sTypoAscender = ascent
-font['OS/2'].sTypoDescender = descent
 font['OS/2'].usWinAscent = ascent
 font['OS/2'].usWinDescent = -descent
 
@@ -51,6 +49,10 @@ font['hhea'].descent = descent
 # USE_TYPO_METRICS flag for cross-platform line height determination
 font['OS/2'].version = 4
 font['OS/2'].fsSelection = 1<<7
+
+# Fixed ascender/descender metrics (defaults)
+font['OS/2'].sTypoAscender = 800
+font['OS/2'].sTypoDescender = -200
 
 # save TTF
 font.save(font_file, reorderTables=None)
