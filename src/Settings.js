@@ -52,22 +52,7 @@ export type TrustContextTypes = {
 export type AnyTrustContext = $Values<TrustContextTypes>;
 export type TrustFunction = (context: AnyTrustContext) => ?boolean;
 
-export type SettingsOptions = {
-    displayMode?: boolean;
-    output?: "html" | "mathml" | "htmlAndMathml";
-    leqno?: boolean;
-    fleqn?: boolean;
-    throwOnError?: boolean;
-    errorColor?: string;
-    macros?: MacroMap;
-    minRuleThickness?: number;
-    colorIsTextColor?: boolean;
-    strict?: boolean | "ignore" | "warn" | "error" | StrictFunction;
-    trust?: boolean | TrustFunction;
-    maxSize?: number;
-    maxExpand?: number;
-    globalGroup?: boolean;
-};
+export type SettingsOptions = $Shape<Settings>;
 
 /**
  * The main Settings object
