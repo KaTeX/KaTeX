@@ -9,7 +9,7 @@
  */
 
 import ParseError from "./src/ParseError";
-import Settings from "./src/Settings";
+import Settings, {SETTINGS_SCHEMA} from "./src/Settings";
 
 import {buildTree, buildHTMLTree} from "./src/buildTree";
 import parseTree from "./src/parseTree";
@@ -156,6 +156,10 @@ export default {
      * KaTeX error, usually during parsing.
      */
     ParseError,
+    /**
+     * The shema of Settings
+     */
+    SETTINGS_SCHEMA,
     /**
      * Parses the given LaTeX into KaTeX's internal parse tree structure,
      * without rendering to HTML or MathML.

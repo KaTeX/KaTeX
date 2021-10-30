@@ -54,6 +54,173 @@ export type TrustFunction = (context: AnyTrustContext) => ?boolean;
 
 export type SettingsOptions = $Shape<Settings>;
 
+type EnumType = {| enum: string[] |};
+type Type = "boolean" | "string" | "number" | "object" | "function" | EnumType;
+type Schema = {
+    [$Keys<SettingsOptions>]: {
+        /**
+         * Allowed type(s) of the value.
+         */
+        type: Type | Type[];
+        /**
+         * The default value. If not specified, false for boolean, an empty string
+         * for string, 0 for number, an empty object for object, or the first item
+         * for enum will be used. If multiple types are allowed, the first allowed
+         * type will be used for determining the default value.
+         */
+        default?: any;
+        /**
+         * The description.
+         */
+        description?: string;
+        /**
+         * The function to process the argument.
+         */
+        processor?: (any) => any,
+        /**
+         * The command line argument. See Commander.js docs for more information.
+         * If not specified, the name prefixed with -- will be used. Set false not
+         * to add to the CLI.
+         */
+        cli?: string | false;
+        /**
+         * The default value for the CLI.
+         */
+        cliDefault?: any;
+        /**
+         * The description for the CLI. If not specified, the description for the
+         * option will be used.
+         */
+        cliDescription?: string;
+        /**
+         * The custom argument processor for the CLI. See Commander.js docs for
+         * more information.
+         */
+        cliProcessor?: (any, any) => any;
+    };
+};
+
+export const SETTINGS_SCHEMA: Schema = {
+    displayMode: {
+        type: "boolean",
+        description: "Render math in display mode, which puts the math in " +
+            "display style (so \\int and \\sum are large, for example), and " +
+            "centers the math on the page on its own line.",
+        cli: "-d, --display-mode",
+    },
+    output: {
+        type: {enum: ["htmlAndMathml", "html", "mathml"]},
+        description: "Determines the markup language of the output.",
+        cli: "-f, --format <type>",
+    },
+    leqno: {
+        type: "boolean",
+        description: "Render display math in leqno style (left-justified tags).",
+    },
+    fleqn: {
+        type: "boolean",
+        description: "Render display math flush left.",
+    },
+    throwOnError: {
+        type: "boolean",
+        default: true,
+        cli: "-t, --no-throw-on-error",
+        cliDescription: "Render errors (in the color given by --error-color) ins" +
+            "tead of throwing a ParseError exception when encountering an error.",
+    },
+    errorColor: {
+        type: "string",
+        default: "#cc0000",
+        cli: "-c, --error-color <color>",
+        cliDescription: "A color string given in the format 'rgb' or 'rrggbb' " +
+            "(no #). This option determines the color of errors rendered by the " +
+            "-t option.",
+        cliProcessor: (color) => "#" + color,
+    },
+    macros: {
+        type: "object",
+        cli: "-m, --macro <def>",
+        cliDescription: "Define custom macro of the form '\\foo:expansion' (use " +
+            "multiple -m arguments for multiple macros).",
+        cliDefault: [],
+        cliProcessor: (def, defs) => {
+            defs.push(def);
+            return defs;
+        },
+    },
+    minRuleThickness: {
+        type: "number",
+        description: "Specifies a minimum thickness, in ems, for fraction lines," +
+            " `\\sqrt` top lines, `{array}` vertical lines, `\\hline`, " +
+            "`\\hdashline`, `\\underline`, `\\overline`, and the borders of " +
+            "`\\fbox`, `\\boxed`, and `\\fcolorbox`.",
+        cli: "--min-rule-thickness <size>",
+        cliProcessor: parseFloat,
+    },
+    colorIsTextColor: {
+        type: "boolean",
+        description: "Makes \\color behave like LaTeX's 2-argument \\textcolor, " +
+            "instead of LaTeX's one-argument \\color mode change.",
+        cli: "-b, --color-is-text-color",
+    },
+    strict: {
+        type: [{enum: ["warn", "ignore", "error"]}, "boolean", "function"],
+        description: "Turn on strict / LaTeX faithfulness mode, which throws an " +
+            "error if the input uses features that are not supported by LaTeX.",
+        cli: "-S, --strict",
+        cliDefault: false,
+    },
+    trust: {
+        type: ["boolean", "function"],
+        description: "Trust the input, enabling all HTML features such as \\url.",
+        cli: "-T, --trust",
+    },
+    maxSize: {
+        type: "number",
+        default: Infinity,
+        description: "If non-zero, all user-specified sizes, e.g. in " +
+            "\\rule{500em}{500em}, will be capped to maxSize ems. Otherwise, " +
+            "elements and spaces can be arbitrarily large",
+        processor: (s) => Math.max(0, s),
+        cli: "-s, --max-size <n>",
+        cliProcessor: parseInt,
+    },
+    maxExpand: {
+        type: "number",
+        default: 1000,
+        description: "Limit the number of macro expansions to the specified " +
+            "number, to prevent e.g. infinite macro loops. If set to Infinity, " +
+            "the macro expander will try to fully expand as in LaTeX.",
+        cli: "-e, --max-expand <n>",
+        cliProcessor: (n) => (n === "Infinity" ? Infinity : parseInt(n)),
+    },
+    globalGroup: {
+        type: "boolean",
+        cli: false,
+    },
+};
+
+function getDefaultValue(schema): any {
+    if (schema.default) {
+        return schema.default;
+    }
+    const type = schema.type;
+    const defaultType = Array.isArray(type) ? type[0] : type;
+    if (typeof defaultType !== 'string') {
+        return defaultType.enum[0];
+    }
+    switch (defaultType) {
+        case 'boolean':
+            return false;
+        case 'string':
+            return '';
+        case 'number':
+            return 0;
+        case 'object':
+            return {};
+    }
+}
+
 /**
  * The main Settings object
  *
@@ -83,23 +250,16 @@ export default class Settings {
     constructor(options: SettingsOptions) {
         // allow null options
         options = options || {};
-        this.displayMode = utils.deflt(options.displayMode, false);
-        this.output = utils.deflt(options.output, "htmlAndMathml");
-        this.leqno = utils.deflt(options.leqno, false);
-        this.fleqn = utils.deflt(options.fleqn, false);
-        this.throwOnError = utils.deflt(options.throwOnError, true);
-        this.errorColor = utils.deflt(options.errorColor, "#cc0000");
-        this.macros = options.macros || {};
-        this.minRuleThickness = Math.max(
-            0,
-            utils.deflt(options.minRuleThickness, 0)
-        );
-        this.colorIsTextColor = utils.deflt(options.colorIsTextColor, false);
-        this.strict = utils.deflt(options.strict, "warn");
-        this.trust = utils.deflt(options.trust, false);
-        this.maxSize = Math.max(0, utils.deflt(options.maxSize, Infinity));
-        this.maxExpand = Math.max(0, utils.deflt(options.maxExpand, 1000));
-        this.globalGroup = utils.deflt(options.globalGroup, false);
+        for (const prop in SETTINGS_SCHEMA) {
+            if (SETTINGS_SCHEMA.hasOwnProperty(prop)) {
+                // $FlowFixMe
+                const schema = SETTINGS_SCHEMA[prop];
+                // $FlowFixMe
+                this[prop] = options[prop] !== undefined ? (schema.processor
+                        ? schema.processor(options[prop]) : options[prop])
+                    : getDefaultValue(schema);
+            }
+        }
     }
 
     /**
