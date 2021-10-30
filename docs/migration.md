@@ -8,6 +8,13 @@ title: Migration Guide
 With module loaders that support conditional exports and ECMAScript modules,
 `import katex from 'katex';` will import the ECMAScript module.
 
+You can now use:
+|Before                                    |After                             |
+|------------------------------------------|----------------------------------|
+|`require('katex/dist/contrib/[name].js')` | `require('katex/contrib/[name]')`|
+|`import katex from 'katex/dist/katex.mjs'`| `import katex from 'katex'`      |
+|`import 'katex/dist/contrib/[name].mjs'`  | `import 'katex/contrib/[name]'`  |
+
 ## v0.13.0
 
 ### Macro arguments
