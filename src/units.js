@@ -98,10 +98,8 @@ export const calculateSize = function(
 };
 
 /**
- * Round `n` to 4 decimal places, or to the nearest 1/10,000th em. The TeXbook
- * gives an acceptable rounding error of 100sp (which would be the nearest
- * 1/6551.6em with our ptPerEm = 10):
- * http://www.ctex.org/documents/shredder/src/texbook.pdf#page=69
+ * Round `n` to 4 decimal places, or to the nearest 1/10,000th em. See
+ * https://github.com/KaTeX/KaTeX/pull/2460.
  */
 export const makeEm = function(n: number): string {
     return +n.toFixed(4) + "em";
