@@ -114,7 +114,7 @@ export const SETTINGS_SCHEMA: Schema = {
     output: {
         type: {enum: ["htmlAndMathml", "html", "mathml"]},
         description: "Determines the markup language of the output.",
-        cli: "-f, --format <type>",
+        cli: "-F, --format <type>",
     },
     leqno: {
         type: "boolean",
