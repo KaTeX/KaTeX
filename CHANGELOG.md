@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.13.24](https://github.com/KaTeX/KaTeX/compare/v0.13.23...v0.13.24) (2021-10-30)
+
+
+### Bug Fixes
+
+* round dimensions to 4 places ([#2460](https://github.com/KaTeX/KaTeX/issues/2460)) ([09ee1c8](https://github.com/KaTeX/KaTeX/commit/09ee1c886740fe8283a77468bc28c30b7816b446))
+
 ## [0.13.23](https://github.com/KaTeX/KaTeX/compare/v0.13.22...v0.13.23) (2021-10-30)
 
 
