@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   test:
@@ -57,10 +57,10 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
 
-    - name: Use Node.js 12
+    - name: Use Node.js 16
       uses: actions/setup-node@v2
       with:
-        node-version: '12'
+        node-version: '16'
         cache: yarn
 
     - name: Install dependencies

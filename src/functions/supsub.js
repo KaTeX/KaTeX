@@ -4,6 +4,7 @@ import buildCommon from "../buildCommon";
 import {SymbolNode} from "../domTree";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
+import {makeEm} from "../units";
 import Style from "../Style";
 
 import * as html from "../buildHTML";
@@ -111,7 +112,7 @@ defineFunctionBuilders({
         // scriptspace is a font-size-independent size, so scale it
         // appropriately for use as the marginRight.
         const multiplier = options.sizeMultiplier;
-        const marginRight = (0.5 / metrics.ptPerEm) / multiplier + "em";
+        const marginRight = makeEm((0.5 / metrics.ptPerEm) / multiplier);
 
         let marginLeft = null;
         if (subm) {
@@ -123,7 +124,7 @@ defineFunctionBuilders({
                 (group.base.name === "\\oiint" || group.base.name === "\\oiiint");
             if (base instanceof SymbolNode || isOiint) {
                 // $FlowFixMe
-                marginLeft = -base.italic + "em";
+                marginLeft = makeEm(-base.italic);
             }
         }
 

@@ -40,7 +40,6 @@ cleanup() {
 CONTAINER=
 trap cleanup EXIT
 
-LAST_COMMIT_DATE="$(git log -1 --format=%ct -- src/fonts)"
 IMAGE="katex/fonts:DF-$(openssl sha1 dockers/fonts/Dockerfile | tail -c 9)"
 TMPFILE="$(mktemp "${TMPDIR:-/tmp}/mjf.XXXXXXXX")"
 FILE="$TMPFILE"
@@ -59,7 +58,6 @@ if [[ $(docker images "$IMAGE" | wc -l) -lt 2 ]]; then
 fi
 
 CMDS="set -ex
-export SOURCE_DATE_EPOCH=${LAST_COMMIT_DATE}
 tar xfP katex-fonts.tar.gz
 make -C fonts all
 tar cf /fonts.tar ${filetypes[*]/#/fonts/}"
@@ -84,5 +82,3 @@ for filetype in "${filetypes[@]}"; do
     done
 done
 rm -rf temp fonts.tar
-
-echo $LAST_COMMIT_DATE > fonts/VERSION

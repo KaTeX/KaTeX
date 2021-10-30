@@ -4,6 +4,7 @@ import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import delimiter from "../delimiter";
 import Style from "../Style";
+import {makeEm} from "../units";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -70,7 +71,7 @@ defineFunction({
         // Shift the sqrt image
         const imgShift = img.height - inner.height - lineClearance - ruleWidth;
 
-        inner.style.paddingLeft = advanceWidth + "em";
+        inner.style.paddingLeft = makeEm(advanceWidth);
 
         // Overlay the image and the argument.
         const body = buildCommon.makeVList({

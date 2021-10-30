@@ -11,6 +11,7 @@ import Style from "./Style";
 import buildCommon from "./buildCommon";
 import {Span, Anchor} from "./domTree";
 import utils from "./utils";
+import {makeEm} from "./units";
 import {spacings, tightSpacings} from "./spacingData";
 import {_htmlGroupBuilders as groupBuilders} from "./defineFunction";
 import {DocumentFragment} from "./tree";
@@ -299,8 +300,10 @@ function buildHTMLUnbreakable(children, options) {
     // the height of the expression, and the bottom of the HTML element
     // falls at the depth of the expression.
     const strut = makeSpan(["strut"]);
-    strut.style.height = (body.height + body.depth) + "em";
-    strut.style.verticalAlign = -body.depth + "em";
+    strut.style.height = makeEm(body.height + body.depth);
+    if (body.depth) {
+        strut.style.verticalAlign = makeEm(-body.depth);
+    }
     body.children.unshift(strut);
 
     return body;
@@ -393,8 +396,10 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
     // (the height of the enclosing htmlNode) for proper vertical alignment.
     if (tagChild) {
         const strut = tagChild.children[0];
-        strut.style.height = (htmlNode.height + htmlNode.depth) + "em";
-        strut.style.verticalAlign = (-htmlNode.depth) + "em";
+        strut.style.height = makeEm(htmlNode.height + htmlNode.depth);
+        if (htmlNode.depth) {
+            strut.style.verticalAlign = makeEm(-htmlNode.depth);
+        }
     }
 
     return htmlNode;

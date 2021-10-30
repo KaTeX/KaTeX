@@ -1,5 +1,5 @@
 body {
-    font: 16px/1.4 "Lato", "Helvetica Neue", Arial, Helvetica, sans-serif;
+    font: 16px/1.4 Lato, Helvetica Neue, Arial, Helvetica, sans-serif;
     margin: 0;
 }
 
@@ -76,7 +76,7 @@ textarea {
 }
 
 .header .cta a:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgb(255 255 255 / 10%);
 }
 
 .demo {
@@ -84,7 +84,7 @@ textarea {
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgb(0 0 0 / 30%);
     font-size: 22px;
     margin: 50px 0 0;
 }
@@ -112,7 +112,7 @@ textarea {
 .demo-instructions {
     line-height: 1.5;
     margin-bottom: 10px;
-    opacity: 0.8;
+    opacity: 80%;
 }
 
 .demo-left {
@@ -158,7 +158,7 @@ textarea {
 
 .main {
     background: #fff2e7;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgb(0 0 0 / 30%);
     min-height: 400px;
     position: relative;
     padding: 30px 15px;
@@ -209,10 +209,10 @@ textarea {
 }
 
 .main .comparison {
-    background-image: url(../img/katex-comparison.gif);
+    background-image: url("../img/katex-comparison.gif");
     background-position: 50% 50%;
     background-size: cover;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgb(0 0 0 / 30%);
     padding-top: 42%;
     width: 100%;
 }
@@ -228,7 +228,7 @@ textarea {
 }
 
 .main .cta a:hover {
-    background: rgba(50, 152, 148, 0.1);
+    background: rgb(50 152 148 / 10%);
 }
 
 .footer {
@@ -267,7 +267,7 @@ textarea {
 
 #options-panel {
     background: #fafafa;
-    box-shadow: 3px 0 3px rgba(50, 50, 50, 0.3);
+    box-shadow: 3px 0 3px rgb(50 50 50 / 30%);
     position: fixed;
     top: 0;
     bottom: 0;

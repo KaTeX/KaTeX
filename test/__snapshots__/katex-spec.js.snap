@@ -214,7 +214,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "height": 0,
     "maxFontSize": 0,
     "style": {
-      "marginRight": "0.2777777777777778em"
+      "marginRight": "0.2778em"
     }
   },
   {
@@ -272,7 +272,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "height": 0,
     "maxFontSize": 0,
     "style": {
-      "marginRight": "0.2777777777777778em"
+      "marginRight": "0.2778em"
     }
   },
   {
@@ -302,7 +302,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "height": 0,
     "maxFontSize": 0,
     "style": {
-      "marginRight": "0.2222222222222222em"
+      "marginRight": "0.2222em"
     }
   },
   {
@@ -360,7 +360,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "height": 0,
     "maxFontSize": 0,
     "style": {
-      "marginRight": "0.2222222222222222em"
+      "marginRight": "0.2222em"
     }
   },
   {
@@ -390,7 +390,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "height": 0,
     "maxFontSize": 0,
     "style": {
-      "marginRight": "0.2222222222222222em"
+      "marginRight": "0.2222em"
     }
   },
   {
@@ -448,7 +448,7 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     "height": 0,
     "maxFontSize": 0,
     "style": {
-      "marginRight": "0.2222222222222222em"
+      "marginRight": "0.2222em"
     }
   },
   {
@@ -657,7 +657,7 @@ exports[`An HTML extension builder should not affect spacing 1`] = `
         "height": 0,
         "maxFontSize": 0,
         "style": {
-          "marginRight": "0.2222222222222222em"
+          "marginRight": "0.2222em"
         }
       },
       {
@@ -686,7 +686,7 @@ exports[`An HTML extension builder should not affect spacing 1`] = `
         "height": 0,
         "maxFontSize": 0,
         "style": {
-          "marginRight": "0.2222222222222222em"
+          "marginRight": "0.2222em"
         }
       }
     ],
@@ -1089,7 +1089,7 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
   >
     <span class="base">
       <span class="strut"
-            style="height:0.84425em;vertical-align:0em;"
+            style="height:0.8442em;"
       >
       </span>
       <span class="mord mockEasternArabicFont-Regular">
@@ -1103,7 +1103,7 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
           <span class="vlist-t">
             <span class="vlist-r">
               <span class="vlist"
-                    style="height:0.84425em;"
+                    style="height:0.8442em;"
               >
                 <span style="top:-3.063em;margin-right:0.05em;">
                   <span class="pstrut"
@@ -1170,7 +1170,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
   >
     <span class="base">
       <span class="strut"
-            style="height:0.68333em;vertical-align:0em;"
+            style="height:0.6833em;"
       >
       </span>
       <span class="mord mathnormal"
@@ -1179,7 +1179,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
         M
       </span>
       <span class="mspace"
-            style="margin-right:0.2777777777777778em;"
+            style="margin-right:0.2778em;"
       >
       </span>
       <span class="mrel">
@@ -1190,14 +1190,14 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
     </span>
     <span class="base">
       <span class="strut"
-            style="height:0.66666em;vertical-align:-0.08333em;"
+            style="height:0.6667em;vertical-align:-0.0833em;"
       >
       </span>
       <span class="mord mathnormal">
         a
       </span>
       <span class="mspace"
-            style="margin-right:0.2222222222222222em;"
+            style="margin-right:0.2222em;"
       >
       </span>
       <span class="mbin">
@@ -1208,7 +1208,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
     </span>
     <span class="base">
       <span class="strut"
-            style="height:0.69444em;vertical-align:0em;"
+            style="height:0.6944em;"
       >
       </span>
       <span class="mord mathnormal">
@@ -1219,7 +1219,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
     </span>
     <span class="base">
       <span class="strut"
-            style="height:0.43056em;vertical-align:0em;"
+            style="height:0.4306em;"
       >
       </span>
       <span class="mord mathnormal">
@@ -1404,7 +1404,7 @@ exports[`href and url commands should not affect spacing around 1`] = `
     "height": 0,
     "maxFontSize": 0,
     "style": {
-      "marginRight": "0.2222222222222222em"
+      "marginRight": "0.2222em"
     }
   },
   {
@@ -1438,7 +1438,7 @@ exports[`href and url commands should not affect spacing around 1`] = `
         "height": 0,
         "maxFontSize": 0,
         "style": {
-          "marginRight": "0.2222222222222222em"
+          "marginRight": "0.2222em"
         }
       },
       {

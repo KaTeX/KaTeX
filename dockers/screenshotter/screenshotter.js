@@ -73,7 +73,8 @@ const opts = require("commander")
     .option("--browserstack", "Use Browserstack. The username and access key"
         + " should be set as enviroment variable BROWSERSTACK_USER and"
         + " BROWSERSTACK_ACCESS_KEY")
-    .parse(process.argv);
+    .parse(process.argv)
+    .opts();
 
 let listOfCases;
 if (opts.include) {
@@ -303,6 +304,7 @@ function buildDriver() {
         builder.usingServer(seleniumURL);
     }
     if (opts.seleniumCapabilities) {
+        // TODO: withCapabilities is deprecated
         builder.withCapabilities(opts.seleniumCapabilities);
     }
     return builder.build();
@@ -487,9 +489,13 @@ async function takeScreenshot(key) {
                 await collectCoverage();
             }
             await driver.get(url);
-            await driver.executeAsyncScript(
-                    "var callback = arguments[arguments.length - 1]; " +
-                    "load_fonts_and_images(callback);");
+            try {
+                await driver.executeAsyncScript(
+                        "var callback = arguments[arguments.length - 1]; " +
+                        "load_fonts_and_images(callback);");
+            } catch (e) {
+                console.error(e);
+            }
             driverReady = true;
         }
         if (opts.wait) {

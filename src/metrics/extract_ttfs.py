@@ -44,6 +44,9 @@ metrics_to_extract = {
         u"\u21aa": None,  # \hookrightarrow
         u"\u21cc": None,  # \rightleftharpoons
     },
+    "Main-Bold": {
+        u"\u2245": None,  # \cong
+    },
     "Size1-Regular": {
         u"\u222c": u"\u222b",  # \iint, based on \int
         u"\u222d": u"\u222b",  # \iiint, based on \int
