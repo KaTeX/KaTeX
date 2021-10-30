@@ -100,6 +100,9 @@ type Schema = {
     };
 };
 
+// TODO: automatically generate documentation
+// TODO: check all properties on Settings exist
+// TODO: check the type of a property on Settings matches
 export const SETTINGS_SCHEMA: Schema = {
     displayMode: {
         type: "boolean",
@@ -254,6 +257,7 @@ export default class Settings {
             if (SETTINGS_SCHEMA.hasOwnProperty(prop)) {
                 // $FlowFixMe
                 const schema = SETTINGS_SCHEMA[prop];
+                // TODO: validate options
                 // $FlowFixMe
                 this[prop] = options[prop] !== undefined ? (schema.processor
                         ? schema.processor(options[prop]) : options[prop])
