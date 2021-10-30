@@ -30,24 +30,5 @@ They are no longer allowed as an argument to primitive commands, such as `\sqrt`
 
 ## v0.14.0
 
-### Conditional exports
-With module loaders that support conditional exports, the following will load
-the respective compiled contrib module:
-```js
-const renderMathInElement = require('katex/contrib/auto-render');
-require('katex/contrib/mhchem');
-require('katex/contrib/copy-tex');
-require('katex/contrib/mathtex-script-type');
-const renderA11yString = require('katex/contrib/render-a11y-string');
-```
-
-With module loaders that support conditional exports, the following will import
-the respective ECMAScript module:
-```js
-import katex from 'katex';
-import renderMathInElement from 'katex/contrib/auto-render';
-import 'katex/contrib/mhchem';
-import 'katex/contrib/copy-tex';
-import 'katex/contrib/mathtex-script-type';
-import renderA11yString from 'katex/contrib/render-a11y-string';
-```
+With module loaders that support conditional exports and ECMAScript modules,
+`import katex from 'katex';` will import the ECMAScript module.
