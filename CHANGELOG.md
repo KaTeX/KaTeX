@@ -1,6 +1,27 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+# [0.14.0](https://github.com/KaTeX/KaTeX/compare/v0.13.24...v0.14.0) (2021-10-30)
+
+
+### Features
+
+* conditionally export ECMAScript modules ([#3377](https://github.com/KaTeX/KaTeX/issues/3377)) ([15ee9b4](https://github.com/KaTeX/KaTeX/commit/15ee9b4a5a0ccf26ee271577e469f8b83f8b3ff8))
+
+
+### BREAKING CHANGES
+
+* With module loaders that support conditional exports
+and ECMAScript modules, `import katex from 'katex';` will import the
+ECMAScript module.
+
+You can now use:
+|Before                                    |After                             |
+|------------------------------------------|----------------------------------|
+|`require('katex/dist/contrib/[name].js')` | `require('katex/contrib/[name]')`|
+|`import katex from 'katex/dist/katex.mjs'`| `import katex from 'katex'`      |
+|`import 'katex/dist/contrib/[name].mjs'`  | `import 'katex/contrib/[name]'`  |
+
 ## [0.13.24](https://github.com/KaTeX/KaTeX/compare/v0.13.23...v0.13.24) (2021-10-30)
 
 
