@@ -30,6 +30,7 @@ import buildCommon from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
 import utils from "./utils";
+import {makeEm} from "./units";
 import fontMetricsData from "./fontMetricsData";
 
 import type Options from "./Options";
@@ -93,7 +94,7 @@ const centerSpan = function(
         options.fontMetrics().axisHeight;
 
     span.classes.push("delimcenter");
-    span.style.top = shift + "em";
+    span.style.top = makeEm(shift);
     span.height -= shift;
     span.depth += shift;
 };
@@ -186,21 +187,21 @@ const makeInner = function(
 ): VListElem {
     // Create a span with inline SVG for the inner part of a tall stacked delimiter.
     const width = fontMetricsData['Size4-Regular'][ch.charCodeAt(0)]
-        ? fontMetricsData['Size4-Regular'][ch.charCodeAt(0)][4].toFixed(3)
-        : fontMetricsData['Size1-Regular'][ch.charCodeAt(0)][4].toFixed(3);
+        ? fontMetricsData['Size4-Regular'][ch.charCodeAt(0)][4]
+        : fontMetricsData['Size1-Regular'][ch.charCodeAt(0)][4];
     const path = new PathNode("inner", innerPath(ch,  Math.round(1000 * height)));
     const svgNode = new SvgNode([path], {
-        "width": width + "em",
-        "height": height + "em",
+        "width": makeEm(width),
+        "height": makeEm(height),
         // Override CSS rule `.katex svg { width: 100% }`
-        "style": "width:" + width + "em",
+        "style": "width:" + makeEm(width),
         "viewBox": "0 0 " + 1000 * width + " " + Math.round(1000 * height),
         "preserveAspectRatio": "xMinYMin",
     });
     const span = buildCommon.makeSvgSpan([], [svgNode], options);
     span.height = height;
-    span.style.height = height + "em";
-    span.style.width = width + "em";
+    span.style.height = makeEm(height);
+    span.style.width = makeEm(width);
     return {type: "elem", elem: span};
 };
 
@@ -427,7 +428,7 @@ const sqrtSvg = function(
     const svg =  new SvgNode([pathNode], {
         // Note: 1000:1 ratio of viewBox to document em width.
         "width": "400em",
-        "height": height + "em",
+        "height": makeEm(height),
         "viewBox": "0 0 400000 " + viewBoxHeight,
         "preserveAspectRatio": "xMinYMin slice",
     });
@@ -514,7 +515,7 @@ const makeSqrtImage = function(
     }
 
     span.height = texHeight;
-    span.style.height = spanHeight + "em";
+    span.style.height = makeEm(spanHeight);
 
     return {
         span,

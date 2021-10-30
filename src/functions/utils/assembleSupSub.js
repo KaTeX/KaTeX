@@ -6,6 +6,7 @@ import type {StyleInterface} from "../../Style";
 import type Options from "../../Options";
 import type {DomSpan, SymbolNode} from "../../domTree";
 import type {AnyParseNode} from "../../parseNode";
+import {makeEm} from "../../units";
 
 // For an operator with limits, assemble the base, sup, and sub into a span.
 
@@ -62,11 +63,11 @@ export const assembleSupSub = (
             positionData: bottom,
             children: [
                 {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                {type: "elem", elem: sub.elem, marginLeft: -slant + "em"},
+                {type: "elem", elem: sub.elem, marginLeft: makeEm(-slant)},
                 {type: "kern", size: sub.kern},
                 {type: "elem", elem: base},
                 {type: "kern", size: sup.kern},
-                {type: "elem", elem: sup.elem, marginLeft: slant + "em"},
+                {type: "elem", elem: sup.elem, marginLeft: makeEm(slant)},
                 {type: "kern", size: options.fontMetrics().bigOpSpacing5},
             ],
         }, options);
@@ -82,7 +83,7 @@ export const assembleSupSub = (
             positionData: top,
             children: [
                 {type: "kern", size: options.fontMetrics().bigOpSpacing5},
-                {type: "elem", elem: sub.elem, marginLeft: -slant + "em"},
+                {type: "elem", elem: sub.elem, marginLeft: makeEm(-slant)},
                 {type: "kern", size: sub.kern},
                 {type: "elem", elem: base},
             ],
@@ -96,7 +97,7 @@ export const assembleSupSub = (
             children: [
                 {type: "elem", elem: base},
                 {type: "kern", size: sup.kern},
-                {type: "elem", elem: sup.elem, marginLeft: slant + "em"},
+                {type: "elem", elem: sup.elem, marginLeft: makeEm(slant)},
                 {type: "kern", size: options.fontMetrics().bigOpSpacing5},
             ],
         }, options);
@@ -112,7 +113,7 @@ export const assembleSupSub = (
         // A negative margin-left was applied to the lower limit.
         // Avoid an overlap by placing a spacer on the left on the group.
         const spacer = buildCommon.makeSpan(["mspace"], [], options);
-        spacer.style.marginRight = `${slant}em`;
+        spacer.style.marginRight = makeEm(slant);
         parts.unshift(spacer);
     }
     return buildCommon.makeSpan(["mop", "op-limits"], parts, options);
