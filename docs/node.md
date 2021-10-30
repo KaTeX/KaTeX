@@ -63,15 +63,9 @@ KaTeX is exported as a CommonJS module, which can be imported using `require`:
 const katex = require('katex');
 ```
 
-If you're using a module loader, transpiler, or bundler that supports interoperability
-between ECMAScript module and CommonJS module, you can use `import`:
+KaTeX also conditionally exports an ECMAScript module:
 ```js
 import katex from 'katex';
-```
-
-KaTeX also provides an ECMAScript module:
-```js
-import katex from 'katex/dist/katex.mjs'
 ```
 
 > The ES module contains ES6 syntaxes and features, and may need transpiling to
@@ -88,12 +82,12 @@ Note, however, that you do not need to include `katex.js` on the client.
 
 ## Using mhchem extension
 
-The [mhchem extension](https://github.com/Khan/KaTeX/tree/master/contrib/mhchem)
+The [mhchem extension](https://github.com/KaTeX/KaTeX/tree/main/contrib/mhchem)
 adds its features by modifying the `katex` module.  So you can use KaTeX with
 mhchem in Node as follows:
 
 ```js
 const katex = require('katex');
-require('katex/dist/contrib/mhchem.js'); // modify katex module
+require('katex/contrib/mhchem'); // modify katex module
 const html = katex.renderToString('\\ce{CO2 + C -> 2 C0}');
 ```

@@ -4,7 +4,7 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import {calculateSize} from "../units";
+import {calculateSize, makeEm} from "../units";
 import {assertNodeType} from "../parseNode";
 
 // \DeclareRobustCommand\\{...\@xnewline}
@@ -41,7 +41,7 @@ defineFunction({
             span.classes.push("newline");
             if (group.size) {
                 span.style.marginTop =
-                    calculateSize(group.size, options) + "em";
+                    makeEm(calculateSize(group.size, options));
             }
         }
         return span;
@@ -53,7 +53,7 @@ defineFunction({
             node.setAttribute("linebreak", "newline");
             if (group.size) {
                 node.setAttribute("height",
-                    calculateSize(group.size, options) + "em");
+                    makeEm(calculateSize(group.size, options)));
             }
         }
         return node;

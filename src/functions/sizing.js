@@ -2,6 +2,7 @@
 import buildCommon from "../buildCommon";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
+import {makeEm} from "../units";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -83,7 +84,7 @@ defineFunction({
         // in, so we can't reset the size to normal before changing it.  Now
         // that we're passing an options parameter we should be able to fix
         // this.
-        node.setAttribute("mathsize", newOptions.sizeMultiplier + "em");
+        node.setAttribute("mathsize", makeEm(newOptions.sizeMultiplier));
 
         return node;
     },

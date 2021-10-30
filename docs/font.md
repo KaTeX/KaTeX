@@ -41,6 +41,6 @@ variable to `"true"` or `"false"`, respectively.
 
 The default build of KaTeX expects the KaTeX fonts to be located in a directory called `fonts` which is a sibling of the `katex.min.css` stylesheet. This can be changed as follows:
 
-1. At the top of the [fonts.less](https://github.com/KaTeX/KaTeX/blob/master/src/fonts.less) file, set `@font-folder` to the location of your fonts. You can use relative or absolute paths, so setting it to `"/fonts"` would cause it to search for the fonts in a root `fonts` folder, while `"../fonts"` would search in a `fonts` directory one level above the `katex.min.css` file.
+1. At the top of the [fonts.less](https://github.com/KaTeX/KaTeX/blob/main/src/fonts.less) file, set `@font-folder` to the location of your fonts. You can use relative or absolute paths, so setting it to `"/fonts"` would cause it to search for the fonts in a root `fonts` folder, while `"../fonts"` would search in a `fonts` directory one level above the `katex.min.css` file.
 2. Rebuild KaTeX by running `yarn build` from the top-level directory.
 3. Use the newly generated `dist/katex.min.css` file, and place the fonts where you indicated.
