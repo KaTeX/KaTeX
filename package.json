@@ -8,6 +8,10 @@
     "type": "git",
     "url": "https://github.com/KaTeX/KaTeX.git"
   },
+  "funding": [
+    "https://opencollective.com/katex",
+    "https://github.com/sponsors/katex"
+  ],
   "files": [
     "katex.js",
     "cli.js",
