@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import type {Measurement} from "../units";
-import {calculateSize, validUnit} from "../units";
+import {calculateSize, validUnit, makeEm} from "../units";
 import ParseError from "../ParseError";
 import {Img} from "../domTree";
 import mathMLTree from "../mathMLTree";
@@ -108,7 +108,6 @@ defineFunction({
 
         if (group.totalheight.number > 0) {
             depth = calculateSize(group.totalheight, options) - height;
-            depth = Number(depth.toFixed(2));
         }
 
         let width = 0;
@@ -116,12 +115,12 @@ defineFunction({
             width = calculateSize(group.width, options);
         }
 
-        const style: CssStyle = {height: height + depth + "em"};
+        const style: CssStyle = {height: makeEm(height + depth)};
         if (width > 0) {
-            style.width = width + "em";
+            style.width = makeEm(width);
         }
         if (depth > 0) {
-            style.verticalAlign = -depth + "em";
+            style.verticalAlign = makeEm(-depth);
         }
 
         const node = new Img(group.src, group.alt, style);
@@ -138,14 +137,13 @@ defineFunction({
         let depth = 0;
         if (group.totalheight.number > 0) {
             depth = calculateSize(group.totalheight, options) - height;
-            depth = depth.toFixed(2);
-            node.setAttribute("valign", "-" + depth + "em");
+            node.setAttribute("valign", makeEm(-depth));
         }
-        node.setAttribute("height", height + depth + "em");
+        node.setAttribute("height", makeEm(height + depth));
 
         if (group.width.number > 0) {
             const width = calculateSize(group.width, options);
-            node.setAttribute("width", width + "em");
+            node.setAttribute("width", makeEm(width));
         }
         node.setAttribute("src", group.src);
         return node;

@@ -209,7 +209,7 @@ exports[`A MathML builder should build the CD environment properly 1`] = `
       display="block"
 >
   <semantics>
-    <mtable rowspacing="0.2500em"
+    <mtable rowspacing="0.25em"
             columnalign="center center center"
             columnspacing="0.5em"
     >
@@ -1039,8 +1039,9 @@ exports[`A MathML builder special spaces render specially 1`] = `
       <mtext>
          ⁣
       </mtext>
-      <mspace width="0.0556em">
-      </mspace>
+      <mtext>
+         
+      </mtext>
       <mtext>
          
       </mtext>
@@ -1050,8 +1051,9 @@ exports[`A MathML builder special spaces render specially 1`] = `
       <mtext>
           
       </mtext>
-      <mspace width="-0.0556em">
-      </mspace>
+      <mtext>
+         ⁣
+      </mtext>
       <mtext>
          ⁣
       </mtext>

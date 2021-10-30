@@ -8,6 +8,7 @@ import utils from "../utils";
 import Style from "../Style";
 import {assembleSupSub} from "./utils/assembleSupSub";
 import {assertNodeType} from "../parseNode";
+import {makeEm} from "../units";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -132,7 +133,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     } else {
         if (baseShift) {
             base.style.position = "relative";
-            base.style.top = baseShift + "em";
+            base.style.top = makeEm(baseShift);
         }
 
         return base;

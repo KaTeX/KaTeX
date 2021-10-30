@@ -9,6 +9,7 @@ import {LineNode, PathNode, SvgNode} from "./domTree";
 import buildCommon from "./buildCommon";
 import mathMLTree from "./mathMLTree";
 import utils from "./utils";
+import {makeEm} from "./units";
 
 import type Options from "./Options";
 import type {ParseNode, AnyParseNode} from "./parseNode";
@@ -233,7 +234,7 @@ const svgSpan = function(
             const path = new PathNode(pathName);
             const svgNode = new SvgNode([path], {
                 "width": "100%",
-                "height": height + "em",
+                "height": makeEm(height),
                 "viewBox": `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
                 "preserveAspectRatio": "none",
             });
@@ -274,7 +275,7 @@ const svgSpan = function(
 
                 const svgNode = new SvgNode([path], {
                     "width": "400em",
-                    "height": height + "em",
+                    "height": makeEm(height),
                     "viewBox": `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
                     "preserveAspectRatio": aligns[i] + " slice",
                 });
@@ -284,7 +285,7 @@ const svgSpan = function(
                 if (numSvgChildren === 1) {
                     return {span, minWidth, height};
                 } else {
-                    span.style.height = height + "em";
+                    span.style.height = makeEm(height);
                     spans.push(span);
                 }
             }
@@ -301,9 +302,9 @@ const svgSpan = function(
     // Note that we are returning span.depth = 0.
     // Any adjustments relative to the baseline must be done in buildHTML.
     span.height = height;
-    span.style.height = height + "em";
+    span.style.height = makeEm(height);
     if (minWidth > 0) {
-        span.style.minWidth = minWidth + "em";
+        span.style.minWidth = makeEm(minWidth);
     }
 
     return span;
@@ -358,14 +359,14 @@ const encloseSpan = function(
 
         const svgNode = new SvgNode(lines, {
             "width": "100%",
-            "height": totalHeight + "em",
+            "height": makeEm(totalHeight),
         });
 
         img = buildCommon.makeSvgSpan([], [svgNode], options);
     }
 
     img.height = totalHeight;
-    img.style.height = totalHeight + "em";
+    img.style.height = makeEm(totalHeight);
 
     return img;
 };

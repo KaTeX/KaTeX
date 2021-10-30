@@ -6,7 +6,7 @@ import utils from "../utils";
 import stretchy from "../stretchy";
 import {phasePath} from "../svgGeometry";
 import {PathNode, SvgNode} from "../domTree";
-import {calculateSize} from "../units";
+import {calculateSize, makeEm} from "../units";
 import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
@@ -48,20 +48,20 @@ const htmlBuilder = (group, options) => {
 
         const angleHeight = inner.height + inner.depth + lineWeight + clearance;
         // Reserve a left pad for the angle.
-        inner.style.paddingLeft = (angleHeight / 2 + lineWeight) + "em";
+        inner.style.paddingLeft = makeEm(angleHeight / 2 + lineWeight);
 
         // Create an SVG
         const viewBoxHeight = Math.floor(1000 * angleHeight * scale);
         const path = phasePath(viewBoxHeight);
         const svgNode = new SvgNode([new PathNode("phase", path)], {
             "width": "400em",
-            "height": `${viewBoxHeight / 1000}em`,
+            "height": makeEm(viewBoxHeight / 1000),
             "viewBox": `0 0 400000 ${viewBoxHeight}`,
             "preserveAspectRatio": "xMinYMin slice",
         });
         // Wrap it in a span with overflow: hidden.
         img = buildCommon.makeSvgSpan(["hide-tail"], [svgNode], options);
-        img.style.height = angleHeight + "em";
+        img.style.height = makeEm(angleHeight);
         imgShift = inner.depth + lineWeight + clearance;
 
     } else {
@@ -104,10 +104,10 @@ const htmlBuilder = (group, options) => {
         img = stretchy.encloseSpan(inner, label, topPad, bottomPad, options);
         if (/fbox|boxed|fcolorbox/.test(label)) {
             img.style.borderStyle = "solid";
-            img.style.borderWidth = `${ruleThickness}em`;
+            img.style.borderWidth = makeEm(ruleThickness);
         } else if (label === "angl" && ruleThickness !== 0.049) {
-            img.style.borderTopWidth = `${ruleThickness}em`;
-            img.style.borderRightWidth = `${ruleThickness}em`;
+            img.style.borderTopWidth = makeEm(ruleThickness);
+            img.style.borderRightWidth = makeEm(ruleThickness);
         }
         imgShift = inner.depth + bottomPad;
 

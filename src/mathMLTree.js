@@ -12,6 +12,7 @@
 import utils from "./utils";
 import {DocumentFragment} from "./tree";
 import {createClass} from "./domTree";
+import {makeEm} from "./units";
 
 import type {VirtualNode} from "./tree";
 
@@ -219,7 +220,7 @@ class SpaceNode implements MathDomNode {
         } else {
             const node = document.createElementNS(
                 "http://www.w3.org/1998/Math/MathML", "mspace");
-            node.setAttribute("width", this.width + "em");
+            node.setAttribute("width", makeEm(this.width));
             return node;
         }
     }
@@ -231,7 +232,7 @@ class SpaceNode implements MathDomNode {
         if (this.character) {
             return `<mtext>${this.character}</mtext>`;
         } else {
-            return `<mspace width="${this.width}em"/>`;
+            return `<mspace width="${makeEm(this.width)}"/>`;
         }
     }
 
