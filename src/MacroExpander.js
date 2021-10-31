@@ -20,7 +20,6 @@ import type Settings from "./Settings";
 // List of commands that act like macros but aren't defined as a macro,
 // function, or symbol.  Used in `isDefined`.
 export const implicitCommands = {
-    "\\relax": true,     // MacroExpander.js
     "^": true,           // Parser.js
     "_": true,           // Parser.js
     "\\limits": true,    // Parser.js
