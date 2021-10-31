@@ -364,7 +364,7 @@ use `\ce` instead|
 |:---------------|:------------|:-----------------|
 |\edef|$\def\foo{a}\edef\bar{\foo}\def\foo{}\bar$|`\def\foo{a}\edef\bar{\foo}\def\foo{}\bar`|
 |\ell|$\ell$||
-|\else|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
+|\else|$\iffalse\else else\fi$|`\iffalse\else else\fi`|
 |\em|<span style="color:firebrick;">Not supported</span>||
 |\emph|<span style="color:firebrick;">Not supported</span>||
 |\empty|$\empty$||
@@ -408,7 +408,7 @@ use `\ce` instead|
 |\fallingdotseq|$\fallingdotseq$||
 |\fbox|$\fbox{Hi there!}$|`\fbox{Hi there!}`|
 |\fcolorbox|$\fcolorbox{red}{aqua}{A}$|`\fcolorbox{red}{aqua}{A}`|
-|\fi|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
+|\fi|$\iftrue true\fi$|`\iftrue true\fi`|
 |\Finv|$\Finv$||
 |\flat|$\flat$||
 |\footnotesize|$\footnotesize footnotesize$|`\footnotesize footnotesize`|
@@ -499,7 +499,9 @@ use `\ce` instead|
 |\iddots|<span style="color:firebrick;">Not supported</span>|[Issue #1223](https://github.com/KaTeX/KaTeX/issues/1223)|
 |\if|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
 |\iff|$A\iff B$|`A\iff B`|
-|\ifmode|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
+|\iffalse|$\iffalse\else else\fi$|`\iffalse\else else\fi`|
+|\ifmmode|$\ifmmode math\fi$|`\ifmmode math\fi`|
+|\iftrue|$\iftrue true\fi$|`\iftrue true\fi`|
 |\ifx|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
 |\iiiint|<span style="color:firebrick;">Not supported</span>||
 |\iiint|$\iiint$||

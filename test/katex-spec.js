@@ -3593,6 +3593,24 @@ describe("A macro expander", function() {
     it("should expand \\Ket as expected", () => {
         expect`\Ket{\psi}`.toParseLike`\left|\psi\right\rangle`;
     });
+
+    describe("conditionals", () => {
+        it("should work", function() {
+            expect`\iftrue xyz \fi`.toParseLike`xyz`;
+            expect`\iffalse xyz \else abc \fi`.toParseLike`abc`;
+            expect`\def\bg{\iftrue{\else}\fi}\bg xyz}`.toParseLike`{xyz}`;
+            expect`\iffalse{\fi xyz\iffalse}\fi`.toParseLike`xyz`;
+            expect`\iftrue xyz`.toParse();
+            expect`\iffalse\else xyz`.toParse();
+            expect`\iffalse xyz \else \else abc \fi`.not.toParse();
+            expect`xyz \fi`.not.toParse();
+        });
+
+        it("\\ifmmode should work", function() {
+            expect`\def\foo{\ifmmode math\else text\fi}\foo`.toParseLike`math`;
+            expect`\def\foo{\ifmmode math\else text\fi}\textit{\foo}`.toParseLike`\textit{text}`;
+        });
+    });
 });
 
 describe("\\tag support", function() {

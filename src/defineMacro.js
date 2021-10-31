@@ -17,6 +17,12 @@ export interface MacroContextInterface {
     macros: Namespace<MacroDefinition>;
 
     /**
+     * Stack to keep track of \if...\fi nesting, storing the
+     * evaluation of the conditional
+     */
+    conditions: boolean[];
+
+    /**
      * Returns the topmost token on the stack, without expanding it.
      * Similar in behavior to TeX's `\futurelet`.
      */
@@ -31,6 +37,12 @@ export interface MacroContextInterface {
      * Consume all following space tokens, without expansion.
      */
     consumeSpaces(): void;
+
+    /**
+     * Skips ahead until finding the \else or \fi that ends the skipped text
+     * keeping track of \if...\fi nesting.
+     */
+    skipConditionalText(): void;
 
     /**
      * Expand the next token only once if possible.
@@ -115,4 +127,25 @@ export const _macros: MacroMap = {};
 // This function might one day accept an additional argument and do more things.
 export default function defineMacro(name: string, body: MacroDefinition) {
     _macros[name] = body;
+}
+
+export const _conditionals: {[string]: true} = {};
+
+export function defineConditional(
+    name: string,
+    evaluate: MacroContextInterface => boolean
+) {
+    _conditionals[name] = true;
+    // When an \if... is expanded, TeX reads ahead as far as necessary
+    // to determine whether the condition is true or false; and if false,
+    // it skips ahead until finding the \else, \or, or \fi that ends the
+    // skipped text.
+    defineMacro(name, function(context) {
+        const condition = evaluate(context);
+        context.conditions.push(condition);
+        if (!condition) {
+            context.skipConditionalText();
+        }
+        return '';
+    });
 }

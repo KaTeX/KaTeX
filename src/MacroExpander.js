@@ -11,7 +11,7 @@ import {Token} from "./Token";
 import type {Mode} from "./types";
 import ParseError from "./ParseError";
 import Namespace from "./Namespace";
-import macros from "./macros";
+import macros, {conditionals} from "./macros";
 
 import type {MacroContextInterface, MacroDefinition, MacroExpansion, MacroArg}
     from "./defineMacro";
@@ -33,6 +33,7 @@ export default class MacroExpander implements MacroContextInterface {
     macros: Namespace<MacroDefinition>;
     stack: Token[];
     mode: Mode;
+    conditions: boolean[];
 
     constructor(input: string, settings: Settings, mode: Mode) {
         this.settings = settings;
@@ -42,6 +43,7 @@ export default class MacroExpander implements MacroContextInterface {
         this.macros = new Namespace(macros, settings.macros);
         this.mode = mode;
         this.stack = []; // contains tokens in REVERSE order
+        this.conditions = [];
     }
 
     /**
@@ -151,6 +153,30 @@ export default class MacroExpander implements MacroContextInterface {
                 this.stack.pop();
             } else {
                 break;
+            }
+        }
+    }
+
+    /**
+     * Skips ahead until finding the \else or \fi that ends the skipped text
+     * keeping track of \if...\fi nesting.
+     */
+    skipConditionalText() {
+        const condition = this.conditions.pop();
+        let depth = 1;
+        while (depth) {
+            const token = this.popToken();
+            if (conditionals.hasOwnProperty(token.text)) {
+                depth++;
+            } else if (token.text === "\\fi" ||
+                    (depth === 1 && !condition && token.text === "\\else")) {
+                depth--;
+                if (token.text === "\\else") {
+                    this.conditions.push(condition);
+                }
+            } else if (token.text === "EOF") {
+                throw new ParseError("Incomplete conditional! " +
+                    "End of input while skipping conditional text.", token);
             }
         }
     }

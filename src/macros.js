@@ -5,9 +5,11 @@
  */
 
 // Export global macros object from defineMacro
-import defineMacro, {_macros} from "./defineMacro";
+import defineMacro, {
+    _macros, defineConditional, _conditionals} from "./defineMacro";
 const macros = _macros;
 export default macros;
+export const conditionals = _conditionals;
 
 import fontMetricsData from "./fontMetricsData";
 import functions from "./functions";
@@ -213,6 +215,29 @@ defineMacro("\\show", (context) => {
         symbols.math[name], symbols.text[name]);
     return '';
 });
+
+//////////////////////////////////////////////////////////////////////
+// conditionals
+defineMacro("\\else", function(context) {
+    // When \else is expanded, TeX reads to the end of any text that
+    // ought to be skipped.
+    if (!context.conditions[context.conditions.length - 1]) {
+        throw new ParseError("Extra \\else.");
+    }
+    context.skipConditionalText();
+    return '';
+});
+defineMacro("\\fi", function(context) {
+    if (context.conditions.length === 0) {
+        throw new ParseError("Extra \\fi.");
+    }
+    context.conditions.pop();
+    return '';
+});
+
+defineConditional("\\iftrue", () => true);
+defineConditional("\\iffalse", () => false);
+defineConditional("\\ifmmode", (context) => context.mode === 'math');
 
 //////////////////////////////////////////////////////////////////////
 // Grouping
