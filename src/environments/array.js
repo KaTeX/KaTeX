@@ -13,6 +13,8 @@ import {Token} from "../Token";
 import {calculateSize} from "../units";
 import utils from "../utils";
 
+const getAutoTag = name => name.indexOf("ed") === -1 ? name.indexOf("*") === -1
+    : undefined;
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
@@ -675,11 +677,7 @@ const alignedHandler = function(context, args) {
         {
             cols,
             addJot: true,
-            autoTag:
-              context.envName === "align" || context.envName === "alignat" ?
-              true :
-              context.envName === "align*" || context.envName === "alignat*" ?
-              false : undefined,
+            autoTag: getAutoTag(context.envName),
             emptySingleRow: true,
             colSeparationType: separationType,
             maxNumCols: context.envName === "split" ? 2 : undefined,
@@ -1028,8 +1026,7 @@ defineEnvironment({
             }],
             addJot: true,
             colSeparationType: "gather",
-            autoTag: context.envName === "gather" ? true :
-                     context.envName === "gather*" ? false : undefined,
+            autoTag: getAutoTag(context.envName),
             emptySingleRow: true,
             leqno: context.parser.settings.leqno,
         };
@@ -1062,7 +1059,7 @@ defineEnvironment({
     handler(context) {
         validateAmsEnvironmentContext(context);
         const res = {
-            autoTag: context.envName === "equation",
+            autoTag: getAutoTag(context.envName),
             emptySingleRow: true,
             singleRow: true,
             maxNumCols: 1,
