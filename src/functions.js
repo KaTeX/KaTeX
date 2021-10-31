@@ -37,6 +37,7 @@ import "./functions/ordgroup";
 import "./functions/overline";
 import "./functions/phantom";
 import "./functions/raisebox";
+import "./functions/relax";
 import "./functions/rule";
 import "./functions/sizing";
 import "./functions/smash";
