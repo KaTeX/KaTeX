@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.15.1](https://github.com/KaTeX/KaTeX/compare/v0.15.0...v0.15.1) (2021-10-31)
+
+
+### Features
+
+* \nonumber/\notag support, \tag per row of {align} ([#2952](https://github.com/KaTeX/KaTeX/issues/2952)) ([52c4778](https://github.com/KaTeX/KaTeX/commit/52c4778b156110c0b2bdd3d7a3b81bbf76d21800)), closes [#2950](https://github.com/KaTeX/KaTeX/issues/2950) [#2379](https://github.com/KaTeX/KaTeX/issues/2379)
+
 # [0.15.0](https://github.com/KaTeX/KaTeX/compare/v0.14.1...v0.15.0) (2021-10-31)
 
 
