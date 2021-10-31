@@ -15,7 +15,7 @@ export type Mapping<Value> = {[string]: Value};
 export default class Namespace<Value> {
     current: Mapping<Value>;
     builtins: Mapping<Value>;
-    undefStack: Mapping<Value>[];
+    undefStack: Mapping<?Value>[];
 
     /**
      * Both arguments are optional.  The first argument is an object of
@@ -48,7 +48,7 @@ export default class Namespace<Value> {
         const undefs = this.undefStack.pop();
         for (const undef in undefs) {
             if (undefs.hasOwnProperty(undef)) {
-                if (undefs[undef] === undefined) {
+                if (undefs[undef] == null) {
                     delete this.current[undef];
                 } else {
                     this.current[undef] = undefs[undef];
@@ -97,8 +97,9 @@ export default class Namespace<Value> {
      * Local set() sets the current value and (when appropriate) adds an undo
      * operation to the undo stack.  Global set() may change the undo
      * operation at every level, so takes time linear in their number.
+     * A value of undefined means to delete existing definitions.
      */
-    set(name: string, value: Value, global: boolean = false) {
+    set(name: string, value: ?Value, global: boolean = false) {
         if (global) {
             // Global set is equivalent to setting in all groups.  Simulate this
             // by destroying any undos currently scheduled for this name,
@@ -119,6 +120,10 @@ export default class Namespace<Value> {
                 top[name] = this.current[name];
             }
         }
-        this.current[name] = value;
+        if (value == null) {
+            delete this.current[name];
+        } else {
+            this.current[name] = value;
+        }
     }
 }

@@ -150,6 +150,27 @@ export default class Parser {
         }
     }
 
+    /**
+     * Fully parse a separate sequence of tokens as a separate job.
+     * Tokens should be specified in reverse order, as in a MacroDefinition.
+     */
+    subparse(tokens: Token[]): AnyParseNode[] {
+        // Save the next token from the current job.
+        const oldToken = this.nextToken;
+        this.consume();
+
+        // Run the new job, terminating it with an excess '}'
+        this.gullet.pushToken(new Token("}"));
+        this.gullet.pushTokens(tokens);
+        const parse = this.parseExpression(false);
+        this.expect("}");
+
+        // Restore the next token from the current job.
+        this.nextToken = oldToken;
+
+        return parse;
+    }
+
     static endOfExpression: string[] = ["}", "\\endgroup", "\\end", "\\right", "&"];
 
     /**
