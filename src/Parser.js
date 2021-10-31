@@ -160,8 +160,8 @@ export default class Parser {
         this.consume();
 
         // Run the new job, terminating it with an excess '}'
-        this.gullet.feedTokens([new Token("}")]);
-        this.gullet.feedTokens(tokens);
+        this.gullet.pushToken(new Token("}"));
+        this.gullet.pushTokens(tokens);
         const parse = this.parseExpression(false);
         this.expect("}");
 

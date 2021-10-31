@@ -53,16 +53,6 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
-     * Feed additional input as a set of token, specified in reverse order
-     * (e.g. from a MacroDefinition).
-     */
-    feedTokens(tokens: Token[]) {
-        for (let i = 0; i < tokens.length; i++) {
-            this.stack.push(tokens[i]);
-        }
-    }
-
-    /**
      * Switches between "text" and "math" modes.
      */
     switchMode(newMode: Mode) {
