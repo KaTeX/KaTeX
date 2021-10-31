@@ -20,7 +20,6 @@ import type Settings from "./Settings";
 // List of commands that act like macros but aren't defined as a macro,
 // function, or symbol.  Used in `isDefined`.
 export const implicitCommands = {
-    "\\relax": true,     // MacroExpander.js
     "^": true,           // Parser.js
     "_": true,           // Parser.js
     "\\limits": true,    // Parser.js
@@ -333,15 +332,12 @@ export default class MacroExpander implements MacroContextInterface {
             const expanded = this.expandOnce();
             // expandOnce returns Token if and only if it's fully expanded.
             if (expanded instanceof Token) {
-                // \relax stops the expansion, but shouldn't get returned (a
-                // null return value couldn't get implemented as a function).
                 // the token after \noexpand is interpreted as if its meaning
                 // were ‘\relax’
-                if (expanded.text === "\\relax" || expanded.treatAsRelax) {
-                    this.stack.pop();
-                } else {
-                    return this.stack.pop();  // === expanded
+                if (expanded.treatAsRelax) {
+                    expanded.text = "\\relax";
                 }
+                return this.stack.pop();  // === expanded
             }
         }
 

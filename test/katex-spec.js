@@ -4046,3 +4046,9 @@ describe("debugging macros", () => {
         });
     });
 });
+
+describe("\\relax", () => {
+    it("should stop the expansion", () => {
+        expect`\kern2\relax em`.not.toParse();
+    });
+});
