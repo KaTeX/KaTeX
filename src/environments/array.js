@@ -13,8 +13,6 @@ import {Token} from "../Token";
 import {calculateSize} from "../units";
 import utils from "../utils";
 
-const getAutoTag = name => name.indexOf("ed") === -1 ? name.indexOf("*") === -1
-    : undefined;
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
@@ -57,6 +55,13 @@ const validateAmsEnvironmentContext = context => {
             ` display mode.`);
     }
 };
+
+// autoTag (an argument to parseArray) can be one of three values:
+// * undefined: Regular (not-top-level) array; no tags on each row
+// * true: Automatic equation numbering, overridable by \tag
+// * false: Tags allowed on each row, but no automatic numbering
+const getAutoTag = name => name.indexOf("ed") === -1 ? name.indexOf("*") === -1
+    : undefined;
 
 /**
  * Parse the body of the environment, with rows delimited by \\ and
@@ -120,10 +125,6 @@ function parseArray(
     const rowGaps = [];
     const hLinesBeforeRow = [];
 
-    // autoTag can be one of three values:
-    // * undefined: Regular (not-top-level) array; no tags on each row
-    // * true: Automatic equation numbering, overridable by \tag
-    // * false: Tags allowed on each row, but no automatic numbering
     const tags = (autoTag != null ? [] : undefined);
 
     // amsmath uses \global\@eqnswtrue and \global\@eqnswfalse to represent
