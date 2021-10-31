@@ -10,7 +10,7 @@ import ParseError from "../ParseError";
 import {assertNodeType, assertSymbolNodeType} from "../parseNode";
 import {checkSymbolNodeType} from "../parseNode";
 import {Token} from "../Token";
-import {calculateSize} from "../units";
+import {calculateSize, makeEm} from "../units";
 import utils from "../utils";
 
 import * as html from "../buildHTML";
@@ -413,7 +413,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             if (!firstSeparator) {
                 colSep = buildCommon.makeSpan(["arraycolsep"], []);
                 colSep.style.width =
-                    options.fontMetrics().doubleRuleSep + "em";
+                    makeEm(options.fontMetrics().doubleRuleSep);
                 cols.push(colSep);
             }
 
@@ -422,12 +422,14 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
                 const separator = buildCommon.makeSpan(
                     ["vertical-separator"], [], options
                 );
-                separator.style.height = totalHeight + "em";
-                separator.style.borderRightWidth = `${ruleThickness}em`;
+                separator.style.height = makeEm(totalHeight);
+                separator.style.borderRightWidth = makeEm(ruleThickness);
                 separator.style.borderRightStyle = lineType;
-                separator.style.margin = `0 -${ruleThickness / 2}em`;
-                separator.style.verticalAlign =
-                    -(totalHeight - offset) + "em";
+                separator.style.margin = `0 ${makeEm(-ruleThickness / 2)}`;
+                const shift = totalHeight - offset;
+                if (shift) {
+                    separator.style.verticalAlign = makeEm(-shift);
+                }
 
                 cols.push(separator);
             } else {
@@ -449,7 +451,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             sepwidth = utils.deflt(colDescr.pregap, arraycolsep);
             if (sepwidth !== 0) {
                 colSep = buildCommon.makeSpan(["arraycolsep"], []);
-                colSep.style.width = sepwidth + "em";
+                colSep.style.width = makeEm(sepwidth);
                 cols.push(colSep);
             }
         }
@@ -480,7 +482,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             sepwidth = utils.deflt(colDescr.postgap, arraycolsep);
             if (sepwidth !== 0) {
                 colSep = buildCommon.makeSpan(["arraycolsep"], []);
-                colSep.style.width = sepwidth + "em";
+                colSep.style.width = makeEm(sepwidth);
                 cols.push(colSep);
             }
         }
@@ -566,7 +568,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     const gap = (group.arraystretch === 0.5)
         ? 0.1  // {smallmatrix}, {subarray}
         : 0.16 + group.arraystretch - 1 + (group.addJot ? 0.09 : 0);
-    table.setAttribute("rowspacing", gap.toFixed(4) + "em");
+    table.setAttribute("rowspacing", makeEm(gap));
 
     // MathML table lines go only between cells.
     // To place a line on an edge we'll use <menclose>, if necessary.

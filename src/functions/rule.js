@@ -3,7 +3,7 @@ import buildCommon from "../buildCommon";
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
-import {calculateSize} from "../units";
+import {calculateSize, makeEm} from "../units";
 
 defineFunction({
     type: "rule",
@@ -35,9 +35,9 @@ defineFunction({
         const shift = (group.shift) ? calculateSize(group.shift, options) : 0;
 
         // Style the rule to the right size
-        rule.style.borderRightWidth = width + "em";
-        rule.style.borderTopWidth = height + "em";
-        rule.style.bottom = shift + "em";
+        rule.style.borderRightWidth = makeEm(width);
+        rule.style.borderTopWidth = makeEm(height);
+        rule.style.bottom = makeEm(shift);
 
         // Record the height and width
         rule.width = width;
@@ -58,17 +58,17 @@ defineFunction({
 
         const rule = new mathMLTree.MathNode("mspace");
         rule.setAttribute("mathbackground", color);
-        rule.setAttribute("width", width + "em");
-        rule.setAttribute("height", height + "em");
+        rule.setAttribute("width", makeEm(width));
+        rule.setAttribute("height", makeEm(height));
 
         const wrapper = new mathMLTree.MathNode("mpadded", [rule]);
         if (shift >= 0) {
-            wrapper.setAttribute("height", "+" + shift + "em");
+            wrapper.setAttribute("height", makeEm(shift));
         } else {
-            wrapper.setAttribute("height", shift + "em");
-            wrapper.setAttribute("depth", "+" + (-shift) + "em");
+            wrapper.setAttribute("height", makeEm(shift));
+            wrapper.setAttribute("depth", makeEm(-shift));
         }
-        wrapper.setAttribute("voffset", shift + "em");
+        wrapper.setAttribute("voffset", makeEm(shift));
 
         return wrapper;
     },

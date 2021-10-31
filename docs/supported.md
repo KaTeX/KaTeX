@@ -6,7 +6,7 @@ This is a list of TeX functions supported by KaTeX. It is sorted into logical gr
 
 There is a similar [Support Table](support_table.md), sorted alphabetically, that lists both supported and un-supported functions.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.css" integrity="sha384-zTROYFVGOfTw7JV7KUu8udsvW2fx4lWOsCEDqhBreBwlHI4ioVRtmIvEThzJHGET" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css" integrity="sha384-SfHjyzed8eCsTSa4t2GoMc4WnsCLa6cQpFqPRCaizz0FlQUOyafw/AyIUCQU/KuM" crossorigin="anonymous">
 <style>
 p {overflow-wrap: break-word;}
 table tr,
@@ -43,7 +43,7 @@ table td {
 |$\text{\`{a}}$ <code>\\`{a}</code>|$\text{\={a}}$ `\={a}`|$\text{\"{a}}$ `\"{a}`|$\text{\v{a}}$ `\v{a}`
 |$\text{\^{a}}$ `\^{a}`|$\text{\u{a}}$ `\u{a}`|$\text{\r{a}}$ `\r{a}`|
 
-See also [letters](#letters)
+See also [letters and unicode](#letters-and-unicode).
 
 ## Delimiters
 

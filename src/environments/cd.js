@@ -6,6 +6,7 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 import {assertSymbolNodeType} from "../parseNode";
 import ParseError from "../ParseError";
+import {makeEm} from "../units";
 
 import type Parser from "../Parser";
 import type {ParseNode, AnyParseNode} from "../parseNode";
@@ -257,7 +258,7 @@ defineFunction({
         const label = buildCommon.wrapFragment(
             html.buildGroup(group.label, newOptions, options), options);
         label.classes.push("cd-label-" + group.side);
-        label.style.bottom = (0.8 - label.depth) + "em";
+        label.style.bottom = makeEm(0.8 - label.depth);
         // Zero out label height & depth, so vertical align of arrow is set
         // by the arrow height, not by the label.
         label.height = 0;
