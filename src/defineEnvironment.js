@@ -32,17 +32,19 @@ type EnvHandler = (
 
 /**
  *  - numArgs: (default 0) The number of arguments after the \begin{name} function.
+ *  - numOptionalArgs: (default 0) Just like for a function
+ * NOT YET SUPPORTED:
  *  - argTypes: (optional) Just like for a function
  *  - allowedInText: (default false) Whether or not the environment is allowed
  *                   inside text mode (not enforced yet).
- *  - numOptionalArgs: (default 0) Just like for a function
  */
-type EnvProps = {
-    numArgs: number,
-};
+type EnvProps = {|
+    numArgs?: number,
+    numOptionalArgs?: number,
+|};
 
 /**
- * Final enviornment spec for use at parse time.
+ * Final environment spec for use at parse time.
  * This is almost identical to `EnvDefSpec`, except it
  * 1. includes the function handler
  * 2. requires all arguments except argType
@@ -98,8 +100,8 @@ export default function defineEnvironment<NODETYPE: NodeType>({
     const data = {
         type,
         numArgs: props.numArgs || 0,
+        numOptionalArgs: props.numOptionalArgs || 0,
         allowedInText: false,
-        numOptionalArgs: 0,
         handler,
     };
     for (let i = 0; i < names.length; ++i) {
