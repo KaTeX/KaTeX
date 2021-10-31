@@ -60,8 +60,13 @@ const validateAmsEnvironmentContext = context => {
 // * undefined: Regular (not-top-level) array; no tags on each row
 // * true: Automatic equation numbering, overridable by \tag
 // * false: Tags allowed on each row, but no automatic numbering
-const getAutoTag = name => name.indexOf("ed") === -1 ? name.indexOf("*") === -1
-    : undefined;
+// This function *doesn't* work with the "split" environment name.
+function getAutoTag(name): ?boolean {
+    if (name.indexOf("ed") === -1) {
+        return name.indexOf("*") === -1;
+    }
+    // return undefined;
+}
 
 /**
  * Parse the body of the environment, with rows delimited by \\ and
@@ -88,7 +93,7 @@ function parseArray(
         cols?: AlignSpec[],
         arraystretch?: number,
         colSeparationType?: ColSeparationType,
-        autoTag?: boolean,
+        autoTag?: ?boolean,
         singleRow?: boolean,
         emptySingleRow?: boolean,
         maxNumCols?: number,
@@ -676,14 +681,15 @@ const alignedHandler = function(context, args) {
     }
     const cols = [];
     const separationType = context.envName.indexOf("at") > -1 ? "alignat" : "align";
+    const isSplit = context.envName === "split";
     const res = parseArray(context.parser,
         {
             cols,
             addJot: true,
-            autoTag: getAutoTag(context.envName),
+            autoTag: isSplit ? undefined : getAutoTag(context.envName),
             emptySingleRow: true,
             colSeparationType: separationType,
-            maxNumCols: context.envName === "split" ? 2 : undefined,
+            maxNumCols: isSplit ? 2 : undefined,
             leqno: context.parser.settings.leqno,
         },
         "display"
