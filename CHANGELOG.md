@@ -1,6 +1,20 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+# [0.15.0](https://github.com/KaTeX/KaTeX/compare/v0.14.1...v0.15.0) (2021-10-31)
+
+
+### Features
+
+* implement \relax as no-op function ([#3384](https://github.com/KaTeX/KaTeX/issues/3384)) ([40109f6](https://github.com/KaTeX/KaTeX/commit/40109f624805af41c42897cd428b83a93587f58d))
+
+
+### BREAKING CHANGES
+
+* `\relax` is now implemented as a function. It'll stop
+expansions and parsing, so the behavior around `\relax` may change.
+For example, `\kern2\relax em` will no longer work.
+
 ## [0.14.1](https://github.com/KaTeX/KaTeX/compare/v0.14.0...v0.14.1) (2021-10-30)
 
 
