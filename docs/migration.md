@@ -3,6 +3,12 @@ id: migration
 title: Migration Guide
 ---
 
+## v0.15.0
+
+`\relax` is now implemented as a function. It'll stop expansions and parsing,
+so the behavior around `\relax` may change. For example, `\kern2\relax em` will
+no longer work.
+
 ## v0.14.0
 
 With module loaders that support conditional exports and ECMAScript modules,
