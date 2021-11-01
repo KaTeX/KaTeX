@@ -13,6 +13,7 @@ import fontMetricsData from "./fontMetricsData";
 import functions from "./functions";
 import symbols from "./symbols";
 import utils from "./utils";
+import {makeEm} from "./units";
 import ParseError from "./ParseError";
 
 
@@ -367,7 +368,7 @@ defineMacro("\\substack", "\\begin{subarray}{c}#1\\end{subarray}");
 // \renewcommand{\colon}{\nobreak\mskip2mu\mathpunct{}\nonscript
 // \mkern-\thinmuskip{:}\mskip6muplus1mu\relax}
 defineMacro("\\colon", "\\nobreak\\mskip2mu\\mathpunct{}" +
-    "\\mathchoice{\\mkern-3mu}{\\mkern-3mu}{}{}{:}\\mskip6mu");
+    "\\mathchoice{\\mkern-3mu}{\\mkern-3mu}{}{}{:}\\mskip6mu\\relax");
 
 // \newcommand{\boxed}[1]{\fbox{\m@th$\displaystyle#1$}}
 defineMacro("\\boxed", "\\fbox{$\\displaystyle{#1}$}");
@@ -634,8 +635,8 @@ defineMacro("\\TeX", "\\textrm{\\html@mathml{" +
 // boxes, though visually the A appears to extend above slightly).
 // We compute the corresponding \raisebox when A is rendered in \normalsize
 // \scriptstyle, which has a scale factor of 0.7 (see Options.js).
-const latexRaiseA = fontMetricsData['Main-Regular']["T".charCodeAt(0)][1] -
-    0.7 * fontMetricsData['Main-Regular']["A".charCodeAt(0)][1] + "em";
+const latexRaiseA = makeEm(fontMetricsData['Main-Regular']["T".charCodeAt(0)][1] -
+    0.7 * fontMetricsData['Main-Regular']["A".charCodeAt(0)][1]);
 defineMacro("\\LaTeX", "\\textrm{\\html@mathml{" +
     `L\\kern-.36em\\raisebox{${latexRaiseA}}{\\scriptstyle A}` +
     "\\kern-.15em\\TeX}{LaTeX}}");

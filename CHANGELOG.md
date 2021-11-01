@@ -1,6 +1,111 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.15.1](https://github.com/KaTeX/KaTeX/compare/v0.15.0...v0.15.1) (2021-10-31)
+
+
+### Features
+
+* \nonumber/\notag support, \tag per row of {align} ([#2952](https://github.com/KaTeX/KaTeX/issues/2952)) ([52c4778](https://github.com/KaTeX/KaTeX/commit/52c4778b156110c0b2bdd3d7a3b81bbf76d21800)), closes [#2950](https://github.com/KaTeX/KaTeX/issues/2950) [#2379](https://github.com/KaTeX/KaTeX/issues/2379)
+
+# [0.15.0](https://github.com/KaTeX/KaTeX/compare/v0.14.1...v0.15.0) (2021-10-31)
+
+
+### Features
+
+* implement \relax as no-op function ([#3384](https://github.com/KaTeX/KaTeX/issues/3384)) ([40109f6](https://github.com/KaTeX/KaTeX/commit/40109f624805af41c42897cd428b83a93587f58d))
+
+
+### BREAKING CHANGES
+
+* `\relax` is now implemented as a function. It'll stop
+expansions and parsing, so the behavior around `\relax` may change.
+For example, `\kern2\relax em` will no longer work.
+
+## [0.14.1](https://github.com/KaTeX/KaTeX/compare/v0.14.0...v0.14.1) (2021-10-30)
+
+
+### Bug Fixes
+
+* **Settings:** use schema ([#3375](https://github.com/KaTeX/KaTeX/issues/3375)) ([b58a432](https://github.com/KaTeX/KaTeX/commit/b58a43212e4178ed46cf8e42d67e88b9c8df9c24))
+
+# [0.14.0](https://github.com/KaTeX/KaTeX/compare/v0.13.24...v0.14.0) (2021-10-30)
+
+
+### Features
+
+* conditionally export ECMAScript modules ([#3377](https://github.com/KaTeX/KaTeX/issues/3377)) ([15ee9b4](https://github.com/KaTeX/KaTeX/commit/15ee9b4a5a0ccf26ee271577e469f8b83f8b3ff8))
+
+
+### BREAKING CHANGES
+
+* With module loaders that support conditional exports
+and ECMAScript modules, `import katex from 'katex';` will import the
+ECMAScript module.
+
+You can now use:
+|Before                                    |After                             |
+|------------------------------------------|----------------------------------|
+|`require('katex/dist/contrib/[name].js')` | `require('katex/contrib/[name]')`|
+|`import katex from 'katex/dist/katex.mjs'`| `import katex from 'katex'`      |
+|`import 'katex/dist/contrib/[name].mjs'`  | `import 'katex/contrib/[name]'`  |
+
+## [0.13.24](https://github.com/KaTeX/KaTeX/compare/v0.13.23...v0.13.24) (2021-10-30)
+
+
+### Bug Fixes
+
+* round dimensions to 4 places ([#2460](https://github.com/KaTeX/KaTeX/issues/2460)) ([09ee1c8](https://github.com/KaTeX/KaTeX/commit/09ee1c886740fe8283a77468bc28c30b7816b446))
+
+## [0.13.23](https://github.com/KaTeX/KaTeX/compare/v0.13.22...v0.13.23) (2021-10-30)
+
+
+### Bug Fixes
+
+* **fonts:** correct width of \cong glyph, fix \boldsymbol{\cong} ([#3206](https://github.com/KaTeX/KaTeX/issues/3206)) ([35db4ff](https://github.com/KaTeX/KaTeX/commit/35db4ff40337cc2e2dfebeac1458d6aa9afc8bab)), closes [#2199](https://github.com/KaTeX/KaTeX/issues/2199)
+
+## [0.13.22](https://github.com/KaTeX/KaTeX/compare/v0.13.21...v0.13.22) (2021-10-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commander to v8 [skip netlify] ([#3374](https://github.com/KaTeX/KaTeX/issues/3374)) ([4df1922](https://github.com/KaTeX/KaTeX/commit/4df1922ae9d99927ef9a497209f1691200f39829))
+
+## [0.13.21](https://github.com/KaTeX/KaTeX/compare/v0.13.20...v0.13.21) (2021-10-29)
+
+
+### Bug Fixes
+
+* **fonts:** fix the timestamp of fonts to the epoch ([#3370](https://github.com/KaTeX/KaTeX/issues/3370)) ([dde05db](https://github.com/KaTeX/KaTeX/commit/dde05db6b775d8726a6654db13de26410195be48))
+
+## [0.13.20](https://github.com/KaTeX/KaTeX/compare/v0.13.19...v0.13.20) (2021-10-26)
+
+
+### Performance Improvements
+
+* Avoid vertical-align:0em style ([#3358](https://github.com/KaTeX/KaTeX/issues/3358)) ([6d6d627](https://github.com/KaTeX/KaTeX/commit/6d6d627ca49244d53928b6e0e1a238495cef4bd2)), closes [#3351](https://github.com/KaTeX/KaTeX/issues/3351)
+
+## [0.13.19](https://github.com/KaTeX/KaTeX/compare/v0.13.18...v0.13.19) (2021-10-26)
+
+
+### Features
+
+* **cli:** --trust flag for trusting cli input ([#3339](https://github.com/KaTeX/KaTeX/issues/3339)) ([503f7d7](https://github.com/KaTeX/KaTeX/commit/503f7d79f9b346585248dfe7451b8d635bd3328d)), closes [#2428](https://github.com/KaTeX/KaTeX/issues/2428)
+
+## [0.13.18](https://github.com/KaTeX/KaTeX/compare/v0.13.17...v0.13.18) (2021-09-02)
+
+
+### Features
+
+* unicode support for minus and asterisk operators ([#3227](https://github.com/KaTeX/KaTeX/issues/3227)) ([9dbfc1c](https://github.com/KaTeX/KaTeX/commit/9dbfc1c91725a9db348ce212488690147b9b9dd4)), closes [#3225](https://github.com/KaTeX/KaTeX/issues/3225)
+
+## [0.13.17](https://github.com/KaTeX/KaTeX/compare/v0.13.16...v0.13.17) (2021-09-01)
+
+
+### Bug Fixes
+
+* **fonts:** remove hints from unknown symbols ([#3222](https://github.com/KaTeX/KaTeX/issues/3222)) ([9420f8a](https://github.com/KaTeX/KaTeX/commit/9420f8a2a98442158a9cd2b3fd650092d216d0a2)), closes [#3219](https://github.com/KaTeX/KaTeX/issues/3219)
+
 ## [0.13.16](https://github.com/KaTeX/KaTeX/compare/v0.13.15...v0.13.16) (2021-08-28)
 
 

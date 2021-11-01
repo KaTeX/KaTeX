@@ -4,11 +4,13 @@ import Style from "../Style";
 import defineEnvironment from "../defineEnvironment";
 import {parseCD} from "./cd";
 import defineFunction from "../defineFunction";
+import defineMacro from "../defineMacro";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import {assertNodeType, assertSymbolNodeType} from "../parseNode";
 import {checkSymbolNodeType} from "../parseNode";
-import {calculateSize} from "../units";
+import {Token} from "../Token";
+import {calculateSize, makeEm} from "../units";
 import utils from "../utils";
 
 import * as html from "../buildHTML";
@@ -54,6 +56,18 @@ const validateAmsEnvironmentContext = context => {
     }
 };
 
+// autoTag (an argument to parseArray) can be one of three values:
+// * undefined: Regular (not-top-level) array; no tags on each row
+// * true: Automatic equation numbering, overridable by \tag
+// * false: Tags allowed on each row, but no automatic numbering
+// This function *doesn't* work with the "split" environment name.
+function getAutoTag(name): ?boolean {
+    if (name.indexOf("ed") === -1) {
+        return name.indexOf("*") === -1;
+    }
+    // return undefined;
+}
+
 /**
  * Parse the body of the environment, with rows delimited by \\ and
  * columns delimited by &, and create a nested list in row-major order
@@ -68,7 +82,7 @@ function parseArray(
         cols,
         arraystretch,
         colSeparationType,
-        addEqnNum,
+        autoTag,
         singleRow,
         emptySingleRow,
         maxNumCols,
@@ -79,7 +93,7 @@ function parseArray(
         cols?: AlignSpec[],
         arraystretch?: number,
         colSeparationType?: ColSeparationType,
-        addEqnNum?: boolean,
+        autoTag?: ?boolean,
         singleRow?: boolean,
         emptySingleRow?: boolean,
         maxNumCols?: number,
@@ -115,6 +129,29 @@ function parseArray(
     const body = [row];
     const rowGaps = [];
     const hLinesBeforeRow = [];
+
+    const tags = (autoTag != null ? [] : undefined);
+
+    // amsmath uses \global\@eqnswtrue and \global\@eqnswfalse to represent
+    // whether this row should have an equation number.  Simulate this with
+    // a \@eqnsw macro set to 1 or 0.
+    function beginRow() {
+        if (autoTag) {
+            parser.gullet.macros.set("\\@eqnsw", "1", true);
+        }
+    }
+    function endRow() {
+        if (tags) {
+            if (parser.gullet.macros.get("\\df@tag")) {
+                tags.push(parser.subparse([new Token("\\df@tag")]));
+                parser.gullet.macros.set("\\df@tag", undefined, true);
+            } else {
+                tags.push(Boolean(autoTag) &&
+                    parser.gullet.macros.get("\\@eqnsw") === "1");
+            }
+        }
+    }
+    beginRow();
 
     // Test for \hline at the top of the array.
     hLinesBeforeRow.push(getHLines(parser));
@@ -154,6 +191,7 @@ function parseArray(
             }
             parser.consume();
         } else if (next === "\\end") {
+            endRow();
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
             // the last line is empty.  However, AMS environments keep the
             // empty row if it's the only one.
@@ -179,12 +217,14 @@ function parseArray(
                 size = parser.parseSizeGroup(true);
             }
             rowGaps.push(size ? size.value : null);
+            endRow();
 
             // check for \hline(s) following the row separator
             hLinesBeforeRow.push(getHLines(parser));
 
             row = [];
             body.push(row);
+            beginRow();
         } else {
             throw new ParseError("Expected & or \\\\ or \\cr or \\end",
                                  parser.nextToken);
@@ -207,7 +247,7 @@ function parseArray(
         hskipBeforeAndAfter,
         hLinesBeforeRow,
         colSeparationType,
-        addEqnNum,
+        tags,
         leqno,
     };
 }
@@ -339,17 +379,27 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     let colSep;
     let colDescrNum;
 
-    const eqnNumSpans = [];
-    if (group.addEqnNum) {
-        // An environment with automatic equation numbers.
-        // Create node(s) that will trigger CSS counter increment.
+    const tagSpans = [];
+    if (group.tags && group.tags.some((tag) => tag)) {
+        // An environment with manual tags and/or automatic equation numbers.
+        // Create node(s), the latter of which trigger CSS counter increment.
         for (r = 0; r < nr; ++r) {
             const rw = body[r];
             const shift = rw.pos - offset;
-            const eqnTag = buildCommon.makeSpan(["eqn-num"], [], options);
-            eqnTag.depth = rw.depth;
-            eqnTag.height = rw.height;
-            eqnNumSpans.push({type: "elem", elem: eqnTag, shift});
+            const tag = group.tags[r];
+            let tagSpan;
+            if (tag === true) {  // automatic numbering
+                tagSpan = buildCommon.makeSpan(["eqn-num"], [], options);
+            } else if (tag === false) {
+                // \nonumber/\notag or starred environment
+                tagSpan = buildCommon.makeSpan([], [], options);
+            } else {  // manual \tag
+                tagSpan = buildCommon.makeSpan([],
+                    html.buildExpression(tag, options, true), options);
+            }
+            tagSpan.depth = rw.depth;
+            tagSpan.height = rw.height;
+            tagSpans.push({type: "elem", elem: tagSpan, shift});
         }
     }
 
@@ -368,7 +418,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             if (!firstSeparator) {
                 colSep = buildCommon.makeSpan(["arraycolsep"], []);
                 colSep.style.width =
-                    options.fontMetrics().doubleRuleSep + "em";
+                    makeEm(options.fontMetrics().doubleRuleSep);
                 cols.push(colSep);
             }
 
@@ -377,12 +427,14 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
                 const separator = buildCommon.makeSpan(
                     ["vertical-separator"], [], options
                 );
-                separator.style.height = totalHeight + "em";
-                separator.style.borderRightWidth = `${ruleThickness}em`;
+                separator.style.height = makeEm(totalHeight);
+                separator.style.borderRightWidth = makeEm(ruleThickness);
                 separator.style.borderRightStyle = lineType;
-                separator.style.margin = `0 -${ruleThickness / 2}em`;
-                separator.style.verticalAlign =
-                    -(totalHeight - offset) + "em";
+                separator.style.margin = `0 ${makeEm(-ruleThickness / 2)}`;
+                const shift = totalHeight - offset;
+                if (shift) {
+                    separator.style.verticalAlign = makeEm(-shift);
+                }
 
                 cols.push(separator);
             } else {
@@ -404,7 +456,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             sepwidth = utils.deflt(colDescr.pregap, arraycolsep);
             if (sepwidth !== 0) {
                 colSep = buildCommon.makeSpan(["arraycolsep"], []);
-                colSep.style.width = sepwidth + "em";
+                colSep.style.width = makeEm(sepwidth);
                 cols.push(colSep);
             }
         }
@@ -435,7 +487,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             sepwidth = utils.deflt(colDescr.postgap, arraycolsep);
             if (sepwidth !== 0) {
                 colSep = buildCommon.makeSpan(["arraycolsep"], []);
-                colSep.style.width = sepwidth + "em";
+                colSep.style.width = makeEm(sepwidth);
                 cols.push(colSep);
             }
         }
@@ -463,12 +515,12 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         }, options);
     }
 
-    if (!group.addEqnNum) {
+    if (tagSpans.length === 0) {
         return buildCommon.makeSpan(["mord"], [body], options);
     } else {
         let eqnNumCol = buildCommon.makeVList({
             positionType: "individualShift",
-            children: eqnNumSpans,
+            children: tagSpans,
         }, options);
         eqnNumCol = buildCommon.makeSpan(["tag"], [eqnNumCol], options);
         return buildCommon.makeFragment([body, eqnNumCol]);
@@ -492,7 +544,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
             row.push(new mathMLTree.MathNode("mtd",
                 [mml.buildGroup(rw[j], options)]));
         }
-        if (group.addEqnNum) {
+        if (group.tags && group.tags[i]) {
             row.unshift(glue);
             row.push(glue);
             if (group.leqno) {
@@ -521,7 +573,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     const gap = (group.arraystretch === 0.5)
         ? 0.1  // {smallmatrix}, {subarray}
         : 0.16 + group.arraystretch - 1 + (group.addJot ? 0.09 : 0);
-    table.setAttribute("rowspacing", gap.toFixed(4) + "em");
+    table.setAttribute("rowspacing", makeEm(gap));
 
     // MathML table lines go only between cells.
     // To place a line on an edge we'll use <menclose>, if necessary.
@@ -629,14 +681,15 @@ const alignedHandler = function(context, args) {
     }
     const cols = [];
     const separationType = context.envName.indexOf("at") > -1 ? "alignat" : "align";
+    const isSplit = context.envName === "split";
     const res = parseArray(context.parser,
         {
             cols,
             addJot: true,
-            addEqnNum: context.envName === "align" || context.envName === "alignat",
+            autoTag: isSplit ? undefined : getAutoTag(context.envName),
             emptySingleRow: true,
             colSeparationType: separationType,
-            maxNumCols: context.envName === "split" ? 2 : undefined,
+            maxNumCols: isSplit ? 2 : undefined,
             leqno: context.parser.settings.leqno,
         },
         "display"
@@ -982,7 +1035,7 @@ defineEnvironment({
             }],
             addJot: true,
             colSeparationType: "gather",
-            addEqnNum: context.envName === "gather",
+            autoTag: getAutoTag(context.envName),
             emptySingleRow: true,
             leqno: context.parser.settings.leqno,
         };
@@ -1015,7 +1068,7 @@ defineEnvironment({
     handler(context) {
         validateAmsEnvironmentContext(context);
         const res = {
-            addEqnNum: context.envName === "equation",
+            autoTag: getAutoTag(context.envName),
             emptySingleRow: true,
             singleRow: true,
             maxNumCols: 1,
@@ -1040,6 +1093,9 @@ defineEnvironment({
     htmlBuilder,
     mathmlBuilder,
 });
+
+defineMacro("\\nonumber", "\\gdef\\@eqnsw{0}");
+defineMacro("\\notag", "\\nonumber");
 
 // Catch \hline outside array environment
 defineFunction({

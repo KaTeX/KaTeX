@@ -2,7 +2,7 @@ name: Fonts
 
 on:
   pull_request_target:
-    branches: [ master ]
+    branches: [ main ]
     types: [ labeled ] # 'build fonts' label
 
 jobs:
@@ -22,11 +22,11 @@ jobs:
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
     - name: Remove label
-      uses: actions/github-script@v4
+      uses: actions/github-script@v5
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          github.issues.removeLabel({
+          github.rest.issues.removeLabel({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -35,7 +35,7 @@ jobs:
 
     - name: Check image
       id: check-image
-      uses: actions/github-script@v4
+      uses: actions/github-script@v5
       with:
         # https://github.community/t/github-token-has-no-access-to-new-container-rest-apis/170395
         github-token: ${{ secrets.GH_PACKAGES_TOKEN }}
@@ -48,7 +48,7 @@ jobs:
 
           let packages;
           try {
-              packages = (await github.request('GET /orgs/{org}/packages/{package_type}/{package_name}/versions', {
+              packages = (await github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg({
                   org,
                   package_type: "container",
                   package_name,
@@ -92,18 +92,15 @@ jobs:
     - uses: actions/checkout@v2
       with:
         ref: ${{ format('refs/pull/{0}/merge', github.event.pull_request.number) }}
-        fetch-depth: 0
         persist-credentials: false
 
     - name: Build fonts
       run: |
-        export SOURCE_DATE_EPOCH=$(git log -1 --format=%ct -- src/fonts)
         make -C src/fonts all
         rm -f fonts/*.*
         cp src/fonts/ttf/*.ttf fonts
         cp src/fonts/woff/*.woff fonts
         cp src/fonts/woff2/*.woff2 fonts
-        echo $SOURCE_DATE_EPOCH > fonts/VERSION
 
     - name: Build metrics
       run: ./dockers/fonts/buildMetrics.sh

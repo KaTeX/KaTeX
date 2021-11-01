@@ -3626,6 +3626,19 @@ describe("\\tag support", function() {
         expect`\tag{1}\tag{2}x+y`.not.toParse(displayMode);
     });
 
+    it("should fail with multiple tags in one row", () => {
+        expect`\begin{align}\tag{1}x+y\tag{2}\end{align}`.not.toParse(displayMode);
+    });
+
+    it("should work with one tag per row", () => {
+        expect`\begin{align}\tag{1}x\\&+y\tag{2}\end{align}`.toParse(displayMode);
+    });
+
+    it("should work with \\nonumber/\\notag", () => {
+        expect`\begin{align}\tag{1}\nonumber x\\&+y\notag\end{align}`
+        .toParseLike(r`\begin{align}\tag{1}x\\&+y\nonumber\end{align}`, displayMode);
+    });
+
     it("should build", () => {
         expect`\tag{hi}x+y`.toBuild(displayMode);
     });
@@ -4064,5 +4077,11 @@ describe("debugging macros", () => {
             // eslint-disable-next-line no-console
             expect(console.error).toHaveBeenCalledWith("Hello, world");
         });
+    });
+});
+
+describe("\\relax", () => {
+    it("should stop the expansion", () => {
+        expect`\kern2\relax em`.not.toParse();
     });
 });

@@ -6,6 +6,7 @@ import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
 import {assertNodeType, checkSymbolNodeType} from "../parseNode";
+import {makeEm} from "../units";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -126,8 +127,9 @@ defineFunction({
         }
 
         node.setAttribute("stretchy", "true");
-        node.setAttribute("minsize", delimiter.sizeToMaxHeight[group.size] + "em");
-        node.setAttribute("maxsize", delimiter.sizeToMaxHeight[group.size] + "em");
+        const size = makeEm(delimiter.sizeToMaxHeight[group.size]);
+        node.setAttribute("minsize", size);
+        node.setAttribute("maxsize", size);
 
         return node;
     },

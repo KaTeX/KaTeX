@@ -23,7 +23,13 @@ AccentsText: |
     \text{\.I İ} & \text{\H e e̋} & \text{\i ı}
     \end{array}
 Align:
-    tex: \begin{align}a &= 1 & b &= 2 \\ 3a &= 3 & 17b &= 34\end{align}
+    tex: |
+      \begin{align}
+        a &= 1 & b &= 2 \\
+        3a &= 3 & 17b &= 34 \\
+        \tag{$\ast$} a &\neq b \\
+        \nonumber a &={}? & b &={}? \\
+      \end{align}
     display: 1
 Aligned: |
     \begin{aligned}
