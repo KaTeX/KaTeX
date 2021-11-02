@@ -2105,16 +2105,16 @@ __metadata:
   linkType: hard
 
 "@semantic-release/changelog@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@semantic-release/changelog@npm:6.0.0"
+  version: 6.0.1
+  resolution: "@semantic-release/changelog@npm:6.0.1"
   dependencies:
-    "@semantic-release/error": ^2.1.0
+    "@semantic-release/error": ^3.0.0
     aggregate-error: ^3.0.0
     fs-extra: ^9.0.0
     lodash: ^4.17.4
   peerDependencies:
     semantic-release: ">=18.0.0"
-  checksum: b3a942132dd6109e98ec537e8253728570fe02227573a3ba6d50263ea9b41127dc7e28271e744c03dfec2f0c7f4a79eebb606dadc5f16bb1f6ef62ffb8e07bcf
+  checksum: a7c999f20297f229ebb32dc65f56c3aee237d941b478a1c75f5e904382c66fc4054bf3da93b1f5382e0b689147a825665500332f70807bfed952d312d2f501ac
   languageName: node
   linkType: hard
 
@@ -2135,7 +2135,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@semantic-release/error@npm:^2.1.0, @semantic-release/error@npm:^2.2.0":
+"@semantic-release/error@npm:^2.2.0":
   version: 2.2.0
   resolution: "@semantic-release/error@npm:2.2.0"
   checksum: a264a8e16a89e5fcb104ffb2c4339fde3135b90a6d8fe4497a95fe0776a2bf77771d4c702343c47324aefee2e2a2af72f48b5310c84e8a0902fadb631272700f
@@ -2150,10 +2150,10 @@ __metadata:
   linkType: hard
 
 "@semantic-release/git@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@semantic-release/git@npm:10.0.0"
+  version: 10.0.1
+  resolution: "@semantic-release/git@npm:10.0.1"
   dependencies:
-    "@semantic-release/error": ^2.1.0
+    "@semantic-release/error": ^3.0.0
     aggregate-error: ^3.0.0
     debug: ^4.0.0
     dir-glob: ^3.0.0
@@ -2163,7 +2163,7 @@ __metadata:
     p-reduce: ^2.0.0
   peerDependencies:
     semantic-release: ">=18.0.0"
-  checksum: 1d3710d0bb258e49719966e202a3b44f00a234491848ed5ce3999ee3e0cabd08e4ec2e9ab8ec5acd63acebf66ef9a44fed37512db5fcd97dac04c5a331aeeb2d
+  checksum: b0a346acaf13d1bbd8d8d895bb0dee025dd6d4742769b5dd875018fff8fcfe0f5414299dbe1ed026e53b8f8b04eeceef49a3d56c5f6506016c656df95d2ced04
   languageName: node
   linkType: hard
 
