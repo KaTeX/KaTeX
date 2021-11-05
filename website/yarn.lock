@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 4
+  version: 5
   cacheKey: 8
 
 "@babel/code-frame@npm:7.10.4":
@@ -30,7 +30,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:7.13.10, @babel/core@npm:^7.12.3":
+"@babel/core@npm:^7.12.3":
   version: 7.13.10
   resolution: "@babel/core@npm:7.13.10"
   dependencies:
@@ -6146,8 +6146,8 @@ __metadata:
   linkType: hard
 
 "netlify@npm:^8.0.0":
-  version: 8.0.3
-  resolution: "netlify@npm:8.0.3"
+  version: 8.0.4
+  resolution: "netlify@npm:8.0.4"
   dependencies:
     "@netlify/open-api": ^2.5.2
     lodash.camelcase: ^4.3.0
@@ -6156,7 +6156,7 @@ __metadata:
     omit.js: ^2.0.2
     p-wait-for: ^3.2.0
     qs: ^6.9.6
-  checksum: 04772d2b0671509977211c0041cc34f38acfc1c185b071f6cb0993e467490575d72fbfa99cbcc075ff256efb1f2c27ad6933c4a497b3b5ae1ee537551de9d40e
+  checksum: dc947f8ac8f1aa539a4beced56c185fa3dd51fdc5206bc0a5fe605348aebe0393cb6494e982ef7b4c606d05371d756f88e62b35b1f498822c6dc6ea8ee012fb6
   languageName: node
   linkType: hard
 
@@ -7755,10 +7755,10 @@ __metadata:
 
 "resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>":
   version: 1.17.0
-  resolution: "resolve@patch:resolve@npm%3A1.17.0#~builtin<compat/resolve>::version=1.17.0&hash=00b1ff"
+  resolution: "resolve@patch:resolve@npm%3A1.17.0#~builtin<compat/resolve>::version=1.17.0&hash=07638b"
   dependencies:
     path-parse: ^1.0.6
-  checksum: a3606308046ca75c0a6350c26df636b64a71904a8e00f3181fd838b46b4fc303c32ae3e694c156eae5d9102cbe194c444f85822d8e6ce30cf7c510e412029908
+  checksum: 6fd799f282ddf078c4bc20ce863e3af01fa8cb218f0658d9162c57161a2dbafe092b13015b9a4c58d0e1e801cf7aa7a4f13115fea9db98c3f9a0c43e429bad6f
   languageName: node
   linkType: hard
 
