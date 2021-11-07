@@ -9025,13 +9025,13 @@ __metadata:
   linkType: hard
 
 "mini-css-extract-plugin@npm:^2.0.0":
-  version: 2.4.3
-  resolution: "mini-css-extract-plugin@npm:2.4.3"
+  version: 2.4.4
+  resolution: "mini-css-extract-plugin@npm:2.4.4"
   dependencies:
     schema-utils: ^3.1.0
   peerDependencies:
     webpack: ^5.0.0
-  checksum: bee9d5f5c84ebc557bb201be4453003f98b47807153762bbf566b6f5e8071e67b6147f22d36111ecad62fd6d71979e5c6f43989000731c562a409b65ef529e45
+  checksum: afc3c2d364096b3ec79c910f0b0e0f62b6861b84e0bcdf8c05b267e529b8f4e450984b0fc7afcd1e87616cbefcd688eeef1c41ce3c892a9c313f4dc9132189fb
   languageName: node
   linkType: hard
 
