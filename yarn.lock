@@ -2495,10 +2495,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/retry@npm:^0.12.0":
-  version: 0.12.0
-  resolution: "@types/retry@npm:0.12.0"
-  checksum: 61a072c7639f6e8126588bf1eb1ce8835f2cb9c2aba795c4491cf6310e013267b0c8488039857c261c387e9728c1b43205099223f160bb6a76b4374f741b5603
+"@types/retry@npm:^0.12.0, @types/retry@npm:^0.12.1":
+  version: 0.12.1
+  resolution: "@types/retry@npm:0.12.1"
+  checksum: 5f46b2556053655f78262bb33040dc58417c900457cc63ff37d6c35349814471453ef511af0cec76a540c601296cd2b22f64bab1ab649c0dacc0223765ba876c
   languageName: node
   linkType: hard
 
@@ -8216,7 +8216,7 @@ __metadata:
     less-loader: ^10.0.0
     mini-css-extract-plugin: ^2.0.0
     mkdirp: ^1.0.4
-    p-retry: ^4.6.1
+    p-retry: ^5.0.0
     pako: ^2.0.0
     postcss: ^8.0.0
     postcss-less: ^5.0.0
@@ -10080,13 +10080,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"p-retry@npm:^4.0.0, p-retry@npm:^4.5.0, p-retry@npm:^4.6.1":
+"p-retry@npm:^4.0.0, p-retry@npm:^4.5.0":
   version: 4.6.1
   resolution: "p-retry@npm:4.6.1"
   dependencies:
     "@types/retry": ^0.12.0
     retry: ^0.13.1
   checksum: e6d540413bb3d0b96e0db44f74a7af1dce41f5005e6e84d617960110b148348c86a3987be07797749e3ddd55817dd3a8ffd6eae3428758bc2994d987e48c3a70
+  languageName: node
+  linkType: hard
+
+"p-retry@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "p-retry@npm:5.0.0"
+  dependencies:
+    "@types/retry": ^0.12.1
+    retry: ^0.13.1
+  checksum: 1139a65945439024713078cfaca39a43cc3da80a685a90e3890492d3f1ea31fba1a3abc5bb3d2823214803bad6fbd1a76dfb0f0d0d5e098a057fae1dee99a2cb
   languageName: node
   linkType: hard
 
