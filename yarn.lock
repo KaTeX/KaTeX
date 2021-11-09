@@ -1428,9 +1428,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/eslintrc@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "@eslint/eslintrc@npm:1.0.3"
+"@eslint/eslintrc@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@eslint/eslintrc@npm:1.0.4"
   dependencies:
     ajv: ^6.12.4
     debug: ^4.3.2
@@ -1438,10 +1438,10 @@ __metadata:
     globals: ^13.9.0
     ignore: ^4.0.6
     import-fresh: ^3.2.1
-    js-yaml: ^3.13.1
+    js-yaml: ^4.1.0
     minimatch: ^3.0.4
     strip-json-comments: ^3.1.1
-  checksum: a39f74d764b1b8ba8b05e942ab8dc3684648468180ce453e0ce5669af3d95b9dc18577ff55cc3b58cfed5a5f1bf6182191a740da07572606268eeb2b6fd0402d
+  checksum: 570f87e216944830b3761889f14cdf1e9bc7dcc2211e941585cfc2768575954e26852605eb441e21c9581472f89ea0e9cfdb8309523e9fe0a57fe9342bda4fe0
   languageName: node
   linkType: hard
 
@@ -5410,10 +5410,10 @@ __metadata:
   linkType: hard
 
 "eslint@npm:^8.0.0":
-  version: 8.1.0
-  resolution: "eslint@npm:8.1.0"
+  version: 8.2.0
+  resolution: "eslint@npm:8.2.0"
   dependencies:
-    "@eslint/eslintrc": ^1.0.3
+    "@eslint/eslintrc": ^1.0.4
     "@humanwhocodes/config-array": ^0.6.0
     ajv: ^6.10.0
     chalk: ^4.0.0
@@ -5447,13 +5447,13 @@ __metadata:
     progress: ^2.0.0
     regexpp: ^3.2.0
     semver: ^7.2.1
-    strip-ansi: ^6.0.0
+    strip-ansi: ^6.0.1
     strip-json-comments: ^3.1.0
     text-table: ^0.2.0
     v8-compile-cache: ^2.0.3
   bin:
     eslint: bin/eslint.js
-  checksum: e0b0c4bddd8673f376730b5bc72876fd0298e0ed9e52fa0707e48854ab0cea6a6a1945dbe2a059db1c867aafba7979b9d770060696e3f0ffc9d4b635ca4bce49
+  checksum: 19f2f4e23bdd1d0f1c99759adb88c0bf01908ce5bd480913ca7b5d3183f4c42d93142ada699b196e228295c074254ad90a3475126784673bd1afeb22e91ceea8
   languageName: node
   linkType: hard
 
