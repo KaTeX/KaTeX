@@ -55,7 +55,17 @@ const renderElem = function(elem, optionsCopy) {
         const childNode = elem.childNodes[i];
         if (childNode.nodeType === 3) {
             // Text node
-            const frag = renderMathInText(childNode.textContent, optionsCopy);
+            // Concatenate all sibling text nodes.
+            // Webkit browsers split very large text nodes into smaller ones,
+            // so the delimiters may be split across different nodes.
+            let textContentConcat = childNode.textContent;
+            let sibling = childNode.nextSibling;
+            while (sibling && (sibling.nodeType == 3)) {
+                textContentConcat += sibling.textContent;
+                sibling.remove();
+                sibling = childNode.nextSibling;
+            }
+            const frag = renderMathInText(textContentConcat, optionsCopy);
             if (frag) {
                 i += frag.childNodes.length - 1;
                 elem.replaceChild(frag, childNode);
