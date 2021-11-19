@@ -60,13 +60,18 @@ const renderElem = function(elem, optionsCopy) {
             // so the delimiters may be split across different nodes.
             let textContentConcat = childNode.textContent;
             let sibling = childNode.nextSibling;
-            while (sibling && (sibling.nodeType == 3)) {
+            while (sibling && (sibling.nodeType === 3)) {
                 textContentConcat += sibling.textContent;
-                sibling.remove();
-                sibling = childNode.nextSibling;
+                sibling = sibling.nextSibling;
             }
             const frag = renderMathInText(textContentConcat, optionsCopy);
             if (frag) {
+                // Remove extra text nodes
+                sibling = childNode.nextSibling;
+                while (sibling && (sibling.nodeType === 3)) {
+                    sibling.remove();
+                    sibling = sibling.nextSibling;
+                }
                 i += frag.childNodes.length - 1;
                 elem.replaceChild(frag, childNode);
             }
