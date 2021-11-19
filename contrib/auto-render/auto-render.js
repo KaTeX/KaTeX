@@ -60,20 +60,24 @@ const renderElem = function(elem, optionsCopy) {
             // so the delimiters may be split across different nodes.
             let textContentConcat = childNode.textContent;
             let sibling = childNode.nextSibling;
+            let nSiblings = 0;
             while (sibling && (sibling.nodeType === 3)) {
                 textContentConcat += sibling.textContent;
                 sibling = sibling.nextSibling;
+                nSiblings++;
             }
             const frag = renderMathInText(textContentConcat, optionsCopy);
             if (frag) {
                 // Remove extra text nodes
-                sibling = childNode.nextSibling;
-                while (sibling && (sibling.nodeType === 3)) {
-                    sibling.remove();
-                    sibling = sibling.nextSibling;
+                for (let j = 0; j < nSiblings; j++) {
+                    childNode.nextSibling.remove();
                 }
                 i += frag.childNodes.length - 1;
                 elem.replaceChild(frag, childNode);
+            } else {
+                // If the concatenated text does not contain math,
+                // the will not either
+                i += nSiblings;
             }
         } else if (childNode.nodeType === 1) {
             // Element node
