@@ -75,8 +75,8 @@ const renderElem = function(elem, optionsCopy) {
                 i += frag.childNodes.length - 1;
                 elem.replaceChild(frag, childNode);
             } else {
-                // If the concatenated text does not contain math,
-                // the will not either
+                // If the concatenated text does not contain math
+                // the siblings will not either
                 i += nSiblings;
             }
         } else if (childNode.nodeType === 1) {
