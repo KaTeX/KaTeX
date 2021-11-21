@@ -8248,7 +8248,7 @@ __metadata:
     sri-toolbox: ^0.2.0
     style-loader: ^3.0.0
     stylelint: ^14.0.0
-    stylelint-config-standard: ^23.0.0
+    stylelint-config-standard: ^24.0.0
     terser-webpack-plugin: ^5.0.3
     webpack: ^5.51.1
     webpack-bundle-analyzer: ^4.0.0
@@ -12816,14 +12816,14 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"stylelint-config-standard@npm:^23.0.0":
-  version: 23.0.0
-  resolution: "stylelint-config-standard@npm:23.0.0"
+"stylelint-config-standard@npm:^24.0.0":
+  version: 24.0.0
+  resolution: "stylelint-config-standard@npm:24.0.0"
   dependencies:
     stylelint-config-recommended: ^6.0.0
   peerDependencies:
     stylelint: ^14.0.0
-  checksum: 96b6292d1408d762cb18c01eaf63faf8bafd740d897b4b3c519bb50eefc356e09ea300737c78b842b27b0c2a135c1c6a3ea86d12e2f969caeb4e2f22d857eb97
+  checksum: 5993ede913d81410830639db054a7a3f5c87e56254368be45ce876321106fad1c11ee4cb77247049aaf22e283a393dd90d93dec8f796f8f139ed21eb86a9a168
   languageName: node
   linkType: hard
 
