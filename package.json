@@ -115,7 +115,7 @@
     "sri-toolbox": "^0.2.0",
     "style-loader": "^3.0.0",
     "stylelint": "^14.0.0",
-    "stylelint-config-standard": "^23.0.0",
+    "stylelint-config-standard": "^24.0.0",
     "terser-webpack-plugin": "^5.0.3",
     "webpack": "^5.51.1",
     "webpack-bundle-analyzer": "^4.0.0",
