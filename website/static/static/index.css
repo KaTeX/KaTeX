@@ -112,7 +112,7 @@ textarea {
 .demo-instructions {
     line-height: 1.5;
     margin-bottom: 10px;
-    opacity: 80%;
+    opacity: 0.8;
 }
 
 .demo-left {
