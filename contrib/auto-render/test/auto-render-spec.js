@@ -291,7 +291,7 @@ describe("Pre-process callback", function() {
     });
 });
 
-describe("Parse text nodes with large textContent", function() {
+describe("Parse adjacent text nodes", function() {
     it("parse adjacent text nodes with math", function() {
         const textNodes = ['\\[',
             'x^2 + y^2 = r^2',
