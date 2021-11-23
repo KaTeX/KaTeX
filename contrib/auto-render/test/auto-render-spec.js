@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import splitAtDelimiters from "../splitAtDelimiters";
-import renderMathInElement from "../auto-render";
+import renderMathInElement, {renderMathInText} from "../auto-render";
 import {longTextWithMath, longTextNoMath} from "./long-textnodes-strings";
 
 beforeEach(function() {
@@ -299,6 +299,7 @@ describe("Parse text nodes with large textContent", function() {
         el.innerHTML = longTextWithMath;
         const delimiters = [{left: "\\[", right: "\\]", display: true}];
         renderMathInElement(el, {delimiters});
+        // Check that the correct child nodes were created
         expect(el.childNodes.length).toEqual(3);
         expect(el.childNodes[0].textContent.trim()).toEqual(
             'Trigonometric identities:'
@@ -308,6 +309,17 @@ describe("Parse text nodes with large textContent", function() {
             expect.stringContaining('katex-display')
         );
         expect(el.childNodes[2].textContent.trim()).toEqual('End of math');
+    });
+
+    it("compare renderMathInElement and renderMathInText", function() {
+        const el = document.createElement('div');
+        // has to be innerHTML for browsers to split the text nodes
+        el.innerHTML = longTextWithMath;
+        const delimiters = [{left: "\\[", right: "\\]", display: true}];
+        renderMathInElement(el, {delimiters});
+        const el2 = document.createElement('div');
+        el2.appendChild(renderMathInText(longTextWithMath, {delimiters}));
+        expect(el).toStrictEqual(el2);
     });
 
     it("parse large text nodes without math", function() {

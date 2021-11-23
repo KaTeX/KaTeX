@@ -139,4 +139,4 @@ const renderMathInElement = function(elem, options) {
     renderElem(elem, optionsCopy);
 };
 
-export default renderMathInElement;
+export {renderMathInElement as default, renderMathInText};
