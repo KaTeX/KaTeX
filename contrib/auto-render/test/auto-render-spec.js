@@ -2,8 +2,7 @@
  * @jest-environment jsdom
  */
 import splitAtDelimiters from "../splitAtDelimiters";
-import renderMathInElement, {renderMathInText} from "../auto-render";
-import {longTextWithMath, longTextNoMath} from "./long-textnodes-strings";
+import renderMathInElement from "../auto-render";
 
 beforeEach(function() {
     expect.extend({
@@ -293,41 +292,38 @@ describe("Pre-process callback", function() {
 });
 
 describe("Parse text nodes with large textContent", function() {
-    it("parse large text nodes with math", function() {
+    it("parse adjacent text nodes with math", function() {
+        const textNodes = ['\\[',
+            'x^2 + y^2 = r^2',
+            '\\]'];
         const el = document.createElement('div');
-        // has to be innerHTML for browsers to split the text nodes
-        el.innerHTML = longTextWithMath;
-        const delimiters = [{left: "\\[", right: "\\]", display: true}];
-        renderMathInElement(el, {delimiters});
-        // Check that the correct child nodes were created
-        expect(el.childNodes.length).toEqual(3);
-        expect(el.childNodes[0].textContent.trim()).toEqual(
-            'Trigonometric identities:'
-        );
-        expect(el.childNodes[1].nodeName).toEqual('SPAN');
-        expect(el.childNodes[1].firstChild.className).toEqual(
-            expect.stringContaining('katex-display')
-        );
-        expect(el.childNodes[2].textContent.trim()).toEqual('End of math');
-    });
-
-    it("compare renderMathInElement and renderMathInText", function() {
-        const el = document.createElement('div');
-        // has to be innerHTML for browsers to split the text nodes
-        el.innerHTML = longTextWithMath;
-        const delimiters = [{left: "\\[", right: "\\]", display: true}];
-        renderMathInElement(el, {delimiters});
+        for (let i = 0; i < textNodes.length; i++) {
+            const txt = document.createTextNode(textNodes[i]);
+            el.appendChild(txt);
+        }
         const el2 = document.createElement('div');
-        el2.appendChild(renderMathInText(longTextWithMath, {delimiters}));
+        const txt = document.createTextNode(textNodes.join(''));
+        el2.appendChild(txt);
+        const delimiters = [{left: "\\[", right: "\\]", display: true}];
+        renderMathInElement(el, {delimiters});
+        renderMathInElement(el2, {delimiters});
         expect(el).toStrictEqual(el2);
     });
 
-    it("parse large text nodes without math", function() {
+    it("parse adjacent text nodes without math", function() {
+        const textNodes = ['Lorem ipsum dolor',
+            'sit amet',
+            'consectetur adipiscing elit'];
         const el = document.createElement('div');
-        // has to be innerHTML for browsers to split the text nodes
-        el.innerHTML = longTextNoMath;
+        for (let i = 0; i < textNodes.length; i++) {
+            const txt = document.createTextNode(textNodes[i]);
+            el.appendChild(txt);
+        }
         const el2 = document.createElement('div');
-        el2.innerHTML = longTextNoMath;
+        for (let i = 0; i < textNodes.length; i++) {
+            const txt = document.createTextNode(textNodes[i]);
+            el2.appendChild(txt);
+        }
         const delimiters = [{left: "\\[", right: "\\]", display: true}];
         renderMathInElement(el, {delimiters});
         expect(el).toStrictEqual(el2);
