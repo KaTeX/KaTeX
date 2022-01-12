@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.15.2](https://github.com/KaTeX/KaTeX/compare/v0.15.1...v0.15.2) (2022-01-12)
+
+
+### Bug Fixes
+
+* \mathinner MathML when invoked as a denominator. ([#3501](https://github.com/KaTeX/KaTeX/issues/3501)) ([1f85125](https://github.com/KaTeX/KaTeX/commit/1f8512577b58962db2615175121ac9636245f596)), closes [#3500](https://github.com/KaTeX/KaTeX/issues/3500)
+
 ## [0.15.1](https://github.com/KaTeX/KaTeX/compare/v0.15.0...v0.15.1) (2021-10-31)
 
 
