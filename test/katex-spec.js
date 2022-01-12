@@ -101,6 +101,15 @@ describe("A rel parser", function() {
     });
 });
 
+describe("A mathinner parser", function() {
+    it("should not fail", function() {
+        expect("\\mathinner{\\langle{\\psi}\\rangle}").toParse();
+    });
+    it("should not fail when it is a denominator", function() {
+        expect("\\frac 1 {\\mathinner{\\langle{\\psi}\\rangle}}").toParse();
+    });
+});
+
 describe("A punct parser", function() {
     const expression = ",;";
 
