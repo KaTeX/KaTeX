@@ -12008,13 +12008,13 @@ resolve@^2.0.0-next.3:
   linkType: hard
 
 "selenium-webdriver@npm:^4.0.0-beta.4":
-  version: 4.1.0
-  resolution: "selenium-webdriver@npm:4.1.0"
+  version: 4.1.1
+  resolution: "selenium-webdriver@npm:4.1.1"
   dependencies:
     jszip: ^3.6.0
     tmp: ^0.2.1
     ws: ">=7.4.6"
-  checksum: 6369e73d77c1ccd17fa8dc4c8d33e08da7427f44a22c066ff1cbe4111313abae40b766a0caae0b13c1c284223bf2dc183d61261754b8fd88be45ae6266febdd2
+  checksum: dfe8e7e43c55f1c3fb1284f5420c7498c2694a3d0a7d2ef87064605de7ce7c7f240a686948f1187bac45c45d29b44b5250298b15a7d050f6011d18af64a6b32e
   languageName: node
   linkType: hard
 
