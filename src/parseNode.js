@@ -414,6 +414,13 @@ type ParseNodeTypes = {
         loc?: ?SourceLocation,
         body: AnyParseNode,
     |},
+    "pmb": {|
+        type: "pmb",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        mclass: string,
+        body: AnyParseNode[],
+    |},
     "raisebox": {|
         type: "raisebox",
         mode: Mode,

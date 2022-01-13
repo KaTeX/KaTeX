@@ -10,6 +10,7 @@ export default functions;
 import "./functions/accent";
 import "./functions/accentunder";
 import "./functions/arrow";
+import "./functions/pmb";
 import "./environments/cd";
 import "./functions/char";
 import "./functions/color";

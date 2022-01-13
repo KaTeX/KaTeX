@@ -392,6 +392,11 @@ const handleObject = (
             break;
         }
 
+        case "pmb": {
+            a11yStrings.push("bold");
+            break;
+        }
+
         case "phantom": {
             a11yStrings.push("empty space");
             break;
