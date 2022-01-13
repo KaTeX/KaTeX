@@ -7492,6 +7492,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react@npm:^17.0.0":
+  version: 17.0.2
+  resolution: "react@npm:17.0.2"
+  dependencies:
+    loose-envify: ^1.1.0
+    object-assign: ^4.1.1
+  checksum: b254cc17ce3011788330f7bbf383ab653c6848902d7936a87b09d835d091e3f295f7e9dd1597c6daac5dc80f90e778c8230218ba8ad599f74adcc11e33b9d61b
+  languageName: node
+  linkType: hard
+
 "read-pkg-up@npm:^1.0.1":
   version: 1.0.1
   resolution: "read-pkg-up@npm:1.0.1"
@@ -7817,7 +7827,7 @@ __metadata:
     docusaurus: ^1.14.6
     fs-extra: ^10.0.0
     netlify: ^8.0.0
-    react: ^16.8.4
+    react: ^17.0.0
   dependenciesMeta:
     docusaurus:
       unplugged: true
