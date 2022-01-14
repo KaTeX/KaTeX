@@ -101,6 +101,19 @@ describe("A rel parser", function() {
     });
 });
 
+describe("A mathinner parser", function() {
+    it("should not fail", function() {
+        expect("\\mathinner{\\langle{\\psi}\\rangle}").toParse();
+        expect("\\frac 1 {\\mathinner{\\langle{\\psi}\\rangle}}").toParse();
+    });
+
+    it("should return one group, not a fragment", function() {
+        const contents = "\\mathinner{\\langle{\\psi}\\rangle}";
+        const mml = buildMathML(getParsed(contents), contents, defaultOptions);
+        expect(mml.children.length).toEqual(1);
+    });
+});
+
 describe("A punct parser", function() {
     const expression = ",;";
 
