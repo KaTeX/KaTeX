@@ -9347,10 +9347,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-forge@npm:^0.10.0":
-  version: 0.10.0
-  resolution: "node-forge@npm:0.10.0"
-  checksum: 5aa6dc9922e424a20ef101d2f517418e2bc9cfc0255dd22e0701c0fad1568445f510ee67f6f3fcdf085812c4ca1b847b8ba45683b34776828e41f5c1794e42e1
+"node-forge@npm:^1.2.0":
+  version: 1.2.1
+  resolution: "node-forge@npm:1.2.1"
+  checksum: af4f88c3f69362359f35f6a9e231b35c96d906eeb6e976fb92742afe7fcdd76439dc22b41ce3755389d171f6320756ec7505bdfa7b252466c091b8c519a22674
   languageName: node
   linkType: hard
 
@@ -11910,12 +11910,12 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"selfsigned@npm:^1.10.11":
-  version: 1.10.11
-  resolution: "selfsigned@npm:1.10.11"
+"selfsigned@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "selfsigned@npm:2.0.0"
   dependencies:
-    node-forge: ^0.10.0
-  checksum: 1fd8fd317dc0b7d713d12d828131ac03c53abf41c4538b263fecd37bbc15688526c631654049ff00806b757ccb85492de6a13d6fefcad5cb54926631e48a76e1
+    node-forge: ^1.2.0
+  checksum: 43fca39a5aded2a8e97c1756af74c049a9dde12d47d302820f7d507d25c2ad7da4b04bc439a36620d63b4c0149bcf34ae7a729f978bf3b1bf48859c36ae34cee
   languageName: node
   linkType: hard
 
@@ -13620,8 +13620,8 @@ resolve@^2.0.0-next.3:
   linkType: hard
 
 "webpack-dev-server@npm:^4.0.0":
-  version: 4.7.2
-  resolution: "webpack-dev-server@npm:4.7.2"
+  version: 4.7.3
+  resolution: "webpack-dev-server@npm:4.7.3"
   dependencies:
     "@types/bonjour": ^3.5.9
     "@types/connect-history-api-fallback": ^1.3.5
@@ -13645,7 +13645,7 @@ resolve@^2.0.0-next.3:
     p-retry: ^4.5.0
     portfinder: ^1.0.28
     schema-utils: ^4.0.0
-    selfsigned: ^1.10.11
+    selfsigned: ^2.0.0
     serve-index: ^1.9.1
     sockjs: ^0.3.21
     spdy: ^4.0.2
@@ -13659,7 +13659,7 @@ resolve@^2.0.0-next.3:
       optional: true
   bin:
     webpack-dev-server: bin/webpack-dev-server.js
-  checksum: d3dd7d61f25a2ac1ac64d4298396043b1b8b46c009afc12c7af4d7c7724b077baa84d4ea353f1956e3f591ab09cde1d15f18d94e8884c1adaa2e1d816c37f814
+  checksum: 6062db1ba62e372ab3bd127f0c1a575a0758ad15338bff56e65f344bfa495d566049752a3e0c18d44469123e2f0cd2ba26cc0cab8d4ca704e8b4ace596871b21
   languageName: node
   linkType: hard
 
