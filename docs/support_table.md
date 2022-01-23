@@ -573,7 +573,7 @@ use `\ce` instead|
 |\leftarrow|$\leftarrow$||
 |\Leftarrow|$\Leftarrow$||
 |\LeftArrow|<span style="color:firebrick;">Not supported</span>|Non standard
-|\leftarrowtail|<span style="color:firebrick;">Not supported</span>||
+|\leftarrowtail|$\leftarrowtail$||
 |\leftharpoondown|$\leftharpoondown$||
 |\leftharpoonup|$\leftharpoonup$||
 |\leftleftarrows|$\leftleftarrows$||
