@@ -1369,12 +1369,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.10.4, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2":
-  version: 7.16.0
-  resolution: "@babel/runtime@npm:7.16.0"
+"@babel/runtime@npm:^7.10.4, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.8.4":
+  version: 7.17.0
+  resolution: "@babel/runtime@npm:7.17.0"
   dependencies:
     regenerator-runtime: ^0.13.4
-  checksum: bfbca3ec52c94de262a3932473bceeead1a088b50194108fa1ff6eda447333f0f7d43fa4e9c5937c6e5d45bf838da8480905d0a227589b257c51f954ea060bac
+  checksum: 1864ac3c6aa061798c706ce858af311f06f6ad6efafc20cca7029fdaa9786c58ccaf5bdb8bd133cb505f27bed7659b65f1503b8da58adbd1eb88f7333644e6ed
   languageName: node
   linkType: hard
 
@@ -2294,16 +2294,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.1.14":
-  version: 7.1.15
-  resolution: "@types/babel__core@npm:7.1.15"
+"@types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.1.12, @types/babel__core@npm:^7.1.14":
+  version: 7.1.18
+  resolution: "@types/babel__core@npm:7.1.18"
   dependencies:
     "@babel/parser": ^7.1.0
     "@babel/types": ^7.0.0
     "@types/babel__generator": "*"
     "@types/babel__template": "*"
     "@types/babel__traverse": "*"
-  checksum: 3ea016369666a013564f8d3119ae987b3a3f1bdf31cc90e0d58714eea10d6b89a9fb1f6146290ee239ecc285800b246f18be930625c1d83e79d074842e43ab7d
+  checksum: 2e5b5d7c84f347d3789575486e58b0df5c91613abc3d27e716274aba3048518e07e1f068250ba829e2ed58532ccc88da595ce95ba2688e7bbcd7c25a3c6627ed
   languageName: node
   linkType: hard
 
@@ -3424,14 +3424,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-macros@npm:^2.8.0":
-  version: 2.8.0
-  resolution: "babel-plugin-macros@npm:2.8.0"
+"babel-plugin-macros@npm:^3.0.1":
+  version: 3.1.0
+  resolution: "babel-plugin-macros@npm:3.1.0"
   dependencies:
-    "@babel/runtime": ^7.7.2
-    cosmiconfig: ^6.0.0
-    resolve: ^1.12.0
-  checksum: 59b09a21cf3ae1e14186c1b021917d004b49b953824b24953a54c6502da79e8051d4ac31cfd4a0ae7f6ea5ddf1f7edd93df4895dd3c3982a5b2431859c2889ac
+    "@babel/runtime": ^7.12.5
+    cosmiconfig: ^7.0.0
+    resolve: ^1.19.0
+  checksum: 765de4abebd3e4688ebdfbff8571ddc8cd8061f839bb6c3e550b0344a4027b04c60491f843296ce3f3379fb356cc873d57a9ee6694262547eb822c14a25be9a6
   languageName: node
   linkType: hard
 
@@ -3472,13 +3472,14 @@ __metadata:
   linkType: hard
 
 "babel-plugin-preval@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "babel-plugin-preval@npm:5.0.0"
+  version: 5.1.0
+  resolution: "babel-plugin-preval@npm:5.1.0"
   dependencies:
-    "@babel/runtime": ^7.9.2
-    babel-plugin-macros: ^2.8.0
+    "@babel/runtime": ^7.12.5
+    "@types/babel__core": ^7.1.12
+    babel-plugin-macros: ^3.0.1
     require-from-string: ^2.0.2
-  checksum: fa8a7ca795c22324b4a2f630b9752f9e292f10d9537859249dd532ca17f44bedaa8ba67f04f6cf2d40c48e5ddb8ea2b3c02a7e2ec1012207a28178e89bc104c7
+  checksum: 1da863f4373d08ae21a0b208d28f10ecd9610214d0ffbae4154aad20cb84a10e8ba15e32438a748e4917f3f5a3b1f3310005c46180408117f723a56fdb5452f1
   languageName: node
   linkType: hard
 
@@ -4395,19 +4396,6 @@ __metadata:
   version: 1.0.2
   resolution: "core-util-is@npm:1.0.2"
   checksum: 7a4c925b497a2c91421e25bf76d6d8190f0b2359a9200dbeed136e63b2931d6294d3b1893eda378883ed363cd950f44a12a401384c609839ea616befb7927dab
-  languageName: node
-  linkType: hard
-
-"cosmiconfig@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "cosmiconfig@npm:6.0.0"
-  dependencies:
-    "@types/parse-json": ^4.0.0
-    import-fresh: ^3.1.0
-    parse-json: ^5.0.0
-    path-type: ^4.0.0
-    yaml: ^1.7.2
-  checksum: 8eed7c854b91643ecb820767d0deb038b50780ecc3d53b0b19e03ed8aabed4ae77271198d1ae3d49c3b110867edf679f5faad924820a8d1774144a87cb6f98fc
   languageName: node
   linkType: hard
 
@@ -6842,7 +6830,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"import-fresh@npm:^3.0.0, import-fresh@npm:^3.1.0, import-fresh@npm:^3.2.1":
+"import-fresh@npm:^3.0.0, import-fresh@npm:^3.2.1":
   version: 3.2.1
   resolution: "import-fresh@npm:3.2.1"
   dependencies:
@@ -7070,12 +7058,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-core-module@npm:^2.2.0, is-core-module@npm:^2.5.0, is-core-module@npm:^2.7.0, is-core-module@npm:^2.8.0":
-  version: 2.8.0
-  resolution: "is-core-module@npm:2.8.0"
+"is-core-module@npm:^2.2.0, is-core-module@npm:^2.5.0, is-core-module@npm:^2.7.0, is-core-module@npm:^2.8.0, is-core-module@npm:^2.8.1":
+  version: 2.8.1
+  resolution: "is-core-module@npm:2.8.1"
   dependencies:
     has: ^1.0.3
-  checksum: f8b52714891e1a6c6577fcb8d5e057bab064a7a30954aab6beb5092e311473eb8da57afd334de4981dc32409ffca998412efc3a2edceb9e397cef6098d21dd91
+  checksum: 418b7bc10768a73c41c7ef497e293719604007f88934a6ffc5f7c78702791b8528102fb4c9e56d006d69361549b3d9519440214a74aefc7e0b79e5e4411d377f
   languageName: node
   linkType: hard
 
@@ -10203,10 +10191,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-parse@npm:^1.0.6":
-  version: 1.0.6
-  resolution: "path-parse@npm:1.0.6"
-  checksum: 962a85dd384d68d469ec5ba4010df8f8f9b7e936ce603bbe3211476c5615feb3c2b1ca61211a78445fadc833f0b1a86ea6484c861035ec4ac93011ba9aff9a11
+"path-parse@npm:^1.0.6, path-parse@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "path-parse@npm:1.0.7"
+  checksum: 49abf3d81115642938a8700ec580da6e830dde670be21893c62f4e10bd7dd4c3742ddc603fe24f898cba7eb0c6bc1777f8d9ac14185d34540c6d4d80cd9cae8a
   languageName: node
   linkType: hard
 
@@ -11657,13 +11645,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@^1.10.0, resolve@^1.12.0, resolve@^1.14.2, resolve@^1.20.0, resolve@^1.9.0":
-  version: 1.20.0
-  resolution: "resolve@npm:1.20.0"
+"resolve@^1.10.0, resolve@^1.14.2, resolve@^1.20.0, resolve@^1.9.0, resolve@npm:^1.19.0":
+  version: 1.22.0
+  resolution: "resolve@npm:1.22.0"
   dependencies:
-    is-core-module: ^2.2.0
-    path-parse: ^1.0.6
-  checksum: 40cf70b2cde00ef57f99daf2dc63c6a56d6c14a1b7fc51735d06a6f0a3b97cb67b4fb7ef6c747b4e13a7baba83b0ef625d7c4ce92a483cd5af923c3b65fd16fe
+    is-core-module: ^2.8.1
+    path-parse: ^1.0.7
+    supports-preserve-symlinks-flag: ^1.0.0
+  bin:
+    resolve: bin/resolve
+  checksum: a2d14cc437b3a23996f8c7367eee5c7cf8149c586b07ca2ae00e96581ce59455555a1190be9aa92154785cf9f2042646c200d0e00e0bbd2b8a995a93a0ed3e4e
   languageName: node
   linkType: hard
 
@@ -11677,13 +11668,16 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.12.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.9.0#~builtin<compat/resolve>":
-  version: 1.20.0
-  resolution: "resolve@patch:resolve@npm%3A1.20.0#~builtin<compat/resolve>::version=1.20.0&hash=07638b"
+"resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.9.0#~builtin<compat/resolve>":
+  version: 1.22.0
+  resolution: "resolve@patch:resolve@npm%3A1.22.0#~builtin<compat/resolve>::version=1.22.0&hash=07638b"
   dependencies:
-    is-core-module: ^2.2.0
-    path-parse: ^1.0.6
-  checksum: a0dd7d16a8e47af23afa9386df2dff10e3e0debb2c7299a42e581d9d9b04d7ad5d2c53f24f1e043f7b3c250cbdc71150063e53d0b6559683d37f790b7c8c3cd5
+    is-core-module: ^2.8.1
+    path-parse: ^1.0.7
+    supports-preserve-symlinks-flag: ^1.0.0
+  bin:
+    resolve: bin/resolve
+  checksum: c79ecaea36c872ee4a79e3db0d3d4160b593f2ca16e031d8283735acd01715a203607e9ded3f91f68899c2937fa0d49390cddbe0fb2852629212f3cda283f4a7
   languageName: node
   linkType: hard
 
@@ -12775,6 +12769,13 @@ resolve@^2.0.0-next.3:
     has-flag: ^4.0.0
     supports-color: ^7.0.0
   checksum: e4f430c870a258c9854b8bd7f166a9c1e76e3b851da84d4399d6a8f1d4a485e4ec36c16455dde80acf06c86e7c0a6df76ed22b6a4644a6ae3eced8616b3f21b5
+  languageName: node
+  linkType: hard
+
+"supports-preserve-symlinks-flag@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
+  checksum: 53b1e247e68e05db7b3808b99b892bd36fb096e6fba213a06da7fab22045e97597db425c724f2bbd6c99a3c295e1e73f3e4de78592289f38431049e1277ca0ae
   languageName: node
   linkType: hard
 
@@ -13889,7 +13890,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"yaml@npm:^1.10.0, yaml@npm:^1.10.2, yaml@npm:^1.7.2":
+"yaml@npm:^1.10.0, yaml@npm:^1.10.2":
   version: 1.10.2
   resolution: "yaml@npm:1.10.2"
   checksum: ce4ada136e8a78a0b08dc10b4b900936912d15de59905b2bf415b4d33c63df1d555d23acb2a41b23cf9fb5da41c256441afca3d6509de7247daa062fd2c5ea5f
