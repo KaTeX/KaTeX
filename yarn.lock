@@ -11319,14 +11319,14 @@ __metadata:
   linkType: hard
 
 "query-string@npm:^7.0.0":
-  version: 7.1.0
-  resolution: "query-string@npm:7.1.0"
+  version: 7.1.1
+  resolution: "query-string@npm:7.1.1"
   dependencies:
     decode-uri-component: ^0.2.0
     filter-obj: ^1.1.0
     split-on-first: ^1.0.0
     strict-uri-encode: ^2.0.0
-  checksum: 4594a0a092772eb6854310feea85e34f8dcf70df494776a45b9e5be53621ffbcf930ae669974e4e171ce5e0f29a837e9821d48db843106dd94ee390f6f5ac857
+  checksum: b227d1f588ae93f9f0ad078c6b811295fa151dc5a160a03bb2bac5fa0e6919cb1daa570aad1d288e77c8e89fde5362ba505b1014e6e793da9b1e885b59a690a6
   languageName: node
   linkType: hard
 
