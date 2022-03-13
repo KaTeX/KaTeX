@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.15.3](https://github.com/KaTeX/KaTeX/compare/v0.15.2...v0.15.3) (2022-03-13)
+
+
+### Bug Fixes
+
+* Apply operator spacing to Unicode ∙ ∘ ∖ ([#3584](https://github.com/KaTeX/KaTeX/issues/3584)) ([b362fc0](https://github.com/KaTeX/KaTeX/commit/b362fc0b3941926a7a752cab34af6e29570c669a))
+
 ## [0.15.2](https://github.com/KaTeX/KaTeX/compare/v0.15.1...v0.15.2) (2022-01-12)
 
 
