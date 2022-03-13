@@ -786,7 +786,20 @@ defineEnvironment({
         const symNode = checkSymbolNodeType(args[0]);
         const colalign: AnyParseNode[] =
             symNode ? [args[0]] : assertNodeType(args[0], "ordgroup").body;
-        const cols = colalign.map(function(nde) {
+        let myColAlign = [];
+        if (colalign[0].text === "*") {
+            const numStart = colalign[1].loc.start + 1;
+            const numEnd = colalign[1].loc.end - 1;
+            const iRepeat = colalign[0].loc.lexer.input.slice(numStart, numEnd);
+            for (let i = 0; i < iRepeat; i++) {
+                for (let j = 0; j < colalign[2].body.length ; j++) {
+                    myColAlign.push(colalign[2].body[j]);
+                }
+            }
+        } else {
+            myColAlign = colalign;
+        }
+        const cols = myColAlign.map(function(nde) {
             const node = assertSymbolNodeType(nde);
             const ca = node.text;
             if ("lcr".indexOf(ca) !== -1) {
