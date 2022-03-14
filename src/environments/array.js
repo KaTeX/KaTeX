@@ -788,12 +788,23 @@ defineEnvironment({
             symNode ? [args[0]] : assertNodeType(args[0], "ordgroup").body;
         let myColAlign = [];
         if (colalign[0].text === "*") {
-            const numStart = colalign[1].loc.start + 1;
-            const numEnd = colalign[1].loc.end - 1;
-            const iRepeat = colalign[0].loc.lexer.input.slice(numStart, numEnd);
-            for (let i = 0; i < iRepeat; i++) {
-                for (let j = 0; j < colalign[2].body.length ; j++) {
-                    myColAlign.push(colalign[2].body[j]);
+            const repeatCol = assertNodeType(colalign[1], "ordgroup");
+            let repeatString = "";
+            for (let i = 0; i < repeatCol.body.length ; i++) {
+                const iRepeat = assertNodeType(repeatCol.body[i], "textord");
+                repeatString += iRepeat.text ;
+            }
+            const nRepeat = parseInt(repeatString);
+            if (isNaN(nRepeat)) {
+                throw new ParseError("Repeat specification not a number: "
+                + repeatString, repeatCol);
+            }
+            const ca = assertNodeType(colalign[2], "ordgroup");
+            const caLength = ca.body.length;
+            for (let i = 0; i < nRepeat; i++) {
+                for (let j = 0; j < caLength ; j++) {
+                    const jca = assertNodeType(ca.body[j], "mathord");
+                    myColAlign.push(jca);
                 }
             }
         } else {
