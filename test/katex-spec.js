@@ -1260,6 +1260,10 @@ describe("A begin/end parser", function() {
         expect`\begin{array}{cc}a&b\\c&d\end{array}`.toParse();
     });
 
+    it("should parse an environment with argument in repetition format", function() {
+        expect`\begin{array}{*{35}{l}} x+y\le 12, \ 2x-y\ge 0, \ x-2y\le 0\end{array}`.toParse();
+    });
+
     it("should parse and build an empty environment", function() {
         expect`\begin{aligned}\end{aligned}`.toBuild();
         expect`\begin{matrix}\end{matrix}`.toBuild();
