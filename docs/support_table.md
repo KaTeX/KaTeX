@@ -1005,6 +1005,8 @@ use `\ce` instead|
 |\Stigma|<span style="color:firebrick;">Not supported</span>||
 |\stigma|<span style="color:firebrick;">Not supported</span>||
 |\strut|<span style="color:firebrick;">Not supported</span>||
+|\strictif|$\strictif$||
+|\strictfi|$\strictfi$||
 |\style|<span style="color:firebrick;">Not supported</span>|Non standard|
 |\sub|$\sub$||
 |{subarray}|<span style="color:firebrick;">Not supported</span>||
