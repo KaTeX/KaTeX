@@ -23,7 +23,7 @@ document.addEventListener('copy', function (event) {
         if (!fragment.querySelector('.katex-mathml')) {
             return; // default action OK if no .katex-mathml elements
         }
-        html_contents = fragment.innerHTML;
+        html_contents = fragment.outerHTML;
     } else {
         fragment = range.cloneContents();
         if (!fragment.querySelector('.katex-mathml')) {
