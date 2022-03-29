@@ -1259,10 +1259,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@netlify/open-api@npm:^2.5.2":
-  version: 2.5.2
-  resolution: "@netlify/open-api@npm:2.5.2"
-  checksum: 499a85c742cfc5e8ebbf3067642e1a4c4af212636a0bc5f2d1f5066664f11c0b361860a842f7dd39bf8ca96192d9215ac7fa307cc84ff3803dd04cec782d5119
+"@netlify/open-api@npm:^2.8.0":
+  version: 2.8.0
+  resolution: "@netlify/open-api@npm:2.8.0"
+  checksum: c814c530b13a14c96425438f3c74a73fcd436cd87809bd68245de0d6b31cd09546c5cfe1497e53af95691cd7bb12165093ceb852fe42e33ecaa6f6c32b98e98c
   languageName: node
   linkType: hard
 
@@ -2815,6 +2815,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"data-uri-to-buffer@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "data-uri-to-buffer@npm:4.0.0"
+  checksum: a010653869abe8bb51259432894ac62c52bf79ad761d418d94396f48c346f2ae739c46b254e8bb5987bded8a653d467db1968db3a69bab1d33aa5567baa5cfc7
+  languageName: node
+  linkType: hard
+
 "debug@npm:2.6.9, debug@npm:^2.2.0, debug@npm:^2.3.3, debug@npm:^2.6.0":
   version: 2.6.9
   resolution: "debug@npm:2.6.9"
@@ -3779,6 +3786,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fetch-blob@npm:^3.1.2, fetch-blob@npm:^3.1.4":
+  version: 3.1.5
+  resolution: "fetch-blob@npm:3.1.5"
+  dependencies:
+    node-domexception: ^1.0.0
+    web-streams-polyfill: ^3.0.3
+  checksum: 6493f21bfe196798343431d20c0284835202728d076dd2cbf502a2846679f9265f3b0c3a7224750ae1a770b925da09e592b05fe7c3a22ca27794a39a0039ab21
+  languageName: node
+  linkType: hard
+
 "figures@npm:^1.3.5":
   version: 1.7.0
   resolution: "figures@npm:1.7.0"
@@ -3991,6 +4008,15 @@ __metadata:
     combined-stream: ^1.0.6
     mime-types: ^2.1.12
   checksum: 10c1780fa13dbe1ff3100114c2ce1f9307f8be10b14bf16e103815356ff567b6be39d70fc4a40f8990b9660012dc24b0f5e1dde1b6426166eb23a445ba068ca3
+  languageName: node
+  linkType: hard
+
+"formdata-polyfill@npm:^4.0.10":
+  version: 4.0.10
+  resolution: "formdata-polyfill@npm:4.0.10"
+  dependencies:
+    fetch-blob: ^3.1.2
+  checksum: 82a34df292afadd82b43d4a740ce387bc08541e0a534358425193017bf9fb3567875dc5f69564984b1da979979b70703aa73dee715a17b6c229752ae736dd9db
   languageName: node
   linkType: hard
 
@@ -6145,18 +6171,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"netlify@npm:^8.0.0":
-  version: 8.0.4
-  resolution: "netlify@npm:8.0.4"
+"netlify@npm:^11.0.0":
+  version: 11.0.1
+  resolution: "netlify@npm:11.0.1"
   dependencies:
-    "@netlify/open-api": ^2.5.2
+    "@netlify/open-api": ^2.8.0
     lodash.camelcase: ^4.3.0
     micro-api-client: ^3.3.0
-    node-fetch: ^2.6.1
+    node-fetch: ^3.0.0
     omit.js: ^2.0.2
-    p-wait-for: ^3.2.0
+    p-wait-for: ^4.0.0
     qs: ^6.9.6
-  checksum: dc947f8ac8f1aa539a4beced56c185fa3dd51fdc5206bc0a5fe605348aebe0393cb6494e982ef7b4c606d05371d756f88e62b35b1f498822c6dc6ea8ee012fb6
+  checksum: 78f4fb6611d9e52972154f49bd3a582e43454c78cd66cee79ab694e38b872721d496ba897b4055b44b2095600186722d642687f936454c967f63e96bc9ff9e66
   languageName: node
   linkType: hard
 
@@ -6167,10 +6193,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.1":
-  version: 2.6.1
-  resolution: "node-fetch@npm:2.6.1"
-  checksum: 91075bedd57879117e310fbcc36983ad5d699e522edb1ebcdc4ee5294c982843982652925c3532729fdc86b2d64a8a827797a745f332040d91823c8752ee4d7c
+"node-domexception@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "node-domexception@npm:1.0.0"
+  checksum: ee1d37dd2a4eb26a8a92cd6b64dfc29caec72bff5e1ed9aba80c294f57a31ba4895a60fd48347cf17dd6e766da0ae87d75657dfd1f384ebfa60462c2283f5c7f
+  languageName: node
+  linkType: hard
+
+"node-fetch@npm:^3.0.0":
+  version: 3.2.3
+  resolution: "node-fetch@npm:3.2.3"
+  dependencies:
+    data-uri-to-buffer: ^4.0.0
+    fetch-blob: ^3.1.4
+    formdata-polyfill: ^4.0.10
+  checksum: 6f702b2683d6e1c097e99888bedaac4625d6895f2a8a60573a2bc04916f5577ea61d274f26e308c08cfb724b23d45de7d3514c14b59e0293e9809c66c88ac12c
   languageName: node
   linkType: hard
 
@@ -6565,12 +6602,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"p-timeout@npm:^3.0.0":
-  version: 3.2.0
-  resolution: "p-timeout@npm:3.2.0"
-  dependencies:
-    p-finally: ^1.0.0
-  checksum: 3dd0eaa048780a6f23e5855df3dd45c7beacff1f820476c1d0d1bcd6648e3298752ba2c877aa1c92f6453c7dd23faaf13d9f5149fc14c0598a142e2c5e8d649c
+"p-timeout@npm:^5.0.0":
+  version: 5.0.2
+  resolution: "p-timeout@npm:5.0.2"
+  checksum: 69eda717e2cbc3d831617a805e069ce69f8cbf51b70f1d1760d3d118536c6b891bbc74f758a4e0d337180ff053f65cdbfc9f5dd04f368ab38173e76f47cf13a8
   languageName: node
   linkType: hard
 
@@ -6581,12 +6616,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"p-wait-for@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "p-wait-for@npm:3.2.0"
+"p-wait-for@npm:^4.0.0":
+  version: 4.1.0
+  resolution: "p-wait-for@npm:4.1.0"
   dependencies:
-    p-timeout: ^3.0.0
-  checksum: 7f6840e9233d96836a233dee9c5b1c711bfdf76228d0eaea68fa74a79418f5eef6dc1915dadd28d17312a99f6a53daa308b1c18b779bc9c1dabcae3d6b35a086
+    p-timeout: ^5.0.0
+  checksum: 4f3ad4aa52b86d9f73ad558dcb00f9df6727a2c6c42dc1ba46e5ae2505898801f09016d753fd9ecb26eac925ba33ff7f8dbc0981856132c895d9df87dbb25d57
   languageName: node
   linkType: hard
 
@@ -7816,7 +7851,7 @@ __metadata:
   dependencies:
     docusaurus: ^1.14.6
     fs-extra: ^10.0.0
-    netlify: ^8.0.0
+    netlify: ^11.0.0
     react: ^16.8.4
   dependenciesMeta:
     docusaurus:
@@ -9038,6 +9073,13 @@ __metadata:
     core-util-is: 1.0.2
     extsprintf: ^1.2.0
   checksum: c431df0bedf2088b227a4e051e0ff4ca54df2c114096b0c01e1cbaadb021c30a04d7dd5b41ab277bcd51246ca135bf931d4c4c796ecae7a4fef6d744ecef36ea
+  languageName: node
+  linkType: hard
+
+"web-streams-polyfill@npm:^3.0.3":
+  version: 3.2.0
+  resolution: "web-streams-polyfill@npm:3.2.0"
+  checksum: e23ad0649392fa0159dbfc6bb27474c308c3f332d9078cfef3c06c154165bef18732c5814126147c6c712f604216ddc950c171c854e3821f020e0d2d721a5958
   languageName: node
   linkType: hard
 

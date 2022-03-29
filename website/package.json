@@ -9,7 +9,7 @@
   "devDependencies": {
     "docusaurus": "^1.14.6",
     "fs-extra": "^10.0.0",
-    "netlify": "^8.0.0",
+    "netlify": "^11.0.0",
     "react": "^16.8.4"
   },
   "dependenciesMeta": {
