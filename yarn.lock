@@ -4324,10 +4324,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^8.0.0":
-  version: 8.3.0
-  resolution: "commander@npm:8.3.0"
-  checksum: 0f82321821fc27b83bd409510bb9deeebcfa799ff0bf5d102128b500b7af22872c0c92cb6a0ebc5a4cf19c6b550fba9cedfa7329d18c6442a625f851377bacf0
+"commander@npm:^9.0.0":
+  version: 9.1.0
+  resolution: "commander@npm:9.1.0"
+  checksum: 1428319b6b90600a813c28fe1e413996d1be99bf01afe9ebc4a9fc6f8077ff3e75f11809b2d2f85bd9b13d7cb592154278e9bbfdb16dc5843cef97bcba6a9cfd
   languageName: node
   linkType: hard
 
@@ -8341,7 +8341,7 @@ __metadata:
     browserslist: ^4.13.0
     browserstack-local: ^1.4.5
     caniuse-lite: ^1.0.30001102
-    commander: ^8.0.0
+    commander: ^9.0.0
     css-loader: ^6.0.0
     cssnano: ^5.0.0-rc.1
     eslint: ^8.0.0
