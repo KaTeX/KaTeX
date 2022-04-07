@@ -155,6 +155,11 @@ const users = [
         image: '/img/vade_mecum_shelf_logo.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
     },
+    {
+        caption: 'Snip',
+        image: '/img/snip.png',
+        infoLink: 'https://getsnip.io',
+    },
 ];
 
 const {version} = require('../package.json');
