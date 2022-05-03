@@ -354,6 +354,10 @@ Available functions include:
 
 @ is a valid character for commands, as if `\makeatletter` were in effect.
 
+### Conditionals
+
+`\iftrue`, `\iffalse`, `\else`, `\fi`
+
 ## Operators
 
 ### Big Operators
