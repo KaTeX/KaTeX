@@ -9,6 +9,7 @@ import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
+import {unicodeSubsAndSups, unicodeSubRegEx} from "./unicodeSupOrSub";
 import {Token} from "./Token";
 
 // Pre-evaluate both modules as unicodeSymbols require String.normalize()
@@ -399,6 +400,18 @@ export default class Parser {
                 }
                 // Put everything into an ordgroup as the superscript
                 superscript = {type: "ordgroup", mode: this.mode, body: primes};
+            } else if (unicodeSubsAndSups[lex.text[0]]) {
+                // A string of Unicode subscript(s) or superscript(s).
+                // Treat it similarly to the unicode-math package.
+                this.consume();
+                const str = lex.text.split('').map(ch => unicodeSubsAndSups[ch])
+                            .join('');
+                const body = (new Parser(str, this.settings)).parse();
+                if (unicodeSubRegEx.test(lex.text)) {
+                    subscript = {type: "ordgroup", mode: "math", body};
+                } else {
+                    superscript = {type: "ordgroup", mode: "math", body};
+                }
             } else {
                 // If it wasn't ^, _, or ', stop parsing super/subscripts
                 break;
