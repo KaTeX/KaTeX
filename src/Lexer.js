@@ -53,8 +53,6 @@ export const combiningDiacriticalMarksEndRegex: RegExp =
     new RegExp(`${combiningDiacriticalMarkString}+$`);
 const tokenRegexString = `(${spaceRegexString}+)|` +  // whitespace
     `${controlSpaceRegexString}|` +                   // \whitespace
-    `|[₊₋₌₍₎₀₁₂₃₄₅₆₇₈₉ₐₑₒₓ]+` +                       // Unicode subscripts
-    `|[⁺⁻⁼⁽⁾⁰¹²³⁴⁵⁶⁷⁸⁹ⁱⁿ]+` +                         // Unicode superscripts
     "([!-\\[\\]-\u2027\u202A-\uD7FF\uF900-\uFFFF]" +  // single codepoint
     `${combiningDiacriticalMarkString}*` +            // ...plus accents
     "|[\uD800-\uDBFF][\uDC00-\uDFFF]" +               // surrogate pair

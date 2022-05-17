@@ -9,7 +9,7 @@ import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
-import {unicodeSubsAndSups, unicodeSubRegEx} from "./unicodeSupOrSub";
+import {uSubsAndSups, unicodeSubRegEx, SUB, SUPER} from "./unicodeSupOrSub";
 import {Token} from "./Token";
 
 // Pre-evaluate both modules as unicodeSymbols require String.normalize()
@@ -400,14 +400,25 @@ export default class Parser {
                 }
                 // Put everything into an ordgroup as the superscript
                 superscript = {type: "ordgroup", mode: this.mode, body: primes};
-            } else if (unicodeSubsAndSups[lex.text[0]]) {
-                // A string of Unicode subscript(s) or superscript(s).
-                // Treat it similarly to the unicode-math package.
+            } else if (uSubsAndSups[lex.text]) {
+                // A Unicode subscript or superscript character.
+                // We treat these similarly to the unicode-math package.
+                // So we render a string of Unicode (sub|super)scripts the
+                // same as a (sub|super)script of regular characters.
+                let str = uSubsAndSups[lex.text];
+                const scriptType = unicodeSubRegEx.test(lex.text) ? SUB : SUPER;
                 this.consume();
-                const str = lex.text.split('').map(ch => unicodeSubsAndSups[ch])
-                            .join('');
+                // Continue fetching tokens to fill out the string.
+                while (true) {
+                    const token = this.fetch().text;
+                    if (!(uSubsAndSups[token])) { break; }
+                    if (unicodeSubRegEx.test(token) !== scriptType) { break; }
+                    this.consume();
+                    str += uSubsAndSups[token];
+                }
+                // Now create a (sub|super)script.
                 const body = (new Parser(str, this.settings)).parse();
-                if (unicodeSubRegEx.test(lex.text)) {
+                if (scriptType === SUB) {
                     subscript = {type: "ordgroup", mode: "math", body};
                 } else {
                     superscript = {type: "ordgroup", mode: "math", body};

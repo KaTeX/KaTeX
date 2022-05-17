@@ -1,8 +1,11 @@
 // Helpers for Parser.js handling of Unicode (sub|super)script characters.
 
+export const SUB = true;
+export const SUPER = false;
+
 export const unicodeSubRegEx = /^[₊₋₌₍₎₀₁₂₃₄₅₆₇₈₉ₐₑₒₓ]/;
 
-export const unicodeSubsAndSups = {
+export const uSubsAndSups = Object.freeze({
     '₊': '+',
     '₋': '-',
     '₌': '=',
@@ -39,4 +42,4 @@ export const unicodeSubsAndSups = {
     '⁹': '9',
     'ⁱ': 'i',
     'ⁿ': 'n',
-};
+});
