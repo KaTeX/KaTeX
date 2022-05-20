@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.15.4](https://github.com/KaTeX/KaTeX/compare/v0.15.3...v0.15.4) (2022-05-20)
+
+
+### Features
+
+* Support Unicode (sub|super)script characters ([#3633](https://github.com/KaTeX/KaTeX/issues/3633)) ([d8fc35e](https://github.com/KaTeX/KaTeX/commit/d8fc35e6a97f8e561c723b93ad275cf5a7f3094a))
+
 ## [0.15.3](https://github.com/KaTeX/KaTeX/compare/v0.15.2...v0.15.3) (2022-03-13)
 
 

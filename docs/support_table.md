@@ -4,9 +4,9 @@ title: Support Table
 ---
 This is a list of TeX functions, sorted alphabetically. This list includes functions that KaTeX supports and some that it doesn't support. There is a similar page, with functions [sorted by type](supported.md).
 
-If you know the shape of a character, but not its name, [Detexify](http://detexify.kirelabs.org/classify.html) can help.
+If you know the shape of a character, but not its name, [Detexify](https://detexify.kirelabs.org/classify.html) can help.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.4/dist/katex.min.css" integrity="sha384-YC8qdB2s1ab8mZ+cia7a0adIJypa9Tkwmt+FCx4o0sFZ1x353rJ1FNT2j+sJHHbw" crossorigin="anonymous">
 <style>
 table tr,
 table td {
