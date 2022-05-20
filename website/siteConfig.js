@@ -126,6 +126,11 @@ const users = [
         infoLink: 'https://slides.com/',
     },
     {
+        caption: 'Snip',
+        image: '/img/snip.png',
+        infoLink: 'https://getsnip.io',
+    },
+    {
         caption: 'Spinning Numbers',
         image: 'https://spinningnumbers.org/i/sn_logo2.svg',
         infoLink: 'https://spinningnumbers.org/',
@@ -154,11 +159,6 @@ const users = [
         caption: 'Vade Mecum Shelf',
         image: '/img/vade_mecum_shelf_logo.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
-    },
-    {
-        caption: 'Snip',
-        image: '/img/snip.png',
-        infoLink: 'https://getsnip.io',
     },
 ];
 
