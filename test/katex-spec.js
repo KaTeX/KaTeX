@@ -275,6 +275,10 @@ describe("A subscript and superscript parser", function() {
         expect`x_{x^x}`.toParse();
         expect`x_{x_x}`.toParse();
     });
+
+    it("should work with Unicode (sub|super)script characters", function() {
+        expect`A² + B²⁺³ + ¹²C + E₂³ + F₂₊₃`.toParseLike("A^{2} + B^{2+3} + ^{12}C + E_{2}^{3} + F_{2+3}");
+    });
 });
 
 describe("A subscript and superscript tree-builder", function() {
@@ -3802,7 +3806,7 @@ describe("Unicode", function() {
     });
 
     it("should build binary operators", function() {
-        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝◯⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toBuild(strictSettings);
+        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝◯⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5\u2218\u2216\u2219").toBuild(strictSettings);
     });
 
     it("should build common ords", function() {

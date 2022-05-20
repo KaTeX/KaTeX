@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.15.2",
+  "version": "0.15.5",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "exports": {
@@ -47,7 +47,7 @@
     "dist/"
   ],
   "license": "MIT",
-  "packageManager": "yarn@3.1.1",
+  "packageManager": "yarn@3.2.0",
   "devDependencies": {
     "@babel/core": "^7.10.4",
     "@babel/eslint-parser": "^7.15.0",
