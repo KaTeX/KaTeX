@@ -1,41 +1,49 @@
+// @flow
+
 import katexReplaceWithTex from './katex2tex';
 
-document.addEventListener('copy', function (event) {
+// Global copy handler to modify behavior on/within .katex elements.
+document.addEventListener('copy', function(event: ClipboardEvent) {
     const selection = window.getSelection();
-    if (selection.isCollapsed) {
-        return; // default action OK if selection is empty
+    if (selection.isCollapsed || !event.clipboardData) {
+        return; // default action OK if selection is empty or unchangeable
     }
+    const clipboardData = event.clipboardData;
     const range = selection.getRangeAt(0);
 
-    const sel_parent = range.commonAncestorContainer;
-    if (!(sel_parent instanceof Element)) {
+    const selParent = range.commonAncestorContainer;
+    if (!(selParent instanceof Element)) {
         return;
     }
-    const closest_katex = sel_parent.closest('.katex');
+    const closestKatex = selParent.closest('.katex');
 
-    let fragment, html_contents;
+    let fragment: Element | DocumentFragment;
+    let htmlContents: string;
 
-    if (closest_katex) {
-        // Then we are fully inside an equation. We expand the selection to be the entire equation.
-
-        fragment = /** @type Element */ (closest_katex.cloneNode(true));
-
-        if (!fragment.querySelector('.katex-mathml')) {
-            return; // default action OK if no .katex-mathml elements
-        }
-        html_contents = fragment.outerHTML;
+    if (closestKatex) {
+        // When fully inside an equation, expand selection to entire equation.
+        fragment = closestKatex.cloneNode(true);
     } else {
         fragment = range.cloneContents();
-        if (!fragment.querySelector('.katex-mathml')) {
-            return; // default action OK if no .katex-mathml elements
-        }
-        html_contents = Array.prototype.map.call(fragment.childNodes, (el) => (el instanceof Text ? el.textContent : el.outerHTML)).join('');
+    }
+
+    if (!fragment.querySelector('.katex-mathml')) {
+        return; // default action OK if no .katex-mathml elements
+    }
+
+    if (fragment instanceof DocumentFragment) {
+        htmlContents = Array.prototype.map.call(fragment.childNodes,
+          (el) => (el instanceof Text ? el.textContent : el.outerHTML)
+        ).join('');
+    } else {
+        htmlContents = fragment.outerHTML;
     }
 
     // Preserve usual HTML copy/paste behavior.
-    event.clipboardData.setData('text/html', html_contents);
+    clipboardData.setData('text/html', htmlContents);
     // Rewrite plain-text version.
-    event.clipboardData.setData('text/plain', katexReplaceWithTex(fragment).textContent);
+    clipboardData.setData('text/plain',
+        katexReplaceWithTex(fragment).textContent);
     // Prevent normal copy handling.
     event.preventDefault();
 });
