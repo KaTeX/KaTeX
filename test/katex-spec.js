@@ -275,6 +275,10 @@ describe("A subscript and superscript parser", function() {
         expect`x_{x^x}`.toParse();
         expect`x_{x_x}`.toParse();
     });
+
+    it("should work with Unicode (sub|super)script characters", function() {
+        expect`A² + B²⁺³ + ¹²C + E₂³ + F₂₊₃`.toParseLike("A^{2} + B^{2+3} + ^{12}C + E_{2}^{3} + F_{2+3}");
+    });
 });
 
 describe("A subscript and superscript tree-builder", function() {
