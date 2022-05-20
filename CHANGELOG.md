@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.15.5](https://github.com/KaTeX/KaTeX/compare/v0.15.4...v0.15.5) (2022-05-20)
+
+
+### Bug Fixes
+
+* Avoid crash when \ce{} is empty ([#3627](https://github.com/KaTeX/KaTeX/issues/3627)) ([4865e45](https://github.com/KaTeX/KaTeX/commit/4865e4543774441467f81f81ef45c9b59f1349ae))
+
 ## [0.15.4](https://github.com/KaTeX/KaTeX/compare/v0.15.3...v0.15.4) (2022-05-20)
 
 
