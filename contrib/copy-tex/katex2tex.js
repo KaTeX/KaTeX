@@ -15,9 +15,9 @@ export const defaultCopyDelimiters: CopyDelimiters = {
 // Modifies fragment in-place.  Useful for writing your own 'copy' handler,
 // as in copy-tex.js.
 export function katexReplaceWithTex(
-    fragment: Element | DocumentFragment,
+    fragment: DocumentFragment,
     copyDelimiters: CopyDelimiters = defaultCopyDelimiters
-): Element | DocumentFragment {
+): DocumentFragment {
     // Remove .katex-html blocks that are preceded by .katex-mathml blocks
     // (which will get replaced below).
     const katexHtml = fragment.querySelectorAll('.katex-mathml + .katex-html');

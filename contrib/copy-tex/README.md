@@ -9,6 +9,8 @@ clipboard remains the selected HTML content, as it normally would.)
 The default delimiters are `$...$` for inline math and `$$...$$` for display
 math, but you can easy switch them to e.g. `\(...\)` and `\[...\]` by
 modifying `copyDelimiters` in [the source code](copy-tex.js).
+Note that a selection containing part of a KaTeX formula gets extended to
+include the entire KaTeX formula.
 
 ## Usage
 
