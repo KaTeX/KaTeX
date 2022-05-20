@@ -4,9 +4,9 @@ title: Support Table
 ---
 This is a list of TeX functions, sorted alphabetically. This list includes functions that KaTeX supports and some that it doesn't support. There is a similar page, with functions [sorted by type](supported.md).
 
-If you know the shape of a character, but not its name, [Detexify](http://detexify.kirelabs.org/classify.html) can help.
+If you know the shape of a character, but not its name, [Detexify](https://detexify.kirelabs.org/classify.html) can help.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" integrity="sha384-R4558gYOUz8mP9YWpZJjofhk+zx0AS11p36HnD2ZKj/6JR5z27gSSULCNHIRReVs" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.5/dist/katex.min.css" integrity="sha384-+Wlal0Ai0ogheUBCt+YhdEjW0Bw/wOomNjuLALBWHoQ7+4iKyrnXUQQxiJkqdFaW" crossorigin="anonymous">
 <style>
 table tr,
 table td {
@@ -574,7 +574,7 @@ use `\ce` instead|
 |\leftarrow|$\leftarrow$||
 |\Leftarrow|$\Leftarrow$||
 |\LeftArrow|<span style="color:firebrick;">Not supported</span>|Non standard
-|\leftarrowtail|<span style="color:firebrick;">Not supported</span>||
+|\leftarrowtail|$\leftarrowtail$||
 |\leftharpoondown|$\leftharpoondown$||
 |\leftharpoonup|$\leftharpoonup$||
 |\leftleftarrows|$\leftleftarrows$||
