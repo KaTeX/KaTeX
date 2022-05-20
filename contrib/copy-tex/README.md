@@ -2,7 +2,7 @@
 
 This extension modifies the copy/paste behavior in any browser supporting the
 [Clipboard API](https://developer.mozilla.org/en-US/docs/Web/API/ClipboardEvent)
-so that, when selecting and copying whole KaTeX-rendered elements, the text
+so that, when selecting and copying KaTeX-rendered elements, the text
 content of the resulting clipboard renders KaTeX elements as their LaTeX source
 surrounded by specified delimiters.  (The HTML content of the resulting
 clipboard remains the selected HTML content, as it normally would.)
@@ -10,14 +10,16 @@ The default delimiters are `$...$` for inline math and `$$...$$` for display
 math, but you can easy switch them to e.g. `\(...\)` and `\[...\]` by
 modifying `copyDelimiters` in [the source code](copy-tex.js).
 
-### Usage
+## Usage
 
 This extension isn't part of KaTeX proper, so the script should be separately
-included in the page. 
+included in the page.
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/katex@0.15.4/dist/contrib/copy-tex.min.js" integrity="sha384-Ep9Es0VCjVn9dFeaN2uQxgGcGmG+pfZ4eBaHxUpxXDORrrVACZVOpywyzvFRGbmv" crossorigin="anonymous"></script>
 ```
+
+(Note that, as of KaTeX 0.16.0, there is no longer a corresponding CSS file.)
 
 See [index.html](index.html) for an example.
 (To run this example from a clone of the repository, run `yarn start`
