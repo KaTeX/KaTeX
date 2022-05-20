@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.15.6](https://github.com/KaTeX/KaTeX/compare/v0.15.5...v0.15.6) (2022-05-20)
+
+
+### Features
+
+* Support \Braket, \set, and \Set ([#3214](https://github.com/KaTeX/KaTeX/issues/3214)) ([9e3ae4d](https://github.com/KaTeX/KaTeX/commit/9e3ae4d5a81b825b90a055b46d5c7ab0a3a50379))
+
 ## [0.15.5](https://github.com/KaTeX/KaTeX/compare/v0.15.4...v0.15.5) (2022-05-20)
 
 
