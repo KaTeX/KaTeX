@@ -9,7 +9,7 @@ import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
-import {uSubsAndSups, unicodeSubRegEx, SUB, SUPER} from "./unicodeSupOrSub";
+import {uSubsAndSups, unicodeSubRegEx} from "./unicodeSupOrSub";
 import {Token} from "./Token";
 
 // Pre-evaluate both modules as unicodeSymbols require String.normalize()
@@ -406,19 +406,19 @@ export default class Parser {
                 // So we render a string of Unicode (sub|super)scripts the
                 // same as a (sub|super)script of regular characters.
                 let str = uSubsAndSups[lex.text];
-                const scriptType = unicodeSubRegEx.test(lex.text) ? SUB : SUPER;
+                const isSub = unicodeSubRegEx.test(lex.text);
                 this.consume();
                 // Continue fetching tokens to fill out the string.
                 while (true) {
                     const token = this.fetch().text;
                     if (!(uSubsAndSups[token])) { break; }
-                    if (unicodeSubRegEx.test(token) !== scriptType) { break; }
+                    if (unicodeSubRegEx.test(token) !== isSub) { break; }
                     this.consume();
                     str += uSubsAndSups[token];
                 }
                 // Now create a (sub|super)script.
                 const body = (new Parser(str, this.settings)).parse();
-                if (scriptType === SUB) {
+                if (isSub) {
                     subscript = {type: "ordgroup", mode: "math", body};
                 } else {
                     superscript = {type: "ordgroup", mode: "math", body};
