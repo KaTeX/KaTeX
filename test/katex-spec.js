@@ -445,7 +445,9 @@ describe("A function parser", function() {
     });
 
     it("should not parse 1 argument functions with no arguments", function() {
-        expect`\blue`.not.toParse();
+        expect(() => getParsed(r`\blue`)).toThrowErrorMatchingInlineSnapshot(
+            `"KaTeX parse error: Unexpected end of input in a macro argument, expected '}' at end of input: \\\\blue"`,
+        );
     });
 
     it("should not parse 2 argument functions with 0 or 1 arguments", function() {
@@ -455,7 +457,9 @@ describe("A function parser", function() {
     });
 
     it("should not parse a function with text right after it", function() {
-        expect`\redx`.not.toParse();
+        expect(() => getParsed(r`\redx`)).toThrowErrorMatchingInlineSnapshot(
+            `"KaTeX parse error: Undefined control sequence: \\\\redx at position 1: \\\\̲r̲e̲d̲x̲"`,
+        );
     });
 
     it("should parse a function with a number right after it", function() {
