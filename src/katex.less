@@ -7,6 +7,10 @@
 // The version is dynamically set from package.json via webpack.common.js
 @version: "";
 
+// make the display-margin configurable, see
+// <https://github.com/KaTeX/KaTeX/discussions/3637>
+@display-margin: 1em 0;
+
 .katex {
     font: normal 1.21em KaTeX_Main, Times New Roman, serif;
     line-height: 1.2;
@@ -639,7 +643,7 @@
 
 .katex-display {
     display: block;
-    margin: 1em 0;
+    margin: @display-margin;
     text-align: center;
 
     > .katex {
