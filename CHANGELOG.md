@@ -1,6 +1,26 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+# [0.16.0](https://github.com/KaTeX/KaTeX/compare/v0.15.6...v0.16.0) (2022-06-06)
+
+
+### Bug Fixes
+
+* **copy-tex:** Use JS (instead of CSS) to select full equation, solving display glitches ([#3586](https://github.com/KaTeX/KaTeX/issues/3586)) ([8c2d852](https://github.com/KaTeX/KaTeX/commit/8c2d852c4af213ba4e2f4a3b875498c367e9a119))
+
+
+### BREAKING CHANGES
+
+* **copy-tex:** copy-tex extension no longer has (or requires) a CSS file.
+
+* Code cleanup, lint fixes, port to Flow
+
+* Rewrite to extend both start and end of range
+
+* Remove contrib/**/*.css linting
+
+Co-authored-by: Erik Demaine <edemaine@mit.edu>
+
 ## [0.15.6](https://github.com/KaTeX/KaTeX/compare/v0.15.5...v0.15.6) (2022-05-20)
 
 
