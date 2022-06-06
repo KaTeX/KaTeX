@@ -6,7 +6,7 @@ This is a list of TeX functions supported by KaTeX. It is sorted into logical gr
 
 There is a similar [Support Table](support_table.md), sorted alphabetically, that lists both supported and un-supported functions.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.4/dist/katex.min.css" integrity="sha384-YC8qdB2s1ab8mZ+cia7a0adIJypa9Tkwmt+FCx4o0sFZ1x353rJ1FNT2j+sJHHbw" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/katex.min.css" integrity="sha384-ZPe7yZ91iWxYumsBEOn7ieg8q/o+qh/hQpSaPow8T6BwALcXSCS6C6fSRPIAnTQs" crossorigin="anonymous">
 <style>
 p {overflow-wrap: break-word;}
 table tr,
@@ -321,6 +321,7 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 |$\in$ `\in`          |$\land$ `\land`      |$\gets$ `\gets`                    |$\impliedby$ `\impliedby`
 |$\isin$ `\isin`      |$\lor$ `\lor`        |$\leftrightarrow$ `\leftrightarrow`|$\iff$ `\iff`
 |$\notin$ `\notin`    |$\ni$ `\ni`          |$\notni$ `\notni`                  |$\neg$ `\neg` or `\lnot`
+|   | $\Set{ x \| x<\frac 1 2 }$<br>`\Set{ x \| x<\frac 1 2 }`  | $\set{x\|x<5}$<br>`\set{x\|x<5}`
 
 Direct Input: $∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← ↔ ¬$ ℂ ℍ ℕ ℙ ℚ ℝ
 
@@ -563,7 +564,7 @@ Extensible arrows all can take an optional argument in the same manner<br>as `\x
 ||||
 |:----------|:----------|:----------|
 |$\bra{\phi}$ `\bra{\phi}` |$\ket{\psi}$ `\ket{\psi}` |$\braket{\phi\vert\psi}$ `\braket{\phi\vert\psi}` |
-|$\Bra{\phi}$ `\Bra{\phi}` |$\Ket{\psi}$ `\Ket{\psi}` ||
+|$\Bra{\phi}$ `\Bra{\phi}` |$\Ket{\psi}$ `\Ket{\psi}` |$\Braket{ ϕ \| \frac{∂^2}{∂ t^2} \| ψ }$ `\Braket{ ϕ \| \frac{∂^2}{∂ t^2} \| ψ }`|
 
 ## Style, Color, Size, and Font
 

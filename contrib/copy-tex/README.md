@@ -18,7 +18,7 @@ This extension isn't part of KaTeX proper, so the script should be separately
 included in the page.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/katex@0.15.4/dist/contrib/copy-tex.min.js" integrity="sha384-Ep9Es0VCjVn9dFeaN2uQxgGcGmG+pfZ4eBaHxUpxXDORrrVACZVOpywyzvFRGbmv" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/copy-tex.min.js" integrity="sha384-Ep9Es0VCjVn9dFeaN2uQxgGcGmG+pfZ4eBaHxUpxXDORrrVACZVOpywyzvFRGbmv" crossorigin="anonymous"></script>
 ```
 
 (Note that, as of KaTeX 0.16.0, there is no longer a corresponding CSS file.)
@@ -35,5 +35,5 @@ statement with `require('katex/contrib/copy-tex/katex2tex.js')`.
 
 ECMAScript module is also available:
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/katex@0.15.4/dist/contrib/copy-tex.mjs" integrity="sha384-+gSYJ3yzY30+a6FGYJXOx9swmWs5oPKEi1AeCsAxsLexABlUXgHXkOkEZCj0Lz8U" crossorigin="anonymous"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/katex@0.15.6/dist/contrib/copy-tex.mjs" integrity="sha384-+gSYJ3yzY30+a6FGYJXOx9swmWs5oPKEi1AeCsAxsLexABlUXgHXkOkEZCj0Lz8U" crossorigin="anonymous"></script>
 ```
