@@ -13,14 +13,6 @@ All notable changes to this project will be documented in this file. This CHANGE
 
 * **copy-tex:** copy-tex extension no longer has (or requires) a CSS file.
 
-* Code cleanup, lint fixes, port to Flow
-
-* Rewrite to extend both start and end of range
-
-* Remove contrib/**/*.css linting
-
-Co-authored-by: Erik Demaine <edemaine@mit.edu>
-
 ## [0.15.6](https://github.com/KaTeX/KaTeX/compare/v0.15.5...v0.15.6) (2022-05-20)
 
 
