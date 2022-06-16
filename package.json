@@ -1,6 +1,6 @@
 {
   "name": "@goodproblems/katex",
-  "version": "0.16.0-react3",
+  "version": "0.16.0-react4",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "exports": {
@@ -142,7 +142,8 @@
     "postversion": "yarn dist && node update-sri.js package README.md contrib/*/README.md docs/*.md website/pages/index.html",
     "semantic-release": "semantic-release",
     "dist": "yarn build && yarn dist:zip",
-    "dist:zip": "rimraf katex/ katex.tar.gz katex.zip && cp -R dist katex && tar czf katex.tar.gz katex && zip -rq katex.zip katex && rimraf katex/"
+    "dist:zip": "rimraf katex/ katex.tar.gz katex.zip && cp -R dist katex && tar czf katex.tar.gz katex && zip -rq katex.zip katex && rimraf katex/",
+    "publish": "yarn build && npm publish"
   },
   "peerDependencies": {
     "react": "^18.2.0"
