@@ -107,10 +107,6 @@ export class MathNode implements MathDomNode {
             this.type,
         );
 
-        if (this.type == "mtext") {
-            console.log("MathNode#toNode", this);
-        }
-
         for (const attr in this.attributes) {
             if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
                 node.setAttribute(attr, this.attributes[attr]);
@@ -184,8 +180,17 @@ export class MathNode implements MathDomNode {
             }
         }
 
-        if (Object.keys(this.attributes).length) {
-            props = {...props, ...this.attributes};
+        if (this.attributes && Object.keys(this.attributes).length) {
+            for (const attr in this.attributes) {
+                if (
+                    Object.prototype.hasOwnProperty.call(this.attributes, attr)
+                ) {
+                    props = {
+                        ...props,
+                        [attr]: utils.escape(this.attributes[attr]),
+                    };
+                }
+            }
         }
 
         return React.createElement(this.type, props);
@@ -226,7 +231,7 @@ export class TextNode implements MathDomNode {
     }
 
     toReact() {
-        return utils.escape(this.toText());
+        return this.toText();
     }
 }
 

@@ -102,6 +102,7 @@
     "mkdirp": "^1.0.4",
     "p-retry": "^4.6.1",
     "pako": "^2.0.0",
+    "parse5": "^7.0.0",
     "postcss": "^8.0.0",
     "postcss-less": "^6.0.0",
     "postcss-loader": "^6.0.0",

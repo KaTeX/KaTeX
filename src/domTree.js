@@ -160,7 +160,7 @@ export const toReact = function (tagName: string) {
           if (!n.toReact) {
             console.log(`n`, n)
           }
-          return n.toReact()
+            return n.toReact();
         });
     }
 
@@ -507,7 +507,8 @@ export class SymbolNode implements HtmlDomNode {
         let styles = "";
 
         if (this.italic > 0) {
-            styles += "margin-right:" + this.italic + "em;";
+            // See https://github.com/KaTeX/KaTeX/pull/3663
+            styles += "margin-right:" + makeEm(this.italic);
         }
         for (const style in this.style) {
             if (this.style.hasOwnProperty(style)) {
@@ -533,21 +534,24 @@ export class SymbolNode implements HtmlDomNode {
     }
 
     toReact() {
-        let props;
+        let props = {};
 
         if (this.italic > 0) {
-            props = {...props.style, marginRight: makeEm(this.italic)};
+            props = {
+                ...props,
+                style: {...props.style, marginRight: makeEm(this.italic)},
+            };
         }
 
         if (this.classes.length) {
-            props = {...props, className: createClass(this.classes)};
+            props.className = createClass(this.classes);
         }
 
         if (this.style && Object.keys(this.style).length) {
-            props = {...props, style: this.style};
+            props.style = this.style;
         }
 
-        if (props) {
+        if (Object.keys(props).length) {
             return React.createElement("span", {
                 ...props,
                 children: this.text,
