@@ -1,5 +1,5 @@
 {
-  "name": "katex",
+  "name": "@goodproblems/katex",
   "version": "0.16.0",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
@@ -31,10 +31,7 @@
     "./*": "./*"
   },
   "homepage": "https://katex.org",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/KaTeX/KaTeX.git"
-  },
+  "repository": "git://github.com/goodproblems/components.git",
   "funding": [
     "https://opencollective.com/katex",
     "https://github.com/sponsors/katex"
