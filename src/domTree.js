@@ -129,8 +129,8 @@ const toMarkup = function (tagName: string): string {
 /**
  * Convert into an HTML markup string
  */
-export const toReact = function (tagName: string) {
-    let props = {};
+export const toReact = function (name: string, initialProps = {}) {
+    let props = {...initialProps};
 
     if (this.classes.length) {
         props.className = createClass(this.classes);
@@ -155,16 +155,13 @@ export const toReact = function (tagName: string) {
     }
 
     // Append the children, also as HTML nodes
-    for (let i = 0; i < this.children.length; i++) {
-        props.children = this.children.map((n) => {
-          if (!n.toReact) {
-            console.log(`n`, n)
-          }
-            return n.toReact();
+    if (this.children && this.children.length) {
+        props.children = this.children.map((n, i) => {
+            return n.toReact(i);
         });
     }
 
-    return React.createElement(tagName, props);
+    return React.createElement(name, props);
 };
 
 // Making the type below exact with all optional fields doesn't work due to
@@ -267,8 +264,8 @@ export class Span<ChildType: VirtualNode> implements HtmlDomNode {
         return toMarkup.call(this, "span");
     }
 
-    toReact() {
-        return toReact.call(this, "span");
+    toReact(key) {
+        return toReact.call(this, "span", {key});
     }
 }
 
@@ -312,8 +309,8 @@ export class Anchor implements HtmlDomNode {
         return toMarkup.call(this, "a");
     }
 
-    toReact() {
-        return toReact.call(this, "a");
+    toReact(key) {
+        return toReact.call(this, "a", {key});
     }
 }
 
@@ -375,12 +372,13 @@ export class Img implements VirtualNode {
         return markup;
     }
 
-    toReact() {
+    toReact(key) {
         let props = {
             src: this.src,
             alt: this.alt,
             className: "mord",
             style: this.style,
+            key,
         };
 
         return React.createElement("img", props);
@@ -533,7 +531,7 @@ export class SymbolNode implements HtmlDomNode {
         }
     }
 
-    toReact() {
+    toReact(key) {
         let props = {};
 
         if (this.italic > 0) {
@@ -555,6 +553,7 @@ export class SymbolNode implements HtmlDomNode {
             return React.createElement("span", {
                 ...props,
                 children: this.text,
+                key,
             });
         } else {
             return this.text;
@@ -612,7 +611,7 @@ export class SvgNode implements VirtualNode {
         return markup;
     }
 
-    toReact() {
+    toReact(key) {
         let props = {};
 
         // Apply attributes
@@ -623,12 +622,13 @@ export class SvgNode implements VirtualNode {
         }
 
         // Append the children
-        for (let i = 0; i < this.children.length; i++) {
-            props.children = this.children.map((n) => n.toReact());
+        if (this.children && this.children.length) {
+            props.children = this.children.map((n, i) => n.toReact(i));
         }
 
         return React.createElement("svg", {
             xmlns: "http://www.w3.org/2000/svg",
+            key,
             ...props,
         });
     }
@@ -664,13 +664,15 @@ export class PathNode implements VirtualNode {
         }
     }
 
-    toReact() {
+    toReact(key) {
         if (this.alternate) {
             return React.createElement("path", {
+                key,
                 d: this.alternate,
             });
         } else {
             return React.createElement("path", {
+                key,
                 d: path[this.pathName],
             });
         }
@@ -712,7 +714,7 @@ export class LineNode implements VirtualNode {
         return markup;
     }
 
-    toReact() {
+    toReact(key) {
         let props = {};
 
         // Apply attributes
@@ -722,7 +724,7 @@ export class LineNode implements VirtualNode {
             }
         }
 
-        return React.createElement("line", props);
+        return React.createElement("line", {key, ...props});
     }
 }
 

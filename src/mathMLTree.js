@@ -161,7 +161,7 @@ export class MathNode implements MathDomNode {
         return this.children.map((child) => child.toText()).join("");
     }
 
-    toReact() {
+    toReact(key) {
         let props = {};
 
         if (this.type === "math") {
@@ -176,7 +176,7 @@ export class MathNode implements MathDomNode {
             if (this.type == "mtext") {
                 props.children = this.toText();
             } else {
-                props.children = this.children.map((n) => n.toReact());
+                props.children = this.children.map((n, i) => n.toReact(i));
             }
         }
 
@@ -193,7 +193,7 @@ export class MathNode implements MathDomNode {
             }
         }
 
-        return React.createElement(this.type, props);
+        return React.createElement(this.type, { key, ...props });
     }
 }
 
@@ -230,7 +230,7 @@ export class TextNode implements MathDomNode {
         return this.text;
     }
 
-    toReact() {
+    toReact(_key) {
         return this.toText();
     }
 }
@@ -311,11 +311,11 @@ class SpaceNode implements MathDomNode {
         }
     }
 
-    toReact() {
+    toReact(key) {
         if (this.character) {
             return null;
         } else {
-            return React.createElement("mspace", {width: makeEm(this.width)});
+            return React.createElement("mspace", {width: makeEm(this.width), key });
         }
     }
 }

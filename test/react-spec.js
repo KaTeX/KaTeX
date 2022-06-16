@@ -1,3 +1,4 @@
+import React from 'react'
 import {renderToString} from "react-dom/server";
 import {parseFragment, serialize} from "parse5";
 import katex from "../katex";
@@ -32,6 +33,15 @@ describe("A react builder", function () {
 
         expect(dom1).toEqual(dom2);
     }
+
+    it("returns react node", () => {
+      expect(katex.renderToReact('a').$$typeof.toString()).toEqual('Symbol(react.element)')
+    });
+
+    it("adds key prop should render basic katex to react", () => {
+      expect(katex.renderToReact('').props.children[0].key).toEqual("0")
+      expect(katex.renderToReact('').props.children[1].key).toEqual("1")
+    });
 
     it("should render basic katex to react", () => {
         expectReactToMatchKatex("1");

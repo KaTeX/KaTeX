@@ -78,7 +78,7 @@ const renderToString = function(
 const renderToReact = function(
     expression: string,
     options: SettingsOptions,
-): string {
+): ReactElement {
     const react = renderToDomTree(expression, options).toReact();
     return react;
 };
