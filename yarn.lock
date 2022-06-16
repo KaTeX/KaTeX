@@ -1559,6 +1559,93 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@goodproblems/katex@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@goodproblems/katex@workspace:."
+  dependencies:
+    "@babel/core": ^7.10.4
+    "@babel/eslint-parser": ^7.15.0
+    "@babel/plugin-proposal-class-properties": ^7.10.4
+    "@babel/plugin-syntax-flow": ^7.14.5
+    "@babel/plugin-transform-react-jsx": ^7.14.9
+    "@babel/plugin-transform-runtime": ^7.10.4
+    "@babel/preset-env": ^7.10.4
+    "@babel/preset-flow": ^7.10.4
+    "@babel/preset-react": ^7.14.5
+    "@babel/register": ^7.10.4
+    "@babel/runtime": ^7.10.4
+    "@rollup/plugin-alias": ^3.1.1
+    "@rollup/plugin-babel": ^5.0.4
+    "@semantic-release/changelog": ^6.0.0
+    "@semantic-release/git": ^10.0.0
+    babel-jest: ^27.0.0
+    babel-loader: ^8.0.5
+    babel-plugin-istanbul: ^6.0.0
+    babel-plugin-preval: ^5.0.0
+    babel-plugin-version-inline: ^1.0.0
+    benchmark: ^2.1.4
+    browserslist: ^4.13.0
+    browserstack-local: ^1.4.5
+    caniuse-lite: ^1.0.30001102
+    commander: ^8.0.0
+    css-loader: ^6.0.0
+    cssnano: ^5.0.0-rc.1
+    eslint: ^8.0.0
+    eslint-import-resolver-webpack: ^0.13.2
+    eslint-plugin-actions: ^2.0.0
+    eslint-plugin-flowtype: ^8.0.0
+    eslint-plugin-import: ^2.25.2
+    eslint-plugin-react: ^7.20.3
+    flow-bin: ^0.135.0
+    fs-extra: ^10.0.0
+    got: ^11.8.0
+    husky: ^4.2.5
+    istanbul-lib-coverage: ^3.0.0
+    istanbul-lib-report: ^3.0.0
+    istanbul-reports: ^3.0.2
+    jest: ^27.0.0
+    jest-diff: ^27.0.0
+    jest-matcher-utils: ^27.0.0
+    jest-message-util: ^27.0.0
+    jest-serializer-html: ^7.0.0
+    js-yaml: ^4.0.0
+    json-stable-stringify: ^1.0.1
+    jspngopt: ^0.2.0
+    less: ^4.0.0
+    less-loader: ^10.0.0
+    mini-css-extract-plugin: ^2.0.0
+    mkdirp: ^1.0.4
+    p-retry: ^4.6.1
+    pako: ^2.0.0
+    parse5: ^7.0.0
+    postcss: ^8.0.0
+    postcss-less: ^6.0.0
+    postcss-loader: ^6.0.0
+    postcss-preset-env: ^7.0.0
+    prettier: ^2.0.5
+    query-string: ^7.0.0
+    react: ^18.2.0
+    react-dom: ^18.2.0
+    rimraf: ^3.0.2
+    rollup: ^2.21.0
+    selenium-webdriver: ^4.0.0-beta.4
+    semantic-release: ^18.0.0
+    sri-toolbox: ^0.2.0
+    style-loader: ^3.0.0
+    stylelint: ^14.0.0
+    stylelint-config-standard: ^24.0.0
+    terser-webpack-plugin: ^5.0.3
+    webpack: ^5.51.1
+    webpack-bundle-analyzer: ^4.0.0
+    webpack-cli: ^4.8.0
+    webpack-dev-server: ^4.0.0
+  peerDependencies:
+    react: ^18.2.0
+  bin:
+    katex: cli.js
+  languageName: unknown
+  linkType: soft
+
 "@humanwhocodes/config-array@npm:^0.9.2":
   version: 0.9.2
   resolution: "@humanwhocodes/config-array@npm:0.9.2"
@@ -8269,93 +8356,6 @@ __metadata:
   checksum: dc43480df5bfbc6bf33ae8cfbc01f6875a979712f766b80d5466b48377b59b16c912a4a778110fa14a2efef1f7a09434507138210533fd625669915b6841a03e
   languageName: node
   linkType: hard
-
-"katex@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "katex@workspace:."
-  dependencies:
-    "@babel/core": ^7.10.4
-    "@babel/eslint-parser": ^7.15.0
-    "@babel/plugin-proposal-class-properties": ^7.10.4
-    "@babel/plugin-syntax-flow": ^7.14.5
-    "@babel/plugin-transform-react-jsx": ^7.14.9
-    "@babel/plugin-transform-runtime": ^7.10.4
-    "@babel/preset-env": ^7.10.4
-    "@babel/preset-flow": ^7.10.4
-    "@babel/preset-react": ^7.14.5
-    "@babel/register": ^7.10.4
-    "@babel/runtime": ^7.10.4
-    "@rollup/plugin-alias": ^3.1.1
-    "@rollup/plugin-babel": ^5.0.4
-    "@semantic-release/changelog": ^6.0.0
-    "@semantic-release/git": ^10.0.0
-    babel-jest: ^27.0.0
-    babel-loader: ^8.0.5
-    babel-plugin-istanbul: ^6.0.0
-    babel-plugin-preval: ^5.0.0
-    babel-plugin-version-inline: ^1.0.0
-    benchmark: ^2.1.4
-    browserslist: ^4.13.0
-    browserstack-local: ^1.4.5
-    caniuse-lite: ^1.0.30001102
-    commander: ^8.0.0
-    css-loader: ^6.0.0
-    cssnano: ^5.0.0-rc.1
-    eslint: ^8.0.0
-    eslint-import-resolver-webpack: ^0.13.2
-    eslint-plugin-actions: ^2.0.0
-    eslint-plugin-flowtype: ^8.0.0
-    eslint-plugin-import: ^2.25.2
-    eslint-plugin-react: ^7.20.3
-    flow-bin: ^0.135.0
-    fs-extra: ^10.0.0
-    got: ^11.8.0
-    husky: ^4.2.5
-    istanbul-lib-coverage: ^3.0.0
-    istanbul-lib-report: ^3.0.0
-    istanbul-reports: ^3.0.2
-    jest: ^27.0.0
-    jest-diff: ^27.0.0
-    jest-matcher-utils: ^27.0.0
-    jest-message-util: ^27.0.0
-    jest-serializer-html: ^7.0.0
-    js-yaml: ^4.0.0
-    json-stable-stringify: ^1.0.1
-    jspngopt: ^0.2.0
-    less: ^4.0.0
-    less-loader: ^10.0.0
-    mini-css-extract-plugin: ^2.0.0
-    mkdirp: ^1.0.4
-    p-retry: ^4.6.1
-    pako: ^2.0.0
-    parse5: ^7.0.0
-    postcss: ^8.0.0
-    postcss-less: ^6.0.0
-    postcss-loader: ^6.0.0
-    postcss-preset-env: ^7.0.0
-    prettier: ^2.0.5
-    query-string: ^7.0.0
-    react: ^18.2.0
-    react-dom: ^18.2.0
-    rimraf: ^3.0.2
-    rollup: ^2.21.0
-    selenium-webdriver: ^4.0.0-beta.4
-    semantic-release: ^18.0.0
-    sri-toolbox: ^0.2.0
-    style-loader: ^3.0.0
-    stylelint: ^14.0.0
-    stylelint-config-standard: ^24.0.0
-    terser-webpack-plugin: ^5.0.3
-    webpack: ^5.51.1
-    webpack-bundle-analyzer: ^4.0.0
-    webpack-cli: ^4.8.0
-    webpack-dev-server: ^4.0.0
-  peerDependencies:
-    react: ^18.2.0
-  bin:
-    katex: cli.js
-  languageName: unknown
-  linkType: soft
 
 "keyv@npm:^4.0.0":
   version: 4.0.3
