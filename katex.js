@@ -72,6 +72,19 @@ const renderToString = function(
     return markup;
 };
 
+}
+
+/**
+ * Parse and build an expression, and return the markup for that.
+ */
+const renderToReact = function(
+    expression: string,
+    options: SettingsOptions,
+): string {
+    const react = renderToDomTree(expression, options).toReact();
+    return react;
+};
+
 /**
  * Parse an expression and return the parse tree.
  */
@@ -152,6 +165,12 @@ export default {
      * for sending to the client.
      */
     renderToString,
+
+    /**
+     * Renders the given LaTeX into an HTML+MathML combination react tree,
+     */
+    renderToReact,
+
     /**
      * KaTeX error, usually during parsing.
      */
