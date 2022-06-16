@@ -30,12 +30,7 @@
     },
     "./*": "./*"
   },
-  "homepage": "https://katex.org",
-  "repository": "git://github.com/goodproblems/components.git",
-  "funding": [
-    "https://opencollective.com/katex",
-    "https://github.com/sponsors/katex"
-  ],
+  "repository": "git://github.com/goodproblems/katex.git",
   "files": [
     "katex.js",
     "cli.js",
