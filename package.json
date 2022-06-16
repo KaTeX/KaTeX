@@ -1,6 +1,6 @@
 {
   "name": "@goodproblems/katex",
-  "version": "0.16.0-react2",
+  "version": "0.16.0-react3",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "exports": {
