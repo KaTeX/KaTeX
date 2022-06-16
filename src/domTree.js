@@ -11,6 +11,7 @@
  * TODO: refactor `span` and `anchor` into common superclass when
  * target environments support class inheritance
  */
+import React from "react";
 import {scriptFromCodepoint} from "./unicodeScripts";
 import utils from "./utils";
 import {path} from "./svgGeometry";
@@ -126,6 +127,42 @@ const toMarkup = function(tagName: string): string {
     return markup;
 };
 
+/**
+ * Convert into an HTML markup string
+ */
+export const toReact = function (tagName: string) {
+    let props = {};
+
+    if (this.classes.length) {
+        props.className = createClass(this.classes);
+    }
+
+    // Apply inline styles
+    for (const style in this.style) {
+        if (this.style.hasOwnProperty(style)) {
+            // $FlowFixMe Flow doesn't seem to understand span.style's type.
+            props = {
+                ...props,
+                style: {...props.style, [style]: this.style[style]},
+            };
+        }
+    }
+
+    // Apply attributes
+    for (const attr in this.attributes) {
+        if (this.attributes.hasOwnProperty(attr)) {
+            props = {...props, [attr]: this.attributes[attr]};
+        }
+    }
+
+    // Append the children, also as HTML nodes
+    for (let i = 0; i < this.children.length; i++) {
+        props.children = this.children.map((n) => n.toReact());
+    }
+
+    return React.createElement(tagName, props);
+};
+
 // Making the type below exact with all optional fields doesn't work due to
 // - https://github.com/facebook/flow/issues/4582
 // - https://github.com/facebook/flow/issues/5688
@@ -226,6 +263,10 @@ export class Span<ChildType: VirtualNode> implements HtmlDomNode {
     toMarkup(): string {
         return toMarkup.call(this, "span");
     }
+
+    toReact() {
+        return toReact.call(this, "span");
+    }
 }
 
 /**
@@ -266,6 +307,10 @@ export class Anchor implements HtmlDomNode {
 
     toMarkup(): string {
         return toMarkup.call(this, "a");
+    }
+
+    toReact() {
+        return toReact.call(this, "a");
     }
 }
 
@@ -329,6 +374,17 @@ export class Img implements VirtualNode {
 
         markup += "'/>";
         return markup;
+    }
+
+    toReact() {
+        let props = {
+            src: this.src,
+            alt: this.alt,
+            className: "mord",
+            style: this.style,
+        };
+
+        return React.createElement("img", props);
     }
 }
 
@@ -474,6 +530,31 @@ export class SymbolNode implements HtmlDomNode {
             return escaped;
         }
     }
+
+    toReact() {
+        let props;
+
+        if (this.italic > 0) {
+            props = {...props.style, marginRight: makeEm(this.italic)};
+        }
+
+        if (this.classes.length) {
+            props = {...props, className: createClass(this.classes)};
+        }
+
+        if (this.style && Object.keys(this.style).length) {
+            props = {...props, style: this.style};
+        }
+
+        if (props) {
+            return React.createElement("span", {
+              ...props,
+              children: this.text
+            });
+        } else {
+            return this.text;
+        }
+    }
 }
 
 /**
@@ -524,7 +605,10 @@ export class SvgNode implements VirtualNode {
         markup += "</svg>";
 
         return markup;
+    }
 
+    toReact() {
+        return null;
     }
 }
 
@@ -556,6 +640,10 @@ export class PathNode implements VirtualNode {
         } else {
             return `<path d='${path[this.pathName]}'/>`;
         }
+    }
+
+    toReact() {
+        return null;
     }
 }
 
@@ -592,6 +680,10 @@ export class LineNode implements VirtualNode {
         markup += "/>";
 
         return markup;
+    }
+
+    toReact() {
+        return null;
     }
 }
 

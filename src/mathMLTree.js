@@ -15,6 +15,7 @@ import {createClass} from "./domTree";
 import {makeEm} from "./units";
 
 import type {VirtualNode} from "./tree";
+import React from "react";
 
 /**
  * MathML node types used in KaTeX. For a complete list of MathML nodes, see
@@ -136,6 +137,26 @@ export class MathNode implements MathDomNode {
      */
     toText(): string {
         return this.children.map(child => child.toText()).join("");
+    toReact() {
+        let props = {};
+
+        if (this.type === "math") {
+            props.xmlns = "http://www.w3.org/1998/Math/MathML";
+        }
+
+        if (this.classes.length) {
+            props.className = createClass(this.classes);
+        }
+
+        if (this.children.length) {
+            props.children = this.children.map((n) => n.toReact());
+        }
+
+        if (Object.keys(this.attributes).length) {
+            props = {...props, ...this.attributes};
+        }
+
+        return React.createElement(this.type, props);
     }
 }
 
@@ -169,6 +190,10 @@ export class TextNode implements MathDomNode {
      * (representing the text iteself).
      */
     toText(): string {
+        return this.text;
+    }
+
+    toReact() {
         return this.text;
     }
 }
@@ -244,6 +269,14 @@ class SpaceNode implements MathDomNode {
             return this.character;
         } else {
             return " ";
+        }
+    }
+
+    toReact() {
+        if (this.character) {
+            return this.character;
+        } else {
+            return React.createElement("mspace", {width: makeEm(this.width)});
         }
     }
 }

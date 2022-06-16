@@ -72,10 +72,8 @@ const renderToString = function(
     return markup;
 };
 
-}
-
 /**
- * Parse and build an expression, and return the markup for that.
+ * Parse and build an expression, and return the react tree for that.
  */
 const renderToReact = function(
     expression: string,

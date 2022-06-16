@@ -108,6 +108,7 @@
     "postcss-preset-env": "^7.0.0",
     "prettier": "^2.0.5",
     "query-string": "^7.0.0",
+    "react-dom": "^18.2.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.21.0",
     "selenium-webdriver": "^4.0.0-beta.4",
@@ -148,6 +149,9 @@
     "semantic-release": "semantic-release",
     "dist": "yarn build && yarn dist:zip",
     "dist:zip": "rimraf katex/ katex.tar.gz katex.zip && cp -R dist katex && tar czf katex.tar.gz katex && zip -rq katex.zip katex && rimraf katex/"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
   },
   "dependencies": {
     "commander": "^8.0.0"
