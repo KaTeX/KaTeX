@@ -1174,7 +1174,7 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
       >
       </span>
       <span class="mord mathnormal"
-            style="margin-right:0.10903em;"
+            style="margin-right:0.109em"
       >
         M
       </span>

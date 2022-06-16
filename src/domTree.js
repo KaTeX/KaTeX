@@ -451,7 +451,7 @@ export class SymbolNode implements HtmlDomNode {
         let styles = "";
 
         if (this.italic > 0) {
-            styles += "margin-right:" + this.italic + "em;";
+            styles += "margin-right:" + makeEm(this.italic);
         }
         for (const style in this.style) {
             if (this.style.hasOwnProperty(style)) {
