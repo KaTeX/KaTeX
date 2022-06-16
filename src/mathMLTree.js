@@ -193,7 +193,7 @@ export class MathNode implements MathDomNode {
             }
         }
 
-        return React.createElement(this.type, { key, ...props });
+        return React.createElement(this.type, {key, ...props});
     }
 }
 
@@ -313,9 +313,14 @@ class SpaceNode implements MathDomNode {
 
     toReact(key) {
         if (this.character) {
-            return null;
+            return React.createElement("mtext", {
+                children: this.character,
+            });
         } else {
-            return React.createElement("mspace", {width: makeEm(this.width), key });
+            return React.createElement("mspace", {
+                width: makeEm(this.width),
+                key,
+            });
         }
     }
 }

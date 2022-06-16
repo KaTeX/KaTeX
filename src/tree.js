@@ -78,14 +78,14 @@ export class DocumentFragment<ChildType: VirtualNode>
     }
 
     /** Convert the fragment into react tree. */
-    toReact(): ReactElement {
+    toReact(key): ReactElement {
         let props = {};
 
         // Append the children, also as HTML nodes
-        for (let i = 0; i < this.children.length; i++) {
-            props.children = this.children.map((n) => n.toReact());
+        if (this.children.length) {
+            props.children = this.children.map((n, i) => n.toReact(i))
         }
 
-        return React.createElement(React.Fragment, props);
+        return React.createElement(React.Fragment, { key, ...props });
     }
 }
