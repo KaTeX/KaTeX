@@ -108,6 +108,7 @@
     "postcss-preset-env": "^7.0.0",
     "prettier": "^2.0.5",
     "query-string": "^7.0.0",
+    "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.21.0",

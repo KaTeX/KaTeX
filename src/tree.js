@@ -1,17 +1,17 @@
 // @flow
 
+import React from 'react'
 import utils from "./utils";
 
 import type {CssStyle, HtmlDomNode} from "./domTree";
 import type {MathDomNode} from "./mathMLTree";
 
-
 // To ensure that all nodes have compatible signatures for these methods.
 export interface VirtualNode {
     toNode(): Node;
     toMarkup(): string;
+    toReact(): ReactElement;
 }
-
 
 /**
  * This node represents a document fragment, which contains elements, but when
@@ -19,14 +19,15 @@ export interface VirtualNode {
  * children and doesn't have any DOM node properties.
  */
 export class DocumentFragment<ChildType: VirtualNode>
-    implements HtmlDomNode, MathDomNode {
+    implements HtmlDomNode, MathDomNode
+{
     children: $ReadOnlyArray<ChildType>;
     // HtmlDomNode
     classes: string[];
     height: number;
     depth: number;
     maxFontSize: number;
-    style: CssStyle;          // Never used; needed for satisfying interface.
+    style: CssStyle; // Never used; needed for satisfying interface.
 
     constructor(children: $ReadOnlyArray<ChildType>) {
         this.children = children;
@@ -74,5 +75,17 @@ export class DocumentFragment<ChildType: VirtualNode>
         // $FlowFixMe: Only works for ChildType = MathDomNode.
         const toText = (child: ChildType): string => child.toText();
         return this.children.map(toText).join("");
+    }
+
+    /** Convert the fragment into react tree. */
+    toReact(): ReactElement {
+        let props = {};
+
+        // Append the children, also as HTML nodes
+        for (let i = 0; i < this.children.length; i++) {
+            props.children = this.children.map((n) => n.toReact());
+        }
+
+        return React.createElement(React.Fragment, props);
     }
 }

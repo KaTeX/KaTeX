@@ -21,16 +21,15 @@ import {makeEm} from "./units";
 
 import type {VirtualNode} from "./tree";
 
-
 /**
  * Create an HTML className based on a list of classes. In addition to joining
  * with spaces, we also remove empty classes.
  */
-export const createClass = function(classes: string[]): string {
-    return classes.filter(cls => cls).join(" ");
+export const createClass = function (classes: string[]): string {
+    return classes.filter((cls) => cls).join(" ");
 };
 
-const initNode = function(
+const initNode = function (
     classes?: string[],
     options?: Options,
     style?: CssStyle,
@@ -55,7 +54,7 @@ const initNode = function(
 /**
  * Convert into an HTML node
  */
-const toNode = function(tagName: string): HTMLElement {
+const toNode = function (tagName: string): HTMLElement {
     const node = document.createElement(tagName);
 
     // Apply the class
@@ -87,7 +86,7 @@ const toNode = function(tagName: string): HTMLElement {
 /**
  * Convert into an HTML markup string
  */
-const toMarkup = function(tagName: string): string {
+const toMarkup = function (tagName: string): string {
     let markup = `<${tagName}`;
 
     // Add the class
@@ -157,7 +156,12 @@ export const toReact = function (tagName: string) {
 
     // Append the children, also as HTML nodes
     for (let i = 0; i < this.children.length; i++) {
-        props.children = this.children.map((n) => n.toReact());
+        props.children = this.children.map((n) => {
+          if (!n.toReact) {
+            console.log(`n`, n)
+          }
+          return n.toReact()
+        });
     }
 
     return React.createElement(tagName, props);
@@ -177,7 +181,7 @@ export type CssStyle = $Shape<{
     borderRightStyle: string,
     borderRightWidth: string,
     borderTopWidth: string,
-    borderStyle: string;
+    borderStyle: string,
     borderWidth: string,
     bottom: string,
     color: string,
@@ -212,7 +216,6 @@ export type SvgSpan = Span<SvgNode>;
 
 export type SvgChildNode = PathNode | LineNode;
 export type documentFragment = DocumentFragment<HtmlDomNode>;
-
 
 /**
  * This node represents a span node, with a className, a list of children, and
@@ -290,7 +293,7 @@ export class Anchor implements HtmlDomNode {
     ) {
         initNode.call(this, classes, options);
         this.children = children || [];
-        this.setAttribute('href', href);
+        this.setAttribute("href", href);
     }
 
     setAttribute(attribute: string, value: string) {
@@ -326,11 +329,7 @@ export class Img implements VirtualNode {
     maxFontSize: number;
     style: CssStyle;
 
-    constructor(
-        src: string,
-        alt: string,
-        style: CssStyle,
-    ) {
+    constructor(src: string, alt: string, style: CssStyle) {
         this.alt = alt;
         this.src = src;
         this.classes = ["mord"];
@@ -389,11 +388,11 @@ export class Img implements VirtualNode {
 }
 
 const iCombinations = {
-    'î': '\u0131\u0302',
-    'ï': '\u0131\u0308',
-    'í': '\u0131\u0301',
+    î: "\u0131\u0302",
+    ï: "\u0131\u0308",
+    í: "\u0131\u0301",
     // 'ī': '\u0131\u0304', // enable when we add Extended Latin
-    'ì': '\u0131\u0300',
+    ì: "\u0131\u0300",
 };
 
 /**
@@ -444,7 +443,8 @@ export class SymbolNode implements HtmlDomNode {
             this.classes.push(script + "_fallback");
         }
 
-        if (/[îïíì]/.test(this.text)) {    // add ī when we add Extended Latin
+        if (/[îïíì]/.test(this.text)) {
+            // add ī when we add Extended Latin
             this.text = iCombinations[this.text];
         }
     }
@@ -499,9 +499,9 @@ export class SymbolNode implements HtmlDomNode {
 
         if (this.classes.length) {
             needsSpan = true;
-            markup += " class=\"";
+            markup += ' class="';
             markup += utils.escape(createClass(this.classes));
-            markup += "\"";
+            markup += '"';
         }
 
         let styles = "";
@@ -511,13 +511,14 @@ export class SymbolNode implements HtmlDomNode {
         }
         for (const style in this.style) {
             if (this.style.hasOwnProperty(style)) {
-                styles += utils.hyphenate(style) + ":" + this.style[style] + ";";
+                styles +=
+                    utils.hyphenate(style) + ":" + this.style[style] + ";";
             }
         }
 
         if (styles) {
             needsSpan = true;
-            markup += " style=\"" + utils.escape(styles) + "\"";
+            markup += ' style="' + utils.escape(styles) + '"';
         }
 
         const escaped = utils.escape(this.text);
@@ -548,8 +549,8 @@ export class SymbolNode implements HtmlDomNode {
 
         if (props) {
             return React.createElement("span", {
-              ...props,
-              children: this.text
+                ...props,
+                children: this.text,
             });
         } else {
             return this.text;
@@ -608,7 +609,24 @@ export class SvgNode implements VirtualNode {
     }
 
     toReact() {
-        return null;
+        let props = {};
+
+        // Apply attributes
+        for (const attr in this.attributes) {
+            if (this.attributes.hasOwnProperty(attr)) {
+                props = {...props, [attr]: this.attributes[attr]};
+            }
+        }
+
+        // Append the children
+        for (let i = 0; i < this.children.length; i++) {
+            props.children = this.children.map((n) => n.toReact());
+        }
+
+        return React.createElement("svg", {
+            xmlns: "http://www.w3.org/2000/svg",
+            ...props,
+        });
     }
 }
 
@@ -618,7 +636,7 @@ export class PathNode implements VirtualNode {
 
     constructor(pathName: string, alternate?: string) {
         this.pathName = pathName;
-        this.alternate = alternate;  // Used only for \sqrt, \phase, & tall delims
+        this.alternate = alternate; // Used only for \sqrt, \phase, & tall delims
     }
 
     toNode(): Node {
@@ -643,7 +661,15 @@ export class PathNode implements VirtualNode {
     }
 
     toReact() {
-        return null;
+        if (this.alternate) {
+            return React.createElement("path", {
+                d: this.alternate,
+            });
+        } else {
+            return React.createElement("path", {
+                d: path[this.pathName],
+            });
+        }
     }
 }
 
@@ -683,13 +709,20 @@ export class LineNode implements VirtualNode {
     }
 
     toReact() {
-        return null;
+        let props = {};
+
+        // Apply attributes
+        for (const attr in this.attributes) {
+            if (this.attributes.hasOwnProperty(attr)) {
+                props = {...props, [attr]: this.attributes[attr]};
+            }
+        }
+
+        return React.createElement("line", props);
     }
 }
 
-export function assertSymbolDomNode(
-    group: HtmlDomNode,
-): SymbolNode {
+export function assertSymbolDomNode(group: HtmlDomNode): SymbolNode {
     if (group instanceof SymbolNode) {
         return group;
     } else {
@@ -697,9 +730,7 @@ export function assertSymbolDomNode(
     }
 }
 
-export function assertSpan(
-    group: HtmlDomNode,
-): Span<HtmlDomNode> {
+export function assertSpan(group: HtmlDomNode): Span<HtmlDomNode> {
     if (group instanceof Span) {
         return group;
     } else {

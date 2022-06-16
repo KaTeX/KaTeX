@@ -22,13 +22,33 @@ import React from "react";
  * https://developer.mozilla.org/en-US/docs/Web/MathML/Element.
  */
 export type MathNodeType =
-    "math" | "annotation" | "semantics" |
-    "mtext" | "mn" | "mo" | "mi" | "mspace" |
-    "mover" | "munder" | "munderover" | "msup" | "msub" | "msubsup" |
-    "mfrac" | "mroot" | "msqrt" |
-    "mtable" | "mtr" | "mtd" | "mlabeledtr" |
-    "mrow" | "menclose" |
-    "mstyle" | "mpadded" | "mphantom" | "mglyph";
+    | "math"
+    | "annotation"
+    | "semantics"
+    | "mtext"
+    | "mn"
+    | "mo"
+    | "mi"
+    | "mspace"
+    | "mover"
+    | "munder"
+    | "munderover"
+    | "msup"
+    | "msub"
+    | "msubsup"
+    | "mfrac"
+    | "mroot"
+    | "msqrt"
+    | "mtable"
+    | "mtr"
+    | "mtd"
+    | "mlabeledtr"
+    | "mrow"
+    | "menclose"
+    | "mstyle"
+    | "mpadded"
+    | "mphantom"
+    | "mglyph";
 
 export interface MathDomNode extends VirtualNode {
     toText(): string;
@@ -36,7 +56,7 @@ export interface MathDomNode extends VirtualNode {
 
 export type documentFragment = DocumentFragment<MathDomNode>;
 export function newDocumentFragment(
-    children: $ReadOnlyArray<MathDomNode>
+    children: $ReadOnlyArray<MathDomNode>,
 ): documentFragment {
     return new DocumentFragment(children);
 }
@@ -55,7 +75,7 @@ export class MathNode implements MathDomNode {
     constructor(
         type: MathNodeType,
         children?: $ReadOnlyArray<MathDomNode>,
-        classes?: string[]
+        classes?: string[],
     ) {
         this.type = type;
         this.attributes = {};
@@ -83,7 +103,13 @@ export class MathNode implements MathDomNode {
      */
     toNode(): Node {
         const node = document.createElementNS(
-            "http://www.w3.org/1998/Math/MathML", this.type);
+            "http://www.w3.org/1998/Math/MathML",
+            this.type,
+        );
+
+        if (this.type == "mtext") {
+            console.log("MathNode#toNode", this);
+        }
 
         for (const attr in this.attributes) {
             if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
@@ -111,9 +137,9 @@ export class MathNode implements MathDomNode {
         // Add the attributes
         for (const attr in this.attributes) {
             if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                markup += " " + attr + "=\"";
+                markup += " " + attr + '="';
                 markup += utils.escape(this.attributes[attr]);
-                markup += "\"";
+                markup += '"';
             }
         }
 
@@ -136,7 +162,9 @@ export class MathNode implements MathDomNode {
      * Converts the math node into a string, similar to innerText, but escaped.
      */
     toText(): string {
-        return this.children.map(child => child.toText()).join("");
+        return this.children.map((child) => child.toText()).join("");
+    }
+
     toReact() {
         let props = {};
 
@@ -149,7 +177,11 @@ export class MathNode implements MathDomNode {
         }
 
         if (this.children.length) {
-            props.children = this.children.map((n) => n.toReact());
+            if (this.type == "mtext") {
+                props.children = this.toText();
+            } else {
+                props.children = this.children.map((n) => n.toReact());
+            }
         }
 
         if (Object.keys(this.attributes).length) {
@@ -194,7 +226,7 @@ export class TextNode implements MathDomNode {
     }
 
     toReact() {
-        return this.text;
+        return utils.escape(this.toText());
     }
 }
 
@@ -216,21 +248,21 @@ class SpaceNode implements MathDomNode {
         // representations instead of &LongNames; as it's not clear how to
         // make the latter via document.createTextNode.
         if (width >= 0.05555 && width <= 0.05556) {
-            this.character = "\u200a";           // &VeryThinSpace;
+            this.character = "\u200a"; // &VeryThinSpace;
         } else if (width >= 0.1666 && width <= 0.1667) {
-            this.character = "\u2009";           // &ThinSpace;
+            this.character = "\u2009"; // &ThinSpace;
         } else if (width >= 0.2222 && width <= 0.2223) {
-            this.character = "\u2005";           // &MediumSpace;
+            this.character = "\u2005"; // &MediumSpace;
         } else if (width >= 0.2777 && width <= 0.2778) {
-            this.character = "\u2005\u200a";     // &ThickSpace;
+            this.character = "\u2005\u200a"; // &ThickSpace;
         } else if (width >= -0.05556 && width <= -0.05555) {
-            this.character = "\u200a\u2063";     // &NegativeVeryThinSpace;
+            this.character = "\u200a\u2063"; // &NegativeVeryThinSpace;
         } else if (width >= -0.1667 && width <= -0.1666) {
-            this.character = "\u2009\u2063";     // &NegativeThinSpace;
+            this.character = "\u2009\u2063"; // &NegativeThinSpace;
         } else if (width >= -0.2223 && width <= -0.2222) {
-            this.character = "\u205f\u2063";     // &NegativeMediumSpace;
+            this.character = "\u205f\u2063"; // &NegativeMediumSpace;
         } else if (width >= -0.2778 && width <= -0.2777) {
-            this.character = "\u2005\u2063";     // &NegativeThickSpace;
+            this.character = "\u2005\u2063"; // &NegativeThickSpace;
         } else {
             this.character = null;
         }
@@ -244,7 +276,9 @@ class SpaceNode implements MathDomNode {
             return document.createTextNode(this.character);
         } else {
             const node = document.createElementNS(
-                "http://www.w3.org/1998/Math/MathML", "mspace");
+                "http://www.w3.org/1998/Math/MathML",
+                "mspace",
+            );
             node.setAttribute("width", makeEm(this.width));
             return node;
         }
@@ -274,7 +308,7 @@ class SpaceNode implements MathDomNode {
 
     toReact() {
         if (this.character) {
-            return this.character;
+            return null;
         } else {
             return React.createElement("mspace", {width: makeEm(this.width)});
         }
