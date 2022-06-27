@@ -314,7 +314,7 @@ export class Img implements VirtualNode {
     }
 
     toMarkup(): string {
-        let markup = `<img  src='${this.src} 'alt='${this.alt}' `;
+        let markup = `<img class="mord" src='${this.src}' alt='${this.alt}' `;
 
         // Add the styles, after hyphenation
         let styles = "";
@@ -327,7 +327,7 @@ export class Img implements VirtualNode {
             markup += ` style="${utils.escape(styles)}"`;
         }
 
-        markup += "'/>";
+        markup += "/>";
         return markup;
     }
 }

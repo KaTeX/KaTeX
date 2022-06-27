@@ -2076,6 +2076,11 @@ describe("An includegraphics builder", function() {
         expect(img).toBuild(trustSettings);
     });
 
+    it("should properly render markup", function () {
+        const markup = katex.renderToString(img, {trust: true});
+        expect(markup).toMatchSnapshot();
+    });
+
     it("should produce mords", function() {
         expect(getBuilt(img, trustSettings)[0].classes).toContain("mord");
     });

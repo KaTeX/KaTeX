@@ -1037,6 +1037,44 @@ exports[`An includegraphics builder should not render without trust setting 1`] 
 ]
 `;
 
+exports[`An includegraphics builder should properly render markup 1`] = `
+<span class="katex">
+  <span class="katex-mathml">
+    <math xmlns="http://www.w3.org/1998/Math/MathML">
+      <semantics>
+        <mrow>
+          <mglyph alt="KA logo"
+                  valign="0em"
+                  height="0.9em"
+                  width="0.9em"
+                  src="https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png"
+          >
+          </mglyph>
+        </mrow>
+        <annotation encoding="application/x-tex">
+          \\includegraphics[height=0.9em, totalheight=0.9em, width=0.9em, alt=KA logo]{https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png}
+        </annotation>
+      </semantics>
+    </math>
+  </span>
+  <span class="katex-html"
+        aria-hidden="true"
+  >
+    <span class="base">
+      <span class="strut"
+            style="height:0.9em;"
+      >
+      </span>
+      <img class="mord"
+           src="https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png"
+           alt="KA logo"
+           style="height:0.9em;width:0.9em;"
+      >
+    </span>
+  </span>
+</span>
+`;
+
 exports[`An includegraphics builder should render with trust setting 1`] = `
 [
   {
