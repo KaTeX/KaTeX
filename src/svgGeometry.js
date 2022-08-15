@@ -487,3 +487,37 @@ c4.7,-4.7,7,-9.3,7,-14c0,-9.3,-3.7,-15.3,-11,-18c-92.7,-56.7,-159,-133.7,-199,
 c-2,2.7,-1,9.7,3,21c15.3,42,36.7,81.8,64,119.5c27.3,37.7,58,69.2,92,94.5z
 M500 241 v40 H399408 v-40z M500 435 v40 H400000 v-40z`,
 };
+
+export const tallDelim = function(label: string, midHeight: number): string {
+    switch (label) {
+        case "lbrack": 
+            return `M403 1759 V84 H666 V0 H319 V1759 v${midHeight} v1759 h347 v-84
+H403z M403 1759 V0 H319 V1759 v${midHeight} v1759 h84z`
+        case "rbrack":
+            return `M347 1759 V0 H0 V84 H347 V1759 v${midHeight} v1759 H0 v84 H403z
+M403 1759 V0 H319 V1759 v${midHeight} v1759 h84z`
+        case "vert":
+            return `M188 642 V0 H145 V642 v${midHeight} v642 h43z
+M188 642 V0 H145 V642 v${midHeight} v642 h43z`
+        case "doublevert":
+            return `M188 642 V0 H145 V642 v${midHeight} v642 h43z M188 642 V0 H145
+V642 v${midHeight} v642 h43z M410 642 V0 H367 V642 v${midHeight} v642 h43z M410 642
+V0 H367 V642 v${midHeight} v642 h43z`
+        case "lfloor":
+            return ``
+        case "rfloor":
+            return ``
+        case "lceil":
+            return `M403 1759 V84 H666 V0 H319 V1759 v${midHeight} v602 h84z
+M403 1759 V0 H319 V1759 v${midHeight} v602 h84z`
+        case "rceil":
+            return `M347 1759 V0 H0 V84 H347 V1759 v${midHeight} v602 h84z
+M347 1759 V0 h-84 V1759 v${midHeight} v602 h84z`
+        case "lparen":
+            return ``
+        case "rparen":
+            return ``
+        default:
+           throw new Error("Unknown stretchy delimiter.")
+    }
+}
