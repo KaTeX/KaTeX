@@ -10,5 +10,5 @@
   "settings": { 
     "terminal.integrated.shell.linux": "/bin/bash"
   },
-  "postCreateCommand": "CI=true yarn install"
+  "postCreateCommand": "CI=true pnpm install"
 }

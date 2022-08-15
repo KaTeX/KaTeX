@@ -4,6 +4,9 @@
 [ignore]
 <PROJECT_ROOT>/dist
 
+[declarations]
+<PROJECT_ROOT>/node_modules/.*
+
 [include]
 
 [libs]

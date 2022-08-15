@@ -59,8 +59,8 @@ They are expanded in the "gullet" (`MacroExpander`).
 ## Testing
 
 Local testing can be done by running the webpack-dev-server using configuration
-`webpack.dev.js`. Run `yarn` to install dependencies, and then `yarn start`
-to start the server.
+`webpack.dev.js`. Run `pnpm install` to install dependencies, and then
+`pnpm start` to start the server.
 
 This will host an interactive editor at
 [http://localhost:7936/](http://localhost:7936/) to play around with and test
@@ -70,7 +70,7 @@ changes.
 
 The JavaScript parser and some of the HTML and MathML tree
 builders are tested with Jest. These tests can be run using node with
-`yarn test:jest`.  If you need to debug the tests see
+`pnpm test:jest`.  If you need to debug the tests see
 [https://facebook.github.io/jest/docs/troubleshooting.html](https://facebook.github.io/jest/docs/troubleshooting.html)
 
 The interactive editor can also be used for debugging tests in the browser by
@@ -84,9 +84,9 @@ tests when you submit a pull request, in case you forget.
 If you make any changes to Parser.js, add Jest tests to ensure they work.
 
 Some tests verify the structure of the output tree using [snapshot testing](https://facebook.github.io/jest/docs/en/snapshot-testing.html).
-Those snapshots can be updated by running `yarn test:jest:update`.
+Those snapshots can be updated by running `pnpm test:jest:update`.
 
-Also, test code coverage can be collected by `yarn test:jest:coverage`.
+Also, test code coverage can be collected by `pnpm test:jest:coverage`.
 You can view the report in `coverage/lcov-report/index.html`.
 
 #### Screenshot tests
@@ -121,7 +121,7 @@ changes in as many browsers as possible.
 ## Building
 
 KaTeX is built using webpack with configuration `webpack.config.js`. Run
-`yarn build` to build the project.
+`pnpm build` to build the project.
 
 ## Style guide
 
@@ -136,12 +136,12 @@ Code
 
 In general, try to make your code blend in with the surrounding code.
 
-The code can be linted by running `yarn test:lint`, which lints JavaScript
+The code can be linted by running `pnpm test:lint`, which lints JavaScript
 files using ESLint and stylesheets using stylelint. They must pass to commit
 the changes.
 
 Some files have flowtype annotations and can be checked for type errors using
-Flow by running `yarn test:flow`. See [Flow](https://flow.org/) for more details.
+Flow by running `pnpm test:flow`. See [Flow](https://flow.org/) for more details.
 
 ## Pull Requests
 

@@ -47,7 +47,7 @@
     "dist/"
   ],
   "license": "MIT",
-  "packageManager": "yarn@3.2.0",
+  "packageManager": "pnpm@7.9.0",
   "devDependencies": {
     "@babel/core": "^7.10.4",
     "@babel/eslint-parser": "^7.15.0",
@@ -124,8 +124,8 @@
   },
   "bin": "cli.js",
   "scripts": {
-    "test": "yarn test:lint && yarn test:flow && yarn test:jest",
-    "test:lint": "yarn test:lint:js && yarn test:lint:css",
+    "test": "pnpm test:lint && pnpm test:flow && pnpm test:jest",
+    "test:lint": "pnpm test:lint:js && pnpm test:lint:css",
     "test:lint:js": "eslint .",
     "test:lint:css": "stylelint src/katex.less static/main.css website/static/**/*.css",
     "test:flow": "flow",
@@ -133,20 +133,20 @@
     "test:jest:watch": "jest --watch",
     "test:jest:update": "jest --updateSnapshot",
     "test:jest:coverage": "jest --coverage",
-    "test:screenshots": "yarn test:screenshots:update --verify",
+    "test:screenshots": "pnpm test:screenshots:update --verify",
     "test:screenshots:update": "dockers/screenshotter/screenshotter.sh",
     "test:perf": "NODE_ENV=test node test/perf-test.js",
     "clean": "rm -rf dist/ node_modules/",
-    "clean-install": "yarn clean && yarn",
+    "clean-install": "pnpm clean && pnpm install",
     "start": "webpack serve --config webpack.dev.js",
     "analyze": "webpack --config webpack.analyze.js",
     "build": "rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c --failAfterWarnings && webpack && node update-sri.js package dist/README.md",
     "build:fonts": "dockers/fonts/buildFonts.sh",
     "build:metrics": "dockers/fonts/buildMetrics.sh",
-    "watch": "yarn build --watch",
-    "postversion": "yarn dist && node update-sri.js package README.md contrib/*/README.md docs/*.md website/pages/index.html",
+    "watch": "pnpm build --watch",
+    "postversion": "pnpm dist && node update-sri.js package README.md contrib/*/README.md docs/*.md website/pages/index.html",
     "semantic-release": "semantic-release",
-    "dist": "yarn build && yarn dist:zip",
+    "dist": "pnpm build && pnpm dist:zip",
     "dist:zip": "rimraf katex/ katex.tar.gz katex.zip && cp -R dist katex && tar czf katex.tar.gz katex && zip -rq katex.zip katex && rimraf katex/"
   },
   "dependencies": {
@@ -154,7 +154,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn test:lint"
+      "pre-commit": "pnpm test:lint"
     }
   },
   "jest": {

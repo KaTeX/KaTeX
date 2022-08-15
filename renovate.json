@@ -28,16 +28,11 @@
       "matchStrings": ["\\[version\\]\\s*(?<currentValue>.*?)\\s"],
       "datasourceTemplate": "npm",
       "depNameTemplate": "flow-bin"
-    }, {
-      "fileMatch": ["^\\.yarn/sdks/[^/]+/package\\.json$"],
-      "matchStrings": ["\"name\": \"(?<depName>.*?)\",\\s*\"version\": \"(?<currentValue>.*?)-sdk\""],
-      "datasourceTemplate": "npm"
     }
   ],
   "stabilityDays": 3,
   "rangeStrategy": "update-lockfile",
   "commitMessageSuffix": "[skip netlify]",
-  "postUpdateOptions": ["yarnDedupeHighest"],
   "packageRules": [{
     "paths": ["website/**"],
     "commitMessageSuffix": ""

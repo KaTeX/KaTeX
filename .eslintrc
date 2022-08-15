@@ -94,7 +94,7 @@
         "jest": true
     },
     "settings": {
-        "import/external-module-folders": [".yarn", "node_modules"],
+        "import/external-module-folders": ["node_modules"],
         "import/resolver": {
             "webpack": {
                 "config-index": 0

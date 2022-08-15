@@ -11,34 +11,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v3
       with:
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
-    - name: Use Node.js 12
-      uses: actions/setup-node@v2
+    - name: Use Node.js 16
+      uses: actions/setup-node@v3
       with:
-        node-version: '12'
-        cache: yarn
+        node-version: '16'
+        check-latest: true
+        cache: pnpm
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
 
     - name: Install dependencies
-      run: yarn --immutable
-      env:
-        YARN_ENABLE_SCRIPTS: 0 # disable postinstall scripts
+      run: pnpm install --frozen-lockfile --ignore-scripts
+      # disable postinstall scripts
 
     - name: Lint code
-      run: yarn test:lint
+      run: pnpm test:lint
 
     - name: Run Flow
-      run: yarn test:flow
+      run: pnpm test:flow
       if: always()
 
     - name: Run Jest tests
-      run: yarn test:jest --coverage
+      run: pnpm test:jest --coverage
       if: always()
 
     - name: Build
-      run: yarn build
+      run: pnpm build
 
     - uses: codecov/codecov-action@v2
       with:
@@ -52,7 +56,8 @@ jobs:
     needs: test
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v3
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -61,14 +66,17 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '16'
-        cache: yarn
+        cache: pnpm
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v2
 
     - name: Install dependencies
-      run: yarn --immutable
-      env:
-        YARN_ENABLE_SCRIPTS: 0 # disable postinstall scripts
+      run: pnpm install --frozen-lockfile --ignore-scripts
+      # disable postinstall scripts
+
     - name: Run semantic-release
-      run: yarn run semantic-release --debug
+      run: pnpm run semantic-release --debug
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -8,7 +8,7 @@ installed and running.
 If all you want is (re)create
 all the snapshots for all the browsers, then you can do so by:
 
-    yarn test:screenshots:update
+    pnpm test:screenshots:update
 
 It will fetch all required selenium docker images, and use them to
 take screenshots.
@@ -21,7 +21,7 @@ are encouraged to reproduce the steps from `screenshotter.sh`
 manually.  Example run for Firefox:
 
     container=$(docker run -d -P selenium/standalone-firefox:2.46.0)
-    yarn node dockers/screenshotter/screenshotter.js -b firefox -c ${container}
+    node dockers/screenshotter/screenshotter.js -b firefox -c ${container}
     # possibly repeat the above command as often as you need, then eventually
     docker stop ${container}
     docker rm ${container}
@@ -32,8 +32,8 @@ For Chrome, simply replace both occurrences of `firefox` with `chrome`.
 
 It is possible to run `screenshotter.js` without the use of Docker:
 
-    yarn add selenium-webdriver
-    yarn node dockers/screenshotter/screenshotter.js
+    pnpm add selenium-webdriver
+    node dockers/screenshotter/screenshotter.js
 
 This will generate screenshots using the Firefox installed on your system.
 Browsers other than Firefox can be targeted using the `--browser` option.
@@ -62,14 +62,14 @@ to specify a list of cases which are not being processed.
 
 Examples:
 
-    yarn node dockers/screenshotter/screenshotter.js -i Sqrt,SqrtRoot
+    node dockers/screenshotter/screenshotter.js -i Sqrt,SqrtRoot
     dockers/screenshotter/screenshotter.sh --exclude=GreekLetters
 
 # How to run screenshotter tests
 
 You can verify screenshots by running:
 
-    yarn test:screenshots
+    pnpm test:screenshots
 
 or passing `--verify` option to `screenshotter.js` or `screenshotter.sh`.
 See above for more details.

@@ -1,8 +1,8 @@
 tasks:
-  - init: yarn install
-    command: yarn start
+  - init: pnpm install
+    command: pnpm start
   - openMode: split-right
-    command: echo "Run 'yarn test' to run tests."
+    command: echo "Run 'pnpm test' to run tests."
 
 ports:
   - port: 7936
