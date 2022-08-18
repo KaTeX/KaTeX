@@ -387,6 +387,10 @@ const makeStackedDelim = function(
     // Calculate the depth
     const depth = realHeightTotal / 2 - axisHeight;
 
+    // Now, we start building the pieces that will go into the vlist
+    // Keep a list of the pieces of the stacked delimiter
+    const stack = [];
+
     if (svgLabel.length > 0) {
         // Instead of stacking glyphs, create a single SVG.
         // This evades browser problems with imprecise positioning of spans.
@@ -394,51 +398,48 @@ const makeStackedDelim = function(
         const viewBoxHeight = Math.round(realHeightTotal  * 1000);
         const pathStr = tallDelim(svgLabel, Math.round(midHeight * 1000));
         const path = new PathNode(svgLabel, pathStr);
+        const sizeMultiplier = options.sizeMultiplier; // account for script level
+        const width = (viewBoxWidth / 1000 / sizeMultiplier).toFixed(3) + "em";
+        const height = (viewBoxHeight / 1000 / sizeMultiplier).toFixed(3) + "em";
         const svg = new SvgNode([path], {
-            "width": viewBoxWidth / 1000 + "em",
-            "height": viewBoxHeight / 1000 + "em",
+            "width": width,
+            "height": height,
             "viewBox": `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
         });
         const wrapper = buildCommon.makeSvgSpan([], [svg], options);
-        wrapper.height = viewBoxHeight / 1000;
-        wrapper.style.width = viewBoxWidth / 1000 + "em";
-        wrapper.style.height = viewBoxHeight / 1000 + "em";
-        return buildCommon.makeVList({
-            positionType: "individualShift",
-            children: [{type: "elem", elem: wrapper, shift: depth}],
-        }, options);
-    }
-
-    // Now, we start building the pieces that will go into the vlist
-    // Keep a list of the pieces of the stacked delimiter
-    const stack = [];
-
-    // Add the bottom symbol
-    stack.push(makeGlyphSpan(bottom, font, mode));
-    stack.push(lap); // overlap
-
-    if (middle === null) {
-        // The middle section will be an SVG. Make it an extra 0.016em tall.
-        // We'll overlap by 0.008em at top and bottom.
-        const innerHeight = realHeightTotal - topHeightTotal - bottomHeightTotal
-            + 2 * lapInEms;
-        stack.push(makeInner(repeat, innerHeight, options));
+        wrapper.height = realHeightTotal;
+        wrapper.style.width = width;
+        wrapper.style.height = height;
+        stack.push({type: "elem", elem: wrapper});
     } else {
-        // When there is a middle bit, we need the middle part and two repeated
-        // sections
-        const innerHeight = (realHeightTotal - topHeightTotal - bottomHeightTotal -
-            middleHeightTotal) / 2 + 2 * lapInEms;
-        stack.push(makeInner(repeat, innerHeight, options));
-        // Now insert the middle of the brace.
-        stack.push(lap);
-        stack.push(makeGlyphSpan(middle, font, mode));
-        stack.push(lap);
-        stack.push(makeInner(repeat, innerHeight, options));
-    }
+        // Stack glyphs
+        // Start by adding the bottom symbol
+        stack.push(makeGlyphSpan(bottom, font, mode));
+        stack.push(lap); // overlap
 
-    // Add the top symbol
-    stack.push(lap);
-    stack.push(makeGlyphSpan(top, font, mode));
+        if (middle === null) {
+            // The middle section will be an SVG. Make it an extra 0.016em tall.
+            // We'll overlap by 0.008em at top and bottom.
+            const innerHeight = realHeightTotal - topHeightTotal - bottomHeightTotal
+                + 2 * lapInEms;
+            stack.push(makeInner(repeat, innerHeight, options));
+        } else {
+            // When there is a middle bit, we need the middle part and two repeated
+            // sections
+            const innerHeight = (realHeightTotal - topHeightTotal -
+                bottomHeightTotal - middleHeightTotal) / 2 + 2 * lapInEms;
+            stack.push(makeInner(repeat, innerHeight, options));
+            // Now insert the middle of the brace.
+            stack.push(lap);
+            stack.push(makeGlyphSpan(middle, font, mode));
+            stack.push(lap);
+            stack.push(makeInner(repeat, innerHeight, options));
+        }
+
+        // Add the top symbol
+        stack.push(lap);
+        stack.push(makeGlyphSpan(top, font, mode));
+    }
 
     // Finally, build the vlist
     const newOptions = options.havingBaseStyle(Style.TEXT);
