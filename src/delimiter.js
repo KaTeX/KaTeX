@@ -398,16 +398,15 @@ const makeStackedDelim = function(
         const viewBoxHeight = Math.round(realHeightTotal  * 1000);
         const pathStr = tallDelim(svgLabel, Math.round(midHeight * 1000));
         const path = new PathNode(svgLabel, pathStr);
-        const sizeMultiplier = options.sizeMultiplier; // account for script level
-        const width = (viewBoxWidth / 1000 / sizeMultiplier).toFixed(3) + "em";
-        const height = (viewBoxHeight / 1000 / sizeMultiplier).toFixed(3) + "em";
+        const width = (viewBoxWidth / 1000).toFixed(3) + "em";
+        const height = (viewBoxHeight / 1000).toFixed(3) + "em";
         const svg = new SvgNode([path], {
             "width": width,
             "height": height,
             "viewBox": `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
         });
         const wrapper = buildCommon.makeSvgSpan([], [svg], options);
-        wrapper.height = realHeightTotal;
+        wrapper.height = viewBoxHeight / 1000;
         wrapper.style.width = width;
         wrapper.style.height = height;
         stack.push({type: "elem", elem: wrapper});
