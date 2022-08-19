@@ -497,12 +497,16 @@ H403z M403 1759 V0 H319 V1759 v${midHeight} v1759 h84z`;
             return `M347 1759 V0 H0 V84 H263 V1759 v${midHeight} v1759 H0 v84 H347z
 M347 1759 V0 H263 V1759 v${midHeight} v1759 h84z`;
         case "vert":
-            return `M188 642 V0 H145 V642 v${midHeight} v642 h43z
-M188 642 V0 H145 V642 v${midHeight} v642 h43z`;
+            return `M145 627 v${midHeight} c2.667,10,9.667,15,21,15
+c10,0,16.667,-5,20,-15 v${-midHeight} c-2.667,-10,-9.667,-15,-21,-15
+c-10,0,-16.667,5,-20,15z M187 627 H145 v${midHeight} h42.5z`;
         case "doublevert":
-            return `M188 642 V0 H145 V642 v${midHeight} v642 h43z M188 642 V0 H145
-V642 v${midHeight} v642 h43z M410 642 V0 H367 V642 v${midHeight} v642 h43z M410 642
-V0 H367 V642 v${midHeight} v642 h43z`;
+            return `M145 627 v${midHeight} c2.667,10,9.667,15,21,15
+c10,0,16.667,-5,20,-15 v${-midHeight} c-2.667,-10,-9.667,-15,-21,-15
+c-10,0,-16.667,5,-20,15z M187 627 H145 v${midHeight} h42.5z
+M367 627 v${midHeight} c2.667,10,9.667,15,21,15
+c10,0,16.667,-5,20,-15 v${-midHeight} c-2.667,-10,-9.667,-15,-21,-15
+c-10,0,-16.667,5,-20,15z M410 627 H367 v${midHeight} h42.5z`;
         case "lfloor":
             return `M319 602 V0 H403 V602 v${midHeight} v1715 h263 v84 H319z
 MM319 602 V0 H403 V602 v${midHeight} v1715 H319z`;
