@@ -7473,12 +7473,12 @@ __metadata:
   linkType: hard
 
 "istanbul-reports@npm:^3.0.2, istanbul-reports@npm:^3.1.3":
-  version: 3.1.4
-  resolution: "istanbul-reports@npm:3.1.4"
+  version: 3.1.5
+  resolution: "istanbul-reports@npm:3.1.5"
   dependencies:
-    html-escaper: "npm:^2.0.0"
-    istanbul-lib-report: "npm:^3.0.0"
-  checksum: 2132983355710c522f6b26808015cab9a0ee8b9f5ae0db0d3edeff40b886dd83cb670fb123cb7b32dbe59473d7c00cdde2ba6136bc0acdb20a865fccea64dfe1
+    html-escaper: ^2.0.0
+    istanbul-lib-report: ^3.0.0
+  checksum: 7867228f83ed39477b188ea07e7ccb9b4f5320b6f73d1db93a0981b7414fa4ef72d3f80c4692c442f90fc250d9406e71d8d7ab65bb615cb334e6292b73192b89
   languageName: node
   linkType: hard
 
