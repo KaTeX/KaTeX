@@ -4714,15 +4714,15 @@ __metadata:
   linkType: hard
 
 "cssnano@npm:^5.0.0-rc.1":
-  version: 5.1.12
-  resolution: "cssnano@npm:5.1.12"
+  version: 5.1.13
+  resolution: "cssnano@npm:5.1.13"
   dependencies:
-    cssnano-preset-default: "npm:^5.2.12"
-    lilconfig: "npm:^2.0.3"
-    yaml: "npm:^1.10.2"
+    cssnano-preset-default: ^5.2.12
+    lilconfig: ^2.0.3
+    yaml: ^1.10.2
   peerDependencies:
     postcss: ^8.2.15
-  checksum: 5bc6a6195e7fe2065fbe6002dd09ce23f125956679232c823d9f28914e4ea7b72714b67c86e3b5369861253eb74c4df3079a9b839b8ddebe60e1f81d2292e224
+  checksum: 3af0810c98626794e3386e690cd633c73ce472cb138f1011b69956de5071920ddce9d45f857018bb72cd2c3ed19674d65edade591110a6d5acd7c3109ef5d5d6
   languageName: node
   linkType: hard
 
