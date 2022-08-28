@@ -111,7 +111,7 @@
     "rimraf": "^3.0.2",
     "rollup": "^2.21.0",
     "selenium-webdriver": "^4.0.0-beta.4",
-    "semantic-release": "^18.0.0",
+    "semantic-release": "^19.0.3",
     "sri-toolbox": "^0.2.0",
     "style-loader": "^3.0.0",
     "stylelint": "^14.0.0",
