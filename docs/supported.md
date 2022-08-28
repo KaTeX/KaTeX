@@ -312,6 +312,8 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 
 ## Logic and Set Theory
 
+$\gdef\VERT{|}$
+
 |||||
 |:--------------------|:--------------------------|:----------------------------|:-----
 |$\forall$ `\forall`  |$\complement$ `\complement`|$\therefore$ `\therefore`    |$\emptyset$ `\emptyset`
@@ -321,7 +323,7 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 |$\in$ `\in`          |$\land$ `\land`      |$\gets$ `\gets`                    |$\impliedby$ `\impliedby`
 |$\isin$ `\isin`      |$\lor$ `\lor`        |$\leftrightarrow$ `\leftrightarrow`|$\iff$ `\iff`
 |$\notin$ `\notin`    |$\ni$ `\ni`          |$\notni$ `\notni`                  |$\neg$ `\neg` or `\lnot`
-|   | $\Set{ x \| x<\frac 1 2 }$<br>`\Set{ x \| x<\frac 1 2 }`  | $\set{x\|x<5}$<br>`\set{x\|x<5}`
+|   | $\Set{ x \VERT x<\frac 1 2 }$<br><code>\Set{ x &#124; x<\frac 1 2 }</code>  | $\set{x\VERT x<5}$<br><code>\set{x&#124;x<5}</code> ||
 
 Direct Input: $∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← ↔ ¬$ ℂ ℍ ℕ ℙ ℚ ℝ
 
@@ -563,8 +565,8 @@ Extensible arrows all can take an optional argument in the same manner<br>as `\x
 
 ||||
 |:----------|:----------|:----------|
-|$\bra{\phi}$ `\bra{\phi}` |$\ket{\psi}$ `\ket{\psi}` |$\braket{\phi\vert\psi}$ `\braket{\phi\vert\psi}` |
-|$\Bra{\phi}$ `\Bra{\phi}` |$\Ket{\psi}$ `\Ket{\psi}` |$\Braket{ ϕ \| \frac{∂^2}{∂ t^2} \| ψ }$ `\Braket{ ϕ \| \frac{∂^2}{∂ t^2} \| ψ }`|
+|$\bra{\phi}$ `\bra{\phi}` |$\ket{\psi}$ `\ket{\psi}` |$\braket{\phi\VERT\psi}$ <code>\braket{\phi&#124;\psi}</code> |
+|$\Bra{\phi}$ `\Bra{\phi}` |$\Ket{\psi}$ `\Ket{\psi}` |$\Braket{ ϕ \VERT \frac{∂^2}{∂ t^2} \VERT ψ }$ <code>\Braket{ ϕ &#124; \frac{∂^2}{∂ t^2} &#124; ψ }</code>|
 
 ## Style, Color, Size, and Font
 

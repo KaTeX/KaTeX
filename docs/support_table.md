@@ -16,6 +16,8 @@ table td {
 
 ## Symbols
 
+$\gdef\VERT{|}$
+
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\!|$n!$|`n!`|
@@ -192,8 +194,8 @@ table td {
 |\boxtimes|$\boxtimes$||
 |\Bra|$\Bra{\psi}$|`\Bra{\psi}`|
 |\bra|$\bra{\psi}$|`\bra{\psi}`|
-|\braket|$\braket{\phi\vert\psi}$|`\braket{\phi\vert\psi}`|
-|\Braket|$\Braket{ ϕ \| \frac{∂^2}{∂ t^2} \| ψ }$| `\Braket{ ϕ \| \frac{∂^2}{∂ t^2} \| ψ }`|
+|\braket|$\braket{\phi\VERT\psi}$|<code>\braket{\phi&#124;\psi}</code>|
+|\Braket|$\Braket{ ϕ \VERT \frac{∂^2}{∂ t^2} \VERT ψ }$| <code>\Braket{ ϕ &#124; \frac{∂^2}{∂ t^2} &#124; ψ }</code>|
 |\brace|${n\brace k}$|`{n\brace k}`|
 |\bracevert|<span style="color:firebrick;">Not supported</span>||
 |\brack|${n\brack k}$|`{n\brack k}`|
@@ -954,8 +956,8 @@ use `\ce` instead|
 |\searrow|$\searrow$||
 |\sec|$\sec$||
 |\sect|$\text{\sect}$|`\text{\sect}`|
-|\set|$\set{x\|x<5}$|`\set{x\|x<5}` |
-|\Set|$\Set{ x \| x<\frac 1 2 }$ | `\Set{ x \| x<\frac 1 2 }` |
+|\set|$\set{x\VERT x<5}$|<code>\set{x&#124;x<5}</code> |
+|\Set|$\Set{ x \VERT x<\frac 1 2 }$ | <code>\Set{ x &#124; x<\frac 1 2}</code> |
 |\setlength|<span style="color:firebrick;">Not supported</span>|[Issue #687](https://github.com/KaTeX/KaTeX/issues/687)|
 |\setminus|$\setminus$||
 |\sf|$\sf AaBb123$|`\sf AaBb123`|
