@@ -11,7 +11,7 @@ KaTeX doesn't currently support. The documentation has pages listing
 [supported functions](https://katex.org/docs/supported.html) and
 [functions that KaTeX supports and some that it doesn't support](https://katex.org/docs/support_table.html).
 You can check them to see if we don't support a function you like, or try your
-function in the interactive demo at [http://katex.org/](http://katex.org/).
+function in the interactive demo at [https://katex.org](https://katex.org).
 The wiki has a page that describes how to [examine TeX commands and where to find
 rules](https://github.com/KaTeX/KaTeX/wiki/Examining-TeX) which can be quite
 useful when adding new commands.
@@ -157,4 +157,4 @@ In order to contribute to KaTeX, you must first sign the CLA, found at www.khana
 
 ## License
 
-KaTeX is licenced under the [MIT License](http://opensource.org/licenses/MIT).
+KaTeX is licenced under the [MIT License](https://opensource.org/licenses/MIT).

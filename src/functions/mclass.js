@@ -75,7 +75,7 @@ defineFunction({
         return {
             type: "mclass",
             mode: parser.mode,
-            mclass: "m" + funcName.substr(5), // TODO(kevinb): don't prefix with 'm'
+            mclass: "m" + funcName.slice(5), // TODO(kevinb): don't prefix with 'm'
             body: ordargument(body),
             isCharacterBox: utils.isCharacterBox(body),
         };
