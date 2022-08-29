@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.2](https://github.com/KaTeX/KaTeX/compare/v0.16.1...v0.16.2) (2022-08-29)
+
+
+### Bug Fixes
+
+* **auto-render:** concatenate content of successive text nodes ([#3422](https://github.com/KaTeX/KaTeX/issues/3422)) ([4d3fdd8](https://github.com/KaTeX/KaTeX/commit/4d3fdd8647a1c320dc7bcb9c9ea2af81379f700d))
+* Implement \pmb via CSS text-shadow ([#3505](https://github.com/KaTeX/KaTeX/issues/3505)) ([176552a](https://github.com/KaTeX/KaTeX/commit/176552a69183d71425b491d4cc2fa1d462a1246a))
+
 ## [0.16.1](https://github.com/KaTeX/KaTeX/compare/v0.16.0...v0.16.1) (2022-08-28)
 
 
