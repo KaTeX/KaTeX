@@ -61,7 +61,7 @@ const renderElem = function(elem, optionsCopy) {
             let textContentConcat = childNode.textContent;
             let sibling = childNode.nextSibling;
             let nSiblings = 0;
-            while (sibling && (sibling.nodeType === 3)) {
+            while (sibling && (sibling.nodeType === Node.TEXT_NODE)) {
                 textContentConcat += sibling.textContent;
                 sibling = sibling.nextSibling;
                 nSiblings++;
