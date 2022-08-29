@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.15.3",
+  "version": "0.16.1",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "exports": {
@@ -47,7 +47,7 @@
     "dist/"
   ],
   "license": "MIT",
-  "packageManager": "yarn@3.2.0",
+  "packageManager": "yarn@3.2.2",
   "devDependencies": {
     "@babel/core": "^7.10.4",
     "@babel/eslint-parser": "^7.15.0",
@@ -127,7 +127,7 @@
     "test": "yarn test:lint && yarn test:flow && yarn test:jest",
     "test:lint": "yarn test:lint:js && yarn test:lint:css",
     "test:lint:js": "eslint .",
-    "test:lint:css": "stylelint src/katex.less static/main.css contrib/**/*.css website/static/**/*.css",
+    "test:lint:css": "stylelint src/katex.less static/main.css website/static/**/*.css",
     "test:flow": "flow",
     "test:jest": "jest",
     "test:jest:watch": "jest --watch",

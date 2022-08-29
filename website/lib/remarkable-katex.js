@@ -1,6 +1,6 @@
 // https://github.com/bradhowes/remarkable-katex/blob/master/index.js
 // Modified here to require("../..") instead of require("katex")
-// and add options {trust: true, strict: false}.
+// and add options {trust: true, strict: false, macros}.
 
 /* MIT License
 
@@ -25,6 +25,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+const macros = {};  // allow sharing macros within a page
+
 /**
  * Plugin for Remarkable Markdown processor which transforms $..$ and $$..$$ sequences into math HTML using the
  * Katex package.
@@ -41,7 +43,7 @@ module.exports = (md, options) => {
    */
   const renderKatex = (source, displayMode) => katex.renderToString(source,
     {displayMode: displayMode, throwOnError: false,
-     trust: true, strict: false});
+     trust: true, strict: false, macros});
 
   /**
    * Parse '$$' as a block. Based off of similar method in remarkable.
