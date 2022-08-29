@@ -1,5 +1,12 @@
+// @flow
+
+export interface CopyDelimiters {
+    inline: [string, string],
+    display: [string, string],
+}
+
 // Set these to how you want inline and display math to be delimited.
-export const defaultCopyDelimiters = {
+export const defaultCopyDelimiters: CopyDelimiters = {
     inline: ['$', '$'],    // alternative: ['\(', '\)']
     display: ['$$', '$$'], // alternative: ['\[', '\]']
 };
@@ -7,16 +14,18 @@ export const defaultCopyDelimiters = {
 // Replace .katex elements with their TeX source (<annotation> element).
 // Modifies fragment in-place.  Useful for writing your own 'copy' handler,
 // as in copy-tex.js.
-export const katexReplaceWithTex = function(fragment,
-    copyDelimiters = defaultCopyDelimiters) {
+export function katexReplaceWithTex(
+    fragment: DocumentFragment,
+    copyDelimiters: CopyDelimiters = defaultCopyDelimiters
+): DocumentFragment {
     // Remove .katex-html blocks that are preceded by .katex-mathml blocks
     // (which will get replaced below).
     const katexHtml = fragment.querySelectorAll('.katex-mathml + .katex-html');
     for (let i = 0; i < katexHtml.length; i++) {
         const element = katexHtml[i];
         if (element.remove) {
-            element.remove(null);
-        } else {
+            element.remove();
+        } else if (element.parentNode) {
             element.parentNode.removeChild(element);
         }
     }
@@ -29,7 +38,7 @@ export const katexReplaceWithTex = function(fragment,
         if (texSource) {
             if (element.replaceWith) {
                 element.replaceWith(texSource);
-            } else {
+            } else if (element.parentNode) {
                 element.parentNode.replaceChild(texSource, element);
             }
             texSource.innerHTML = copyDelimiters.inline[0] +
@@ -47,6 +56,6 @@ export const katexReplaceWithTex = function(fragment,
             + copyDelimiters.display[1];
     }
     return fragment;
-};
+}
 
 export default katexReplaceWithTex;

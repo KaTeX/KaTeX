@@ -119,12 +119,12 @@ DeepFontSizing:
     nolatex: \Huge inside \dfrac doesn't work, needs an extra {…}
 DelimiterSizing: |
     \bigl\uparrow\Bigl\downarrow\biggl\updownarrow
-    \Biggl\Uparrow\Biggr\Downarrow\biggr\langle\Bigr\}\bigr\rfloor \\
+    \Biggl\Uparrow\Biggr\Downarrow\biggr\langle\Bigr\}\bigr\rfloor\; \Set{ x | x<\frac 1 2 } \\
     \begin{pmatrix}
         a & b & c\\
         a & b & c\\
         a & b & c\\
-    \end{pmatrix}
+    \end{pmatrix}\; \Braket{ ϕ | \frac{∂^2}{∂ t^2} | ψ } \\
 DisplayMode:
     tex: \sum_{i=0}^\infty \frac{1}{i}
     pre: pre

@@ -43,7 +43,7 @@ const targets /*: Array<Target> */ = [
     },
     {
         name: 'contrib/copy-tex',
-        entry: './contrib/copy-tex/copy-tex.webpack.js',
+        entry: './contrib/copy-tex/copy-tex.js',
     },
     {
         name: 'contrib/mathtex-script-type',

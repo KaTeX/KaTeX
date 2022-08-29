@@ -35,12 +35,7 @@ program.option("-f, --macro-file <path>",
     .option("-i, --input <path>", "Read LaTeX input from the given file.")
     .option("-o, --output <path>", "Write html output to the given file.");
 
-if (require.main !== module) {
-    module.exports = program;
-    return;
-}
-
-const options = program.parse(process.argv).opts();
+let options;
 
 function readMacros() {
     if (options.macroFile) {
@@ -109,4 +104,9 @@ function writeOutput(input) {
     }
 }
 
-readMacros();
+if (require.main !== module) {
+    module.exports = program;
+} else {
+    options = program.parse(process.argv).opts();
+    readMacros();
+}

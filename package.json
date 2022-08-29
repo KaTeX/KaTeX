@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.15.1",
+  "version": "0.16.1",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "exports": {
@@ -47,7 +47,7 @@
     "dist/"
   ],
   "license": "MIT",
-  "packageManager": "yarn@3.1.1",
+  "packageManager": "yarn@3.2.2",
   "devDependencies": {
     "@babel/core": "^7.10.4",
     "@babel/eslint-parser": "^7.15.0",
@@ -103,9 +103,9 @@
     "p-retry": "^4.6.1",
     "pako": "^2.0.0",
     "postcss": "^8.0.0",
-    "postcss-less": "^5.0.0",
+    "postcss-less": "^6.0.0",
     "postcss-loader": "^6.0.0",
-    "postcss-preset-env": "^6.7.0",
+    "postcss-preset-env": "^7.0.0",
     "prettier": "^2.0.5",
     "query-string": "^7.0.0",
     "rimraf": "^3.0.2",
@@ -127,7 +127,7 @@
     "test": "yarn test:lint && yarn test:flow && yarn test:jest",
     "test:lint": "yarn test:lint:js && yarn test:lint:css",
     "test:lint:js": "eslint .",
-    "test:lint:css": "stylelint src/katex.less static/main.css contrib/**/*.css website/static/**/*.css",
+    "test:lint:css": "stylelint src/katex.less static/main.css website/static/**/*.css",
     "test:flow": "flow",
     "test:jest": "jest",
     "test:jest:watch": "jest --watch",
