@@ -24,7 +24,7 @@ symbol.
 
 To figure out the unicode symbol for the symbol you are trying to add, try using
 the symbol in MathJax to see what unicode symbol it outputs. An interactive
-MathJax shell can be found [here](http://fiddle.jshell.net/YpqVp/41/show/).
+MathJax shell can be found [here](https://jsfiddle.net/YpqVp/41).
 
 To figure out what group your symbol falls into, look through the symbols list
 to find other symbols of a similar kind. (e.g. if you were adding `\neq`, look
