@@ -8,6 +8,7 @@
         "property-no-vendor-prefix": null,
         "selector-class-pattern": null,
         "value-no-vendor-prefix": null,
+        "value-keyword-case": ["lower", {"camelCaseSvgKeywords": true}],
     },
     "overrides": [
       {

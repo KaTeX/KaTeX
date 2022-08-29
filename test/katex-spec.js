@@ -275,6 +275,10 @@ describe("A subscript and superscript parser", function() {
         expect`x_{x^x}`.toParse();
         expect`x_{x_x}`.toParse();
     });
+
+    it("should work with Unicode (sub|super)script characters", function() {
+        expect`A² + B²⁺³ + ¹²C + E₂³ + F₂₊₃`.toParseLike("A^{2} + B^{2+3} + ^{12}C + E_{2}^{3} + F_{2+3}");
+    });
 });
 
 describe("A subscript and superscript tree-builder", function() {
@@ -3606,6 +3610,26 @@ describe("A macro expander", function() {
     it("should expand \\Ket as expected", () => {
         expect`\Ket{\psi}`.toParseLike`\left|\psi\right\rangle`;
     });
+
+    it("should expand \\Braket as expected", () => {
+        expect`\Braket{ ϕ | \frac{∂^2}{∂ t^2} | ψ }`.toParseLike`\left\langle ϕ\,\middle\vert\,\frac{∂^2}{∂ t^2}\,\middle\vert\, ψ\right\rangle`;
+    });
+
+    it("should expand \\set as expected", () => {
+        expect`\set{x|x<5|S|}`.toParseLike`\{\,x\mid x<5|S|\,\}`;
+        // \set doesn't support special || or \| handling
+        expect`\set{x||x<5|S|}`.toParseLike`\{\,x\mid |x<5|S|\,\}`;
+        expect`\set{x\|x<5|S|}`.toParseLike`\{\,x\|x<5\mid S|\,\}`;
+    });
+
+    it("should expand \\Set as expected", () => {
+        expect`\Set{ x | x<\frac 1 2 |S| }`
+        .toParseLike`\left\{\: x\;\middle\vert\; x<\frac 1 2 |S| \:\right\}`;
+        expect`\Set{ x || x<\frac 1 2 |S| }`
+        .toParseLike`\left\{\: x\;\middle\Vert\; x<\frac 1 2 |S| \:\right\}`;
+        expect`\Set{ x \| x<\frac 1 2 |S| }`
+        .toParseLike`\left\{\: x\;\middle\Vert\; x<\frac 1 2 |S| \:\right\}`;
+    });
 });
 
 describe("\\tag support", function() {
@@ -3802,7 +3826,7 @@ describe("Unicode", function() {
     });
 
     it("should build binary operators", function() {
-        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝◯⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toBuild(strictSettings);
+        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝◯⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5\u2218\u2216\u2219").toBuild(strictSettings);
     });
 
     it("should build common ords", function() {

@@ -126,6 +126,11 @@ const users = [
         infoLink: 'https://slides.com/',
     },
     {
+        caption: 'Snip',
+        image: '/img/snip.png',
+        infoLink: 'https://getsnip.io',
+    },
+    {
         caption: 'Spinning Numbers',
         image: 'https://spinningnumbers.org/i/sn_logo2.svg',
         infoLink: 'https://spinningnumbers.org/',
