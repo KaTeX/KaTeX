@@ -322,3 +322,42 @@ describe("Pre-process callback", function() {
         expect(el1.innerHTML).toEqual(el2.innerHTML);
     });
 });
+
+describe("Parse adjacent text nodes", function() {
+    it("parse adjacent text nodes with math", function() {
+        const textNodes = ['\\[',
+            'x^2 + y^2 = r^2',
+            '\\]'];
+        const el = document.createElement('div');
+        for (let i = 0; i < textNodes.length; i++) {
+            const txt = document.createTextNode(textNodes[i]);
+            el.appendChild(txt);
+        }
+        const el2 = document.createElement('div');
+        const txt = document.createTextNode(textNodes.join(''));
+        el2.appendChild(txt);
+        const delimiters = [{left: "\\[", right: "\\]", display: true}];
+        renderMathInElement(el, {delimiters});
+        renderMathInElement(el2, {delimiters});
+        expect(el).toStrictEqual(el2);
+    });
+
+    it("parse adjacent text nodes without math", function() {
+        const textNodes = ['Lorem ipsum dolor',
+            'sit amet',
+            'consectetur adipiscing elit'];
+        const el = document.createElement('div');
+        for (let i = 0; i < textNodes.length; i++) {
+            const txt = document.createTextNode(textNodes[i]);
+            el.appendChild(txt);
+        }
+        const el2 = document.createElement('div');
+        for (let i = 0; i < textNodes.length; i++) {
+            const txt = document.createTextNode(textNodes[i]);
+            el2.appendChild(txt);
+        }
+        const delimiters = [{left: "\\[", right: "\\]", display: true}];
+        renderMathInElement(el, {delimiters});
+        expect(el).toStrictEqual(el2);
+    });
+});
