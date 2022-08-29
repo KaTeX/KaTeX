@@ -190,7 +190,7 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
             return makeSymbol(text, fontName, mode, options,
                 classes.concat(fontClasses));
         } else if (ligatures.hasOwnProperty(text) &&
-                   fontName.substr(0, 10) === "Typewriter") {
+                   fontName.slice(0, 10) === "Typewriter") {
             // Deconstruct ligatures in monospace fonts (\texttt, \tt).
             const parts = [];
             for (let i = 0; i < text.length; i++) {

@@ -256,7 +256,7 @@ function parseArray(
 // Decides on a style for cells in an array according to whether the given
 // environment name starts with the letter 'd'.
 function dCellStyle(envName): StyleStr {
-    if (envName.substr(0, 1) === "d") {
+    if (envName.slice(0, 1) === "d") {
         return "display";
     } else {
         return "text";

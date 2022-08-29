@@ -1,6 +1,53 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.1](https://github.com/KaTeX/KaTeX/compare/v0.16.0...v0.16.1) (2022-08-28)
+
+
+### Bug Fixes
+
+* Use SVGs for some stacked delims ([#3686](https://github.com/KaTeX/KaTeX/issues/3686)) ([8a65a2e](https://github.com/KaTeX/KaTeX/commit/8a65a2e1fd69ffeee2fac62229f9f05ebf6afd45))
+
+# [0.16.0](https://github.com/KaTeX/KaTeX/compare/v0.15.6...v0.16.0) (2022-06-06)
+
+
+### Bug Fixes
+
+* **copy-tex:** Use JS (instead of CSS) to select full equation, solving display glitches ([#3586](https://github.com/KaTeX/KaTeX/issues/3586)) ([8c2d852](https://github.com/KaTeX/KaTeX/commit/8c2d852c4af213ba4e2f4a3b875498c367e9a119))
+
+
+### BREAKING CHANGES
+
+* **copy-tex:** copy-tex extension no longer has (or requires) a CSS file.
+
+## [0.15.6](https://github.com/KaTeX/KaTeX/compare/v0.15.5...v0.15.6) (2022-05-20)
+
+
+### Features
+
+* Support \Braket, \set, and \Set ([#3214](https://github.com/KaTeX/KaTeX/issues/3214)) ([9e3ae4d](https://github.com/KaTeX/KaTeX/commit/9e3ae4d5a81b825b90a055b46d5c7ab0a3a50379))
+
+## [0.15.5](https://github.com/KaTeX/KaTeX/compare/v0.15.4...v0.15.5) (2022-05-20)
+
+
+### Bug Fixes
+
+* Avoid crash when \ce{} is empty ([#3627](https://github.com/KaTeX/KaTeX/issues/3627)) ([4865e45](https://github.com/KaTeX/KaTeX/commit/4865e4543774441467f81f81ef45c9b59f1349ae))
+
+## [0.15.4](https://github.com/KaTeX/KaTeX/compare/v0.15.3...v0.15.4) (2022-05-20)
+
+
+### Features
+
+* Support Unicode (sub|super)script characters ([#3633](https://github.com/KaTeX/KaTeX/issues/3633)) ([d8fc35e](https://github.com/KaTeX/KaTeX/commit/d8fc35e6a97f8e561c723b93ad275cf5a7f3094a))
+
+## [0.15.3](https://github.com/KaTeX/KaTeX/compare/v0.15.2...v0.15.3) (2022-03-13)
+
+
+### Bug Fixes
+
+* Apply operator spacing to Unicode ∙ ∘ ∖ ([#3584](https://github.com/KaTeX/KaTeX/issues/3584)) ([b362fc0](https://github.com/KaTeX/KaTeX/commit/b362fc0b3941926a7a752cab34af6e29570c669a))
+
 ## [0.15.2](https://github.com/KaTeX/KaTeX/compare/v0.15.1...v0.15.2) (2022-01-12)
 
 

@@ -25,7 +25,7 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 
 import {PathNode, SvgNode, SymbolNode} from "./domTree";
-import {sqrtPath, innerPath} from "./svgGeometry";
+import {sqrtPath, innerPath, tallDelim} from "./svgGeometry";
 import buildCommon from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
@@ -229,6 +229,8 @@ const makeStackedDelim = function(
     let middle;
     let repeat;
     let bottom;
+    let svgLabel = "";
+    let viewBoxWidth = 0;
     top = repeat = bottom = delim;
     middle = null;
     // Also keep track of what font the delimiters are in
@@ -255,44 +257,64 @@ const makeStackedDelim = function(
         bottom = "\\Downarrow";
     } else if (utils.contains(verts, delim)) {
         repeat = "\u2223";
+        svgLabel = "vert";
+        viewBoxWidth = 333;
     } else if (utils.contains(doubleVerts, delim)) {
         repeat = "\u2225";
+        svgLabel = "doublevert";
+        viewBoxWidth = 556;
     } else if (delim === "[" || delim === "\\lbrack") {
         top = "\u23a1";
         repeat = "\u23a2";
         bottom = "\u23a3";
         font = "Size4-Regular";
+        svgLabel = "lbrack";
+        viewBoxWidth = 667;
     } else if (delim === "]" || delim === "\\rbrack") {
         top = "\u23a4";
         repeat = "\u23a5";
         bottom = "\u23a6";
         font = "Size4-Regular";
+        svgLabel = "rbrack";
+        viewBoxWidth = 667;
     } else if (delim === "\\lfloor" || delim === "\u230a") {
         repeat = top = "\u23a2";
         bottom = "\u23a3";
         font = "Size4-Regular";
+        svgLabel = "lfloor";
+        viewBoxWidth = 667;
     } else if (delim === "\\lceil" || delim === "\u2308") {
         top = "\u23a1";
         repeat = bottom = "\u23a2";
         font = "Size4-Regular";
+        svgLabel = "lceil";
+        viewBoxWidth = 667;
     } else if (delim === "\\rfloor" || delim === "\u230b") {
         repeat = top = "\u23a5";
         bottom = "\u23a6";
         font = "Size4-Regular";
+        svgLabel = "rfloor";
+        viewBoxWidth = 667;
     } else if (delim === "\\rceil" || delim === "\u2309") {
         top = "\u23a4";
         repeat = bottom = "\u23a5";
         font = "Size4-Regular";
+        svgLabel = "rceil";
+        viewBoxWidth = 667;
     } else if (delim === "(" || delim === "\\lparen") {
         top = "\u239b";
         repeat = "\u239c";
         bottom = "\u239d";
         font = "Size4-Regular";
+        svgLabel = "lparen";
+        viewBoxWidth = 875;
     } else if (delim === ")" || delim === "\\rparen") {
         top = "\u239e";
         repeat = "\u239f";
         bottom = "\u23a0";
         font = "Size4-Regular";
+        svgLabel = "rparen";
+        viewBoxWidth = 875;
     } else if (delim === "\\{" || delim === "\\lbrace") {
         top = "\u23a7";
         middle = "\u23a8";
@@ -365,37 +387,58 @@ const makeStackedDelim = function(
     // Calculate the depth
     const depth = realHeightTotal / 2 - axisHeight;
 
-
     // Now, we start building the pieces that will go into the vlist
     // Keep a list of the pieces of the stacked delimiter
     const stack = [];
 
-    // Add the bottom symbol
-    stack.push(makeGlyphSpan(bottom, font, mode));
-    stack.push(lap); // overlap
-
-    if (middle === null) {
-        // The middle section will be an SVG. Make it an extra 0.016em tall.
-        // We'll overlap by 0.008em at top and bottom.
-        const innerHeight = realHeightTotal - topHeightTotal - bottomHeightTotal
-            + 2 * lapInEms;
-        stack.push(makeInner(repeat, innerHeight, options));
+    if (svgLabel.length > 0) {
+        // Instead of stacking glyphs, create a single SVG.
+        // This evades browser problems with imprecise positioning of spans.
+        const midHeight = realHeightTotal - topHeightTotal - bottomHeightTotal;
+        const viewBoxHeight = Math.round(realHeightTotal  * 1000);
+        const pathStr = tallDelim(svgLabel, Math.round(midHeight * 1000));
+        const path = new PathNode(svgLabel, pathStr);
+        const width = (viewBoxWidth / 1000).toFixed(3) + "em";
+        const height = (viewBoxHeight / 1000).toFixed(3) + "em";
+        const svg = new SvgNode([path], {
+            "width": width,
+            "height": height,
+            "viewBox": `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+        });
+        const wrapper = buildCommon.makeSvgSpan([], [svg], options);
+        wrapper.height = viewBoxHeight / 1000;
+        wrapper.style.width = width;
+        wrapper.style.height = height;
+        stack.push({type: "elem", elem: wrapper});
     } else {
-        // When there is a middle bit, we need the middle part and two repeated
-        // sections
-        const innerHeight = (realHeightTotal - topHeightTotal - bottomHeightTotal -
-            middleHeightTotal) / 2 + 2 * lapInEms;
-        stack.push(makeInner(repeat, innerHeight, options));
-        // Now insert the middle of the brace.
-        stack.push(lap);
-        stack.push(makeGlyphSpan(middle, font, mode));
-        stack.push(lap);
-        stack.push(makeInner(repeat, innerHeight, options));
-    }
+        // Stack glyphs
+        // Start by adding the bottom symbol
+        stack.push(makeGlyphSpan(bottom, font, mode));
+        stack.push(lap); // overlap
 
-    // Add the top symbol
-    stack.push(lap);
-    stack.push(makeGlyphSpan(top, font, mode));
+        if (middle === null) {
+            // The middle section will be an SVG. Make it an extra 0.016em tall.
+            // We'll overlap by 0.008em at top and bottom.
+            const innerHeight = realHeightTotal - topHeightTotal - bottomHeightTotal
+                + 2 * lapInEms;
+            stack.push(makeInner(repeat, innerHeight, options));
+        } else {
+            // When there is a middle bit, we need the middle part and two repeated
+            // sections
+            const innerHeight = (realHeightTotal - topHeightTotal -
+                bottomHeightTotal - middleHeightTotal) / 2 + 2 * lapInEms;
+            stack.push(makeInner(repeat, innerHeight, options));
+            // Now insert the middle of the brace.
+            stack.push(lap);
+            stack.push(makeGlyphSpan(middle, font, mode));
+            stack.push(lap);
+            stack.push(makeInner(repeat, innerHeight, options));
+        }
+
+        // Add the top symbol
+        stack.push(lap);
+        stack.push(makeGlyphSpan(top, font, mode));
+    }
 
     // Finally, build the vlist
     const newOptions = options.havingBaseStyle(Style.TEXT);
