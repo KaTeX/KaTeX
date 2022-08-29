@@ -447,7 +447,7 @@ defineMacro("\\dots", function(context) {
     const next = context.expandAfterFuture().text;
     if (next in dotsByToken) {
         thedots = dotsByToken[next];
-    } else if (next.substr(0, 4) === '\\not') {
+    } else if (next.slice(0, 4) === '\\not') {
         thedots = '\\dotsb';
     } else if (next in symbols.math) {
         if (utils.contains(['bin', 'rel'], symbols.math[next].group)) {

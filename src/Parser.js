@@ -922,7 +922,7 @@ export default class Parser {
                     `Accented Unicode text character "${text[0]}" used in ` +
                     `math mode`, nucleus);
             }
-            text = unicodeSymbols[text[0]] + text.substr(1);
+            text = unicodeSymbols[text[0]] + text.slice(1);
         }
         // Strip off any combining characters
         const match = combiningDiacriticalMarksEndRegex.exec(text);
