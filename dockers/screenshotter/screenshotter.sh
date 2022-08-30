@@ -17,7 +17,7 @@ cleanup() {
 container=
 trap cleanup EXIT
 status=0
-for browserTag in "firefox:3.141.59-20210929" "chrome:3.141.59-20210422"; do
+for browserTag in "firefox:4.4.0-20220812" "chrome:4.4.0-20220812"; do
     browser=${browserTag%:*}
     image=selenium/standalone-${browserTag}
     echo "Starting container for ${image}"
@@ -40,9 +40,9 @@ if [[ $BROWSERSTACK_USER ]]; then
     if yarn node "$(dirname "$0")"/screenshotter.js \
             --browser=safari --browserstack --selenium-capabilities '{
                 "browserName": "Safari",
-                "browser_version": "13.1",
+                "browser_version": "15.3",
                 "os": "OS X",
-                "os_version": "Catalina"
+                "os_version": "Monterey"
             }' "$@"; then
         res=Done
     else
