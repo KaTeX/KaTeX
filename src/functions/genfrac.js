@@ -11,6 +11,8 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 import {calculateSize, makeEm} from "../units";
 
+import {derivativeHandler} from './utils/assembleDerivative';
+
 const adjustStyle = (size, originalStyle) => {
     // Figure out what style this fraction should be in based on the
     // function used
@@ -505,6 +507,21 @@ defineFunction({
         };
     },
 
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+defineFunction({
+    type: "genfrac",
+    names: [
+        "\\dv", "\\odv", // Ordinary derivative.
+        "\\pdv",         // Partial derivative.
+    ],
+    props: {
+        numArgs: 2,  // Function, variable(s).
+        numOptionalArgs: 2,  // Lower index(es), upper index.
+    },
+    handler: derivativeHandler,
     htmlBuilder,
     mathmlBuilder,
 });
