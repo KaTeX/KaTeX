@@ -415,14 +415,17 @@ Direct Input: $+ - / * ⋅ ∘ ∙ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ 
 
 |||||
 |:--------------------|:--------------------|:----------------|:--------------|
-| $\arcsin$ `\arcsin` | $\cosec$ `\cosec`   | $\deg$ `\deg`   | $\sec$ `\sec` |
-| $\arccos$ `\arccos` | $\cosh$ `\cosh`     | $\dim$ `\dim`   | $\sin$ `\sin` |
-| $\arctan$ `\arctan` | $\cot$ `\cot`       | $\exp$ `\exp`   | $\sinh$ `\sinh` |
-| $\arctg$ `\arctg`   | $\cotg$ `\cotg`     | $\hom$ `\hom`   | $\sh$ `\sh` |
-| $\arcctg$ `\arcctg` | $\coth$ `\coth`     | $\ker$ `\ker`   | $\tan$ `\tan` |
-| $\arg$ `\arg`       | $\csc$ `\csc`       | $\lg$ `\lg`     | $\tanh$ `\tanh` |
-| $\ch$ `\ch`         | $\ctg$ `\ctg`       | $\ln$ `\ln`     | $\tg$ `\tg` |
-| $\cos$ `\cos`       | $\cth$ `\cth`       | $\log$ `\log`   | $\th$ `\th` |
+| $\abs{a}$ `\abs{a}` | $\cosh$ `\cosh`     | $f(x)\eval{0}{1}$ `f(x)\eval{0}{1}` | $\sin$ `\sin` |
+| $\Abs{a}$ `\Abs{a}` | $\cot$ `\cot`       | $\hom$ `\hom`   | $\sinh$ `\sinh` |
+| $\arcsin$ `\arcsin` | $\cotg$ `\cotg`     | $\ker$ `\ker`   | $\sh$ `\sh`   |
+| $\arccos$ `\arccos` | $\coth$ `\coth`     | $\lg$ `\lg`     | $\tan$ `\tan` |
+| $\arctan$ `\arctan` | $\csc$ `\csc`       | $\ln$ `\ln`     | $\tanh$ `\tanh` |
+| $\arctg$ `\arctg`   | $\ctg$ `\ctg`       | $\log$ `\log`   | $\tg$ `\tg`   |
+| $\arcctg$ `\arcctg` | $\cth$ `\cth`       | $\norm{a}$ `\norm{a}` | $\th$ `\th`   |
+| $\arg$ `\arg`       | $\deg$ `\deg`       | $\Norm{a}$ `\Norm{a}` | $\tr$ `\tr`   |
+| $\ch$ `\ch`         | $\dim$ `\dim`       | $\rank$ `\rank` | $\Tr$ `\Tr`   |
+| $\cos$ `\cos`       | $\dd$ `\dd`         | $\Res$ `\Res`   | $\trace$ `\trace` |
+| $\cosec$ `\cosec`   | $\exp$ `\exp`       | $\sec$ `\sec`   ||
 | $\operatorname{f}$ `\operatorname{f}`     | |||
 | $\argmax$ `\argmax` | $\injlim$ `\injlim` | $\min$ `\min`   | $\varinjlim$ `\varinjlim` |
 | $\argmin$ `\argmin` | $\lim$ `\lim`       | $\plim$ `\plim` | $\varliminf$ `\varliminf` |
@@ -567,6 +570,17 @@ Extensible arrows all can take an optional argument in the same manner<br>as `\x
 |:----------|:----------|:----------|
 |$\bra{\phi}$ `\bra{\phi}` |$\ket{\psi}$ `\ket{\psi}` |$\braket{\phi\VERT\psi}$ <code>\braket{\phi&#124;\psi}</code> |
 |$\Bra{\phi}$ `\Bra{\phi}` |$\Ket{\psi}$ `\Ket{\psi}` |$\Braket{ ϕ \VERT \frac{∂^2}{∂ t^2} \VERT ψ }$ <code>\Braket{ ϕ &#124; \frac{∂^2}{∂ t^2} &#124; ψ }</code>|
+
+**Physics Notation**
+
+|||
+|:----------------|:----------------|
+|$\vb{a}$ `\vb{a}`|$\vectorbold{a}$ `\vectorbold{a}`|
+|$\vectorarrow{a}$ `\vectorarrow{a}`|$\vectorunit{a}$ `\vectorunit{a}`|
+|$a \dotproduct b$ `a \dotproduct b`|$a \crossproduct b$ `a \crossproduct b`|
+|$\innerproduct{u}{v}$ `\innerproduct{u}{v}`|$\outerproduct{u}{v}$ `\outerproduct{u}{v}`|
+|$\gradient{\psi}$ `\gradient{\psi}`|$\laplacian{\psi}$ `\laplacian{\psi}`|
+|$\divergence{B}$ `\divergence{B}`|$\curl{E}$ `\curl{E}`|
 
 ## Style, Color, Size, and Font
 
