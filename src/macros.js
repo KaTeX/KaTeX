@@ -978,8 +978,6 @@ defineMacro("\\vectorarrow", "\\overrightarrow{\\vb{#1}}");
 defineMacro("\\vectorunit", "\\widehat{\\vb{#1}}");
 defineMacro("\\dotproduct", "\\cdot");
 defineMacro("\\crossproduct", "\\times");
-defineMacro("\\innerproduct", "\\mathinner{\\braket{{#1}\\vert{#2}}}");
-defineMacro("\\outerproduct", "\\mathinner{\\ket{#1}\\bra{#2}}");
 defineMacro("\\dd", "\\textnormal{d}");
 defineMacro("\\gradient", "\\mathinner{\\nabla{#1}}");
 defineMacro("\\laplacian", "\\mathinner{\\nabla^2{#1}}");

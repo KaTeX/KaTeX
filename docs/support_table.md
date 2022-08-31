@@ -528,7 +528,6 @@ use `\ce` instead|
 |\infin|$\infin$||
 |\infty|$\infty$||
 |\injlim|$\injlim$| `\injlim` |
-|\innerproduct|$\innerproduct{u}{v}$| `\innerproduct{u}{v}` |
 |\int|$\int$||
 |\intercal|$\intercal$||
 |\intop|$\intop$||
@@ -824,7 +823,6 @@ use `\ce` instead|
 |\origof|$\origof$||
 |\oslash|$\oslash$||
 |\otimes|$\otimes$||
-|\outerproduct|$\outerproduct{u}{v}$| `\outerproduct{u}{v}` |
 |\over|${a+1 \over b+2}+c$|`{a+1 \over b+2}+c`|
 |\overbrace|$\overbrace{x+⋯+x}^{n\text{ times}}$|`\overbrace{x+⋯+x}^{n\text{ times}}`|
 |\overbracket|<span style="color:firebrick;">Not supported</span>||

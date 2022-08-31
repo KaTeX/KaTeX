@@ -578,7 +578,6 @@ Extensible arrows all can take an optional argument in the same manner<br>as `\x
 |$\vb{a}$ `\vb{a}`|$\vectorbold{a}$ `\vectorbold{a}`|
 |$\vectorarrow{a}$ `\vectorarrow{a}`|$\vectorunit{a}$ `\vectorunit{a}`|
 |$a \dotproduct b$ `a \dotproduct b`|$a \crossproduct b$ `a \crossproduct b`|
-|$\innerproduct{u}{v}$ `\innerproduct{u}{v}`|$\outerproduct{u}{v}$ `\outerproduct{u}{v}`|
 |$\gradient{\psi}$ `\gradient{\psi}`|$\laplacian{\psi}$ `\laplacian{\psi}`|
 |$\divergence{B}$ `\divergence{B}`|$\curl{E}$ `\curl{E}`|
 
