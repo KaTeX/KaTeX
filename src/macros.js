@@ -971,7 +971,7 @@ defineMacro("\\abs", "\\lvert{#1}\\rvert");
 defineMacro("\\Abs", "\\Big\\lvert{#1}\\Big\\rvert");
 defineMacro("\\norm", "\\lVert{#1}\\rVert");
 defineMacro("\\Norm", "\\Big\\lVert{#1}\\Big\\rVert");
-defineMacro("\\eval", "\\Big\\vert^{#1}_{#2}");
+defineMacro("\\eval", "\\Big\\vert_{#1}^{#2}");
 defineMacro("\\vb", "\\bold{#1}");
 defineMacro("\\vectorbold", "\\vb{#1}");
 defineMacro("\\vectorarrow", "\\overrightarrow{\\vb{#1}}");

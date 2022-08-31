@@ -69,8 +69,8 @@ $\gdef\VERT{|}$
 |\aa|$\text{\aa}$|`\text{\aa}`|
 |\above|${a \above{2pt} b+1}$|`{a \above{2pt} b+1}`|
 |\abovewithdelims|<span style="color:firebrick;">Not supported</span>||
-|\abs|$\abs{a}$|`$\abs{a}$`|
-|\Abs|$\Abs{a}$|`$\Abs{a}$`|
+|\abs|$\abs{a}$|`\abs{a}`|
+|\Abs|$\Abs{\frac{a}{b}}$|`\Abs{\frac{a}{b}}`|
 |\acute|$\acute e$|`\acute e`|
 |\AE|$\text{\AE}$|`\text{\AE}`|
 |\ae|$\text{\ae}$|`\text{\ae}`|
@@ -283,7 +283,7 @@ use `\ce` instead|
 |\cotg|$\cotg$||
 |\coth|$\coth$||
 |\cr|$\begin{matrix} a & b\cr c & d \end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \cr`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
-|\crossproduct|$\crossproduct$|
+|\crossproduct|$\crossproduct$||
 |\csc|$\csc$||
 |\cssId|<span style="color:firebrick;">Not supported</span>|A PR is pending.
 |\ctg|$\ctg$||
@@ -406,7 +406,7 @@ use `\ce` instead|
 |\eta|$\eta$||
 |\eth|$\eth$||
 |\euro|<span style="color:firebrick;">Not supported</span>||
-|\eval|$f(x)\eval{0}{1}$|`$f(x)\eval{0}{1}$`|
+|\eval|$f(x)\eval{0}{1}$|`f(x)\eval{0}{1}`|
 |\exist|$\exist$||
 |\exists|$\exists$||
 |\exp|$\exp$||
@@ -762,8 +762,8 @@ use `\ce` instead|
 |\noexpand|||
 |\nolimits|$\lim\nolimits_x$|`\lim\nolimits_x`|
 |\nonumber|$$\begin{align}a&=b+c\nonumber\\d+e&=f\end{align}$$|`\begin{align}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \nonumber\\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{align}`|
-|\norm|$\norm{a}$||
-|\Norm|$\Norm{a}$||
+|\norm|$\norm{a}$|`\norm{a}`|
+|\Norm|$\Norm{\frac{a}{b}}$|`\Norm{\frac{a}{b}}`|
 |\normalfont|<span style="color:firebrick;">Not supported</span>||
 |\normalsize|$\normalsize normalsize$|`\normalsize normalsize`|
 |\not|$\not =$|`\not =`|

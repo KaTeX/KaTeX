@@ -415,7 +415,7 @@ Direct Input: $+ - / * ⋅ ∘ ∙ ± × ÷ ∓ ∔ ∧ ∨ ∩ ∪ ≀ ⊎ ⊓ 
 
 |||||
 |:--------------------|:--------------------|:----------------|:--------------|
-| $\abs{a}$ `\abs{a}` | $\cosh$ `\cosh`     | $f(x)\eval{0}{1}$ `f(x)\eval{0}{1}` | $\sin$ `\sin` |
+| $\abs{a}$ `\abs{a}` | $\cosh$ `\cosh`     | $f\eval{0}{1}$ `f\eval{0}{1}` | $\sin$ `\sin` |
 | $\Abs{a}$ `\Abs{a}` | $\cot$ `\cot`       | $\hom$ `\hom`   | $\sinh$ `\sinh` |
 | $\arcsin$ `\arcsin` | $\cotg$ `\cotg`     | $\ker$ `\ker`   | $\sh$ `\sh`   |
 | $\arccos$ `\arccos` | $\coth$ `\coth`     | $\lg$ `\lg`     | $\tan$ `\tan` |
