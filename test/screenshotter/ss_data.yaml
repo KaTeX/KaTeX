@@ -129,8 +129,9 @@ Derivatives: |
     \dv{}{x},\odv{y}{x},\odv[2]{}{x},\odv[n+1]{y}{x} \\
     \pdv{}{x},\pdv{y}{x},\pdv[2]{}{x},\pdv[n+1]{y}{x} \\
     \pdv[1,1][2]{z}{x,y},\pdv[2,2][4]{z}{x,y}, \pdv[1,a][1+a]{z}{x,y} \\
-    \pdv[1+2^n,{(1,2)},k,1][N_k+1]{\begin{pmatrix}\psi&0\\0&\phi\end{pmatrix}} {x,y,z_{(1,2)},\tau} \\
+    \pdv[1+2^n,{(1,2)},k,1][N_k+1]{\begin{pmatrix}\psi&0\\0&\phi\end{pmatrix}} {x,y,z_{\mu,\sigma},\tau} \\
 DerivativesFallbacks: |
+    \square = \text{placeholder} \\
     \odv[]{y}{x}, \pdv[]{y}{x} \\
     \pdv[2][4]{z}{x,y}, \pdv[2,2][]{z}{x,y}, \pdv[2,2][4]{z}{x} \\
     \pdv[2][6]{\psi}{x,y,z}, \pdv[2,2][]{\psi}{x,y,z}, \pdv[2,2,2][6]{\psi}{x} \\
