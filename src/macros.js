@@ -16,6 +16,7 @@ import utils from "./utils";
 import {makeEm} from "./units";
 import ParseError from "./ParseError";
 
+import {assembleDerivativeExpr} from "./macros/derivatives";
 
 //////////////////////////////////////////////////////////////////////
 // macro tools
@@ -1018,3 +1019,10 @@ defineMacro("\\grayH", "\\textcolor{##3b3e40}{#1}");
 defineMacro("\\grayI", "\\textcolor{##21242c}{#1}");
 defineMacro("\\kaBlue", "\\textcolor{##314453}{#1}");
 defineMacro("\\kaGreen", "\\textcolor{##71B307}{#1}");
+
+defineMacro(
+    "\\dv", (context) => assembleDerivativeExpr("\\textnormal{d}", context));
+defineMacro(
+    "\\odv", (context) => assembleDerivativeExpr("\\textnormal{d}", context));
+defineMacro(
+    "\\pdv", (context) => assembleDerivativeExpr("\\partial", context));

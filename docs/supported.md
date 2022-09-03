@@ -559,6 +559,40 @@ Direct Input: $← ↑ → ↓ ↔ ↕ ↖ ↗ ↘ ↙ ↚ ↛ ↞ ↠ ↢ ↣ �
 
 Extensible arrows all can take an optional argument in the same manner<br>as `\xrightarrow[under]{over}`.
 
+## Derivatives
+
+The syntax closely emulates popular $LaTeX$ packages that provide derivatives,
+such as `physics`, `diffcoef`, and `derivative`.
+
+|||
+|:----------|:----------|
+|$\odv{}{t}$ `\odv{}{t}`   |$\odv[2]{}{x}$ `\odv[2]{}{x}`  |
+|$\odv{f}{t}$ `\odv{f}{t}` |$\odv[2]{y}{x}$ `\odv[2]{y}{x}`|
+|$\pdv{}{t}$ `\pdv{}{t}`   |$\pdv[2]{}{x}$ `\pdv[2]{}{x}`  |
+|$\pdv{f}{t}$ `\pdv{f}{t}` |$\pdv[2]{y}{x}$ `\pdv[2]{y}{x}`|
+|$\pdv[1,1][2]{}{x,y}$ `\pdv[1,1][2]{}{x,y}`  |$\pdv[1,n][1+n]{}{x,y}$ `\pdv[1,n][1+n]{}{x,y}`  |
+|$\pdv[1,1][2]{z}{x,y}$ `\pdv[1,1][2]{z}{x,y}`|$\pdv[1,n][1+n]{z}{x,y}$ `\pdv[1,n][1+n]{z}{x,y}`|
+|$\pdv[1,N-1][N]{z}{x_{\mu,\sigma},y_\xi}$ `\pdv[1,N-1][N]{z}{x_{\mu,\sigma},y_\xi}`||
+
+Ordinary derivative `\odv[order]{f}{x}`:
+* The first required brace `{f}` holds the function to take derivative of. This
+  brace can be left empty.
+* The second required brace `{x}` holds the variable.
+* `[order]` holds the derivative order. If the order is 1, you may omit this
+    bracket.
+
+Partial derivative `\pdv[var_orders][total_order]{f}{vars}`:
+* The first required brace `{f}` holds the function to take derivative of. This
+  brace can be left empty.
+* The second required brace `{vars}` holds the comma-separated variables, e.g.
+  `{x}`, `{x, y, z_k}`.
+* The first optional braket `[var_orders]` holds the list of derivative orders
+  corresponding to the variables, e.g. `[2]`, `[1, n, m+1]`. If there is only
+  one variable and its order is 1, you may omit this bracket.
+* The second optional braket `[total_order]` holds the total order of the
+  derivative. If there is only one variable order and that is the same as the
+  total order, you may omit this bracket.
+
 ## Special Notation
 
 **Bra-ket Notation**
