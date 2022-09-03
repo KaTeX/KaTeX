@@ -42,7 +42,9 @@ function splitByTopLevelComma(s: string): string[] {
     return res;
 }
 
-const maybeAddBrace = (s: string) => s.length > 1 ? `{${s}}` : s;
+function addTokenProtector(s: string): string {
+    return s.length > 1 ? ` ${s} ` : s;
+}
 
 function extractArgs(context: MacroContextInterface): {
     func: string,
@@ -64,10 +66,10 @@ function extractArgs(context: MacroContextInterface): {
     }
 
     const func = arg.reverse().map(
-        e => e.text.length > 1 ? `{${e.text}}` : e.text).join("");
+        e => addTokenProtector(e.text)).join("");
     arg = context.consumeArg().tokens;
     const vars = splitByTopLevelComma(arg.reverse().map(
-        e => maybeAddBrace(e.text)).join(""));
+        e => addTokenProtector(e.text)).join(""));
     const varOrders =
         optionalArgGroups[0] ? optionalArgGroups[0].reverse() : ["1"];
     const totalOrders =
@@ -89,11 +91,12 @@ export function assembleDerivativeExpr(
         vars.push(...Array(numVarOrders - numVars).fill(PLACEHOLDER));
     }
 
-    const makeIndex = (s) => s === "1" ? "" : `^${maybeAddBrace(s)}`;
+    const makeIndex = (s) => s === "1" ? "" : `^{${s}}`;
     const numer = `{${d}}${makeIndex(totalOrders[0] ?? PLACEHOLDER)}{${func}}`;
     const denom = vars.map((variable, i) => {
         const order = varOrders[i];
         return `{${d}}{${variable}}${makeIndex(order)}`;
     }).join("");
+
     return `\\frac{${numer}}{${denom}}`;
 }
