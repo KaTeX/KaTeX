@@ -897,6 +897,17 @@ defineMacro("\\argmax", "\\DOTSB\\operatorname*{arg\\,max}");
 defineMacro("\\plim", "\\DOTSB\\mathop{\\operatorname{plim}}\\limits");
 
 //////////////////////////////////////////////////////////////////////
+// derivative.sty
+// https://ctan.math.illinois.edu/macros/latex/contrib/derivative/derivative.pdf
+
+defineMacro(
+    "\\dv", (context) => assembleDerivativeExpr("\\textnormal{d}", context));
+defineMacro(
+    "\\odv", (context) => assembleDerivativeExpr("\\textnormal{d}", context));
+defineMacro(
+    "\\pdv", (context) => assembleDerivativeExpr("\\partial", context));
+
+//////////////////////////////////////////////////////////////////////
 // braket.sty
 // http://ctan.math.washington.edu/tex-archive/macros/latex/contrib/braket/braket.pdf
 
@@ -1019,10 +1030,3 @@ defineMacro("\\grayH", "\\textcolor{##3b3e40}{#1}");
 defineMacro("\\grayI", "\\textcolor{##21242c}{#1}");
 defineMacro("\\kaBlue", "\\textcolor{##314453}{#1}");
 defineMacro("\\kaGreen", "\\textcolor{##71B307}{#1}");
-
-defineMacro(
-    "\\dv", (context) => assembleDerivativeExpr("\\textnormal{d}", context));
-defineMacro(
-    "\\odv", (context) => assembleDerivativeExpr("\\textnormal{d}", context));
-defineMacro(
-    "\\pdv", (context) => assembleDerivativeExpr("\\partial", context));
