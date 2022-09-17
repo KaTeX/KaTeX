@@ -82,9 +82,13 @@ $(MFTRACE_MODIFIED):
 # As a byproduct, the script also creates the initial .ttx files for all the
 # different KaTeX fonts.
 ff: $(PFA)
-	mkdir -p ff otf
-	rm -f ff/* otf/*
-	$(PERL) -I. makeFF
+	mkdir -p ff otf ttx
+	rm -f ff/* otf/* ttx/*
+	$(PYTHON) create_ff_scripts.py
+	for file in `ls ttx/*.ttx | $(SED) 's|ttx/\(.*\)\.ttx|\1|'`; do \
+		$(TTX) -f ttx/$$file.ttx;\
+		mv ttx/$$file.otf otf/$$file.otf;\
+	done
 
 .PHONY: fonts
 fonts: ff
@@ -106,6 +110,7 @@ fonts: ff
 		\
 		echo "Generating $$file..."; \
 		$(PYTHON) generate_fonts.py ttf/$$file.ttf; \
+		rm ttf/$$file.ttf; \
 		done
 
 clean:
