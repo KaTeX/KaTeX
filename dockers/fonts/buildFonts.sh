@@ -25,7 +25,7 @@ if [[ ! -f fonts/Makefile ]]; then
     echo "src does not look like katex-fonts" >&2
     exit 1
 fi
-tar cfP "$FILE" ../package.json fonts
+tar cfP "$FILE" fonts
 popd
 
 # build image if missing
