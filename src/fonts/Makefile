@@ -24,6 +24,26 @@ CUSTOM=custom.cfg
 
 MFTRACE_MODIFIED=lib/mftrace-modified
 
+PFA := \
+cmbsy10.pfa \
+cmbx10.pfa \
+cmbxti10.pfa \
+cmex10.pfa \
+cmmi10.pfa \
+cmmib10.pfa \
+cmr10.pfa \
+cmss10.pfa \
+cmssbx10.pfa \
+cmssi10.pfa \
+cmsy10.pfa \
+cmti10.pfa \
+cmtt10.pfa \
+msam10.pfa \
+msbm10.pfa \
+rsfs10.pfa \
+eufb10.pfb \
+eufm10.pfb
+
 all: config fonts
 
 $(CUSTOM):
@@ -39,74 +59,22 @@ $(CUSTOM).pl: $(CUSTOM)
 
 .PHONY: config
 config: $(CUSTOM).pl
+	mkdir -p pfa
 
 blacker: $(MFTRACE_MODIFIED)
 $(MFTRACE_MODIFIED):
 	$(PERL) -I. makeBlacker 15 # values between 10 and 30 seem best
 
-pfa: $(MFTRACE_MODIFIED)
-	@echo "cmr10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmr10
+# Create the pfa files
+%.pfa: $(MFTRACE_MODIFIED)
+	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify $*
+	mv $@ pfa/$@
 
-	@echo "cmmi10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --encoding $(TETEXENCODING)/aae443f0.enc --simplify cmmi10
+# Create the pfb files
+%.pfb: $(MFTRACE_MODIFIED)
+	cp "`$(KPSEWHICH) $@`" pfa/$@
 
-	@echo "cmsy10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --encoding $(TETEXENCODING)/10037936.enc --simplify cmsy10
-
-	@echo "cmex10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmex10
-
-	@echo "cmbx10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmbx10
-
-	@echo "cmbxti10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmbxti10
-
-	@echo "cmti10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmti10
-
-	@echo "msam10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify --encoding $(TETEXENCODING)/10037936.enc msam10
-
-	@echo "msbm10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify --encoding $(TETEXENCODING)/10037936.enc msbm10
-
-	@echo "cmmib10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --encoding $(TETEXENCODING)/aae443f0.enc --simplify cmmib10
-
-	@echo "cmbsy10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --encoding $(TETEXENCODING)/10037936.enc --simplify cmbsy10
-
-	@echo "cmtt10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmtt10
-
-	@echo "cmss10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmss10
-	@echo "cmssi10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmssi10
-	@echo "cmssbx10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmssbx10
-
-	@echo "eufm10"
-	cp "`$(KPSEWHICH) eufm10.pfb`" eufm10.pfb
-	@echo "eufb10"
-	cp "`$(KPSEWHICH) eufb10.pfb`" eufb10.pfb
-
-	# echo "eusm10"
-	# $(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eusm10
-	# echo "eusb10"
-	# $(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eusb10
-
-	@echo "rsfs10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify --encoding $(BASEENCODING)/tex256.enc rsfs10
-
-	mkdir -p pfa
-	rm -f pfa/*
-	mv *.pfa pfa
-	mv *.pfb pfa
-
-ff: pfa
+ff: $(PFA)
 	mkdir -p ff otf
 	rm -f ff/* otf/*
 	$(PERL) -I. makeFF
