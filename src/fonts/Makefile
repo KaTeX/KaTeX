@@ -74,6 +74,13 @@ $(MFTRACE_MODIFIED):
 %.pfb: $(MFTRACE_MODIFIED)
 	cp "`$(KPSEWHICH) $@`" pfa/$@
 
+# Create all the FontForge (.ff) scripts to generate the modern .ttf font files
+# from the older TeX .pfa and .pfb files. The relation of the .ff and the
+# .{pfa, pfb} files is many-to-many, and not one-to-one. Makefile doesn't like
+# these types of relations, thus we have a single target that creates all of
+# the .ff scripts.
+# As a byproduct, the script also creates the initial .ttx files for all the
+# different KaTeX fonts.
 ff: $(PFA)
 	mkdir -p ff otf
 	rm -f ff/* otf/*
