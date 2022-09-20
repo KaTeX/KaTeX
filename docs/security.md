@@ -18,4 +18,4 @@ with untrusted inputs; refer to [Options](options.md) for more details.
 The error message thrown by KaTeX may contain unescaped LaTeX source code.
 See [Handling Errors](error.md) for more details.
 
-> If you discovered a security issue, please let us know via https://hackerone.com/khanacademy
+> If you discovered a security issue, please let us know via https://github.com/KaTeX/KaTeX/security/advisories
