@@ -34,7 +34,7 @@ whether your spacing matches the spacing that TeX produces.
 
 Once your symbol works, check the JavaScript console to make sure you don't get
 a message like `No character metrics for '_'` when you render your symbol.
-If you do, check out [extract_ttfs.py](metrics/extract_ttfs.py).
+If you do, check out [dockers/fonts](dockers/fonts) which generates fonts and metrics.
 
 #### Adding new functions
 
