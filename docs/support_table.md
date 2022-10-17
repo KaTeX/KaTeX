@@ -42,9 +42,9 @@ $\gdef\VERT{|}$
 |\\;|$a\;\;{b}$|a`\;\;{b}`|
 |_|$x_i$|`x_i`|
 |\\_|$\_$||
-|\\\`|$\text{\`{a}}$|`\text{\\'{a}}`|
+|\\\`|$\text{\`{a}}$|`\text{\'{a}}`|
 |&#060;|$<$||
-|\\=|$\text{\={a}}$|`\text{\\={a}}`|
+|\\=|$\text{\={a}}$|`\text{\={a}}`|
 | >|$>$||
 |\\>|$a\>\>{b}$|`a\>\>{b}`|
 |\[|$[$||
@@ -56,10 +56,10 @@ $\gdef\VERT{|}$
 |&#124;|$\vert$||
 |\\&#124;|$\Vert$||
 |~|$\text{no~no~no~breaks}$|`\text{no~no~no~breaks}`|
-|\\~|$\text{\~{a}}$|`\text{\\~{a}}`|
-|\\\\|$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
+|\\~|$\text{\~{a}}$|`\text{\~{a}}`|
+|\\\\ |$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |^|$x^i$|`x^i`|
-|\\^|$\text{\^{a}}$|`\text{\\^{a}}`|
+|\\^|$\text{\^{a}}$|`\text{\^{a}}`|
 
 ## A
 
