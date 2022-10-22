@@ -3493,6 +3493,20 @@ describe("A macro expander", function() {
         expect`\futurelet\foo\frac1{2+\foo}`.toParseLike`\frac1{2+1}`;
     });
 
+    it("macros argument can simulate \\let", () => {
+        expect("\\int").toParseLike("\\int\\limits", {macros: {
+            "\\Oldint": {
+                tokens: [{text: "\\int", noexpand: true}],
+                numArgs: 0,
+                unexpandable: true,
+            },
+            "\\int": {
+                tokens: [{text: "\\limits"}, {text: "\\Oldint"}],
+                numArgs: 0,
+            },
+        }});
+    });
+
     it("\\newcommand doesn't change settings.macros", () => {
         const macros = {};
         expect`\newcommand\foo{x^2}\foo+\foo`.toParse(new Settings({macros}));
