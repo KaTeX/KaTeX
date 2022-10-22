@@ -1266,6 +1266,7 @@ describe("A begin/end parser", function() {
 
     it("should parse an environment with hlines", function() {
         expect`\begin{matrix}\hline a&b\\ \hline c&d\end{matrix}`.toParse();
+        expect`\begin{matrix}\hline a&b\cr \hline c&d\end{matrix}`.toParse();
         expect`\begin{matrix}\hdashline a&b\\ \hdashline c&d\end{matrix}`.toParse();
     });
 
