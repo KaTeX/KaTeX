@@ -1309,6 +1309,11 @@ describe("A begin/end parser", function() {
         expect`\begin{matrix}a&b\cr[c]&d\end{matrix}`.toParse();
     });
 
+    it("should not treat [ after space as optional argument to \\\\", function() {
+        expect`\begin{matrix}a&b\\ [c]&d\end{matrix}`.toParse();
+        expect`a\\ [b]`.toParse();
+    });
+
     it("should eat a final newline", function() {
         const m3 = getParsed`\begin{matrix}a&b\\ c&d \\ \end{matrix}`[0];
         expect(m3.body).toHaveLength(2);
