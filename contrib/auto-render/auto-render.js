@@ -7,18 +7,30 @@ import splitAtDelimiters from "./splitAtDelimiters";
  * API, we should copy it before mutating.
  */
 const renderMathInText = function(text, optionsCopy) {
-    const data = splitAtDelimiters(text, optionsCopy.delimiters);
+    const data = splitAtDelimiters(text, optionsCopy.delimiters,
+        optionsCopy.supportEscapedSpecialCharsInText);
     if (data.length === 1 && data[0].type === 'text') {
         // There is no formula in the text.
         // Let's return null which means there is no need to replace
         // the current text node with a new one.
-        return null;
+        if (!optionsCopy.supportEscapedSpecialCharsInText) {
+            return null;
+        }
     }
 
     const fragment = document.createDocumentFragment();
 
     for (let i = 0; i < data.length; i++) {
         if (data[i].type === "text") {
+            if (optionsCopy.supportEscapedSpecialCharsInText) {
+                data[i].data = data[i].data.replace(/\\\$/g, '$');
+                data[i].data = data[i].data.replace(/\\%/g, '%');
+                data[i].data = data[i].data.replace(/\\_/g, '_');
+                data[i].data = data[i].data.replace(/\\&/g, '&');
+                data[i].data = data[i].data.replace(/\\#/g, '#');
+                data[i].data = data[i].data.replace(/\\{/g, '{');
+                data[i].data = data[i].data.replace(/\\}/g, '}');
+            }
             fragment.appendChild(document.createTextNode(data[i].data));
         } else {
             const span = document.createElement("span");
@@ -135,6 +147,9 @@ const renderMathInElement = function(elem, options) {
     // Enable sharing of global macros defined via `\gdef` between different
     // math elements within a single call to `renderMathInElement`.
     optionsCopy.macros = optionsCopy.macros || {};
+
+    optionsCopy.supportEscapedSpecialCharsInText =
+        optionsCopy.supportEscapedSpecialCharsInText || false;
 
     renderElem(elem, optionsCopy);
 };
