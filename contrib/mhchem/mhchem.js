@@ -1686,7 +1686,7 @@ import katex from "katex";
   };
 
   //
-  // Helpers for code anaylsis
+  // Helpers for code analysis
   // Will show type error at calling position
   //
   /** @param {number} a */
