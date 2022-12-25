@@ -441,7 +441,7 @@ c-1 5-5 9-11 9h-2L532 67 19 159h-2c-5 0-9-4-11-9l-5-22c-1-6 2-12 8-13z`,
     // The next ten paths support reaction arrows from the mhchem package.
 
     // Arrows for \ce{<-->} are offset from xAxis by 0.22ex, per mhchem in LaTeX
-    // baraboveleftarrow is mostly from from glyph U+2190 in font KaTeX Main
+    // baraboveleftarrow is mostly from glyph U+2190 in font KaTeX Main
     baraboveleftarrow: `M400000 620h-399890l3 -3c68.7 -52.7 113.7 -120 135 -202
 c4 -14.7 6 -23 6 -25c0 -7.3 -7 -11 -21 -11c-8 0 -13.2 0.8 -15.5 2.5
 c-2.3 1.7 -4.2 5.8 -5.5 12.5c-1.3 4.7 -2.7 10.3 -4 17c-12 48.7 -34.8 92 -68.5 130
