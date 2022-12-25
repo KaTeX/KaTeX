@@ -364,7 +364,7 @@ const makeStackedDelim = function(
         middleFactor = 2; // repeat symmetrically above and below middle
     }
 
-    // Calcuate the minimal height that the delimiter can have.
+    // Calculate the minimal height that the delimiter can have.
     // It is at least the size of the top, bottom, and optional middle combined.
     const minHeight = topHeightTotal + bottomHeightTotal + middleHeightTotal;
 
