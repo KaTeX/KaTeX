@@ -146,7 +146,7 @@ defineMacro("\\char", function(context) {
 // \newcommand{\macro}[args]{definition}
 // \renewcommand{\macro}[args]{definition}
 // TODO: Optional arguments: \newcommand{\macro}[args][default]{definition}
-const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
+const newcommand = (context, existsOK: boolean, nonexistentOK: boolean) => {
     let arg = context.consumeArg().tokens;
     if (arg.length !== 1) {
         throw new ParseError(
@@ -159,7 +159,7 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
         throw new ParseError(`\\newcommand{${name}} attempting to redefine ` +
             `${name}; use \\renewcommand`);
     }
-    if (!exists && !nonexistsOK) {
+    if (!exists && !nonexistentOK) {
         throw new ParseError(`\\renewcommand{${name}} when command ${name} ` +
             `does not yet exist; use \\newcommand`);
     }
