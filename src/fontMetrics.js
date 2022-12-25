@@ -13,7 +13,7 @@ import type {Mode} from "./types";
 // In TeX, there are actually three sets of dimensions, one for each of
 // textstyle (size index 5 and higher: >=9pt), scriptstyle (size index 3 and 4:
 // 7-8pt), and scriptscriptstyle (size index 1 and 2: 5-6pt).  These are
-// provided in the the arrays below, in that order.
+// provided in the arrays below, in that order.
 //
 // The font metrics are stored in fonts cmsy10, cmsy7, and cmsy5 respectively.
 // This was determined by running the following script:
