@@ -5,7 +5,7 @@
  * since we're mainly using MathML to improve accessibility, we don't manage
  * any of the styling state that the plain DOM nodes do.
  *
- * The `toNode` and `toMarkup` functions work simlarly to how they do in
+ * The `toNode` and `toMarkup` functions work similarly to how they do in
  * domTree.js, creating namespaced DOM nodes and HTML text markup respectively.
  */
 
