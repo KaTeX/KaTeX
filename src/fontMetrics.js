@@ -230,7 +230,7 @@ export function getCharacterMetrics(
         // So if the character is in a script we support but we
         // don't have metrics for it, just use the metrics for
         // the Latin capital letter M. This is close enough because
-        // we (currently) only care about the height of the glpyh
+        // we (currently) only care about the height of the glyph
         // not its width.
         if (supportedCodepoint(ch)) {
             metrics = metricMap[font][77]; // 77 is the charcode for 'M'
