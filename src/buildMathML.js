@@ -1,6 +1,6 @@
 // @flow
 /**
- * This file converts a parse tree into a cooresponding MathML tree. The main
+ * This file converts a parse tree into a corresponding MathML tree. The main
  * entry point is the `buildMathML` function, which takes a parse tree from the
  * parser.
  */
