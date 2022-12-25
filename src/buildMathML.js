@@ -101,7 +101,7 @@ export const getVariant = function(
     } else if (font === "mathfrak") {
         return "fraktur";
     } else if (font === "mathscr" || font === "mathcal") {
-        // MathML makes no distinction between script and caligrahpic
+        // MathML makes no distinction between script and calligraphic
         return "script";
     } else if (font === "mathsf") {
         return "sans-serif";
