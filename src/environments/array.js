@@ -573,7 +573,7 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     // We simulate this by adding (arraystretch - 1)em to the gap. This
     // does a reasonable job of adjusting arrays containing 1 em tall content.
 
-    // The 0.16 and 0.09 values are found emprically. They produce an array
+    // The 0.16 and 0.09 values are found empirically. They produce an array
     // similar to LaTeX and in which content does not interfere with \hines.
     const gap = (group.arraystretch === 0.5)
         ? 0.1  // {smallmatrix}, {subarray}
