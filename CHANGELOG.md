@@ -352,7 +352,7 @@ You can now use:
 - docs: Update \operatorname in supported_table.md 0.12.0 (#2571)
 - docs: Fix documentation typo in operatorname* (#2570)
 - docs: add warning re:defer to mhchem documentation (#2485)
-- docs: update Gastby logo and link (#2481)
+- docs: update Gatsby logo and link (#2481)
 - docs: add MonsterWriter to the users page (#2478)
 - docs: add comment re: \arrowvert (#2449)
 - docs: add link to Discussions (#2405)
