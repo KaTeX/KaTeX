@@ -15,7 +15,7 @@ import type {Mode} from "./types";
 // 7-8pt), and scriptscriptstyle (size index 1 and 2: 5-6pt).  These are
 // provided in the the arrays below, in that order.
 //
-// The font metrics are stored in fonts cmsy10, cmsy7, and cmsy5 respsectively.
+// The font metrics are stored in fonts cmsy10, cmsy7, and cmsy5 respectively.
 // This was determined by running the following script:
 //
 //     latex -interaction=nonstopmode \
