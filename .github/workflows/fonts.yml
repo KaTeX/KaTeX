@@ -22,7 +22,7 @@ jobs:
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
     - name: Remove label
-      uses: actions/github-script@v5
+      uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
@@ -35,7 +35,7 @@ jobs:
 
     - name: Check image
       id: check-image
-      uses: actions/github-script@v5
+      uses: actions/github-script@v6
       with:
         # https://github.community/t/github-token-has-no-access-to-new-container-rest-apis/170395
         github-token: ${{ secrets.GH_PACKAGES_TOKEN }}
