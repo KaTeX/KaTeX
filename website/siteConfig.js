@@ -160,6 +160,11 @@ const users = [
         image: '/img/vade_mecum_shelf_logo.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
     },
+    {
+        caption: 'zzllrr Mather',
+        image: 'https://github.com/zzllrr/mather/raw/master/img/logo.jpg',
+        infoLink: 'https://github.com/zzllrr/mather',
+    },
 ];
 
 const {version} = require('../package.json');
