@@ -110,12 +110,12 @@ jobs:
         printf '[diff "font"]\n\tbinary = true\n\ttextconv = ttx -q -i -o -' >> ~/.gitconfig
         git diff --exit-code
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: fonts
         path: fonts
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: metrics
