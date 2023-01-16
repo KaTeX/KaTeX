@@ -305,6 +305,24 @@ describe("A delimiter splitter", function() {
                     rawData: "$$boo$$", display: true},
             ]);
     });
+
+    it("correctly escapes start symbols", function() {
+        expect(splitAtDelimiters("test \\$40 for $foobar$$$bla$$\\$$boo",
+            [
+                {left:"$$", right:"$$", display:true},
+                {left:"$", right:"$", display:false},
+            ])).toEqual(
+            [
+                {type: "text", data: "test $"},
+                {type: "text", data: "40 for "},
+                {type: "math", data: "foobar",
+                    rawData: "$foobar$", display: false},
+                {type: "math", data: "bla",
+                    rawData: "$$bla$$", display: true},
+                {type: "text", data: "$$"},
+                {type: "text", data: "boo"},
+            ]);
+    });
 });
 
 describe("Pre-process callback", function() {

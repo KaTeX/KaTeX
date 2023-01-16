@@ -115,6 +115,12 @@ in addition to five auto-render-specific keys:
   ]
   ```
 
+  Note that if a left delimiter is preceded by a backslash (`\`), the backslash
+  is stripped and the delimiter is ignored (math mode is not entered). So `\$40
+  is greater than \$30` gets transformed to `$40 is greater than $30`, if `$` is
+  configured to be a left delimiter. If it is not, the backslashes are left
+  untouched.
+
 - `ignoredTags`: This is a list of DOM node types to ignore when recursing
   through. The default value is
   `["script", "noscript", "style", "textarea", "pre", "code", "option"]`.
