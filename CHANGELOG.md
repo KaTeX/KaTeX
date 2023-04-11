@@ -1,6 +1,28 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.4](https://github.com/KaTeX/KaTeX/compare/v0.16.3...v0.16.4) (2022-12-07)
+
+
+### Bug Fixes
+
+* space should prevent optional argument to \\ ([#3746](https://github.com/KaTeX/KaTeX/issues/3746)) ([a0deb34](https://github.com/KaTeX/KaTeX/commit/a0deb3410fd92340556fc4c9edb8ab586077e5bf)), closes [#3745](https://github.com/KaTeX/KaTeX/issues/3745)
+
+## [0.16.3](https://github.com/KaTeX/KaTeX/compare/v0.16.2...v0.16.3) (2022-10-22)
+
+
+### Bug Fixes
+
+* \hline after \cr ([#3735](https://github.com/KaTeX/KaTeX/issues/3735)) ([ebf6bf5](https://github.com/KaTeX/KaTeX/commit/ebf6bf5b50a98ac6c5aca1896c0a6ba985c1c91c)), closes [#3734](https://github.com/KaTeX/KaTeX/issues/3734)
+
+## [0.16.2](https://github.com/KaTeX/KaTeX/compare/v0.16.1...v0.16.2) (2022-08-29)
+
+
+### Bug Fixes
+
+* **auto-render:** concatenate content of successive text nodes ([#3422](https://github.com/KaTeX/KaTeX/issues/3422)) ([4d3fdd8](https://github.com/KaTeX/KaTeX/commit/4d3fdd8647a1c320dc7bcb9c9ea2af81379f700d))
+* Implement \pmb via CSS text-shadow ([#3505](https://github.com/KaTeX/KaTeX/issues/3505)) ([176552a](https://github.com/KaTeX/KaTeX/commit/176552a69183d71425b491d4cc2fa1d462a1246a))
+
 ## [0.16.1](https://github.com/KaTeX/KaTeX/compare/v0.16.0...v0.16.1) (2022-08-28)
 
 

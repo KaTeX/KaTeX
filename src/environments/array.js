@@ -39,6 +39,11 @@ function getHLines(parser: Parser): boolean[] {
     const hlineInfo = [];
     parser.consumeSpaces();
     let nxt = parser.fetch().text;
+    if (nxt === "\\relax") { // \relax is an artifact of the \cr macro below
+        parser.consume();
+        parser.consumeSpaces();
+        nxt = parser.fetch().text;
+    }
     while (nxt === "\\hline" || nxt === "\\hdashline") {
         parser.consume();
         hlineInfo.push(nxt === "\\hdashline");
@@ -256,7 +261,7 @@ function parseArray(
 // Decides on a style for cells in an array according to whether the given
 // environment name starts with the letter 'd'.
 function dCellStyle(envName): StyleStr {
-    if (envName.substr(0, 1) === "d") {
+    if (envName.slice(0, 1) === "d") {
         return "display";
     } else {
         return "text";

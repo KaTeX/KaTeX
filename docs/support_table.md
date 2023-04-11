@@ -6,7 +6,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 
 If you know the shape of a character, but not its name, [Detexify](https://detexify.kirelabs.org/classify.html) can help.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.1/dist/katex.min.css" integrity="sha384-pe7s+HmY6KvqRkrRRUr4alQJ0SkmzCft3RpK1ttGMa7qk8Abp/MEa/4wgceRHloO" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
 <style>
 table tr,
 table td {
@@ -22,7 +22,7 @@ $\gdef\VERT{|}$
 |:---------------|:------------|:-----------------|
 |\!|$n!$|`n!`|
 |\\\!|$a\!b$|`a\!b`|
-|#|$\def\bar#1{#1^2} \bar{y}$|`\def\bar#1{#1^2} \bar{y}`|
+|#|$\def\sqr#1{#1^2} \sqr{y}$|`\def\sqr#1{#1^2} \sqr{y}`|
 |\\#|$\#$||
 |%||`%this is a comment`|
 |\\%|$\%$||
@@ -42,9 +42,9 @@ $\gdef\VERT{|}$
 |\\;|$a\;\;{b}$|a`\;\;{b}`|
 |_|$x_i$|`x_i`|
 |\\_|$\_$||
-|\\\`|$\text{\`{a}}$|`\text{\\'{a}}`|
+|\\\`|$\text{\`{a}}$|`\text{\'{a}}`|
 |&#060;|$<$||
-|\\=|$\text{\={a}}$|`\text{\\={a}}`|
+|\\=|$\text{\={a}}$|`\text{\={a}}`|
 | >|$>$||
 |\\>|$a\>\>{b}$|`a\>\>{b}`|
 |\[|$[$||
@@ -56,10 +56,10 @@ $\gdef\VERT{|}$
 |&#124;|$\vert$||
 |\\&#124;|$\Vert$||
 |~|$\text{no~no~no~breaks}$|`\text{no~no~no~breaks}`|
-|\\~|$\text{\~{a}}$|`\text{\\~{a}}`|
-|\\\\|$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
+|\\~|$\text{\~{a}}$|`\text{\~{a}}`|
+|\\\\ |$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |^|$x^i$|`x^i`|
-|\\^|$\text{\^{a}}$|`\text{\\^{a}}`|
+|\\^|$\text{\^{a}}$|`\text{\^{a}}`|
 
 ## A
 
@@ -365,7 +365,7 @@ use `\ce` instead|
 
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
-|\edef|$\def\foo{a}\edef\bar{\foo}\def\foo{}\bar$|`\def\foo{a}\edef\bar{\foo}\def\foo{}\bar`|
+|\edef|$\def\foo{a}\edef\fcopy{\foo}\def\foo{}\fcopy$|`\def\foo{a}\edef\fcopy{\foo}\def\foo{}\fcopy`|
 |\ell|$\ell$||
 |\else|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
 |\em|<span style="color:firebrick;">Not supported</span>||
@@ -431,7 +431,7 @@ use `\ce` instead|
 |{gather}|$$\begin{gather}a=b\\e=b+c\end{gather}$$|`\begin{gather}`<br>&nbsp;&nbsp;&nbsp;`a=b \\ `<br>&nbsp;&nbsp;&nbsp;`e=b+c`<br>`\end{gather}`|
 |{gathered}|$\begin{gathered}a=b\\e=b+c\end{gathered}$|`\begin{gathered}`<br>&nbsp;&nbsp;&nbsp;`a=b \\ `<br>&nbsp;&nbsp;&nbsp;`e=b+c`<br>`\end{gathered}`|
 |\gcd|$\gcd$||
-|\gdef|$\gdef\bar#1{#1^2} \bar{y} + \bar{y}$|`\gdef\bar#1{#1^2} \bar{y} + \bar{y}`|
+|\gdef|$\gdef\sqr#1{#1^2} \sqr{y} + \sqr{y}$|`\gdef\sqr#1{#1^2} \sqr{y} + \sqr{y}`|
 |\ge|$\ge$||
 |\geneuro|<span style="color:firebrick;">Not supported</span>||
 |\geneuronarrow|<span style="color:firebrick;">Not supported</span>||
@@ -1242,7 +1242,7 @@ use `\ce` instead|
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\xcancel|$\xcancel{ABC}$|`\xcancel{ABC}`|
-|\xdef|$\def\foo{a}\xdef\bar{\foo}\def\foo{}\bar$|`\def\foo{a}\xdef\bar{\foo}\def\foo{}\bar`|
+|\xdef|$\def\foo{a}\xdef\fcopy{\foo}\def\foo{}\fcopy$|`\def\foo{a}\xdef\fcopy{\foo}\def\foo{}\fcopy`|
 |\Xi|$\Xi$||
 |\xi|$\xi$||
 |\xhookleftarrow|$\xhookleftarrow{abc}$|`\xhookleftarrow{abc}`|

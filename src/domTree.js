@@ -153,6 +153,7 @@ export type CssStyle = $Shape<{
     minWidth: string,
     paddingLeft: string,
     position: string,
+    textShadow: string,
     top: string,
     width: string,
     verticalAlign: string,
