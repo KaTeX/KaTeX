@@ -332,7 +332,7 @@ Direct Input: $∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← �
 |||
 |:-------------------------------------|:------
 |$\def\foo{x^2} \foo + \foo$           | `\def\foo{x^2} \foo + \foo`
-|$\gdef\bar#1{#1^2} \bar{y} + \bar{y}$ | `\gdef\bar#1{#1^2} \bar{y} + \bar{y}`
+|$\gdef\foo#1{#1^2} \foo{y} + \foo{y}$ | `\gdef\foo#1{#1^2} \foo{y} + \foo{y}`
 |                                      | `\edef\macroname#1#2…{definition to be expanded}`
 |                                      | `\xdef\macroname#1#2…{definition to be expanded}`
 |                                      | `\let\foo=\bar`

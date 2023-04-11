@@ -3471,7 +3471,7 @@ describe("A macro expander", function() {
 
     it("\\def changes settings.macros with globalGroup", () => {
         const macros = {};
-        expect`\gdef\foo{1}`.toParse(new Settings({macros, globalGroup: true}));
+        expect`\def\foo{1}`.toParse(new Settings({macros, globalGroup: true}));
         expect(macros["\\foo"]).toBeTruthy();
     });
 
