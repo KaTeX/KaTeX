@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.6](https://github.com/KaTeX/KaTeX/compare/v0.16.5...v0.16.6) (2023-04-17)
+
+
+### Bug Fixes
+
+* Support `\let` via `macros` option ([#3738](https://github.com/KaTeX/KaTeX/issues/3738)) ([bdb0be2](https://github.com/KaTeX/KaTeX/commit/bdb0be201794d22adaee05438b07a2830efea9da)), closes [#3737](https://github.com/KaTeX/KaTeX/issues/3737) [#3737](https://github.com/KaTeX/KaTeX/issues/3737)
+
 ## [0.16.5](https://github.com/KaTeX/KaTeX/compare/v0.16.4...v0.16.5) (2023-04-17)
 
 
