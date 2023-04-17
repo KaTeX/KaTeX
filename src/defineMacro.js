@@ -35,7 +35,7 @@ export interface MacroContextInterface {
     /**
      * Expand the next token only once if possible.
      */
-    expandOnce(expandableOnly?: boolean): Token | Token[];
+    expandOnce(expandableOnly?: boolean): number | boolean;
 
     /**
      * Expand the next token only once (if possible), and return the resulting
