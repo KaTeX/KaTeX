@@ -13,9 +13,9 @@ import type {Mode} from "./types";
 // In TeX, there are actually three sets of dimensions, one for each of
 // textstyle (size index 5 and higher: >=9pt), scriptstyle (size index 3 and 4:
 // 7-8pt), and scriptscriptstyle (size index 1 and 2: 5-6pt).  These are
-// provided in the the arrays below, in that order.
+// provided in the arrays below, in that order.
 //
-// The font metrics are stored in fonts cmsy10, cmsy7, and cmsy5 respsectively.
+// The font metrics are stored in fonts cmsy10, cmsy7, and cmsy5 respectively.
 // This was determined by running the following script:
 //
 //     latex -interaction=nonstopmode \
@@ -25,7 +25,7 @@ import type {Mode} from "./types";
 //     '\expandafter\show\the\scriptscriptfont2' \
 //     '\stop'
 //
-// The metrics themselves were retreived using the following commands:
+// The metrics themselves were retrieved using the following commands:
 //
 //     tftopl cmsy10
 //     tftopl cmsy7
@@ -230,7 +230,7 @@ export function getCharacterMetrics(
         // So if the character is in a script we support but we
         // don't have metrics for it, just use the metrics for
         // the Latin capital letter M. This is close enough because
-        // we (currently) only care about the height of the glpyh
+        // we (currently) only care about the height of the glyph
         // not its width.
         if (supportedCodepoint(ch)) {
             metrics = metricMap[font][77]; // 77 is the charcode for 'M'
