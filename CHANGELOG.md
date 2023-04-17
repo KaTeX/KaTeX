@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.5](https://github.com/KaTeX/KaTeX/compare/v0.16.4...v0.16.5) (2023-04-17)
+
+
+### Features
+
+* __defineFunction API exposing internal defineFunction ([#3805](https://github.com/KaTeX/KaTeX/issues/3805)) ([c7b1f84](https://github.com/KaTeX/KaTeX/commit/c7b1f84b7801a29dffdfa3db0ff35de289db80c0)), closes [#3756](https://github.com/KaTeX/KaTeX/issues/3756)
+
 ## [0.16.4](https://github.com/KaTeX/KaTeX/compare/v0.16.3...v0.16.4) (2022-12-07)
 
 
