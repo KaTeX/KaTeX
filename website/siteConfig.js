@@ -121,6 +121,11 @@ const users = [
         infoLink: 'https://rocket.chat/',
     },
     {
+        caption: 'Slab',
+        image: '/img/slab-logo.png',
+        infoLink: 'https://slab.com/',
+    },
+    {
         caption: 'Slides',
         image: 'https://s3.amazonaws.com/uploads.uservoice.com/logo/design_setting/116173/original/slides-symbol-150x150.png',
         infoLink: 'https://slides.com/',
@@ -159,6 +164,11 @@ const users = [
         caption: 'Vade Mecum Shelf',
         image: '/img/vade_mecum_shelf_logo.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
+    },
+    {
+        caption: 'zzllrr Mather',
+        image: 'https://github.com/zzllrr/mather/raw/master/img/logo.jpg',
+        infoLink: 'https://github.com/zzllrr/mather',
     },
 ];
 

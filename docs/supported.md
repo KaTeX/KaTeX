@@ -6,7 +6,7 @@ This is a list of TeX functions supported by KaTeX. It is sorted into logical gr
 
 There is a similar [Support Table](support_table.md), sorted alphabetically, that lists both supported and un-supported functions.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css" integrity="sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.5/dist/katex.min.css" integrity="sha384-JzZYylmwsQW/mzosimflHksK2k3GXCUi9MKWSj4R8C123trOprLxW8kTXkCx27vx" crossorigin="anonymous">
 <style>
 p {overflow-wrap: break-word;}
 table tr,
@@ -332,7 +332,7 @@ Direct Input: $∀ ∴ ∁ ∵ ∃ ∣ ∈ ∉ ∋ ⊂ ⊃ ∧ ∨ ↦ → ← �
 |||
 |:-------------------------------------|:------
 |$\def\foo{x^2} \foo + \foo$           | `\def\foo{x^2} \foo + \foo`
-|$\gdef\bar#1{#1^2} \bar{y} + \bar{y}$ | `\gdef\bar#1{#1^2} \bar{y} + \bar{y}`
+|$\gdef\foo#1{#1^2} \foo{y} + \foo{y}$ | `\gdef\foo#1{#1^2} \foo{y} + \foo{y}`
 |                                      | `\edef\macroname#1#2…{definition to be expanded}`
 |                                      | `\xdef\macroname#1#2…{definition to be expanded}`
 |                                      | `\let\foo=\bar`

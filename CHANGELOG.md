@@ -1,6 +1,27 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.5](https://github.com/KaTeX/KaTeX/compare/v0.16.4...v0.16.5) (2023-04-17)
+
+
+### Features
+
+* __defineFunction API exposing internal defineFunction ([#3805](https://github.com/KaTeX/KaTeX/issues/3805)) ([c7b1f84](https://github.com/KaTeX/KaTeX/commit/c7b1f84b7801a29dffdfa3db0ff35de289db80c0)), closes [#3756](https://github.com/KaTeX/KaTeX/issues/3756)
+
+## [0.16.4](https://github.com/KaTeX/KaTeX/compare/v0.16.3...v0.16.4) (2022-12-07)
+
+
+### Bug Fixes
+
+* space should prevent optional argument to \\ ([#3746](https://github.com/KaTeX/KaTeX/issues/3746)) ([a0deb34](https://github.com/KaTeX/KaTeX/commit/a0deb3410fd92340556fc4c9edb8ab586077e5bf)), closes [#3745](https://github.com/KaTeX/KaTeX/issues/3745)
+
+## [0.16.3](https://github.com/KaTeX/KaTeX/compare/v0.16.2...v0.16.3) (2022-10-22)
+
+
+### Bug Fixes
+
+* \hline after \cr ([#3735](https://github.com/KaTeX/KaTeX/issues/3735)) ([ebf6bf5](https://github.com/KaTeX/KaTeX/commit/ebf6bf5b50a98ac6c5aca1896c0a6ba985c1c91c)), closes [#3734](https://github.com/KaTeX/KaTeX/issues/3734)
+
 ## [0.16.2](https://github.com/KaTeX/KaTeX/compare/v0.16.1...v0.16.2) (2022-08-29)
 
 

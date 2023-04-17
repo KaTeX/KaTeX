@@ -28,6 +28,7 @@ import type {AnyParseNode} from "./src/parseNode";
 import type {DomSpan} from "./src/domTree";
 
 import {defineSymbol} from './src/symbols';
+import defineFunction from './src/defineFunction';
 import defineMacro from './src/defineMacro';
 import {setFontMetrics} from './src/fontMetrics';
 
@@ -196,6 +197,12 @@ export default {
      * adds a new symbol to builtin symbols table
      */
     __defineSymbol: defineSymbol,
+    /**
+     * adds a new function to builtin function list,
+     * which directly produce parse tree elements
+     * and have their own html/mathml builders
+     */
+    __defineFunction: defineFunction,
     /**
      * adds a new macro to builtin macro list
      */
