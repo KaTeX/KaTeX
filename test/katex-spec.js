@@ -1409,9 +1409,9 @@ describe("A TeX-compliant parser", function() {
             r`\frac x \sqrt y`,
             r`\frac \mathllap x y`,
             r`\frac x \mathllap y`,
-            // This actually doesn't work in real TeX, but it is suprisingly
+            // This actually doesn't work in real TeX, but it is surprisingly
             // hard to get this to correctly work. So, we take hit of very small
-            // amounts of non-compatiblity in order for the rest of the tests to
+            // amounts of non-compatibility in order for the rest of the tests to
             // work
             // r`\llap \frac x y`,
             r`\mathllap \mathllap x`,
