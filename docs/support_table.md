@@ -1185,7 +1185,6 @@ use `\ce` instead|
 |\varprojlim|$\varprojlim$|`\varprojlim`|
 |\varpropto|$\varpropto$||
 |\varPsi|$\varPsi$||
-|\varPsi|$\varPsi$||
 |\varrho|$\varrho$||
 |\varSigma|$\varSigma$||
 |\varsigma|$\varsigma$||
