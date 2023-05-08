@@ -55,3 +55,8 @@ you'll need to first convert AsciiMath into LaTeX input, then call KaTeX.
 
 - [katex-element](https://github.com/georges-gomes/katex-element): KaTeX wrapped in a custom element. Simply use `<katex-element>` in HTML - framework independent.
 - [katex-expression](https://github.com/navsgh/katex-expression): A web component/custom element (built with Stencil) to render KaTeX expressions. Stencil builds web components that run natively or near-natively in all widely used desktop and mobile browsers. Stencil uses a dynamic loader to load the custom elements polyfill only on browsers that need it.
+
+### Wechat Mini Program
+
+- [@rojer/katex-mini](https://github.com/rojer95/katex-mini): A Wechat Mini Program library that uses KaTeX for TeX math rendering.
+
