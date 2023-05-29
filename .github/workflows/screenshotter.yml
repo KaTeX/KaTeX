@@ -34,13 +34,13 @@ jobs:
           BROWSERSTACK_ACCESS_KEY: ${{ matrix.browserstack && secrets.BROWSERSTACK_ACCESS_KEY }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: ${{ github.event_name == 'pull_request_target' && format('refs/pull/{0}/merge', github.event.pull_request.number) || '' }}
         persist-credentials: false # do not persist credentials
 
     - name: Use Node.js 14
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: '14'
 
@@ -82,12 +82,12 @@ jobs:
         docker logs ${{ job.services.selenium.id }}
         echo "::$TOKEN::"
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: new-${{ matrix.browser }}
         path: test/screenshotter/new
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: diff-${{ matrix.browser }}

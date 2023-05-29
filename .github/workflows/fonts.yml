@@ -16,13 +16,13 @@ jobs:
       pull-requests: write # to remove label
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: ${{ format('refs/pull/{0}/merge', github.event.pull_request.number) }}
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
     - name: Remove label
-      uses: actions/github-script@v5
+      uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
@@ -35,7 +35,7 @@ jobs:
 
     - name: Check image
       id: check-image
-      uses: actions/github-script@v5
+      uses: actions/github-script@v6
       with:
         # https://github.community/t/github-token-has-no-access-to-new-container-rest-apis/170395
         github-token: ${{ secrets.GH_PACKAGES_TOKEN }}
@@ -63,7 +63,7 @@ jobs:
 
     - name: Login to GitHub Container Registry
       if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
-      uses: docker/login-action@v1
+      uses: docker/login-action@v2
       with:
         registry: ghcr.io
         username: KaTeX-bot
@@ -72,7 +72,7 @@ jobs:
 
     - name: Build and push
       if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v3
       with:
         context: dockers/fonts
         tags: ${{ steps.check-image.outputs.result }}
@@ -89,7 +89,7 @@ jobs:
         password: ${{ secrets.GH_PACKAGES_TOKEN }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: ${{ format('refs/pull/{0}/merge', github.event.pull_request.number) }}
         persist-credentials: false
@@ -110,12 +110,12 @@ jobs:
         printf '[diff "font"]\n\tbinary = true\n\ttextconv = ttx -q -i -o -' >> ~/.gitconfig
         git diff --exit-code
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: fonts
         path: fonts
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       if: failure()
       with:
         name: metrics

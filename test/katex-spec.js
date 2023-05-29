@@ -1409,9 +1409,9 @@ describe("A TeX-compliant parser", function() {
             r`\frac x \sqrt y`,
             r`\frac \mathllap x y`,
             r`\frac x \mathllap y`,
-            // This actually doesn't work in real TeX, but it is suprisingly
+            // This actually doesn't work in real TeX, but it is surprisingly
             // hard to get this to correctly work. So, we take hit of very small
-            // amounts of non-compatiblity in order for the rest of the tests to
+            // amounts of non-compatibility in order for the rest of the tests to
             // work
             // r`\llap \frac x y`,
             r`\mathllap \mathllap x`,
@@ -3471,7 +3471,7 @@ describe("A macro expander", function() {
 
     it("\\def changes settings.macros with globalGroup", () => {
         const macros = {};
-        expect`\gdef\foo{1}`.toParse(new Settings({macros, globalGroup: true}));
+        expect`\def\foo{1}`.toParse(new Settings({macros, globalGroup: true}));
         expect(macros["\\foo"]).toBeTruthy();
     });
 
@@ -3497,6 +3497,20 @@ describe("A macro expander", function() {
 
     it("\\futurelet should parse correctly", () => {
         expect`\futurelet\foo\frac1{2+\foo}`.toParseLike`\frac1{2+1}`;
+    });
+
+    it("macros argument can simulate \\let", () => {
+        expect("\\int").toParseLike("\\int\\limits", {macros: {
+            "\\Oldint": {
+                tokens: [{text: "\\int", noexpand: true}],
+                numArgs: 0,
+                unexpandable: true,
+            },
+            "\\int": {
+                tokens: [{text: "\\limits"}, {text: "\\Oldint"}],
+                numArgs: 0,
+            },
+        }});
     });
 
     it("\\newcommand doesn't change settings.macros", () => {

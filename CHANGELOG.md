@@ -1,6 +1,27 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.7](https://github.com/KaTeX/KaTeX/compare/v0.16.6...v0.16.7) (2023-04-28)
+
+
+### Bug Fixes
+
+* **docs/support_table.md:** delete redundant "varPsi" ([#3814](https://github.com/KaTeX/KaTeX/issues/3814)) ([33a1b98](https://github.com/KaTeX/KaTeX/commit/33a1b98710c880d2d4a67aa0048f027a94b85702))
+
+## [0.16.6](https://github.com/KaTeX/KaTeX/compare/v0.16.5...v0.16.6) (2023-04-17)
+
+
+### Bug Fixes
+
+* Support `\let` via `macros` option ([#3738](https://github.com/KaTeX/KaTeX/issues/3738)) ([bdb0be2](https://github.com/KaTeX/KaTeX/commit/bdb0be201794d22adaee05438b07a2830efea9da)), closes [#3737](https://github.com/KaTeX/KaTeX/issues/3737) [#3737](https://github.com/KaTeX/KaTeX/issues/3737)
+
+## [0.16.5](https://github.com/KaTeX/KaTeX/compare/v0.16.4...v0.16.5) (2023-04-17)
+
+
+### Features
+
+* __defineFunction API exposing internal defineFunction ([#3805](https://github.com/KaTeX/KaTeX/issues/3805)) ([c7b1f84](https://github.com/KaTeX/KaTeX/commit/c7b1f84b7801a29dffdfa3db0ff35de289db80c0)), closes [#3756](https://github.com/KaTeX/KaTeX/issues/3756)
+
 ## [0.16.4](https://github.com/KaTeX/KaTeX/compare/v0.16.3...v0.16.4) (2022-12-07)
 
 
@@ -352,7 +373,7 @@ You can now use:
 - docs: Update \operatorname in supported_table.md 0.12.0 (#2571)
 - docs: Fix documentation typo in operatorname* (#2570)
 - docs: add warning re:defer to mhchem documentation (#2485)
-- docs: update Gastby logo and link (#2481)
+- docs: update Gatsby logo and link (#2481)
 - docs: add MonsterWriter to the users page (#2478)
 - docs: add comment re: \arrowvert (#2449)
 - docs: add link to Discussions (#2405)

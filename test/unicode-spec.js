@@ -62,15 +62,15 @@ describe("unicode", function() {
         expect`여보세요`.not.toParse(strictSettings);
     });
 
-    it("should build Devangari inside \\text{}", function() {
+    it("should build Devanagari inside \\text{}", function() {
         expect`\text{नमस्ते}`.toBuild();
     });
 
-    it("should build Devangari outside \\text{}", function() {
+    it("should build Devanagari outside \\text{}", function() {
         expect`नमस्ते`.toBuild(nonstrictSettings);
     });
 
-    it("should not parse Devangari outside \\text{} with strict", function() {
+    it("should not parse Devanagari outside \\text{} with strict", function() {
         expect`नमस्ते`.not.toParse(strictSettings);
     });
 
