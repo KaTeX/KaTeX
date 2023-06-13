@@ -60,3 +60,6 @@ you'll need to first convert AsciiMath into LaTeX input, then call KaTeX.
 
 - [@rojer/katex-mini](https://github.com/rojer95/katex-mini): A Wechat Mini Program library that uses KaTeX for TeX math rendering.
 
+### Sphinx Extension
+
+* [sphinxcontrib-katex](https://github.com/hagenw/sphinxcontrib-katex): Sphinx extension to (pre-)render math using KaTeX
