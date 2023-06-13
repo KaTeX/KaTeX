@@ -15,17 +15,32 @@ These extensions are provided by KaTeX.
 
 These libraries are maintained by third-parties.
 
+### AsciiMath
+
+If you want to render math written in [AsciiMath](http://asciimath.org/),
+you'll need to first convert AsciiMath into LaTeX input, then call KaTeX.
+
+- [asciimath2tex](https://github.com/christianp/asciimath2tex): Converts AsciiMath to TeX, with KaTeX in mind
+
+### Android
+
+- [KaTeXView](https://github.com/judemanutd/KaTeXView): An android library that uses Khan Academy KaTeX for TeX math rendering.
+
 ### Angular2+
+
 - [ng-katex](https://github.com/garciparedes/ng-katex): Angular module to write beautiful math expressions with TeX syntax boosted by KaTeX library
 
+### Canvas
+
+- [canvas-latex](https://github.com/CurriculumAssociates/canvas-latex): Renders mathematical expressions on HTML5's canvas element. Supports popular libraries like: CreateJS, and PIXI.
+
 ### iOS
+
 - [KaTeX-iOS](https://github.com/ianarawjo/KaTeX-iOS): iOS UIView that renders TeX expressions with KaTeX
 - [KatexUtils](https://cocoapods.org/pods/KatexUtils): KaTeX solution for newer iOS version, supports CocoaPods integration
 
-### Android
-- [KaTeXView](https://github.com/judemanutd/KaTeXView): An android library that uses Khan Academy KaTeX for TeX math rendering.
-
 ### React
+
 - [react-latex](https://github.com/zzish/react-latex): React component to render latex strings, based on KaTeX
 - [react-katex](https://github.com/talyssonoc/react-katex): React components that use KaTeX to typeset math expressions
 
@@ -37,19 +52,13 @@ These libraries are maintained by third-parties.
 
 - [katex-rs](https://github.com/xu-cheng/katex-rs): Rust bindings to provide server-side rendering.
 
+### Sphinx
+
+* [sphinxcontrib-katex](https://github.com/hagenw/sphinxcontrib-katex): Sphinx extension to (pre-)render math using KaTeX
+
 ### Vue
+
 - [vue-katex](https://github.com/lucpotage/vue-katex): Vue plugin to render TeX expressions using KaTeX.
-
-### AsciiMath
-
-If you want to render math written in [AsciiMath](http://asciimath.org/),
-you'll need to first convert AsciiMath into LaTeX input, then call KaTeX.
-
-- [asciimath2tex](https://github.com/christianp/asciimath2tex): Converts AsciiMath to TeX, with KaTeX in mind
-
-### Canvas LaTeX
-
-- [canvas-latex](https://github.com/CurriculumAssociates/canvas-latex): Renders mathematical expressions on HTML5's canvas element. Supports popular libraries like: CreateJS, and PIXI.
 
 ### Web-Components
 
@@ -59,4 +68,3 @@ you'll need to first convert AsciiMath into LaTeX input, then call KaTeX.
 ### Wechat Mini Program
 
 - [@rojer/katex-mini](https://github.com/rojer95/katex-mini): A Wechat Mini Program library that uses KaTeX for TeX math rendering.
-
