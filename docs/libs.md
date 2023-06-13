@@ -47,7 +47,7 @@ you'll need to first convert AsciiMath into LaTeX input, then call KaTeX.
 
 - [asciimath2tex](https://github.com/christianp/asciimath2tex): Converts AsciiMath to TeX, with KaTeX in mind
 
-### Canvas LaTeX
+### Canvas
 
 - [canvas-latex](https://github.com/CurriculumAssociates/canvas-latex): Renders mathematical expressions on HTML5's canvas element. Supports popular libraries like: CreateJS, and PIXI.
 
