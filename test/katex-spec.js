@@ -5,6 +5,7 @@ import buildTree from "../src/buildTree";
 import katex from "../katex";
 import parseTree from "../src/parseTree";
 import Options from "../src/Options";
+import ParseError from "../src/ParseError";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
 import {
@@ -3057,6 +3058,53 @@ describe("A parser that does not throw on unsupported commands", function() {
     it("should properly escape LaTeX in errors", function() {
         const html = katex.renderToString("2^&\"<>", noThrowSettings);
         expect(html).toMatchSnapshot();
+    });
+});
+
+describe("ParseError properties", function() {
+    it("should contain affected position and length information", function() {
+        try {
+            katex.renderToString("1 + \\fraq{}{}");
+
+            // Render is expected to throw, so this should not be called.
+            expect(true).toBe(false);
+        } catch (error) {
+            expect(error).toBeInstanceOf(ParseError);
+            expect(error.message).toBe("KaTeX parse error: Undefined control sequence: \\fraq at position 5: 1 + \\̲f̲r̲a̲q̲{}{}");
+            expect(error.rawMessage).toBe("Undefined control sequence: \\fraq");
+            expect(error.position).toBe(4);
+            expect(error.length).toBe(5);
+        }
+    });
+
+    it("should contain position and length information at end of input", function() {
+        try {
+            katex.renderToString("\\frac{}");
+
+            // Render is expected to throw, so this should not be called.
+            expect(true).toBe(false);
+        } catch (error) {
+            expect(error).toBeInstanceOf(ParseError);
+            expect(error.message).toBe("KaTeX parse error: Unexpected end of input in a macro argument, expected '}' at end of input: \\frac{}");
+            expect(error.rawMessage).toBe("Unexpected end of input in a macro argument, expected '}'");
+            expect(error.position).toBe(7);
+            expect(error.length).toBe(0);
+        }
+    });
+
+    it("should contain no position and length information if unavailable", function() {
+        try {
+            katex.renderToString("\\verb|hello\nworld|");
+
+            // Render is expected to throw, so this should not be called.
+            expect(true).toBe(false);
+        } catch (error) {
+            expect(error).toBeInstanceOf(ParseError);
+            expect(error.message).toBe("KaTeX parse error: \\verb ended by end of line instead of matching delimiter");
+            expect(error.rawMessage).toBe("\\verb ended by end of line instead of matching delimiter");
+            expect(error.position).toBeUndefined();
+            expect(error.length).toBeUndefined();
+        }
     });
 });
 
