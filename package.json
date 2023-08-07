@@ -3,6 +3,7 @@
   "version": "0.16.8",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
+  "types": "types/katex.d.ts",
   "exports": {
     ".": {
       "require": "./dist/katex.js",
@@ -44,7 +45,8 @@
     "cli.js",
     "src/",
     "contrib/",
-    "dist/"
+    "dist/",
+    "types/"
   ],
   "license": "MIT",
   "packageManager": "yarn@3.2.2",
