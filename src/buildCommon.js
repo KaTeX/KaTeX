@@ -71,9 +71,13 @@ const makeSymbol = function(
             value, metrics.height, metrics.depth, italic, metrics.skew,
             metrics.width, classes);
     } else {
-        // TODO(emily): Figure out a good way to only print this in development
-        typeof console !== "undefined" && console.warn("No character metrics " +
+        const nodeEnv = typeof process !== 'undefined' && process.env.NODE_ENV
+        const isProduction = nodeEnv === 'production'
+        const showCharacterMetricsWarning = !isProduction && typeof console !== 'undefined'
+        if (showCharacterMetricsWarning) {
+            console.warn("No character metrics " +
             `for '${value}' in style '${fontName}' and mode '${mode}'`);
+        }
         symbolNode = new SymbolNode(value, 0, 0, 0, 0, 0, classes);
     }
 
