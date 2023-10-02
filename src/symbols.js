@@ -816,6 +816,10 @@ for (let i = 0; i < letters.length; i++) {
     defineSymbol(math, main, mathord, ch, wideChar);
     defineSymbol(text, main, textord, ch, wideChar);
 
+    wideChar = String.fromCharCode(0xD835, 0xDD6C + i);  // A-Z a-z bold Fractur
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
     wideChar = String.fromCharCode(0xD835, 0xDDA0 + i);  // A-Z a-z sans-serif
     defineSymbol(math, main, mathord, ch, wideChar);
     defineSymbol(text, main, textord, ch, wideChar);
