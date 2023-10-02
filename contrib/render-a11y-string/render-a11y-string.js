@@ -670,7 +670,7 @@ const handleObject = (
         }
 
         case "mathchoice": {
-            // TODO: track which which style we're using, e.g. dispaly, text, etc.
+            // TODO: track which style we're using, e.g. display, text, etc.
             // default to text style if even that may not be the correct style
             buildA11yStrings(tree.text, a11yStrings, atomType);
             break;

@@ -364,7 +364,7 @@ const makeStackedDelim = function(
         middleFactor = 2; // repeat symmetrically above and below middle
     }
 
-    // Calcuate the minimal height that the delimiter can have.
+    // Calculate the minimal height that the delimiter can have.
     // It is at least the size of the top, bottom, and optional middle combined.
     const minHeight = topHeightTotal + bottomHeightTotal + middleHeightTotal;
 
@@ -453,7 +453,7 @@ const makeStackedDelim = function(
         Style.TEXT, options, classes);
 };
 
-// All surds have 0.08em padding above the viniculum inside the SVG.
+// All surds have 0.08em padding above the vinculum inside the SVG.
 // That keeps browser span height rounding error from pinching the line.
 const vbPad = 80;   // padding above the surd, measured inside the viewBox.
 const emPad = 0.08; // padding, in ems, measured in the document.
@@ -462,10 +462,10 @@ const sqrtSvg = function(
     sqrtName: string,
     height: number,
     viewBoxHeight: number,
-    extraViniculum: number,
+    extraVinculum: number,
     options: Options,
 ): SvgSpan {
-    const path = sqrtPath(sqrtName, extraViniculum, viewBoxHeight);
+    const path = sqrtPath(sqrtName, extraVinculum, viewBoxHeight);
     const pathNode = new PathNode(sqrtName, path);
 
     const svg =  new SvgNode([pathNode], {
@@ -500,9 +500,9 @@ const makeSqrtImage = function(
 
     let sizeMultiplier = newOptions.sizeMultiplier;  // default
 
-    // The standard sqrt SVGs each have a 0.04em thick viniculum.
-    // If Settings.minRuleThickness is larger than that, we add extraViniculum.
-    const extraViniculum = Math.max(0,
+    // The standard sqrt SVGs each have a 0.04em thick vinculum.
+    // If Settings.minRuleThickness is larger than that, we add extraVinculum.
+    const extraVinculum = Math.max(0,
         options.minRuleThickness - options.fontMetrics().sqrtRuleThickness);
 
     // Create a span containing an SVG image of a sqrt symbol.
@@ -514,22 +514,22 @@ const makeSqrtImage = function(
 
     // We create viewBoxes with 80 units of "padding" above each surd.
     // Then browser rounding error on the parent span height will not
-    // encroach on the ink of the viniculum. But that padding is not
+    // encroach on the ink of the vinculum. But that padding is not
     // included in the TeX-like `height` used for calculation of
     // vertical alignment. So texHeight = span.height < span.style.height.
 
     if (delim.type === "small") {
         // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
         // 1000 unit normal glyph height.
-        viewBoxHeight = 1000 + 1000 * extraViniculum + vbPad;
+        viewBoxHeight = 1000 + 1000 * extraVinculum + vbPad;
         if (height < 1.0) {
             sizeMultiplier = 1.0;   // mimic a \textfont radical
         } else if (height < 1.4) {
             sizeMultiplier = 0.7;   // mimic a \scriptfont radical
         }
-        spanHeight = (1.0 + extraViniculum + emPad) / sizeMultiplier;
-        texHeight = (1.00 + extraViniculum) / sizeMultiplier;
-        span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, extraViniculum,
+        spanHeight = (1.0 + extraVinculum + emPad) / sizeMultiplier;
+        texHeight = (1.00 + extraVinculum) / sizeMultiplier;
+        span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, extraVinculum,
             options);
         span.style.minWidth = "0.853em";
         advanceWidth = 0.833 / sizeMultiplier;  // from the font.
@@ -537,21 +537,21 @@ const makeSqrtImage = function(
     } else if (delim.type === "large") {
         // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
         viewBoxHeight = (1000 + vbPad) * sizeToMaxHeight[delim.size];
-        texHeight = (sizeToMaxHeight[delim.size] + extraViniculum) / sizeMultiplier;
-        spanHeight = (sizeToMaxHeight[delim.size] + extraViniculum + emPad)
+        texHeight = (sizeToMaxHeight[delim.size] + extraVinculum) / sizeMultiplier;
+        spanHeight = (sizeToMaxHeight[delim.size] + extraVinculum + emPad)
             / sizeMultiplier;
         span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight,
-            extraViniculum, options);
+            extraVinculum, options);
         span.style.minWidth = "1.02em";
         advanceWidth = 1.0 / sizeMultiplier; // 1.0 from the font.
 
     } else {
         // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
         // We'll use a single SVG to accomplish the same thing.
-        spanHeight = height + extraViniculum + emPad;
-        texHeight = height + extraViniculum;
-        viewBoxHeight = Math.floor(1000 * height + extraViniculum) + vbPad;
-        span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, extraViniculum,
+        spanHeight = height + extraVinculum + emPad;
+        texHeight = height + extraVinculum;
+        viewBoxHeight = Math.floor(1000 * height + extraVinculum) + vbPad;
+        span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, extraVinculum,
             options);
         span.style.minWidth = "0.742em";
         advanceWidth = 1.056;
@@ -567,7 +567,7 @@ const makeSqrtImage = function(
         // This actually should depend on the chosen font -- e.g. \boldmath
         // should use the thicker surd symbols from e.g. KaTeX_Main-Bold, and
         // have thicker rules.
-        ruleWidth: (options.fontMetrics().sqrtRuleThickness + extraViniculum)
+        ruleWidth: (options.fontMetrics().sqrtRuleThickness + extraVinculum)
             * sizeMultiplier,
     };
 };

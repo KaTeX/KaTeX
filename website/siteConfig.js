@@ -121,6 +121,11 @@ const users = [
         infoLink: 'https://rocket.chat/',
     },
     {
+        caption: 'Slab',
+        image: '/img/slab-logo.png',
+        infoLink: 'https://slab.com/',
+    },
+    {
         caption: 'Slides',
         image: 'https://s3.amazonaws.com/uploads.uservoice.com/logo/design_setting/116173/original/slides-symbol-150x150.png',
         infoLink: 'https://slides.com/',

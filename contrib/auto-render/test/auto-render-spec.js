@@ -127,7 +127,7 @@ describe("A delimiter splitter", function() {
             ]);
     });
 
-    it("splits mutliple times", function() {
+    it("splits multiple times", function() {
         expect("hello ( world ) boo ( more ) stuff").toSplitInto(
             [
                 {type: "text", data: "hello "},

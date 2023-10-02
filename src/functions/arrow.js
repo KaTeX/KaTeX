@@ -47,7 +47,7 @@ defineFunction({
         };
     },
     // Flow is unable to correctly infer the type of `group`, even though it's
-    // unamibiguously determined from the passed-in `type` above.
+    // unambiguously determined from the passed-in `type` above.
     htmlBuilder(group: ParseNode<"xArrow">, options) {
         const style = options.style;
 
