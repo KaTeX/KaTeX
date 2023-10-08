@@ -812,11 +812,11 @@ for (let i = 0; i < letters.length; i++) {
     defineSymbol(math, main, mathord, ch, wideChar);
     defineSymbol(text, main, textord, ch, wideChar);
 
-    wideChar = String.fromCharCode(0xD835, 0xDD04 + i);  // A-Z a-z Fractur
+    wideChar = String.fromCharCode(0xD835, 0xDD04 + i);  // A-Z a-z Fraktur
     defineSymbol(math, main, mathord, ch, wideChar);
     defineSymbol(text, main, textord, ch, wideChar);
 
-    wideChar = String.fromCharCode(0xD835, 0xDD6C + i);  // A-Z a-z bold Fractur
+    wideChar = String.fromCharCode(0xD835, 0xDD6C + i);  // A-Z a-z bold Fraktur
     defineSymbol(math, main, mathord, ch, wideChar);
     defineSymbol(text, main, textord, ch, wideChar);
 
