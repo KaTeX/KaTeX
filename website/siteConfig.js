@@ -16,9 +16,9 @@ const users = [
         infoLink: 'https://www.khanacademy.org/',
     },
     {
-        caption:'BearBei 貝貝',
-        image:'https://bearbei.com/pic/bearbeiLogoForKatexWebsite.png',
-        infoLink:'https://bearbei.com',    
+        caption: 'BearBei 貝貝',
+        image: 'https://bearbei.com/pic/bearbeiLogoForKatexWebsite.png',
+        infoLink: 'https://bearbei.com',
     },
     {
         caption: 'CindyJS',
