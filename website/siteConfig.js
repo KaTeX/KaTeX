@@ -170,6 +170,11 @@ const users = [
         image: 'https://github.com/zzllrr/mather/raw/master/img/logo.jpg',
         infoLink: 'https://github.com/zzllrr/mather',
     },
+    {
+        caption: 'BearBei 貝貝',
+        image: 'https://bearbei.com/pic/%E8%B2%9D%E8%B2%9D.png?v=2',
+        infoLink: 'https://bearbei.com/',
+    },
 ];
 
 const {version} = require('../package.json');
