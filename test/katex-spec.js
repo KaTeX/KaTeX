@@ -2288,10 +2288,11 @@ describe("A stretchy MathML builder", function() {
 
 describe("An under-accent parser", function() {
     it("should not fail", function() {
-        expect("\\underrightarrow{x}").toParse();
-        expect("\\underrightarrow{x^2}").toParse();
-        expect("\\underrightarrow{x}^2").toParse();
-        expect("\\underrightarrow x").toParse();
+        expect`\underrightarrow{x}`.toParse();
+        expect`\underrightarrow{x^2}`.toParse();
+        expect`\underrightarrow{x}^2`.toParse();
+        expect`\underrightarrow x`.toParse();
+      
     });
 
     it("should produce accentUnder", function() {
@@ -2309,28 +2310,32 @@ describe("An under-accent parser", function() {
 
 describe("An under-accent builder", function() {
     it("should not fail", function() {
-        expect("\\underrightarrow{x}").toBuild();
-        expect("\\underrightarrow{x}^2").toBuild();
-        expect("\\underrightarrow{x}_2").toBuild();
-        expect("\\underrightarrow{x}_2^2").toBuild();
+        expect`\underrightarrow{x}`.toBuild();
+        expect`\underrightarrow{x}^2`.toBuild();
+        expect`\underrightarrow{x}_2`.toBuild();
+        expect`\underrightarrow{x}_2^2`.toBuild();
+
+
     });
 
     it("should produce mords", function() {
-        expect(getBuilt("\\underrightarrow x")[0].classes).toContain("mord");
-        expect(getBuilt("\\underrightarrow +")[0].classes).toContain("mord");
-        expect(getBuilt("\\underrightarrow +")[0].classes).not.toContain("mbin");
-        expect(getBuilt("\\underrightarrow )^2")[0].classes).toContain("mord");
-        expect(getBuilt("\\underrightarrow )^2")[0].classes).not.toContain("mclose");
+        expect(getBuilt`\underrightarrow x`[0].classes).toContain("mord");
+        expect(getBuilt`\underrightarrow +`[0].classes).toContain("mord");
+        expect(getBuilt`\underrightarrow +`[0].classes).not.toContain("mbin");
+        expect(getBuilt`\underrightarrow )^2`[0].classes).toContain("mord");
+        expect(getBuilt`\underrightarrow )^2`[0].classes).not.toContain("mclose");
     });
 });
 
 describe("An extensible arrow parser", function() {
     it("should not fail", function() {
-        expect("\\xrightarrow{x}").toParse();
-        expect("\\xrightarrow{x^2}").toParse();
-        expect("\\xrightarrow{x}^2").toParse();
-        expect("\\xrightarrow x").toParse();
-        expect("\\xrightarrow[under]{over}").toParse();
+        expect`\xrightarrow{x}`.toParse();
+        expect`\xrightarrow{x^2}}`.toParse();
+        expect`\xrightarrow{x}^2`.toParse();
+        expect`\xrightarrow x`.toParse();
+        expect`\xrightarrow[under]{over}`.toParse();
+
+
     });
 
     it("should produce xArrow", function() {
@@ -2348,20 +2353,21 @@ describe("An extensible arrow parser", function() {
 
 describe("An extensible arrow builder", function() {
     it("should not fail", function() {
-        expect("\\xrightarrow{x}").toBuild();
-        expect("\\xrightarrow{x}^2").toBuild();
-        expect("\\xrightarrow{x}_2").toBuild();
-        expect("\\xrightarrow{x}_2^2").toBuild();
-        expect("\\xrightarrow[under]{over}").toBuild();
+        expect`\xrightarrow{x}`toBuild();
+        expect`\xrightarrow{x}^2`toBuild();
+        expect`\xrightarrow{x}_2`toBuild();
+        expect`\xrightarrow{x}_2^2`toBuild();
+        expect`\xrightarrow[under]{over}`toBuild();
+
     });
 
     it("should produce mrell", function() {
-        expect(getBuilt("\\xrightarrow x")[0].classes).toContain("mrel");
-        expect(getBuilt("\\xrightarrow [under]{over}")[0].classes).toContain("mrel");
-        expect(getBuilt("\\xrightarrow +")[0].classes).toContain("mrel");
-        expect(getBuilt("\\xrightarrow +")[0].classes).not.toContain("mbin");
-        expect(getBuilt("\\xrightarrow )^2")[0].classes).toContain("mrel");
-        expect(getBuilt("\\xrightarrow )^2")[0].classes).not.toContain("mclose");
+        expect(getBuilt`\xrightarrow x`[0].classes).toContain("mrel");
+        expect(getBuilt`\xrightarrow [under]{over}`[0].classes).toContain("mrel");
+        expect(getBuilt`\xrightarrow +`[0].classes).toContain("mrel");
+        expect(getBuilt`\xrightarrow +`[0].classes).not.toContain("mbin");
+        expect(getBuilt`\xrightarrow )^2`[0].classes).toContain("mrel");
+        expect(getBuilt`\xrightarrow )^2`[0].classes).not.toContain("mclose");
     });
 });
 
@@ -2371,8 +2377,8 @@ describe("A horizontal brace parser", function() {
         expect`\overbrace{x^2}`.toParse();
         expect`\overbrace{x}^2`.toParse();
         expect`\overbrace x`.toParse();
-        expect("\\underbrace{x}_2").toParse();
-        expect("\\underbrace{x}_2^2").toParse();
+        expect`\underbrace{x}_2`.toParse();
+        expect`\underbrace{x}_2^2`.toParse();
     });
 
     it("should produce horizBrace", function() {
@@ -2392,8 +2398,8 @@ describe("A horizontal brace builder", function() {
     it("should not fail", function() {
         expect`\overbrace{x}`.toBuild();
         expect`\overbrace{x}^2`.toBuild();
-        expect("\\underbrace{x}_2").toBuild();
-        expect("\\underbrace{x}_2^2").toBuild();
+        expect`\underbrace{x}_2`.toBuild();
+        expect`\underbrace{x}_2^2`.toBuild();
     });
 
     it("should produce mords", function() {
@@ -2894,12 +2900,12 @@ describe("The CD environment", function() {
 
 describe("operatorname support", function() {
     it("should not fail", function() {
-        expect("\\operatorname{x*Π∑\\Pi\\sum\\frac a b}").toBuild();
-        expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}").toBuild();
-        expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}_y x").toBuild();
-        expect("\\operatorname*{x*Π∑\\Pi\\sum\\frac a b}\\limits_y x").toBuild();
+        expect`\operatorname{x*Π∑\\Pi\\sum\\frac a b}`.toBuild();
+        expect`\operatorname*{x*Π∑\\Pi\\sum\\frac a b}`.toBuild();
+        expect`\operatorname*{x*Π∑\\Pi\\sum\\frac a b}_y x`.toBuild();
+        expect`\operatorname*{x*Π∑\\Pi\\sum\\frac a b}\\limits_y x`.toBuild();
         // The following does not actually render with limits. But it does not crash either.
-        expect("\\operatorname{sn}\\limits_{b>c}(b+c)").toBuild();
+        expect`\operatorname{sn}\\limits_{b>c}(b+c)`.toBuild();
     });
 });
 
@@ -2908,25 +2914,25 @@ describe("href and url commands", function() {
 
     it("should parse its input", function() {
         expect`\href{http://example.com/}{\sin}`.toBuild(trustSettings);
-        expect("\\url{http://example.com/}").toBuild(trustSettings);
+        expect`\url{http://example.com/}`.toBuild(trustSettings);
     });
 
     it("should allow empty URLs", function() {
         expect`\href{}{example here}`.toBuild(trustSettings);
-        expect("\\url{}").toBuild(trustSettings);
+        expect`\url{}`.toBuild(trustSettings);
     });
 
     it("should allow single-character URLs", () => {
         expect`\href%end`.toParseLike("\\href{%}end", trustSettings);
-        expect("\\url%end").toParseLike("\\url{%}end", trustSettings);
-        expect("\\url%%end\n").toParseLike("\\url{%}", trustSettings);
-        expect("\\url end").toParseLike("\\url{e}nd", trustSettings);
-        expect("\\url%end").toParseLike("\\url {%}end", trustSettings);
+        expect`\url%end`.toParseLike("\\url{%}end", trustSettings);
+        expect`\url%%end\n`.toParseLike("\\url{%}", trustSettings);
+        expect`\url end`.toParseLike("\\url{e}nd", trustSettings);
+        expect`\url%end`.toParseLike("\\url {%}end", trustSettings);
     });
 
     it("should allow spaces single-character URLs", () => {
         expect`\href %end`.toParseLike("\\href{%}end", trustSettings);
-        expect("\\url %end").toParseLike("\\url{%}end", trustSettings);
+        expect`\url %end`.toParseLike("\\url{%}end", trustSettings);
     });
 
     it("should allow letters [#$%&~_^] without escaping", function() {
@@ -2948,8 +2954,8 @@ describe("href and url commands", function() {
     it("should not allow unbalanced brace(s) in url", function() {
         expect`\href{http://example.com/{a}{bar}`.not.toParse();
         expect`\href{http://example.com/}a}{bar}`.not.toParse();
-        expect`\\url{http://example.com/{a}`.not.toParse();
-        expect`\\url{http://example.com/}a}`.not.toParse();
+        expect`\url{http://example.com/{a}`.not.toParse();
+        expect`\url{http://example.com/}a}`.not.toParse();
     });
 
     it("should allow escape for letters [#$%&~_^{}]", function() {
@@ -2962,7 +2968,7 @@ describe("href and url commands", function() {
     });
 
     it("should allow comments after URLs", function() {
-        expect("\\url{http://example.com/}%comment\n").toBuild();
+        expect`\url{http://example.com/}%comment\n`.toBuild();
     });
 
     it("should be marked up correctly", function() {
@@ -3277,7 +3283,7 @@ describe("A macro expander", function() {
 
     it("should build \\overset and \\underset", function() {
         expect`\overset{f}{\rightarrow} Y`.toBuild();
-        expect("\\underset{f}{\\rightarrow} Y").toBuild();
+        expect`\underset{f}{\\rightarrow} Y`.toBuild();
     });
 
     it("should build \\iff, \\implies, \\impliedby", function() {
@@ -3444,19 +3450,19 @@ describe("A macro expander", function() {
     });
 
     it("\\def works locally", () => {
-        expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\def\\x{3}\\x}\\x}\\x")
+        expect`\def\\x{1}\\x{\\def\\x{2}\\x{\\def\\x{3}\\x}\\x}\\x`
             .toParseLike`1{2{3}2}1`;
-        expect("\\def\\x{1}\\x\\def\\x{2}\\x{\\def\\x{3}\\x\\def\\x{4}\\x}\\x")
+        expect`\def\\x{1}\\x\\def\\x{2}\\x{\\def\\x{3}\\x\\def\\x{4}\\x}\\x`
             .toParseLike`12{34}2`;
     });
 
     it("\\gdef overrides at all levels", () => {
-        expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\gdef\\x{3}\\x}\\x}\\x")
+        expect`\def\\x{1}\\x{\\def\\x{2}\\x{\\gdef\\x{3}\\x}\\x}\\x`
             .toParseLike`1{2{3}3}3`;
-        expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\global\\def\\x{3}\\x}\\x}\\x")
+        expect`\def\\x{1}\\x{\\def\\x{2}\\x{\\global\\def\\x{3}\\x}\\x}\\x`
             .toParseLike`1{2{3}3}3`;
-        expect("\\def\\x{1}\\x{\\def\\x{2}\\x{\\gdef\\x{3}\\x\\def\\x{4}\\x}" +
-            "\\x\\def\\x{5}\\x}\\x").toParseLike`1{2{34}35}3`;
+        expect`\def\\x{1}\\x{\\def\\x{2}\\x{\\gdef\\x{3}\\x\\def\\x{4}\\x}" +
+            "\\x\\def\\x{5}\\x}\\x`.toParseLike`1{2{34}35}3`;
     });
 
     it("\\global needs to followed by macro prefixes, \\def or \\edef", () => {
@@ -3902,11 +3908,11 @@ describe("Unicode", function() {
     });
 
     it("should build delimiters", function() {
-        expect("\\left\u230A\\frac{a}{b}\\right\u230B").toBuild();
-        expect("\\left\u2308\\frac{a}{b}\\right\u2308").toBuild();
-        expect("\\left\u27ee\\frac{a}{b}\\right\u27ef").toBuild();
-        expect("\\left\u27e8\\frac{a}{b}\\right\u27e9").toBuild();
-        expect("\\left\u23b0\\frac{a}{b}\\right\u23b1").toBuild();
+        expect`\left\u230A\\frac{a}{b}\\right\u230B`.toBuild();
+        expect`\left\u2308\\frac{a}{b}\\right\u2308`.toBuild();
+        expect`\left\u27ee\\frac{a}{b}\\right\u27ef`.toBuild();
+        expect`\left\u27e8\\frac{a}{b}\\right\u27e9`.toBuild();
+        expect`\left\u23b0\\frac{a}{b}\\right\u23b1`.toBuild();
         expect`┌x┐ └x┘`.toBuild();
         expect("\u231Cx\u231D \u231Ex\u231F").toBuild();
         expect("\u27E6x\u27E7").toBuild();
