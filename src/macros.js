@@ -529,7 +529,7 @@ defineMacro("\\DOTSX", "\\relax");
 // Spacing, based on amsmath.sty's override of LaTeX defaults
 // \DeclareRobustCommand{\tmspace}[3]{%
 //   \ifmmode\mskip#1#2\else\kern#1#3\fi\relax}
-defineMacro("\\tmspace", "\\TextOrMath{\\kern#1#3}{\\mskip#1#2}\\relax");
+defineMacro("\\tmspace", "\\TextOrMath{\\kern#1#3\\relax}{\\mskip#1#2}");
 // \renewcommand{\,}{\tmspace+\thinmuskip{.1667em}}
 // TODO: math mode should use \thinmuskip
 defineMacro("\\,", "\\tmspace+{3mu}{.1667em}");

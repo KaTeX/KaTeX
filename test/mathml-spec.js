@@ -149,4 +149,8 @@ describe("A MathML builder", function() {
         expect(getMathML("\\copyright\\neq\\notin\u2258\\KaTeX"))
             .toMatchSnapshot();
     });
+
+  it('\\, works in math mode', () => {
+    expect(getMathML("a\\,'")).toMatchSnapshot();
+  });
 });

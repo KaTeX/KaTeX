@@ -1,5 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`A MathML builder \\, works in math mode 1`] = `
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <semantics>
+    <mrow>
+      <mi>
+        a
+      </mi>
+      <msup>
+        <mtext>
+           
+        </mtext>
+        <mo mathvariant="normal"
+            lspace="0em"
+            rspace="0em"
+        >
+          ′
+        </mo>
+      </msup>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      a\\,&#x27;
+    </annotation>
+  </semantics>
+</math>
+`;
+
 exports[`A MathML builder \\html@mathml makes clean symbols 1`] = `
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
