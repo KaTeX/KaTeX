@@ -9,7 +9,7 @@
  */
 
 import ParseError from "./src/ParseError";
-import Settings from "./src/Settings";
+import Settings, {SETTINGS_SCHEMA} from "./src/Settings";
 
 import {buildTree, buildHTMLTree} from "./src/buildTree";
 import parseTree from "./src/parseTree";
@@ -28,7 +28,8 @@ import type {AnyParseNode} from "./src/parseNode";
 import type {DomSpan} from "./src/domTree";
 
 import {defineSymbol} from './src/symbols';
-import {defineMacro} from './src/macros';
+import defineFunction from './src/defineFunction';
+import defineMacro from './src/defineMacro';
 import {setFontMetrics} from './src/fontMetrics';
 
 declare var __VERSION__: string;
@@ -157,6 +158,10 @@ export default {
      */
     ParseError,
     /**
+     * The shema of Settings
+     */
+    SETTINGS_SCHEMA,
+    /**
      * Parses the given LaTeX into KaTeX's internal parse tree structure,
      * without rendering to HTML or MathML.
      *
@@ -192,6 +197,12 @@ export default {
      * adds a new symbol to builtin symbols table
      */
     __defineSymbol: defineSymbol,
+    /**
+     * adds a new function to builtin function list,
+     * which directly produce parse tree elements
+     * and have their own html/mathml builders
+     */
+    __defineFunction: defineFunction,
     /**
      * adds a new macro to builtin macro list
      */

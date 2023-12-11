@@ -4,7 +4,7 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import {calculateSize} from "../units";
+import {calculateSize, makeEm} from "../units";
 import {assertNodeType} from "../parseNode";
 
 // \DeclareRobustCommand\\{...\@xnewline}
@@ -13,13 +13,13 @@ defineFunction({
     names: ["\\\\"],
     props: {
         numArgs: 0,
-        numOptionalArgs: 1,
-        argTypes: ["size"],
+        numOptionalArgs: 0,
         allowedInText: true,
     },
 
     handler({parser}, args, optArgs) {
-        const size = optArgs[0];
+        const size = parser.gullet.future().text === "[" ?
+            parser.parseSizeGroup(true) : null;
         const newLine = !parser.settings.displayMode ||
             !parser.settings.useStrictBehavior(
                 "newLineInDisplayMode", "In LaTeX, \\\\ or \\newline " +
@@ -41,7 +41,7 @@ defineFunction({
             span.classes.push("newline");
             if (group.size) {
                 span.style.marginTop =
-                    calculateSize(group.size, options) + "em";
+                    makeEm(calculateSize(group.size, options));
             }
         }
         return span;
@@ -53,7 +53,7 @@ defineFunction({
             node.setAttribute("linebreak", "newline");
             if (group.size) {
                 node.setAttribute("height",
-                    calculateSize(group.size, options) + "em");
+                    makeEm(calculateSize(group.size, options)));
             }
         }
         return node;

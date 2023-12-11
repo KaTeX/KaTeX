@@ -12,15 +12,21 @@ import type {AnyParseNode} from "./parseNode";
  * about where in the source string the problem occurred.
  */
 class ParseError {
+    name: "ParseError";
     position: number | void;
-        // Error position based on passed-in Token or ParseNode.
+        // Error start position based on passed-in Token or ParseNode.
+    length: number | void;
+        // Length of affected text based on passed-in Token or ParseNode.
+    rawMessage: string | void;
+        // The underlying error message without any context added.
 
     constructor(
         message: string,               // The error message
         token?: ?Token | AnyParseNode, // An object providing position information
-    ): Error {
+    ): ParseError {
         let error = "KaTeX parse error: " + message;
         let start;
+        let end;
 
         const loc = token && token.loc;
         if (loc && loc.start <= loc.end) {
@@ -31,7 +37,7 @@ class ParseError {
 
             // Prepend some information
             start = loc.start;
-            const end = loc.end;
+            end = loc.end;
             if (start === input.length) {
                 error += " at end of input: ";
             } else {
@@ -60,12 +66,16 @@ class ParseError {
 
         // Some hackery to make ParseError a prototype of Error
         // See http://stackoverflow.com/a/8460753
-        const self = new Error(error);
+        // $FlowFixMe
+        const self: ParseError = new Error(error);
         self.name = "ParseError";
         // $FlowFixMe
         self.__proto__ = ParseError.prototype;
-        // $FlowFixMe
         self.position = start;
+        if (start != null && end != null) {
+            self.length = end - start;
+        }
+        self.rawMessage = message;
         return self;
     }
 }

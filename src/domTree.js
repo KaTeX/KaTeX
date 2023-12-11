@@ -16,6 +16,7 @@ import utils from "./utils";
 import {path} from "./svgGeometry";
 import type Options from "./Options";
 import {DocumentFragment} from "./tree";
+import {makeEm} from "./units";
 
 import type {VirtualNode} from "./tree";
 
@@ -152,6 +153,7 @@ export type CssStyle = $Shape<{
     minWidth: string,
     paddingLeft: string,
     position: string,
+    textShadow: string,
     top: string,
     width: string,
     verticalAlign: string,
@@ -406,7 +408,7 @@ export class SymbolNode implements HtmlDomNode {
 
         if (this.italic > 0) {
             span = document.createElement("span");
-            span.style.marginRight = this.italic + "em";
+            span.style.marginRight = makeEm(this.italic);
         }
 
         if (this.classes.length > 0) {

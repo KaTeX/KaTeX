@@ -2,33 +2,24 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v2
+    - name: Use Node.js 16
+      uses: actions/setup-node@v3
       with:
-        node-version: '12'
-
-    - name: Cache dependencies
-      uses: actions/cache@v2
-      with:
-        path: |
-          .yarn/cache
-          .pnp.js
-        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
-        restore-keys: |
-          yarn-deps-v1-
+        node-version: '16'
+        cache: yarn
 
     - name: Install dependencies
       run: yarn --immutable
@@ -46,7 +37,10 @@ jobs:
       run: yarn test:jest --coverage
       if: always()
 
-    - uses: codecov/codecov-action@v2
+    - name: Build
+      run: yarn build
+
+    - uses: codecov/codecov-action@v3
       with:
         directory: ./coverage/
       timeout-minutes: 3
@@ -58,25 +52,21 @@ jobs:
     needs: test
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         persist-credentials: false
         fetch-depth: 0
 
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v2
+    - name: Use Node.js 16
+      uses: actions/setup-node@v3
       with:
-        node-version: '12'
+        node-version: '16'
+        cache: yarn
 
-    - name: Cache dependencies
-      uses: actions/cache@v2
-      with:
-        path: |
-          .yarn/cache
-          .pnp.js
-        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
-        restore-keys: |
-          yarn-deps-v1-
+    - name: Install dependencies
+      run: yarn --immutable
+      env:
+        YARN_ENABLE_SCRIPTS: 0 # disable postinstall scripts
     - name: Run semantic-release
       run: yarn run semantic-release --debug
       env:

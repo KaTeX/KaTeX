@@ -9,6 +9,7 @@ import ParseError from "./ParseError";
 import {combiningDiacriticalMarksEndRegex} from "./Lexer";
 import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
+import {uSubsAndSups, unicodeSubRegEx} from "./unicodeSupOrSub";
 import {Token} from "./Token";
 
 // Pre-evaluate both modules as unicodeSymbols require String.normalize()
@@ -130,16 +131,44 @@ export default class Parser {
             this.gullet.macros.set("\\color", "\\textcolor");
         }
 
-        // Try to parse the input
-        const parse = this.parseExpression(false);
+        try {
+            // Try to parse the input
+            const parse = this.parseExpression(false);
 
-        // If we succeeded, make sure there's an EOF at the end
-        this.expect("EOF");
+            // If we succeeded, make sure there's an EOF at the end
+            this.expect("EOF");
 
-        // End the group namespace for the expression
-        if (!this.settings.globalGroup) {
-            this.gullet.endGroup();
+            // End the group namespace for the expression
+            if (!this.settings.globalGroup) {
+                this.gullet.endGroup();
+            }
+
+            return parse;
+
+        // Close any leftover groups in case of a parse error.
+        } finally {
+            this.gullet.endGroups();
         }
+    }
+
+    /**
+     * Fully parse a separate sequence of tokens as a separate job.
+     * Tokens should be specified in reverse order, as in a MacroDefinition.
+     */
+    subparse(tokens: Token[]): AnyParseNode[] {
+        // Save the next token from the current job.
+        const oldToken = this.nextToken;
+        this.consume();
+
+        // Run the new job, terminating it with an excess '}'
+        this.gullet.pushToken(new Token("}"));
+        this.gullet.pushTokens(tokens);
+        const parse = this.parseExpression(false);
+        this.expect("}");
+
+        // Restore the next token from the current job.
+        this.nextToken = oldToken;
+
         return parse;
     }
 
@@ -149,7 +178,7 @@ export default class Parser {
      * Parses an "expression", which is a list of atoms.
      *
      * `breakOnInfix`: Should the parsing stop when we hit infix nodes? This
-     *                 happens when functions have higher precendence han infix
+     *                 happens when functions have higher precedence han infix
      *                 nodes in implicit parses.
      *
      * `breakOnTokenText`: The text of the token that the expression should end
@@ -371,6 +400,29 @@ export default class Parser {
                 }
                 // Put everything into an ordgroup as the superscript
                 superscript = {type: "ordgroup", mode: this.mode, body: primes};
+            } else if (uSubsAndSups[lex.text]) {
+                // A Unicode subscript or superscript character.
+                // We treat these similarly to the unicode-math package.
+                // So we render a string of Unicode (sub|super)scripts the
+                // same as a (sub|super)script of regular characters.
+                let str = uSubsAndSups[lex.text];
+                const isSub = unicodeSubRegEx.test(lex.text);
+                this.consume();
+                // Continue fetching tokens to fill out the string.
+                while (true) {
+                    const token = this.fetch().text;
+                    if (!(uSubsAndSups[token])) { break; }
+                    if (unicodeSubRegEx.test(token) !== isSub) { break; }
+                    this.consume();
+                    str += uSubsAndSups[token];
+                }
+                // Now create a (sub|super)script.
+                const body = (new Parser(str, this.settings)).parse();
+                if (isSub) {
+                    subscript = {type: "ordgroup", mode: "math", body};
+                } else {
+                    superscript = {type: "ordgroup", mode: "math", body};
+                }
             } else {
                 // If it wasn't ^, _, or ', stop parsing super/subscripts
                 break;
@@ -870,7 +922,7 @@ export default class Parser {
                     `Accented Unicode text character "${text[0]}" used in ` +
                     `math mode`, nucleus);
             }
-            text = unicodeSymbols[text[0]] + text.substr(1);
+            text = unicodeSymbols[text[0]] + text.slice(1);
         }
         // Strip off any combining characters
         const match = combiningDiacriticalMarksEndRegex.exec(text);
@@ -951,7 +1003,8 @@ export default class Parser {
                 if (!unicodeAccents[accent]) {
                     throw new ParseError(`Unknown accent ' ${accent}'`, nucleus);
                 }
-                const command = unicodeAccents[accent][this.mode];
+                const command = unicodeAccents[accent][this.mode] ||
+                    unicodeAccents[accent].text;
                 if (!command) {
                     throw new ParseError(
                         `Accent ${accent} unsupported in ${this.mode} mode`,

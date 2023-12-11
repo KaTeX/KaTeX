@@ -23,7 +23,13 @@ AccentsText: |
     \text{\.I İ} & \text{\H e e̋} & \text{\i ı}
     \end{array}
 Align:
-    tex: \begin{align}a &= 1 & b &= 2 \\ 3a &= 3 & 17b &= 34\end{align}
+    tex: |
+      \begin{align}
+        a &= 1 & b &= 2 \\
+        3a &= 3 & 17b &= 34 \\
+        \tag{$\ast$} a &\neq b \\
+        \nonumber a &={}? & b &={}? \\
+      \end{align}
     display: 1
 Aligned: |
     \begin{aligned}
@@ -113,12 +119,12 @@ DeepFontSizing:
     nolatex: \Huge inside \dfrac doesn't work, needs an extra {…}
 DelimiterSizing: |
     \bigl\uparrow\Bigl\downarrow\biggl\updownarrow
-    \Biggl\Uparrow\Biggr\Downarrow\biggr\langle\Bigr\}\bigr\rfloor \\
+    \Biggl\Uparrow\Biggr\Downarrow\biggr\langle\Bigr\}\bigr\rfloor\; \Set{ x | x<\frac 1 2 } \\
     \begin{pmatrix}
         a & b & c\\
         a & b & c\\
         a & b & c\\
-    \end{pmatrix}
+    \end{pmatrix}\; \Braket{ ϕ | \frac{∂^2}{∂ t^2} | ψ } \\
 DisplayMode:
     tex: \sum_{i=0}^\infty \frac{1}{i}
     pre: pre

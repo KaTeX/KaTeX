@@ -1,19 +1,6 @@
 #!/usr/bin/env bash
 shopt -s extglob
 
-usage() {
-    while [[ $# -gt 1 ]]; do
-        echo "$1" >&2
-        shift
-    done
-    echo "Usage: ${0##*/} [OPTIONS]"
-    echo ""
-    echo "OPTIONS:"
-    echo "  -h|--help         display this help"
-    echo "  --image NAME:TAG  use the named docker image [$IMAGE]"
-    exit $1
-}
-
 used_fonts=(
     KaTeX_AMS-Regular
     KaTeX_Caligraphic-Bold
@@ -53,8 +40,7 @@ cleanup() {
 CONTAINER=
 trap cleanup EXIT
 
-LAST_COMMIT_DATE="$(git log -1 --format=%ct -- src/fonts)"
-IMAGE="katex/fonts:DF-$(openssl sha1 $(dirname "$0")/Dockerfile | tail -c 9)"
+IMAGE="katex/fonts:DF-$(openssl sha1 dockers/fonts/Dockerfile | tail -c 9)"
 TMPFILE="$(mktemp "${TMPDIR:-/tmp}/mjf.XXXXXXXX")"
 FILE="$TMPFILE"
 pushd "src"
@@ -68,11 +54,10 @@ popd
 # build image if missing
 if [[ $(docker images "$IMAGE" | wc -l) -lt 2 ]]; then
     echo "Need to build docker image $IMAGE"
-    docker build --tag "$IMAGE" "$(dirname "$0")"
+    docker build --tag "$IMAGE" "dockers/fonts"
 fi
 
 CMDS="set -ex
-export SOURCE_DATE_EPOCH=${LAST_COMMIT_DATE}
 tar xfP katex-fonts.tar.gz
 make -C fonts all
 tar cf /fonts.tar ${filetypes[*]/#/fonts/}"
@@ -97,5 +82,3 @@ for filetype in "${filetypes[@]}"; do
     done
 done
 rm -rf temp fonts.tar
-
-echo $LAST_COMMIT_DATE > fonts/VERSION

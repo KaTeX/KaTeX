@@ -20,58 +20,22 @@ try {
 const {version} = require("./package.json");
 const fs = require("fs");
 
-const program = require("commander")
-    .version(version)
-    .option("-d, --display-mode",
-        "Render math in display mode, which puts the math in display style " +
-        "(so \\int and \\sum are large, for example), and centers the math " +
-        "on the page on its own line.")
-    .option("--leqno",
-        "Render display math in leqno style (left-justified tags).")
-    .option("--fleqn",
-        "Render display math flush left.")
-    .option("-t, --no-throw-on-error",
-        "Render errors (in the color given by --error-color) instead of " +
-        "throwing a ParseError exception when encountering an error.")
-    .option("-c, --error-color <color>",
-        "A color string given in the format 'rgb' or 'rrggbb' (no #). " +
-        "This option determines the color of errors rendered by the -t option.",
-        "#cc0000",
-        (color) => "#" + color)
-    .option("-b, --color-is-text-color",
-        "Makes \\color behave like LaTeX's 2-argument \\textcolor, " +
-        "instead of LaTeX's one-argument \\color mode change.")
-    .option("-S, --strict",
-        "Turn on strict / LaTeX faithfulness mode, which throws an error " +
-        "if the input uses features that are not supported by LaTeX")
-    .option("-s, --max-size <n>",
-        "If non-zero, all user-specified sizes, e.g. in " +
-        "\\rule{500em}{500em}, will be capped to maxSize ems. " +
-        "Otherwise, elements and spaces can be arbitrarily large",
-        Infinity, parseInt)
-    .option("-e, --max-expand <n>",
-        "Limit the number of macro expansions to the specified number, to " +
-        "prevent e.g. infinite macro loops.  If set to Infinity, the macro " +
-        "expander will try to fully expand as in LaTeX.",
-        (n) => (n === "Infinity" ? Infinity : parseInt(n)))
-    .option("-m, --macro <def>",
-        "Define custom macro of the form '\\foo:expansion' (use multiple -m " +
-        "arguments for multiple macros).",
-        (def, defs) => {
-            defs.push(def);
-            return defs;
-        }, [])
-    .option("-f, --macro-file <path>",
+const program = require("commander").version(version);
+for (const prop in katex.SETTINGS_SCHEMA) {
+    if (katex.SETTINGS_SCHEMA.hasOwnProperty(prop)) {
+        const opt = katex.SETTINGS_SCHEMA[prop];
+        if (opt.cli !== false) {
+            program.option(opt.cli || "--" + prop, opt.cliDescription ||
+                opt.description, opt.cliProcessor, opt.cliDefault);
+        }
+    }
+}
+program.option("-f, --macro-file <path>",
         "Read macro definitions, one per line, from the given file.")
     .option("-i, --input <path>", "Read LaTeX input from the given file.")
     .option("-o, --output <path>", "Write html output to the given file.");
 
-if (require.main !== module) {
-    module.exports = program;
-    return;
-}
-
-const options = program.parse(process.argv);
+let options;
 
 function readMacros() {
     if (options.macroFile) {
@@ -123,10 +87,14 @@ function readInput() {
 }
 
 function writeOutput(input) {
+    // --format specifies the KaTeX output
+    const outputFile = options.output;
+    options.output = options.format;
+
     const output = katex.renderToString(input, options) + "\n";
 
-    if (options.output) {
-        fs.writeFile(options.output, output, function(err) {
+    if (outputFile) {
+        fs.writeFile(outputFile, output, function(err) {
             if (err) {
                 return console.log(err);
             }
@@ -136,4 +104,9 @@ function writeOutput(input) {
     }
 }
 
-readMacros();
+if (require.main !== module) {
+    module.exports = program;
+} else {
+    options = program.parse(process.argv).opts();
+    readMacros();
+}

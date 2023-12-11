@@ -4,124 +4,18 @@
  * This can be used to define some commands in terms of others.
  */
 
+// Export global macros object from defineMacro
+import defineMacro, {_macros} from "./defineMacro";
+const macros = _macros;
+export default macros;
+
 import fontMetricsData from "./fontMetricsData";
 import functions from "./functions";
 import symbols from "./symbols";
 import utils from "./utils";
-import {Token} from "./Token";
+import {makeEm} from "./units";
 import ParseError from "./ParseError";
-import type Namespace from "./Namespace";
 
-import type {Mode} from "./types";
-
-/**
- * Provides context to macros defined by functions. Implemented by
- * MacroExpander.
- */
-export interface MacroContextInterface {
-    mode: Mode;
-
-    /**
-     * Object mapping macros to their expansions.
-     */
-    macros: Namespace<MacroDefinition>;
-
-    /**
-     * Returns the topmost token on the stack, without expanding it.
-     * Similar in behavior to TeX's `\futurelet`.
-     */
-    future(): Token;
-
-    /**
-     * Remove and return the next unexpanded token.
-     */
-    popToken(): Token;
-
-    /**
-     * Consume all following space tokens, without expansion.
-     */
-    consumeSpaces(): void;
-
-    /**
-     * Expand the next token only once if possible.
-     */
-    expandOnce(expandableOnly?: boolean): Token | Token[];
-
-    /**
-     * Expand the next token only once (if possible), and return the resulting
-     * top token on the stack (without removing anything from the stack).
-     * Similar in behavior to TeX's `\expandafter\futurelet`.
-     */
-    expandAfterFuture(): Token;
-
-    /**
-     * Recursively expand first token, then return first non-expandable token.
-     */
-    expandNextToken(): Token;
-
-    /**
-     * Fully expand the given macro name and return the resulting list of
-     * tokens, or return `undefined` if no such macro is defined.
-     */
-    expandMacro(name: string): Token[] | void;
-
-    /**
-     * Fully expand the given macro name and return the result as a string,
-     * or return `undefined` if no such macro is defined.
-     */
-    expandMacroAsText(name: string): string | void;
-
-    /**
-     * Consume an argument from the token stream, and return the resulting array
-     * of tokens and start/end token.
-     */
-    consumeArg(delims?: ?string[]): MacroArg;
-
-    /**
-     * Consume the specified number of arguments from the token stream,
-     * and return the resulting array of arguments.
-     */
-    consumeArgs(numArgs: number): Token[][];
-
-    /**
-     * Determine whether a command is currently "defined" (has some
-     * functionality), meaning that it's a macro (in the current group),
-     * a function, a symbol, or one of the special commands listed in
-     * `implicitCommands`.
-     */
-    isDefined(name: string): boolean;
-
-    /**
-     * Determine whether a command is expandable.
-     */
-    isExpandable(name: string): boolean;
-}
-
-export type MacroArg = {
-    tokens: Token[],
-    start: Token,
-    end: Token
-};
-
-/** Macro tokens (in reverse order). */
-export type MacroExpansion = {
-    tokens: Token[],
-    numArgs: number,
-    delimiters?: string[][],
-    unexpandable?: boolean, // used in \let
-};
-
-export type MacroDefinition = string | MacroExpansion |
-    (MacroContextInterface => (string | MacroExpansion));
-export type MacroMap = {[string]: MacroDefinition};
-
-const builtinMacros: MacroMap = {};
-export default builtinMacros;
-
-// This function might one day accept an additional argument and do more things.
-export function defineMacro(name: string, body: MacroDefinition) {
-    builtinMacros[name] = body;
-}
 
 //////////////////////////////////////////////////////////////////////
 // macro tools
@@ -474,7 +368,7 @@ defineMacro("\\substack", "\\begin{subarray}{c}#1\\end{subarray}");
 // \renewcommand{\colon}{\nobreak\mskip2mu\mathpunct{}\nonscript
 // \mkern-\thinmuskip{:}\mskip6muplus1mu\relax}
 defineMacro("\\colon", "\\nobreak\\mskip2mu\\mathpunct{}" +
-    "\\mathchoice{\\mkern-3mu}{\\mkern-3mu}{}{}{:}\\mskip6mu");
+    "\\mathchoice{\\mkern-3mu}{\\mkern-3mu}{}{}{:}\\mskip6mu\\relax");
 
 // \newcommand{\boxed}[1]{\fbox{\m@th$\displaystyle#1$}}
 defineMacro("\\boxed", "\\fbox{$\\displaystyle{#1}$}");
@@ -553,7 +447,7 @@ defineMacro("\\dots", function(context) {
     const next = context.expandAfterFuture().text;
     if (next in dotsByToken) {
         thedots = dotsByToken[next];
-    } else if (next.substr(0, 4) === '\\not') {
+    } else if (next.slice(0, 4) === '\\not') {
         thedots = '\\dotsb';
     } else if (next in symbols.math) {
         if (utils.contains(['bin', 'rel'], symbols.math[next].group)) {
@@ -703,14 +597,6 @@ defineMacro("\\mod", "\\allowbreak" +
     "\\mathchoice{\\mkern18mu}{\\mkern12mu}{\\mkern12mu}{\\mkern12mu}" +
     "{\\rm mod}\\,\\,#1");
 
-// \pmb    --   A simulation of bold.
-// The version in ambsy.sty works by typesetting three copies of the argument
-// with small offsets. We use two copies. We omit the vertical offset because
-// of rendering problems that makeVList encounters in Safari.
-defineMacro("\\pmb", "\\html@mathml{" +
-    "\\@binrel{#1}{\\mathrlap{#1}\\kern0.5px#1}}" +
-    "{\\mathbf{#1}}");
-
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e
 
@@ -741,8 +627,8 @@ defineMacro("\\TeX", "\\textrm{\\html@mathml{" +
 // boxes, though visually the A appears to extend above slightly).
 // We compute the corresponding \raisebox when A is rendered in \normalsize
 // \scriptstyle, which has a scale factor of 0.7 (see Options.js).
-const latexRaiseA = fontMetricsData['Main-Regular']["T".charCodeAt(0)][1] -
-    0.7 * fontMetricsData['Main-Regular']["A".charCodeAt(0)][1] + "em";
+const latexRaiseA = makeEm(fontMetricsData['Main-Regular']["T".charCodeAt(0)][1] -
+    0.7 * fontMetricsData['Main-Regular']["A".charCodeAt(0)][1]);
 defineMacro("\\LaTeX", "\\textrm{\\html@mathml{" +
     `L\\kern-.36em\\raisebox{${latexRaiseA}}{\\scriptstyle A}` +
     "\\kern-.15em\\TeX}{LaTeX}}");
@@ -1018,6 +904,58 @@ defineMacro("\\ket", "\\mathinner{|{#1}\\rangle}");
 defineMacro("\\braket", "\\mathinner{\\langle{#1}\\rangle}");
 defineMacro("\\Bra", "\\left\\langle#1\\right|");
 defineMacro("\\Ket", "\\left|#1\\right\\rangle");
+const braketHelper = (one) => (context) => {
+    const left = context.consumeArg().tokens;
+    const middle = context.consumeArg().tokens;
+    const middleDouble = context.consumeArg().tokens;
+    const right = context.consumeArg().tokens;
+    const oldMiddle = context.macros.get("|");
+    const oldMiddleDouble = context.macros.get("\\|");
+    context.macros.beginGroup();
+    const midMacro = (double) => (context) => {
+        if (one) {
+            // Only modify the first instance of | or \|
+            context.macros.set("|", oldMiddle);
+            if (middleDouble.length) {
+                context.macros.set("\\|", oldMiddleDouble);
+            }
+        }
+        let doubled = double;
+        if (!double && middleDouble.length) {
+            // Mimic \@ifnextchar
+            const nextToken = context.future();
+            if (nextToken.text === "|") {
+                context.popToken();
+                doubled = true;
+            }
+        }
+        return {
+            tokens: doubled ? middleDouble : middle,
+            numArgs: 0,
+        };
+    };
+    context.macros.set("|", midMacro(false));
+    if (middleDouble.length) {
+        context.macros.set("\\|", midMacro(true));
+    }
+    const arg = context.consumeArg().tokens;
+    const expanded = context.expandTokens([
+        ...right, ...arg, ...left,  // reversed
+    ]);
+    context.macros.endGroup();
+    return {
+        tokens: expanded.reverse(),
+        numArgs: 0,
+    };
+};
+defineMacro("\\bra@ket", braketHelper(false));
+defineMacro("\\bra@set", braketHelper(true));
+defineMacro("\\Braket", "\\bra@ket{\\left\\langle}" +
+    "{\\,\\middle\\vert\\,}{\\,\\middle\\vert\\,}{\\right\\rangle}");
+defineMacro("\\Set", "\\bra@set{\\left\\{\\:}" +
+    "{\\;\\middle\\vert\\;}{\\;\\middle\\Vert\\;}{\\:\\right\\}}");
+defineMacro("\\set", "\\bra@set{\\{\\,}{\\mid}{}{\\,\\}}");
+    // has no support for special || or \|
 
 //////////////////////////////////////////////////////////////////////
 // actuarialangle.dtx

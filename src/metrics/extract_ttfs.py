@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from fontTools.ttLib import TTFont
 import sys
@@ -44,6 +44,9 @@ metrics_to_extract = {
         u"\u21aa": None,  # \hookrightarrow
         u"\u21cc": None,  # \rightleftharpoons
     },
+    "Main-Bold": {
+        u"\u2245": None,  # \cong
+    },
     "Size1-Regular": {
         u"\u222c": u"\u222b",  # \iint, based on \int
         u"\u222d": u"\u222b",  # \iiint, based on \int
@@ -76,7 +79,7 @@ def main():
         chars[u"\u0020"] = None  # space
         chars[u"\u00a0"] = None  # nbsp
 
-        for char, base_char in chars.iteritems():
+        for char, base_char in chars.items():
             code = ord(char)
             names = set(t.get(code) for t in cmap)
             if not names:

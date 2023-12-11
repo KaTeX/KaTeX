@@ -3,7 +3,7 @@ import ParseError from "../src/ParseError";
 import parseTree from "../src/parseTree";
 import Settings from "../src/Settings";
 
-import diff from 'jest-diff';
+import {diff} from 'jest-diff';
 import {RECEIVED_COLOR, printReceived, printExpected} from 'jest-matcher-utils';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 

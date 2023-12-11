@@ -5,13 +5,14 @@
  * since we're mainly using MathML to improve accessibility, we don't manage
  * any of the styling state that the plain DOM nodes do.
  *
- * The `toNode` and `toMarkup` functions work simlarly to how they do in
+ * The `toNode` and `toMarkup` functions work similarly to how they do in
  * domTree.js, creating namespaced DOM nodes and HTML text markup respectively.
  */
 
 import utils from "./utils";
 import {DocumentFragment} from "./tree";
 import {createClass} from "./domTree";
+import {makeEm} from "./units";
 
 import type {VirtualNode} from "./tree";
 
@@ -165,7 +166,7 @@ export class TextNode implements MathDomNode {
 
     /**
      * Converts the text node into a string
-     * (representing the text iteself).
+     * (representing the text itself).
      */
     toText(): string {
         return this.text;
@@ -219,7 +220,7 @@ class SpaceNode implements MathDomNode {
         } else {
             const node = document.createElementNS(
                 "http://www.w3.org/1998/Math/MathML", "mspace");
-            node.setAttribute("width", this.width + "em");
+            node.setAttribute("width", makeEm(this.width));
             return node;
         }
     }
@@ -231,7 +232,7 @@ class SpaceNode implements MathDomNode {
         if (this.character) {
             return `<mtext>${this.character}</mtext>`;
         } else {
-            return `<mspace width="${this.width}em"/>`;
+            return `<mspace width="${makeEm(this.width)}"/>`;
         }
     }
 

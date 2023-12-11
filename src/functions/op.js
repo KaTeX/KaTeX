@@ -8,6 +8,7 @@ import utils from "../utils";
 import Style from "../Style";
 import {assembleSupSub} from "./utils/assembleSupSub";
 import {assertNodeType} from "../parseNode";
+import {makeEm} from "../units";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -60,7 +61,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
         if (group.name === "\\oiint" || group.name === "\\oiiint") {
             // No font glyphs yet, so use a glyph w/o the oval.
             // TODO: When font glyphs are available, delete this code.
-            stash = group.name.substr(1);
+            stash = group.name.slice(1);
             group.name = stash === "oiint" ? "\\iint" : "\\iiint";
         }
 
@@ -132,7 +133,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     } else {
         if (baseShift) {
             base.style.position = "relative";
-            base.style.top = baseShift + "em";
+            base.style.top = makeEm(baseShift);
         }
 
         return base;

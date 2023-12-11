@@ -137,6 +137,12 @@
         font-family: KaTeX_Fraktur;
     }
 
+    .mathboldfrak,
+    .textboldfrak {
+        font-family: KaTeX_Fraktur;
+        font-weight: bold;
+    }
+
     .mathtt {
         font-family: KaTeX_Typewriter;
     }
@@ -440,7 +446,7 @@
     .mtable {
         .vertical-separator {
             display: inline-block;
-            // margin and border-right are set in Javascript
+            // margin and border-right are set in JavaScript
             min-width: 1px;  // Prevent Chrome from omitting a line.
         }
 
@@ -576,7 +582,7 @@
     }
 
     .boxpad {
-        padding: 0 0.3em 0 0.3em;      // \fboxsep = 3pt
+        padding: 0 0.3em;              // \fboxsep = 3pt
     }
 
     .fbox,
@@ -586,7 +592,7 @@
     }
 
     .cancel-pad {
-        padding: 0 0.2em 0 0.2em;    // ref: cancel package  \advance\dimen@ 2\p@ %  "+2"
+        padding: 0 0.2em;            // ref: cancel package  \advance\dimen@ 2\p@ %  "+2"
     }
 
     .cancel-lap {
@@ -608,7 +614,7 @@
     }
 
     .anglpad {
-        padding: 0 0.03889em 0 0.03889em; // pad 1mu left and right (in scriptstyle)
+        padding: 0 0.03889em;             // pad 1mu left and right (in scriptstyle)
     }
 
     .eqn-num::before {

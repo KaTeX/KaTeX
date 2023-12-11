@@ -5,6 +5,7 @@ import buildTree from "../src/buildTree";
 import katex from "../katex";
 import parseTree from "../src/parseTree";
 import Options from "../src/Options";
+import ParseError from "../src/ParseError";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
 import {
@@ -98,6 +99,19 @@ describe("A rel parser", function() {
                 expect(group.family).toEqual("rel");
             }
         }
+    });
+});
+
+describe("A mathinner parser", function() {
+    it("should not fail", function() {
+        expect("\\mathinner{\\langle{\\psi}\\rangle}").toParse();
+        expect("\\frac 1 {\\mathinner{\\langle{\\psi}\\rangle}}").toParse();
+    });
+
+    it("should return one group, not a fragment", function() {
+        const contents = "\\mathinner{\\langle{\\psi}\\rangle}";
+        const mml = buildMathML(getParsed(contents), contents, defaultOptions);
+        expect(mml.children.length).toEqual(1);
     });
 });
 
@@ -261,6 +275,10 @@ describe("A subscript and superscript parser", function() {
         expect`x^{x_x}`.toParse();
         expect`x_{x^x}`.toParse();
         expect`x_{x_x}`.toParse();
+    });
+
+    it("should work with Unicode (sub|super)script characters", function() {
+        expect`A² + B²⁺³ + ¹²C + E₂³ + F₂₊₃`.toParseLike("A^{2} + B^{2+3} + ^{12}C + E_{2}^{3} + F_{2+3}");
     });
 });
 
@@ -1249,6 +1267,7 @@ describe("A begin/end parser", function() {
 
     it("should parse an environment with hlines", function() {
         expect`\begin{matrix}\hline a&b\\ \hline c&d\end{matrix}`.toParse();
+        expect`\begin{matrix}\hline a&b\cr \hline c&d\end{matrix}`.toParse();
         expect`\begin{matrix}\hdashline a&b\\ \hdashline c&d\end{matrix}`.toParse();
     });
 
@@ -1289,6 +1308,11 @@ describe("A begin/end parser", function() {
 
     it("should not allow \\cr to scan for an optional size argument", function() {
         expect`\begin{matrix}a&b\cr[c]&d\end{matrix}`.toParse();
+    });
+
+    it("should not treat [ after space as optional argument to \\\\", function() {
+        expect`\begin{matrix}a&b\\ [c]&d\end{matrix}`.toParse();
+        expect`a\\ [b]`.toParse();
     });
 
     it("should eat a final newline", function() {
@@ -1386,9 +1410,9 @@ describe("A TeX-compliant parser", function() {
             r`\frac x \sqrt y`,
             r`\frac \mathllap x y`,
             r`\frac x \mathllap y`,
-            // This actually doesn't work in real TeX, but it is suprisingly
+            // This actually doesn't work in real TeX, but it is surprisingly
             // hard to get this to correctly work. So, we take hit of very small
-            // amounts of non-compatiblity in order for the rest of the tests to
+            // amounts of non-compatibility in order for the rest of the tests to
             // work
             // r`\llap \frac x y`,
             r`\mathllap \mathllap x`,
@@ -3037,6 +3061,53 @@ describe("A parser that does not throw on unsupported commands", function() {
     });
 });
 
+describe("ParseError properties", function() {
+    it("should contain affected position and length information", function() {
+        try {
+            katex.renderToString("1 + \\fraq{}{}");
+
+            // Render is expected to throw, so this should not be called.
+            expect(true).toBe(false);
+        } catch (error) {
+            expect(error).toBeInstanceOf(ParseError);
+            expect(error.message).toBe("KaTeX parse error: Undefined control sequence: \\fraq at position 5: 1 + \\̲f̲r̲a̲q̲{}{}");
+            expect(error.rawMessage).toBe("Undefined control sequence: \\fraq");
+            expect(error.position).toBe(4);
+            expect(error.length).toBe(5);
+        }
+    });
+
+    it("should contain position and length information at end of input", function() {
+        try {
+            katex.renderToString("\\frac{}");
+
+            // Render is expected to throw, so this should not be called.
+            expect(true).toBe(false);
+        } catch (error) {
+            expect(error).toBeInstanceOf(ParseError);
+            expect(error.message).toBe("KaTeX parse error: Unexpected end of input in a macro argument, expected '}' at end of input: \\frac{}");
+            expect(error.rawMessage).toBe("Unexpected end of input in a macro argument, expected '}'");
+            expect(error.position).toBe(7);
+            expect(error.length).toBe(0);
+        }
+    });
+
+    it("should contain no position and length information if unavailable", function() {
+        try {
+            katex.renderToString("\\verb|hello\nworld|");
+
+            // Render is expected to throw, so this should not be called.
+            expect(true).toBe(false);
+        } catch (error) {
+            expect(error).toBeInstanceOf(ParseError);
+            expect(error.message).toBe("KaTeX parse error: \\verb ended by end of line instead of matching delimiter");
+            expect(error.rawMessage).toBe("\\verb ended by end of line instead of matching delimiter");
+            expect(error.position).toBeUndefined();
+            expect(error.length).toBeUndefined();
+        }
+    });
+});
+
 describe("The symbol table integrity", function() {
     it("should treat certain symbols as synonyms", function() {
         expect`<`.toBuildLike`\lt`;
@@ -3313,6 +3384,12 @@ describe("A macro expander", function() {
         expect(parsedChar[0].type).toEqual("textord");
     });
 
+    it("\\char handles >16-bit characters", () => {
+        const parsed = getParsed('\\char"1d7d9');
+        expect(parsed[0].type).toEqual("textord");
+        expect(parsed[0].text).toEqual("𝟙");
+    });
+
     it("should build Unicode private area characters", function() {
         expect`\gvertneqq\lvertneqq\ngeqq\ngeqslant\nleqq`.toBuild();
         expect`\nleqslant\nshortmid\nshortparallel\varsubsetneq`.toBuild();
@@ -3434,9 +3511,15 @@ describe("A macro expander", function() {
         expect(macros["\\foo"]).toBeFalsy();
     });
 
+    it("\\def doesn't change settings.macros on error", () => {
+        const macros = {};
+        expect`\def\foo{c^}\foo`.not.toParse(new Settings({macros}));
+        expect(macros["\\foo"]).toBeFalsy();
+    });
+
     it("\\def changes settings.macros with globalGroup", () => {
         const macros = {};
-        expect`\gdef\foo{1}`.toParse(new Settings({macros, globalGroup: true}));
+        expect`\def\foo{1}`.toParse(new Settings({macros, globalGroup: true}));
         expect(macros["\\foo"]).toBeTruthy();
     });
 
@@ -3462,6 +3545,20 @@ describe("A macro expander", function() {
 
     it("\\futurelet should parse correctly", () => {
         expect`\futurelet\foo\frac1{2+\foo}`.toParseLike`\frac1{2+1}`;
+    });
+
+    it("macros argument can simulate \\let", () => {
+        expect("\\int").toParseLike("\\int\\limits", {macros: {
+            "\\Oldint": {
+                tokens: [{text: "\\int", noexpand: true}],
+                numArgs: 0,
+                unexpandable: true,
+            },
+            "\\int": {
+                tokens: [{text: "\\limits"}, {text: "\\Oldint"}],
+                numArgs: 0,
+            },
+        }});
     });
 
     it("\\newcommand doesn't change settings.macros", () => {
@@ -3581,6 +3678,26 @@ describe("A macro expander", function() {
     it("should expand \\Ket as expected", () => {
         expect`\Ket{\psi}`.toParseLike`\left|\psi\right\rangle`;
     });
+
+    it("should expand \\Braket as expected", () => {
+        expect`\Braket{ ϕ | \frac{∂^2}{∂ t^2} | ψ }`.toParseLike`\left\langle ϕ\,\middle\vert\,\frac{∂^2}{∂ t^2}\,\middle\vert\, ψ\right\rangle`;
+    });
+
+    it("should expand \\set as expected", () => {
+        expect`\set{x|x<5|S|}`.toParseLike`\{\,x\mid x<5|S|\,\}`;
+        // \set doesn't support special || or \| handling
+        expect`\set{x||x<5|S|}`.toParseLike`\{\,x\mid |x<5|S|\,\}`;
+        expect`\set{x\|x<5|S|}`.toParseLike`\{\,x\|x<5\mid S|\,\}`;
+    });
+
+    it("should expand \\Set as expected", () => {
+        expect`\Set{ x | x<\frac 1 2 |S| }`
+        .toParseLike`\left\{\: x\;\middle\vert\; x<\frac 1 2 |S| \:\right\}`;
+        expect`\Set{ x || x<\frac 1 2 |S| }`
+        .toParseLike`\left\{\: x\;\middle\Vert\; x<\frac 1 2 |S| \:\right\}`;
+        expect`\Set{ x \| x<\frac 1 2 |S| }`
+        .toParseLike`\left\{\: x\;\middle\Vert\; x<\frac 1 2 |S| \:\right\}`;
+    });
 });
 
 describe("\\tag support", function() {
@@ -3592,6 +3709,19 @@ describe("\\tag support", function() {
 
     it("should fail with multiple tags", () => {
         expect`\tag{1}\tag{2}x+y`.not.toParse(displayMode);
+    });
+
+    it("should fail with multiple tags in one row", () => {
+        expect`\begin{align}\tag{1}x+y\tag{2}\end{align}`.not.toParse(displayMode);
+    });
+
+    it("should work with one tag per row", () => {
+        expect`\begin{align}\tag{1}x\\&+y\tag{2}\end{align}`.toParse(displayMode);
+    });
+
+    it("should work with \\nonumber/\\notag", () => {
+        expect`\begin{align}\tag{1}\nonumber x\\&+y\notag\end{align}`
+        .toParseLike(r`\begin{align}\tag{1}x\\&+y\nonumber\end{align}`, displayMode);
     });
 
     it("should build", () => {
@@ -3764,7 +3894,7 @@ describe("Unicode", function() {
     });
 
     it("should build binary operators", function() {
-        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝◯⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5").toBuild(strictSettings);
+        expect("±×÷∓∔∧∨∩∪≀⊎⊓⊔⊕⊖⊗⊘⊙⊚⊛⊝◯⊞⊟⊠⊡⊺⊻⊼⋇⋉⋊⋋⋌⋎⋏⋒⋓⩞\u22C5\u2218\u2216\u2219").toBuild(strictSettings);
     });
 
     it("should build common ords", function() {
@@ -3789,6 +3919,7 @@ describe("Unicode", function() {
         wideCharStr += String.fromCharCode(0xD835, 0xDC00);   // bold A
         wideCharStr += String.fromCharCode(0xD835, 0xDC68);   // bold italic A
         wideCharStr += String.fromCharCode(0xD835, 0xDD04);   // Fraktur A
+        wideCharStr += String.fromCharCode(0xD835, 0xDD6C);   // bold Fraktur A
         wideCharStr += String.fromCharCode(0xD835, 0xDD38);   // double-struck
         wideCharStr += String.fromCharCode(0xD835, 0xDC9C);   // script A
         wideCharStr += String.fromCharCode(0xD835, 0xDDA0);   // sans serif A
@@ -3805,6 +3936,7 @@ describe("Unicode", function() {
         wideCharText += String.fromCharCode(0xD835, 0xDC00);   // bold A
         wideCharText += String.fromCharCode(0xD835, 0xDC68);   // bold italic A
         wideCharText += String.fromCharCode(0xD835, 0xDD04);   // Fraktur A
+        wideCharStr += String.fromCharCode(0xD835, 0xDD6C);    // bold Fraktur A
         wideCharText += String.fromCharCode(0xD835, 0xDD38);   // double-struck
         wideCharText += String.fromCharCode(0xD835, 0xDC9C);   // script A
         wideCharText += String.fromCharCode(0xD835, 0xDDA0);   // sans serif A
@@ -4035,5 +4167,11 @@ describe("debugging macros", () => {
             // eslint-disable-next-line no-console
             expect(console.error).toHaveBeenCalledWith("Hello, world");
         });
+    });
+});
+
+describe("\\relax", () => {
+    it("should stop the expansion", () => {
+        expect`\kern2\relax em`.not.toParse();
     });
 });

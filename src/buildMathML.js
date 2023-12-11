@@ -1,6 +1,6 @@
 // @flow
 /**
- * This file converts a parse tree into a cooresponding MathML tree. The main
+ * This file converts a parse tree into a corresponding MathML tree. The main
  * entry point is the `buildMathML` function, which takes a parse tree from the
  * parser.
  */
@@ -32,8 +32,8 @@ export const makeText = function(
     if (symbols[mode][text] && symbols[mode][text].replace &&
         text.charCodeAt(0) !== 0xD835 &&
         !(ligatures.hasOwnProperty(text) && options &&
-          ((options.fontFamily && options.fontFamily.substr(4, 2) === "tt") ||
-           (options.font && options.font.substr(4, 2) === "tt")))) {
+          ((options.fontFamily && options.fontFamily.slice(4, 6) === "tt") ||
+           (options.font && options.font.slice(4, 6) === "tt")))) {
         text = symbols[mode][text].replace;
     }
 
@@ -101,7 +101,7 @@ export const getVariant = function(
     } else if (font === "mathfrak") {
         return "fraktur";
     } else if (font === "mathscr" || font === "mathcal") {
-        // MathML makes no distinction between script and caligrahpic
+        // MathML makes no distinction between script and calligraphic
         return "script";
     } else if (font === "mathsf") {
         return "sans-serif";

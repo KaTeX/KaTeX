@@ -1,6 +1,244 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.9](https://github.com/KaTeX/KaTeX/compare/v0.16.8...v0.16.9) (2023-10-02)
+
+
+### Features
+
+* Support bold Fraktur ([#3777](https://github.com/KaTeX/KaTeX/issues/3777)) ([240d5ae](https://github.com/KaTeX/KaTeX/commit/240d5aede915e0303929a9328745b1060e12004a))
+
+## [0.16.8](https://github.com/KaTeX/KaTeX/compare/v0.16.7...v0.16.8) (2023-06-24)
+
+
+### Features
+
+* expose error length and raw error message on ParseError ([#3820](https://github.com/KaTeX/KaTeX/issues/3820)) ([710774a](https://github.com/KaTeX/KaTeX/commit/710774aaebb38f43b1ec51c159fe9b9520c91424))
+
+## [0.16.7](https://github.com/KaTeX/KaTeX/compare/v0.16.6...v0.16.7) (2023-04-28)
+
+
+### Bug Fixes
+
+* **docs/support_table.md:** delete redundant "varPsi" ([#3814](https://github.com/KaTeX/KaTeX/issues/3814)) ([33a1b98](https://github.com/KaTeX/KaTeX/commit/33a1b98710c880d2d4a67aa0048f027a94b85702))
+
+## [0.16.6](https://github.com/KaTeX/KaTeX/compare/v0.16.5...v0.16.6) (2023-04-17)
+
+
+### Bug Fixes
+
+* Support `\let` via `macros` option ([#3738](https://github.com/KaTeX/KaTeX/issues/3738)) ([bdb0be2](https://github.com/KaTeX/KaTeX/commit/bdb0be201794d22adaee05438b07a2830efea9da)), closes [#3737](https://github.com/KaTeX/KaTeX/issues/3737) [#3737](https://github.com/KaTeX/KaTeX/issues/3737)
+
+## [0.16.5](https://github.com/KaTeX/KaTeX/compare/v0.16.4...v0.16.5) (2023-04-17)
+
+
+### Features
+
+* __defineFunction API exposing internal defineFunction ([#3805](https://github.com/KaTeX/KaTeX/issues/3805)) ([c7b1f84](https://github.com/KaTeX/KaTeX/commit/c7b1f84b7801a29dffdfa3db0ff35de289db80c0)), closes [#3756](https://github.com/KaTeX/KaTeX/issues/3756)
+
+## [0.16.4](https://github.com/KaTeX/KaTeX/compare/v0.16.3...v0.16.4) (2022-12-07)
+
+
+### Bug Fixes
+
+* space should prevent optional argument to \\ ([#3746](https://github.com/KaTeX/KaTeX/issues/3746)) ([a0deb34](https://github.com/KaTeX/KaTeX/commit/a0deb3410fd92340556fc4c9edb8ab586077e5bf)), closes [#3745](https://github.com/KaTeX/KaTeX/issues/3745)
+
+## [0.16.3](https://github.com/KaTeX/KaTeX/compare/v0.16.2...v0.16.3) (2022-10-22)
+
+
+### Bug Fixes
+
+* \hline after \cr ([#3735](https://github.com/KaTeX/KaTeX/issues/3735)) ([ebf6bf5](https://github.com/KaTeX/KaTeX/commit/ebf6bf5b50a98ac6c5aca1896c0a6ba985c1c91c)), closes [#3734](https://github.com/KaTeX/KaTeX/issues/3734)
+
+## [0.16.2](https://github.com/KaTeX/KaTeX/compare/v0.16.1...v0.16.2) (2022-08-29)
+
+
+### Bug Fixes
+
+* **auto-render:** concatenate content of successive text nodes ([#3422](https://github.com/KaTeX/KaTeX/issues/3422)) ([4d3fdd8](https://github.com/KaTeX/KaTeX/commit/4d3fdd8647a1c320dc7bcb9c9ea2af81379f700d))
+* Implement \pmb via CSS text-shadow ([#3505](https://github.com/KaTeX/KaTeX/issues/3505)) ([176552a](https://github.com/KaTeX/KaTeX/commit/176552a69183d71425b491d4cc2fa1d462a1246a))
+
+## [0.16.1](https://github.com/KaTeX/KaTeX/compare/v0.16.0...v0.16.1) (2022-08-28)
+
+
+### Bug Fixes
+
+* Use SVGs for some stacked delims ([#3686](https://github.com/KaTeX/KaTeX/issues/3686)) ([8a65a2e](https://github.com/KaTeX/KaTeX/commit/8a65a2e1fd69ffeee2fac62229f9f05ebf6afd45))
+
+# [0.16.0](https://github.com/KaTeX/KaTeX/compare/v0.15.6...v0.16.0) (2022-06-06)
+
+
+### Bug Fixes
+
+* **copy-tex:** Use JS (instead of CSS) to select full equation, solving display glitches ([#3586](https://github.com/KaTeX/KaTeX/issues/3586)) ([8c2d852](https://github.com/KaTeX/KaTeX/commit/8c2d852c4af213ba4e2f4a3b875498c367e9a119))
+
+
+### BREAKING CHANGES
+
+* **copy-tex:** copy-tex extension no longer has (or requires) a CSS file.
+
+## [0.15.6](https://github.com/KaTeX/KaTeX/compare/v0.15.5...v0.15.6) (2022-05-20)
+
+
+### Features
+
+* Support \Braket, \set, and \Set ([#3214](https://github.com/KaTeX/KaTeX/issues/3214)) ([9e3ae4d](https://github.com/KaTeX/KaTeX/commit/9e3ae4d5a81b825b90a055b46d5c7ab0a3a50379))
+
+## [0.15.5](https://github.com/KaTeX/KaTeX/compare/v0.15.4...v0.15.5) (2022-05-20)
+
+
+### Bug Fixes
+
+* Avoid crash when \ce{} is empty ([#3627](https://github.com/KaTeX/KaTeX/issues/3627)) ([4865e45](https://github.com/KaTeX/KaTeX/commit/4865e4543774441467f81f81ef45c9b59f1349ae))
+
+## [0.15.4](https://github.com/KaTeX/KaTeX/compare/v0.15.3...v0.15.4) (2022-05-20)
+
+
+### Features
+
+* Support Unicode (sub|super)script characters ([#3633](https://github.com/KaTeX/KaTeX/issues/3633)) ([d8fc35e](https://github.com/KaTeX/KaTeX/commit/d8fc35e6a97f8e561c723b93ad275cf5a7f3094a))
+
+## [0.15.3](https://github.com/KaTeX/KaTeX/compare/v0.15.2...v0.15.3) (2022-03-13)
+
+
+### Bug Fixes
+
+* Apply operator spacing to Unicode ∙ ∘ ∖ ([#3584](https://github.com/KaTeX/KaTeX/issues/3584)) ([b362fc0](https://github.com/KaTeX/KaTeX/commit/b362fc0b3941926a7a752cab34af6e29570c669a))
+
+## [0.15.2](https://github.com/KaTeX/KaTeX/compare/v0.15.1...v0.15.2) (2022-01-12)
+
+
+### Bug Fixes
+
+* \mathinner MathML when invoked as a denominator. ([#3501](https://github.com/KaTeX/KaTeX/issues/3501)) ([1f85125](https://github.com/KaTeX/KaTeX/commit/1f8512577b58962db2615175121ac9636245f596)), closes [#3500](https://github.com/KaTeX/KaTeX/issues/3500)
+
+## [0.15.1](https://github.com/KaTeX/KaTeX/compare/v0.15.0...v0.15.1) (2021-10-31)
+
+
+### Features
+
+* \nonumber/\notag support, \tag per row of {align} ([#2952](https://github.com/KaTeX/KaTeX/issues/2952)) ([52c4778](https://github.com/KaTeX/KaTeX/commit/52c4778b156110c0b2bdd3d7a3b81bbf76d21800)), closes [#2950](https://github.com/KaTeX/KaTeX/issues/2950) [#2379](https://github.com/KaTeX/KaTeX/issues/2379)
+
+# [0.15.0](https://github.com/KaTeX/KaTeX/compare/v0.14.1...v0.15.0) (2021-10-31)
+
+
+### Features
+
+* implement \relax as no-op function ([#3384](https://github.com/KaTeX/KaTeX/issues/3384)) ([40109f6](https://github.com/KaTeX/KaTeX/commit/40109f624805af41c42897cd428b83a93587f58d))
+
+
+### BREAKING CHANGES
+
+* `\relax` is now implemented as a function. It'll stop
+expansions and parsing, so the behavior around `\relax` may change.
+For example, `\kern2\relax em` will no longer work.
+
+## [0.14.1](https://github.com/KaTeX/KaTeX/compare/v0.14.0...v0.14.1) (2021-10-30)
+
+
+### Bug Fixes
+
+* **Settings:** use schema ([#3375](https://github.com/KaTeX/KaTeX/issues/3375)) ([b58a432](https://github.com/KaTeX/KaTeX/commit/b58a43212e4178ed46cf8e42d67e88b9c8df9c24))
+
+# [0.14.0](https://github.com/KaTeX/KaTeX/compare/v0.13.24...v0.14.0) (2021-10-30)
+
+
+### Features
+
+* conditionally export ECMAScript modules ([#3377](https://github.com/KaTeX/KaTeX/issues/3377)) ([15ee9b4](https://github.com/KaTeX/KaTeX/commit/15ee9b4a5a0ccf26ee271577e469f8b83f8b3ff8))
+
+
+### BREAKING CHANGES
+
+* With module loaders that support conditional exports
+and ECMAScript modules, `import katex from 'katex';` will import the
+ECMAScript module.
+
+You can now use:
+|Before                                    |After                             |
+|------------------------------------------|----------------------------------|
+|`require('katex/dist/contrib/[name].js')` | `require('katex/contrib/[name]')`|
+|`import katex from 'katex/dist/katex.mjs'`| `import katex from 'katex'`      |
+|`import 'katex/dist/contrib/[name].mjs'`  | `import 'katex/contrib/[name]'`  |
+
+## [0.13.24](https://github.com/KaTeX/KaTeX/compare/v0.13.23...v0.13.24) (2021-10-30)
+
+
+### Bug Fixes
+
+* round dimensions to 4 places ([#2460](https://github.com/KaTeX/KaTeX/issues/2460)) ([09ee1c8](https://github.com/KaTeX/KaTeX/commit/09ee1c886740fe8283a77468bc28c30b7816b446))
+
+## [0.13.23](https://github.com/KaTeX/KaTeX/compare/v0.13.22...v0.13.23) (2021-10-30)
+
+
+### Bug Fixes
+
+* **fonts:** correct width of \cong glyph, fix \boldsymbol{\cong} ([#3206](https://github.com/KaTeX/KaTeX/issues/3206)) ([35db4ff](https://github.com/KaTeX/KaTeX/commit/35db4ff40337cc2e2dfebeac1458d6aa9afc8bab)), closes [#2199](https://github.com/KaTeX/KaTeX/issues/2199)
+
+## [0.13.22](https://github.com/KaTeX/KaTeX/compare/v0.13.21...v0.13.22) (2021-10-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commander to v8 [skip netlify] ([#3374](https://github.com/KaTeX/KaTeX/issues/3374)) ([4df1922](https://github.com/KaTeX/KaTeX/commit/4df1922ae9d99927ef9a497209f1691200f39829))
+
+## [0.13.21](https://github.com/KaTeX/KaTeX/compare/v0.13.20...v0.13.21) (2021-10-29)
+
+
+### Bug Fixes
+
+* **fonts:** fix the timestamp of fonts to the epoch ([#3370](https://github.com/KaTeX/KaTeX/issues/3370)) ([dde05db](https://github.com/KaTeX/KaTeX/commit/dde05db6b775d8726a6654db13de26410195be48))
+
+## [0.13.20](https://github.com/KaTeX/KaTeX/compare/v0.13.19...v0.13.20) (2021-10-26)
+
+
+### Performance Improvements
+
+* Avoid vertical-align:0em style ([#3358](https://github.com/KaTeX/KaTeX/issues/3358)) ([6d6d627](https://github.com/KaTeX/KaTeX/commit/6d6d627ca49244d53928b6e0e1a238495cef4bd2)), closes [#3351](https://github.com/KaTeX/KaTeX/issues/3351)
+
+## [0.13.19](https://github.com/KaTeX/KaTeX/compare/v0.13.18...v0.13.19) (2021-10-26)
+
+
+### Features
+
+* **cli:** --trust flag for trusting cli input ([#3339](https://github.com/KaTeX/KaTeX/issues/3339)) ([503f7d7](https://github.com/KaTeX/KaTeX/commit/503f7d79f9b346585248dfe7451b8d635bd3328d)), closes [#2428](https://github.com/KaTeX/KaTeX/issues/2428)
+
+## [0.13.18](https://github.com/KaTeX/KaTeX/compare/v0.13.17...v0.13.18) (2021-09-02)
+
+
+### Features
+
+* unicode support for minus and asterisk operators ([#3227](https://github.com/KaTeX/KaTeX/issues/3227)) ([9dbfc1c](https://github.com/KaTeX/KaTeX/commit/9dbfc1c91725a9db348ce212488690147b9b9dd4)), closes [#3225](https://github.com/KaTeX/KaTeX/issues/3225)
+
+## [0.13.17](https://github.com/KaTeX/KaTeX/compare/v0.13.16...v0.13.17) (2021-09-01)
+
+
+### Bug Fixes
+
+* **fonts:** remove hints from unknown symbols ([#3222](https://github.com/KaTeX/KaTeX/issues/3222)) ([9420f8a](https://github.com/KaTeX/KaTeX/commit/9420f8a2a98442158a9cd2b3fd650092d216d0a2)), closes [#3219](https://github.com/KaTeX/KaTeX/issues/3219)
+
+## [0.13.16](https://github.com/KaTeX/KaTeX/compare/v0.13.15...v0.13.16) (2021-08-28)
+
+
+### Bug Fixes
+
+* \char support for >16-bit Unicode characters ([#3006](https://github.com/KaTeX/KaTeX/issues/3006)) ([ff1734f](https://github.com/KaTeX/KaTeX/commit/ff1734f7c4882fb350cb0e1f366f04ce63675643)), closes [#3004](https://github.com/KaTeX/KaTeX/issues/3004)
+* remove local macros upon parse error ([#3114](https://github.com/KaTeX/KaTeX/issues/3114)) ([a6f29e3](https://github.com/KaTeX/KaTeX/commit/a6f29e36121a31b46866d1985bbc86a06080fbd4)), closes [#3122](https://github.com/KaTeX/KaTeX/issues/3122)
+
+## [0.13.15](https://github.com/KaTeX/KaTeX/compare/v0.13.14...v0.13.15) (2021-08-28)
+
+
+### Features
+
+* text-mode cedilla accent via \c ([#3036](https://github.com/KaTeX/KaTeX/issues/3036)) ([952fb84](https://github.com/KaTeX/KaTeX/commit/952fb844da9c99d5fca41a87b86e8857a677c899)), closes [#638](https://github.com/KaTeX/KaTeX/issues/638)
+
+## [0.13.14](https://github.com/KaTeX/KaTeX/compare/v0.13.13...v0.13.14) (2021-08-28)
+
+
+### Bug Fixes
+
+* **fonts:** update fonts dependencies ([#2866](https://github.com/KaTeX/KaTeX/issues/2866)) ([ea409ea](https://github.com/KaTeX/KaTeX/commit/ea409eaf1d7f8fe712a966edc66c545ae5fe5425))
+
 ## [0.13.13](https://github.com/KaTeX/KaTeX/compare/v0.13.12...v0.13.13) (2021-07-21)
 
 
@@ -149,7 +387,7 @@ All notable changes to this project will be documented in this file. This CHANGE
 - docs: Update \operatorname in supported_table.md 0.12.0 (#2571)
 - docs: Fix documentation typo in operatorname* (#2570)
 - docs: add warning re:defer to mhchem documentation (#2485)
-- docs: update Gastby logo and link (#2481)
+- docs: update Gatsby logo and link (#2481)
 - docs: add MonsterWriter to the users page (#2478)
 - docs: add comment re: \arrowvert (#2449)
 - docs: add link to Discussions (#2405)

@@ -42,7 +42,7 @@ type EnvProps = {
 };
 
 /**
- * Final enviornment spec for use at parse time.
+ * Final environment spec for use at parse time.
  * This is almost identical to `EnvDefSpec`, except it
  * 1. includes the function handler
  * 2. requires all arguments except argType

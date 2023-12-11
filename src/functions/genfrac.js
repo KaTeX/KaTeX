@@ -9,7 +9,7 @@ import {assert} from "../utils";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
-import {calculateSize} from "../units";
+import {calculateSize, makeEm} from "../units";
 
 const adjustStyle = (size, originalStyle) => {
     // Figure out what style this fraction should be in based on the
@@ -196,7 +196,7 @@ const mathmlBuilder = (group, options) => {
         node.setAttribute("linethickness", "0px");
     } else if (group.barSize) {
         const ruleWidth = calculateSize(group.barSize, options);
-        node.setAttribute("linethickness", ruleWidth + "em");
+        node.setAttribute("linethickness", makeEm(ruleWidth));
     }
 
     const style = adjustStyle(group.size, options.style);

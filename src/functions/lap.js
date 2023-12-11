@@ -3,6 +3,7 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
+import {makeEm} from "../units";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -46,8 +47,10 @@ defineFunction({
         // Otherwise, a tall argument may be misplaced.
         // This code resolved issue #1153
         const strut = buildCommon.makeSpan(["strut"]);
-        strut.style.height = (node.height + node.depth) + "em";
-        strut.style.verticalAlign = -node.depth + "em";
+        strut.style.height = makeEm(node.height + node.depth);
+        if (node.depth) {
+            strut.style.verticalAlign = makeEm(-node.depth);
+        }
         node.children.unshift(strut);
 
         // Next, prevent vertical misplacement when next to something tall.

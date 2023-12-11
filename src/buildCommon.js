@@ -9,7 +9,7 @@ import {SymbolNode, Anchor, Span, PathNode, SvgNode, createClass} from "./domTre
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols, {ligatures} from "./symbols";
 import {wideCharacterFont} from "./wide-character";
-import {calculateSize} from "./units";
+import {calculateSize, makeEm} from "./units";
 import {DocumentFragment} from "./tree";
 
 import type Options from "./Options";
@@ -165,9 +165,13 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     // Math mode or Old font (i.e. \rm)
     const isFont = mode === "math" || (mode === "text" && options.font);
     const fontOrFamily = isFont ? options.font : options.fontFamily;
+    let wideFontName = "";
+    let wideFontClass = "";
     if (text.charCodeAt(0) === 0xD835) {
+        [wideFontName, wideFontClass] = wideCharacterFont(text, mode);
+    }
+    if (wideFontName.length > 0) {
         // surrogate pairs get special treatment
-        const [wideFontName, wideFontClass] = wideCharacterFont(text, mode);
         return makeSymbol(text, wideFontName, mode, options,
             classes.concat(wideFontClass));
     } else if (fontOrFamily) {
@@ -190,7 +194,7 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
             return makeSymbol(text, fontName, mode, options,
                 classes.concat(fontClasses));
         } else if (ligatures.hasOwnProperty(text) &&
-                   fontName.substr(0, 10) === "Typewriter") {
+                   fontName.slice(0, 10) === "Typewriter") {
             // Deconstruct ligatures in monospace fonts (\texttt, \tt).
             const parts = [];
             for (let i = 0; i < text.length; i++) {
@@ -364,7 +368,7 @@ const makeLineSpan = function(
         thickness || options.fontMetrics().defaultRuleThickness,
         options.minRuleThickness,
     );
-    line.style.borderBottomWidth = line.height + "em";
+    line.style.borderBottomWidth = makeEm(line.height);
     line.maxFontSize = 1.0;
     return line;
 };
@@ -550,7 +554,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
     }
     pstrutSize += 2;
     const pstrut = makeSpan(["pstrut"], []);
-    pstrut.style.height = pstrutSize + "em";
+    pstrut.style.height = makeEm(pstrutSize);
 
     // Create a new list of actual children at the correct offsets
     const realChildren = [];
@@ -567,7 +571,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
             const style = child.wrapperStyle || {};
 
             const childWrap = makeSpan(classes, [pstrut, elem], undefined, style);
-            childWrap.style.top = (-pstrutSize - currPos - elem.depth) + "em";
+            childWrap.style.top = makeEm(-pstrutSize - currPos - elem.depth);
             if (child.marginLeft) {
                 childWrap.style.marginLeft = child.marginLeft;
             }
@@ -586,7 +590,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
     // This cell's bottom edge will determine the containing table's baseline
     // without overly expanding the containing line-box.
     const vlist = makeSpan(["vlist"], realChildren);
-    vlist.style.height = maxPos + "em";
+    vlist.style.height = makeEm(maxPos);
 
     // A second row is used if necessary to represent the vlist's depth.
     let rows;
@@ -598,7 +602,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
         // So we put another empty span inside the depth strut span.
         const emptySpan = makeSpan([], []);
         const depthStrut = makeSpan(["vlist"], [emptySpan]);
-        depthStrut.style.height = -minPos + "em";
+        depthStrut.style.height = makeEm(-minPos);
 
         // Safari wants the first row to have inline content; otherwise it
         // puts the bottom of the *second* row on the baseline.
@@ -626,7 +630,7 @@ const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
     // Make an empty span for the space
     const rule = makeSpan(["mspace"], [], options);
     const size = calculateSize(measurement, options);
-    rule.style.marginRight = `${size}em`;
+    rule.style.marginRight = makeEm(size);
     return rule;
 };
 
@@ -744,17 +748,17 @@ const staticSvg = function(value: string, options: Options): SvgSpan {
     const [pathName, width, height] = svgData[value];
     const path = new PathNode(pathName);
     const svgNode = new SvgNode([path], {
-        "width": width + "em",
-        "height": height + "em",
+        "width": makeEm(width),
+        "height": makeEm(height),
         // Override CSS rule `.katex svg { width: 100% }`
-        "style": "width:" + width + "em",
+        "style": "width:" + makeEm(width),
         "viewBox": "0 0 " + 1000 * width + " " + 1000 * height,
         "preserveAspectRatio": "xMinYMin",
     });
     const span = makeSvgSpan(["overlay"], [svgNode], options);
     span.height = height;
-    span.style.height = height + "em";
-    span.style.width = width + "em";
+    span.style.height = makeEm(height);
+    span.style.width = makeEm(width);
     return span;
 };
 

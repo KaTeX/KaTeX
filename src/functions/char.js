@@ -21,14 +21,25 @@ defineFunction({
             const node = assertNodeType(group[i], "textord");
             number += node.text;
         }
-        const code = parseInt(number);
+        let code = parseInt(number);
+        let text;
         if (isNaN(code)) {
             throw new ParseError(`\\@char has non-numeric argument ${number}`);
+        // If we drop IE support, the following code could be replaced with
+        // text = String.fromCodePoint(code)
+        } else if (code < 0 || code >= 0x10ffff) {
+            throw new ParseError(`\\@char with invalid code point ${number}`);
+        } else if (code <= 0xffff) {
+            text = String.fromCharCode(code);
+        } else { // Astral code point; split into surrogate halves
+            code -= 0x10000;
+            text = String.fromCharCode((code >> 10) + 0xd800,
+                                       (code & 0x3ff) + 0xdc00);
         }
         return {
             type: "textord",
             mode: parser.mode,
-            text: String.fromCharCode(code),
+            text: text,
         };
     },
 });

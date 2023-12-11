@@ -6,6 +6,7 @@ import utils from "../utils";
 import stretchy from "../stretchy";
 import {assertNodeType} from "../parseNode";
 import {assertSpan, assertSymbolDomNode} from "../domTree";
+import {makeEm} from "../units";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -74,10 +75,14 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
         // TODO(emily): Find a better way to get the skew
     }
 
+    const accentBelow = group.label === "\\c";
+
     // calculate the amount of space between the body and the accent
-    let clearance = Math.min(
-        body.height,
-        options.fontMetrics().xHeight);
+    let clearance = accentBelow
+        ? body.height + body.depth
+        : Math.min(
+            body.height,
+            options.fontMetrics().xHeight);
 
     // Build the accent
     let accentBody;
@@ -100,6 +105,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
             // shift the accent over to a place we don't want.
             accent.italic = 0;
             width = accent.width;
+            if (accentBelow) {
+                clearance += accent.depth;
+            }
         }
 
         accentBody = buildCommon.makeSpan(["accent-body"], [accent]);
@@ -124,7 +132,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
             left -= width / 2;
         }
 
-        accentBody.style.left = left + "em";
+        accentBody.style.left = makeEm(left);
 
         // \textcircled uses the \bigcirc glyph, so it needs some
         // vertical adjustment to match LaTeX.
@@ -154,8 +162,8 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
                     wrapperClasses: ["svg-align"],
                     wrapperStyle: skew > 0
                         ? {
-                            width: `calc(100% - ${2 * skew}em)`,
-                            marginLeft: `${(2 * skew)}em`,
+                            width: `calc(100% - ${makeEm(2 * skew)})`,
+                            marginLeft: makeEm(2 * skew),
                         }
                         : undefined,
                 },
@@ -244,7 +252,7 @@ defineFunction({
     type: "accent",
     names: [
         "\\'", "\\`", "\\^", "\\~", "\\=", "\\u", "\\.", '\\"',
-        "\\r", "\\H", "\\v", "\\textcircled",
+        "\\c", "\\r", "\\H", "\\v", "\\textcircled",
     ],
     props: {
         numArgs: 1,

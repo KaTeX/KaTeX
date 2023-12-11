@@ -6,6 +6,7 @@ import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
 import utils from "../utils";
 import {assertNodeType, checkSymbolNodeType} from "../parseNode";
+import {makeEm} from "../units";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -126,8 +127,9 @@ defineFunction({
         }
 
         node.setAttribute("stretchy", "true");
-        node.setAttribute("minsize", delimiter.sizeToMaxHeight[group.size] + "em");
-        node.setAttribute("maxsize", delimiter.sizeToMaxHeight[group.size] + "em");
+        const size = makeEm(delimiter.sizeToMaxHeight[group.size]);
+        node.setAttribute("minsize", size);
+        node.setAttribute("maxsize", size);
 
         return node;
     },
@@ -340,7 +342,7 @@ defineFunction({
         return middleDelim;
     },
     mathmlBuilder: (group, options) => {
-        // A Firefox \middle will strech a character vertically only if it
+        // A Firefox \middle will stretch a character vertically only if it
         // is in the fence part of the operator dictionary at:
         // https://www.w3.org/TR/MathML3/appendixc.html.
         // So we need to avoid U+2223 and use plain "|" instead.

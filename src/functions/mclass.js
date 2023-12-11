@@ -22,7 +22,7 @@ function mathmlBuilder(group: ParseNode<"mclass">, options) {
     const inner = mml.buildExpression(group.body, options);
 
     if (group.mclass === "minner") {
-        return mathMLTree.newDocumentFragment(inner);
+        node = new mathMLTree.MathNode("mpadded", inner);
     } else if (group.mclass === "mord") {
         if (group.isCharacterBox) {
             node = inner[0];
@@ -49,6 +49,9 @@ function mathmlBuilder(group: ParseNode<"mclass">, options) {
         } else if (group.mclass === "mopen" || group.mclass === "mclose") {
             node.attributes.lspace = "0em";
             node.attributes.rspace = "0em";
+        } else if (group.mclass === "minner") {
+            node.attributes.lspace = "0.0556em"; // 1 mu is the most likely option
+            node.attributes.width = "+0.1111em";
         }
         // MathML <mo> default space is 5/18 em, so <mrel> needs no action.
         // Ref: https://developer.mozilla.org/en-US/docs/Web/MathML/Element/mo
@@ -72,7 +75,7 @@ defineFunction({
         return {
             type: "mclass",
             mode: parser.mode,
-            mclass: "m" + funcName.substr(5), // TODO(kevinb): don't prefix with 'm'
+            mclass: "m" + funcName.slice(5), // TODO(kevinb): don't prefix with 'm'
             body: ordargument(body),
             isCharacterBox: utils.isCharacterBox(body),
         };
