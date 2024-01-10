@@ -175,6 +175,11 @@ const users = [
         image: 'https://github.com/zzllrr/mather/raw/master/img/logo.jpg',
         infoLink: 'https://github.com/zzllrr/mather',
     },
+    {
+        caption: 'SnapXam',
+        image: 'https://www.snapxam.com/assets/images/snapxam-logo2-transparent.png',
+        infoLink: 'https://www.snapxam.com',
+    },
 ];
 
 const {version} = require('../package.json');
