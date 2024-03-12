@@ -39,20 +39,14 @@ jobs:
         ref: ${{ github.event_name == 'pull_request_target' && format('refs/pull/{0}/merge', github.event.pull_request.number) || '' }}
         persist-credentials: false # do not persist credentials
 
-    - name: Use Node.js 14
-      uses: actions/setup-node@v3
-      with:
-        node-version: '14'
+    - name: Enable Corepack
+      run: corepack enable
 
-    - name: Restore cached dependencies # restore only to prevent cache poisoning
-      uses: ylemkimon/cache-restore@v2
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
       with:
-        path: |
-          .yarn/cache
-          .pnp.js
-        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
-        restore-keys: |
-          yarn-deps-v1-
+        node-version: '20'
+        cache: yarn
 
     - name: Run screenshotter
       run: |
@@ -70,7 +64,7 @@ jobs:
           -w /code \
           -e YARN_ENABLE_SCRIPTS=0 \
           -e CI=true \
-          node:14 \
+          node:20 \
           /bin/bash -c 'yarn --immutable && yarn node dockers/screenshotter/screenshotter.js -b ${{ matrix.browser }} --verify --diff --new --katex-ip $HOSTNAME ${{ matrix.browserstack && format('--selenium-proxy http://selenium:4445/build --browserstack --selenium-capabilities ''\''''{0}''\', toJson(matrix.browserstack)) || '--selenium-ip selenium' }}'
         echo "::$TOKEN::"
       timeout-minutes: 10
