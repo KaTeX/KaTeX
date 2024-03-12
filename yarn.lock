@@ -2428,16 +2428,16 @@ __metadata:
   linkType: hard
 
 "@semantic-release/changelog@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "@semantic-release/changelog@npm:6.0.1"
+  version: 6.0.3
+  resolution: "@semantic-release/changelog@npm:6.0.3"
   dependencies:
     "@semantic-release/error": "npm:^3.0.0"
     aggregate-error: "npm:^3.0.0"
-    fs-extra: "npm:^9.0.0"
+    fs-extra: "npm:^11.0.0"
     lodash: "npm:^4.17.4"
   peerDependencies:
     semantic-release: ">=18.0.0"
-  checksum: 10/68e61eb680712c78aa264501e6741f5f00345d6762f3403d83ce746cc3f805778fd6f4c5153329dd7cc0d853bf9bf74356a36c09e89945afef055a80801c0b98
+  checksum: 10/99ff9a528ec018699d6a197e12d86a95968dafd204b9aab05c2339b229877e38f7cfcdcafe94422b3082b6eb871d2071e0d034a015f64d9984e41a4e2dac840a
   languageName: node
   linkType: hard
 
@@ -3587,13 +3587,6 @@ __metadata:
   version: 0.4.0
   resolution: "asynckit@npm:0.4.0"
   checksum: 10/3ce727cbc78f69d6a4722517a58ee926c8c21083633b1d3fdf66fd688f6c127a53a592141bd4866f9b63240a86e9d8e974b13919450bd17fa33c2d22c4558ad8
-  languageName: node
-  linkType: hard
-
-"at-least-node@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "at-least-node@npm:1.0.0"
-  checksum: 10/463e2f8e43384f1afb54bc68485c436d7622acec08b6fad269b421cb1d29cebb5af751426793d0961ed243146fe4dc983402f6d5a51b720b277818dbf6f2e49e
   languageName: node
   linkType: hard
 
@@ -6236,15 +6229,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:^9.0.0":
-  version: 9.1.0
-  resolution: "fs-extra@npm:9.1.0"
+"fs-extra@npm:^11.0.0":
+  version: 11.2.0
+  resolution: "fs-extra@npm:11.2.0"
   dependencies:
-    at-least-node: "npm:^1.0.0"
     graceful-fs: "npm:^4.2.0"
     jsonfile: "npm:^6.0.1"
     universalify: "npm:^2.0.0"
-  checksum: 10/08600da1b49552ed23dfac598c8fc909c66776dd130fea54fbcad22e330f7fcc13488bb995f6bc9ce5651aa35b65702faf616fe76370ee56f1aade55da982dca
+  checksum: 10/0579bf6726a4cd054d4aa308f10b483f52478bb16284f32cf60b4ce0542063d551fca1a08a2af365e35db21a3fa5a06cf2a6ed614004b4368982bc754cb816b3
   languageName: node
   linkType: hard
 
