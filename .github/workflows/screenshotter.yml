@@ -14,16 +14,16 @@ jobs:
         browser: [chrome, firefox, safari]
         include:
         - browser: chrome
-          image: selenium/standalone-chrome:3.141.59-20210422
+          image: selenium/standalone-chrome:4.4.0-20220812
         - browser: firefox
-          image: selenium/standalone-firefox:3.141.59-20210929
+          image: selenium/standalone-firefox:4.4.0-20220812
         - browser: safari
           image: ylemkimon/selenium-proxy:latest
           browserstack:
             browserName: safari
-            browser_version: 13.1
+            browser_version: 15.3
             os: OS X
-            os_version: Catalina
+            os_version: Monterey
       fail-fast: false
     services:
       selenium:
