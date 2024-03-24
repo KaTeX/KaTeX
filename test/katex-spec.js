@@ -3005,12 +3005,45 @@ describe("href and url commands", function() {
         expect(parsed).toMatchSnapshot();
     });
 
-    it("should not allow explicitly disallow protocols", () => {
+    it("should not allow explicitly disallowed protocols", () => {
         const parsed = getParsed(
             "\\href{javascript:alert('x')}{foo}",
             new Settings({trust: context => context.protocol !== "javascript"}),
         );
         expect(parsed).toMatchSnapshot();
+    });
+
+    it("should not allow explicitly uppercased disallowed protocols", () => {
+        const parsed = getParsed(
+            "\\href{JavaScript:alert('x')}{foo}",
+            new Settings({trust: context => context.protocol !== "javascript"}),
+        );
+        expect(parsed).toMatchSnapshot();
+    });
+
+    function getProtocolViaTrust(url) {
+        let protocol;
+        getParsed(`\\url{${url}}`, new Settings({
+            trust: context => protocol = context.protocol,
+        }));
+        return protocol;
+    }
+
+    it("should get protocols correctly", () => {
+        expect(getProtocolViaTrust("foo")).toBe("_relative");
+        expect(getProtocolViaTrust("Foo:")).toBe("foo");
+        expect(getProtocolViaTrust("Foo:bar")).toBe("foo");
+        expect(getProtocolViaTrust("JavaScript:")).toBe("javascript");
+        expect(getProtocolViaTrust("JavaScript:code")).toBe("javascript");
+        expect(getProtocolViaTrust("!:")).toBeUndefined();
+        expect(getProtocolViaTrust("foo&colon;")).toBeUndefined();
+        expect(getProtocolViaTrust("?query=string&colon=")).toBe("_relative");
+        expect(getProtocolViaTrust("#query=string&colon=")).toBe("_relative");
+        expect(getProtocolViaTrust("dir/file&colon")).toBe("_relative");
+        expect(getProtocolViaTrust("//foo")).toBe("_relative");
+        expect(getProtocolViaTrust("://foo")).toBeUndefined();
+        expect(getProtocolViaTrust("  \t http://")).toBe("http");
+        expect(getProtocolViaTrust("  \t http://foo")).toBe("http");
     });
 });
 
