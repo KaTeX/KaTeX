@@ -3997,6 +3997,11 @@ describe("The maxExpand setting", () => {
         expect`\gdef\foo{\foo}\foo`.not.toParse(
             new Settings({maxExpand: 10}));
     });
+
+    it("should prevent exponential blowup via \\edef", () => {
+        expect`\edef0{x}\edef0{00}\edef0{00}\edef0{00}\edef0{00}`.not.toParse(
+            new Settings({maxExpand: 10}));
+    });
 });
 
 describe("The \\mathchoice function", function() {
