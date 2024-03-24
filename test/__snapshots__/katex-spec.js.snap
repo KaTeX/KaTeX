@@ -1186,7 +1186,13 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
         =
       </span>
     </span>
+    <span class="spacer">
+      ​
+    </span>
     <span class="mspace newline">
+    </span>
+    <span class="spacer">
+      ​
     </span>
     <span class="base">
       <span class="strut"
@@ -1204,7 +1210,13 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
         +
       </span>
     </span>
+    <span class="spacer">
+      ​
+    </span>
     <span class="mspace newline">
+    </span>
+    <span class="spacer">
+      ​
     </span>
     <span class="base">
       <span class="strut"
@@ -1215,7 +1227,13 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
         b
       </span>
     </span>
+    <span class="spacer">
+      ​
+    </span>
     <span class="mspace newline">
+    </span>
+    <span class="spacer">
+      ​
     </span>
     <span class="base">
       <span class="strut"

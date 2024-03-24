@@ -41,12 +41,12 @@ export const buildTree = function(
     if (settings.output === "mathml") {
         return  buildMathML(tree, expression, options, settings.displayMode, true);
     } else if (settings.output === "html") {
-        const htmlNode = buildHTML(tree, options);
+        const htmlNode = buildHTML(tree, options, settings.displayMode);
         katexNode = buildCommon.makeSpan(["katex"], [htmlNode]);
     } else {
         const mathMLNode = buildMathML(tree, expression, options,
             settings.displayMode, false);
-        const htmlNode = buildHTML(tree, options);
+        const htmlNode = buildHTML(tree, options, settings.displayMode);
         katexNode = buildCommon.makeSpan(["katex"], [mathMLNode, htmlNode]);
     }
 
@@ -59,7 +59,7 @@ export const buildHTMLTree = function(
     settings: Settings,
 ): DomSpan {
     const options = optionsFromSettings(settings);
-    const htmlNode = buildHTML(tree, options);
+    const htmlNode = buildHTML(tree, options, settings.displayMode);
     const katexNode = buildCommon.makeSpan(["katex"], [htmlNode]);
     return displayWrap(katexNode, settings);
 };

@@ -9,7 +9,7 @@
 import ParseError from "./ParseError";
 import Style from "./Style";
 import buildCommon from "./buildCommon";
-import {Span, Anchor} from "./domTree";
+import {Span, Anchor, SymbolNode} from "./domTree";
 import utils from "./utils";
 import {makeEm} from "./units";
 import {spacings, tightSpacings} from "./spacingData";
@@ -313,7 +313,11 @@ function buildHTMLUnbreakable(children, options) {
  * Take an entire parse tree, and build it into an appropriate set of HTML
  * nodes.
  */
-export default function buildHTML(tree: AnyParseNode[], options: Options): DomSpan {
+export default function buildHTML(
+    tree: AnyParseNode[],
+    options: Options,
+    isDisplayMode: boolean,
+): DomSpan {
     // Strip off outer tag wrapper for processing below.
     let tag = null;
     if (tree.length === 1 && tree[0].type === "tag") {
@@ -389,7 +393,24 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
         children.push(eqnNum);
     }
 
-    const htmlNode = makeSpan(["katex-html"], children);
+    // Add spacers _between_ unbreakable subtrees to allow for line breaks in
+    // inline documents, but not allowing a soft break before a punctuation
+    // in text _immediately_ following the inline math element.
+    //
+    // See https://github.com/KaTeX/KaTeX/issues/1233 for discussion.
+    const childrenWithSpacers = [];
+    for (let i = 0; i < children.length; i++) {
+        if (!isDisplayMode && i > 0) {
+            const spacer = new SymbolNode(
+                "\u200b", undefined, undefined, undefined, undefined, undefined,
+                ["spacer"],
+            );
+            childrenWithSpacers.push(spacer);
+        }
+        childrenWithSpacers.push(children[i]);
+    }
+
+    const htmlNode = makeSpan(["katex-html"], childrenWithSpacers);
     htmlNode.setAttribute("aria-hidden", "true");
 
     // Adjust the strut of the tag to be the maximum height of all children
