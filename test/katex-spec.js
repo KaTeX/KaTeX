@@ -4002,6 +4002,29 @@ describe("The maxExpand setting", () => {
         expect`\edef0{x}\edef0{00}\edef0{00}\edef0{00}\edef0{00}`.not.toParse(
             new Settings({maxExpand: 10}));
     });
+
+    const exp32 = r`
+        \def\a#1{\b{#1}\b{#1}}
+        \def\b#1{\c{#1}\c{#1}}
+        \def\c#1{\d{#1}\d{#1}}
+        \def\d#1{\e{#1}\e{#1}}
+        \def\e#1{\f{#1}\f{#1}}
+        \def\f#1{#1}
+    `;
+
+    it("should count correctly", () => {
+        const example = exp32 + r`\a{1}`;
+        const count = 1 + 2 + 4 + 8 + 16 + 32;
+        expect(example).toParse(new Settings({maxExpand: count}));
+        expect(example).not.toParse(new Settings({maxExpand: count - 1}));
+    });
+
+    it("should count correctly with Unicode sub/superscripts", () => {
+        const example = exp32 + r`\def+{\a{1}}x⁺x⁺x⁺x⁺`;
+        const count = (1 + 2 + 4 + 8 + 16 + 32) * 4 + 4;
+        expect(example).toParse(new Settings({maxExpand: count}));
+        expect(example).not.toParse(new Settings({maxExpand: count - 1}));
+    });
 });
 
 describe("The \\mathchoice function", function() {
