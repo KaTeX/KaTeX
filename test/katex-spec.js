@@ -2096,6 +2096,18 @@ describe("An includegraphics builder", function() {
         const built = getBuilt(img, trustSettings);
         expect(built).toMatchSnapshot();
     });
+
+    it("should escape source", () => {
+        const built = katex.renderToString(
+            "\\includegraphics{'\"}", trustSettings);
+        expect(built).toContain('<img src="&#x27;&quot;"');
+    });
+
+    it("should escape alt", () => {
+        const built = katex.renderToString(
+            "\\includegraphics[alt='\"]{image.png}", trustSettings);
+        expect(built).toContain('<img src="image.png" alt="&#x27;&quot;"');
+    });
 });
 
 describe("An HTML extension builder", function() {
