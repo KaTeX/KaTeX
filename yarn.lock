@@ -3936,15 +3936,15 @@ __metadata:
   linkType: hard
 
 "browserstack-local@npm:^1.5.1":
-  version: 1.5.1
-  resolution: "browserstack-local@npm:1.5.1"
+  version: 1.5.5
+  resolution: "browserstack-local@npm:1.5.5"
   dependencies:
     agent-base: "npm:^6.0.2"
     https-proxy-agent: "npm:^5.0.1"
     is-running: "npm:^2.1.0"
     ps-tree: "npm:=1.2.0"
     temp-fs: "npm:^0.9.9"
-  checksum: 10/45dc70c0515e26365ceafd30b5474d5baec0f96582d8aa3e7b5f1f77b1c218f037a195c684eff7efbb7be5fb9f898cd71865791f3e571e11f81c35ff66b1ffcc
+  checksum: 10/e484a29162afd4f522f3bc6a83557fef9e75a1e85eb6830697d1318f51c04f3d6211bde16bbe3a6dfc1b2b18f877ea71a78ee37ba75ad3b1ccb6c0e310e77e76
   languageName: node
   linkType: hard
 
