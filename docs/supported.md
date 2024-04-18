@@ -206,7 +206,7 @@ Math-mode Unicode (sub|super)script characters will render as if you had written
 | Bold Italic | $\text{𝑨-𝒁 𝒂-𝒛}$      | Sans serif bold   | $\text{𝗔-𝗭 𝗮-𝘇 𝟬-𝟵}$
 | Script      | $\text{𝒜-𝒵}$         | Sans serif italic | $\text{𝘈-𝘡 𝘢-𝘻}$
 | Fraktur     | $\text{$𝔄$-$ℨ$}\text{ $𝔞$-$𝔷$}$| Monospace        | $\text{𝙰-𝚉 𝚊-𝚣 𝟶-𝟿}$
-| Bold Fraktur | $\text{𝕬-𝖅}\text{𝖆-𝖟}$ | |
+| Bold Fraktur | $\text{𝕬-𝖅 𝖆-𝖟}$ | |
 
 </div>
 <div class="katex-hopscotch">
