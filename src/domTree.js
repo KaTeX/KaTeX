@@ -315,7 +315,8 @@ export class Img implements VirtualNode {
     }
 
     toMarkup(): string {
-        let markup = `<img  src='${this.src} 'alt='${this.alt}' `;
+        let markup = `<img src="${utils.escape(this.src)}"` +
+          ` alt="${utils.escape(this.alt)}"`;
 
         // Add the styles, after hyphenation
         let styles = "";
@@ -512,7 +513,7 @@ export class SvgNode implements VirtualNode {
         // Apply attributes
         for (const attr in this.attributes) {
             if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                markup += ` ${attr}='${this.attributes[attr]}'`;
+                markup += ` ${attr}="${utils.escape(this.attributes[attr])}"`;
             }
         }
 
@@ -553,9 +554,9 @@ export class PathNode implements VirtualNode {
 
     toMarkup(): string {
         if (this.alternate) {
-            return `<path d='${this.alternate}'/>`;
+            return `<path d="${utils.escape(this.alternate)}"/>`;
         } else {
-            return `<path d='${path[this.pathName]}'/>`;
+            return `<path d="${utils.escape(path[this.pathName])}"/>`;
         }
     }
 }
@@ -586,7 +587,7 @@ export class LineNode implements VirtualNode {
 
         for (const attr in this.attributes) {
             if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                markup += ` ${attr}='${this.attributes[attr]}'`;
+                markup += ` ${attr}="${utils.escape(this.attributes[attr])}"`;
             }
         }
 

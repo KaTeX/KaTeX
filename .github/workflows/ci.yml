@@ -15,10 +15,13 @@ jobs:
       with:
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
-    - name: Use Node.js 16
-      uses: actions/setup-node@v3
+    - name: Enable Corepack
+      run: corepack enable
+
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
       with:
-        node-version: '16'
+        node-version: '20'
         cache: yarn
 
     - name: Install dependencies
@@ -57,10 +60,13 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
 
-    - name: Use Node.js 16
-      uses: actions/setup-node@v3
+    - name: Enable Corepack
+      run: corepack enable
+
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
       with:
-        node-version: '16'
+        node-version: '20'
         cache: yarn
 
     - name: Install dependencies

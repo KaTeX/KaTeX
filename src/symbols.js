@@ -204,7 +204,7 @@ defineSymbol(math, main, rel, "\u21cc", "\\rightleftharpoons", true);
 
 // AMS Negated Binary Relations
 defineSymbol(math, ams, rel, "\u226e", "\\nless", true);
-// Symbol names preceeded by "@" each have a corresponding macro.
+// Symbol names preceded by "@" each have a corresponding macro.
 defineSymbol(math, ams, rel, "\ue010", "\\@nleqslant");
 defineSymbol(math, ams, rel, "\ue011", "\\@nleqq");
 defineSymbol(math, ams, rel, "\u2a87", "\\lneq", true);
