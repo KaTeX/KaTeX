@@ -47,7 +47,16 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: yarn
+
+    - name: Restore cached dependencies # restore only to prevent cache poisoning
+      uses: ylemkimon/cache-restore@v2
+      with:
+        path: |
+          .yarn/cache
+          .pnp.js
+        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
+        restore-keys: |
+          yarn-deps-v1-
 
     - name: Run screenshotter
       run: |
