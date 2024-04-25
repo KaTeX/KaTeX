@@ -604,6 +604,7 @@ defineSymbol(math, main, textord, "\u2202", "\\partial", true);
 defineSymbol(math, main, bin, "\u2298", "\\oslash", true);
 defineSymbol(math, ams, bin, "\u229a", "\\circledcirc", true);
 defineSymbol(math, ams, bin, "\u22a1", "\\boxdot", true);
+defineSymbol(math, ams, bin, "\u29c4", "\\boxslash", true);
 defineSymbol(math, main, bin, "\u25b3", "\\bigtriangleup");
 defineSymbol(math, main, bin, "\u25bd", "\\bigtriangledown");
 defineSymbol(math, main, bin, "\u2020", "\\dagger");
