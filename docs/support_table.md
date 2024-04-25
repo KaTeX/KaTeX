@@ -192,6 +192,7 @@ $\gdef\VERT{|}$
 |\boxminus|$\boxminus$||
 |\boxplus|$\boxplus$||
 |\boxtimes|$\boxtimes$||
+|\boxslash|$\boxslash$||
 |\Bra|$\Bra{\psi}$|`\Bra{\psi}`|
 |\bra|$\bra{\psi}$|`\bra{\psi}`|
 |\braket|$\braket{\phi\VERT\psi}$|<code>\braket{\phi&#124;\psi}</code>|
