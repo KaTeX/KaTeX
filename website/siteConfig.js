@@ -136,6 +136,11 @@ const users = [
         infoLink: 'https://slides.com/',
     },
     {
+        caption: 'SnapXam',
+        image: 'https://www.snapxam.com/assets/images/snapxam-logo2-transparent.png',
+        infoLink: 'https://www.snapxam.com',
+    },
+    {
         caption: 'Snip',
         image: '/img/snip.png',
         infoLink: 'https://getsnip.io',
@@ -174,11 +179,6 @@ const users = [
         caption: 'zzllrr Mather',
         image: 'https://github.com/zzllrr/mather/raw/master/img/logo.jpg',
         infoLink: 'https://github.com/zzllrr/mather',
-    },
-    {
-        caption: 'SnapXam',
-        image: 'https://www.snapxam.com/assets/images/snapxam-logo2-transparent.png',
-        infoLink: 'https://www.snapxam.com',
     },
 ];
 
