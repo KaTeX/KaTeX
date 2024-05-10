@@ -136,6 +136,11 @@ const users = [
         infoLink: 'https://slides.com/',
     },
     {
+        caption: 'SnapXam',
+        image: 'https://www.snapxam.com/assets/images/snapxam-logo2-transparent.png',
+        infoLink: 'https://www.snapxam.com',
+    },
+    {
         caption: 'Snip',
         image: '/img/snip.png',
         infoLink: 'https://getsnip.io',

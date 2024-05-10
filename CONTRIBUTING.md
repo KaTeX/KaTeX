@@ -59,8 +59,8 @@ They are expanded in the "gullet" (`MacroExpander`).
 ## Testing
 
 Local testing can be done by running the webpack-dev-server using configuration
-`webpack.dev.js`. Run `yarn` to install dependencies, and then `yarn start`
-to start the server.
+`webpack.dev.js`. Run `corepack enable` and `yarn` to install dependencies,
+and then `yarn start` to start the server.
 
 This will host an interactive editor at
 [http://localhost:7936/](http://localhost:7936/) to play around with and test
@@ -121,7 +121,7 @@ changes in as many browsers as possible.
 ## Building
 
 KaTeX is built using webpack with configuration `webpack.config.js`. Run
-`yarn build` to build the project.
+`corepack enable` (if you haven't already) and `yarn build` to build the project.
 
 ## Style guide
 
