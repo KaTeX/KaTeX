@@ -1468,7 +1468,50 @@ exports[`href and url commands should not affect spacing around 1`] = `
 ]
 `;
 
-exports[`href and url commands should not allow explicitly disallow protocols 1`] = `
+exports[`href and url commands should not allow explicitly disallowed protocols 1`] = `
+[
+  {
+    "type": "color",
+    "body": [
+      {
+        "type": "text",
+        "body": [
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "\\\\"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "h"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "r"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "e"
+          },
+          {
+            "type": "textord",
+            "mode": "text",
+            "text": "f"
+          }
+        ],
+        "mode": "math"
+      }
+    ],
+    "color": "#cc0000",
+    "mode": "math"
+  }
+]
+`;
+
+exports[`href and url commands should not allow explicitly uppercased disallowed protocols 1`] = `
 [
   {
     "type": "color",

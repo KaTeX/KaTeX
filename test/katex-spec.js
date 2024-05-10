@@ -2096,6 +2096,18 @@ describe("An includegraphics builder", function() {
         const built = getBuilt(img, trustSettings);
         expect(built).toMatchSnapshot();
     });
+
+    it("should escape source", () => {
+        const built = katex.renderToString(
+            "\\includegraphics{'\"}", trustSettings);
+        expect(built).toContain('<img src="&#x27;&quot;"');
+    });
+
+    it("should escape alt", () => {
+        const built = katex.renderToString(
+            "\\includegraphics[alt='\"]{image.png}", trustSettings);
+        expect(built).toContain('<img src="image.png" alt="&#x27;&quot;"');
+    });
 });
 
 describe("An HTML extension builder", function() {
@@ -2993,12 +3005,45 @@ describe("href and url commands", function() {
         expect(parsed).toMatchSnapshot();
     });
 
-    it("should not allow explicitly disallow protocols", () => {
+    it("should not allow explicitly disallowed protocols", () => {
         const parsed = getParsed(
             "\\href{javascript:alert('x')}{foo}",
             new Settings({trust: context => context.protocol !== "javascript"}),
         );
         expect(parsed).toMatchSnapshot();
+    });
+
+    it("should not allow explicitly uppercased disallowed protocols", () => {
+        const parsed = getParsed(
+            "\\href{JavaScript:alert('x')}{foo}",
+            new Settings({trust: context => context.protocol !== "javascript"}),
+        );
+        expect(parsed).toMatchSnapshot();
+    });
+
+    function getProtocolViaTrust(url) {
+        let protocol;
+        getParsed(`\\url{${url}}`, new Settings({
+            trust: context => protocol = context.protocol,
+        }));
+        return protocol;
+    }
+
+    it("should get protocols correctly", () => {
+        expect(getProtocolViaTrust("foo")).toBe("_relative");
+        expect(getProtocolViaTrust("Foo:")).toBe("foo");
+        expect(getProtocolViaTrust("Foo:bar")).toBe("foo");
+        expect(getProtocolViaTrust("JavaScript:")).toBe("javascript");
+        expect(getProtocolViaTrust("JavaScript:code")).toBe("javascript");
+        expect(getProtocolViaTrust("!:")).toBeUndefined();
+        expect(getProtocolViaTrust("foo&colon;")).toBeUndefined();
+        expect(getProtocolViaTrust("?query=string&colon=")).toBe("_relative");
+        expect(getProtocolViaTrust("#query=string&colon=")).toBe("_relative");
+        expect(getProtocolViaTrust("dir/file&colon")).toBe("_relative");
+        expect(getProtocolViaTrust("//foo")).toBe("_relative");
+        expect(getProtocolViaTrust("://foo")).toBeUndefined();
+        expect(getProtocolViaTrust("  \t http://")).toBe("http");
+        expect(getProtocolViaTrust("  \t http://foo")).toBe("http");
     });
 });
 
@@ -3919,6 +3964,7 @@ describe("Unicode", function() {
         wideCharStr += String.fromCharCode(0xD835, 0xDC00);   // bold A
         wideCharStr += String.fromCharCode(0xD835, 0xDC68);   // bold italic A
         wideCharStr += String.fromCharCode(0xD835, 0xDD04);   // Fraktur A
+        wideCharStr += String.fromCharCode(0xD835, 0xDD6C);   // bold Fraktur A
         wideCharStr += String.fromCharCode(0xD835, 0xDD38);   // double-struck
         wideCharStr += String.fromCharCode(0xD835, 0xDC9C);   // script A
         wideCharStr += String.fromCharCode(0xD835, 0xDDA0);   // sans serif A
@@ -3935,6 +3981,7 @@ describe("Unicode", function() {
         wideCharText += String.fromCharCode(0xD835, 0xDC00);   // bold A
         wideCharText += String.fromCharCode(0xD835, 0xDC68);   // bold italic A
         wideCharText += String.fromCharCode(0xD835, 0xDD04);   // Fraktur A
+        wideCharStr += String.fromCharCode(0xD835, 0xDD6C);    // bold Fraktur A
         wideCharText += String.fromCharCode(0xD835, 0xDD38);   // double-struck
         wideCharText += String.fromCharCode(0xD835, 0xDC9C);   // script A
         wideCharText += String.fromCharCode(0xD835, 0xDDA0);   // sans serif A
@@ -3982,6 +4029,34 @@ describe("The maxExpand setting", () => {
     it("should prevent infinite loops", () => {
         expect`\gdef\foo{\foo}\foo`.not.toParse(
             new Settings({maxExpand: 10}));
+    });
+
+    it("should prevent exponential blowup via \\edef", () => {
+        expect`\edef0{x}\edef0{00}\edef0{00}\edef0{00}\edef0{00}`.not.toParse(
+            new Settings({maxExpand: 10}));
+    });
+
+    const exp32 = r`
+        \def\a#1{\b{#1}\b{#1}}
+        \def\b#1{\c{#1}\c{#1}}
+        \def\c#1{\d{#1}\d{#1}}
+        \def\d#1{\e{#1}\e{#1}}
+        \def\e#1{\f{#1}\f{#1}}
+        \def\f#1{#1}
+    `;
+
+    it("should count correctly", () => {
+        const example = exp32 + r`\a{1}`;
+        const count = 1 + 2 + 4 + 8 + 16 + 32;
+        expect(example).toParse(new Settings({maxExpand: count}));
+        expect(example).not.toParse(new Settings({maxExpand: count - 1}));
+    });
+
+    it("should count correctly with Unicode sub/superscripts", () => {
+        const example = exp32 + r`\def+{\a{1}}x⁺x⁺x⁺x⁺`;
+        const count = (1 + 2 + 4 + 8 + 16 + 32) * 4 + 4;
+        expect(example).toParse(new Settings({maxExpand: count}));
+        expect(example).not.toParse(new Settings({maxExpand: count - 1}));
     });
 });
 

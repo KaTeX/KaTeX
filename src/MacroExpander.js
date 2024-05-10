@@ -246,6 +246,18 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
+     * Increment `expansionCount` by the specified amount.
+     * Throw an error if it exceeds `maxExpand`.
+     */
+    countExpansion(amount: number): void {
+        this.expansionCount += amount;
+        if (this.expansionCount > this.settings.maxExpand) {
+            throw new ParseError("Too many expansions: infinite loop or " +
+                "need to increase maxExpand setting");
+        }
+    }
+
+    /**
      * Expand the next token only once if possible.
      *
      * If the token is expanded, the resulting tokens will be pushed onto
@@ -276,11 +288,7 @@ export default class MacroExpander implements MacroContextInterface {
             this.pushToken(topToken);
             return false;
         }
-        this.expansionCount++;
-        if (this.expansionCount > this.settings.maxExpand) {
-            throw new ParseError("Too many expansions: infinite loop or " +
-                "need to increase maxExpand setting");
-        }
+        this.countExpansion(1);
         let tokens = expansion.tokens;
         const args = this.consumeArgs(expansion.numArgs, expansion.delimiters);
         if (expansion.numArgs) {
@@ -375,6 +383,9 @@ export default class MacroExpander implements MacroContextInterface {
                 output.push(token);
             }
         }
+        // Count all of these tokens as additional expansions, to prevent
+        // exponential blowup from linearly many \edef's.
+        this.countExpansion(output.length);
         return output;
     }
 
