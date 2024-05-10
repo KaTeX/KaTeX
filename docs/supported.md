@@ -6,7 +6,7 @@ This is a list of TeX functions supported by KaTeX. It is sorted into logical gr
 
 There is a similar [Support Table](support_table.md), sorted alphabetically, that lists both supported and un-supported functions.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" integrity="sha384-wcIxkf4k558AjM3Yz3BBFQUbk/zgIYC2R0QpeeYb+TwlBVMrlgLqwRjRtGZiK7ww" crossorigin="anonymous">
 <style>
 p {overflow-wrap: break-word;}
 table tr,
@@ -205,8 +205,8 @@ Math-mode Unicode (sub|super)script characters will render as if you had written
 | Italic      | $\text{𝐴-𝑍 𝑎-𝑧}$      | Sans serif        | $\text{𝖠-𝖹 𝖺-𝗓 𝟢-𝟫}$
 | Bold Italic | $\text{𝑨-𝒁 𝒂-𝒛}$      | Sans serif bold   | $\text{𝗔-𝗭 𝗮-𝘇 𝟬-𝟵}$
 | Script      | $\text{𝒜-𝒵}$         | Sans serif italic | $\text{𝘈-𝘡 𝘢-𝘻}$
-|  Fractur    | $\text{𝔄-ℨ}\text{ 𝔞-𝔷}$| Monospace        | $\text{𝙰-𝚉 𝚊-𝚣 𝟶-𝟿}$
-| Bold Fractur | $\text{𝕬-𝖅}\text{𝖆-𝖟}$ | |
+| Fraktur     | $\text{$𝔄$-$ℨ$}\text{ $𝔞$-$𝔷$}$| Monospace        | $\text{𝙰-𝚉 𝚊-𝚣 𝟶-𝟿}$
+| Bold Fraktur | $\text{𝕬-𝖅 𝖆-𝖟}$ | |
 
 </div>
 <div class="katex-hopscotch">
