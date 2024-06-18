@@ -13,7 +13,7 @@ katex.render("c = \\pm\\sqrt{a^2 + b^2}", element, {
 
 To avoid escaping the backslash (double backslash), you can use
 [`String.raw`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/raw)
-(but beware that `${`, `\u` and `\x` may still need escaping):
+(but beware that escaping `${` and backtick is not possible while using `String.raw`).
 ```js
 katex.render(String.raw`c = \pm\sqrt{a^2 + b^2}`, element, {
     throwOnError: false
