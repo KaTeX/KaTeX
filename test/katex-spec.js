@@ -4094,8 +4094,11 @@ describe("Newlines via \\\\ and \\newline", function() {
         const markup = katex.renderToString(r`M = \\ a + \\ b \\ c`);
         // Ensure newlines appear outside base spans (because, in this regexp,
         // base span occurs immediately after each newline span).
-        expect(markup).toMatch(
-            /(<span class="base">.*?<\/span><span class="mspace newline"><\/span>){3}<span class="base">/);
+        const base = `<span class="base">.*?<\\/span>`;
+        const newline = `<span class="mspace newline"><\\/span>`;
+        const spacer = `<span class=\\"spacer\\">\u200b</span>`;
+        const pattern = new RegExp(`(${base}${spacer}${newline}${spacer}){3}${base}`);
+        expect(markup).toMatch(pattern);
         expect(markup).toMatchSnapshot();
     });
 });
