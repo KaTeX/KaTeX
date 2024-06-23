@@ -80,7 +80,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
     for (const font of fonts) {
         const override = process.env[`USE_${font.toUpperCase()}`];
         const useFont = override === "true" || override !== "false" && !isCovered;
-        sassVariables += (`$use-${font}: ${useFont};\n`);
+        sassVariables += (`$use-${font}: ${useFont.toString()};\n`);
 
         const support = caniuse.feature(caniuse.features[font]).stats;
         isCovered = isCovered || useFont && browserslist.every(browser => {
