@@ -2,7 +2,7 @@
 id: font
 title: Font
 ---
-By changing the variables in the `src/fonts.less` file,
+By changing the variables in the `src/fonts.scss` file,
 several properties of the way fonts are used can be changed.
 
 ## Font size and lengths
