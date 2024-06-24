@@ -13,7 +13,8 @@
         "value-no-vendor-prefix": null,
         "value-keyword-case": ["lower", {"camelCaseSvgKeywords": true}],
         "at-rule-no-unknown": null,
-        "scss/at-rule-no-unknown": true
+        "scss/at-rule-no-unknown": true,
+        "annotation-no-unknown": null
     },
     "overrides": [
       {
