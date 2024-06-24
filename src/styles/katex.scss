@@ -4,6 +4,9 @@
 // The mu unit is defined as 1/18 em
 $mu: calc(1em / 18);
 
+// The version is dynamically set from package.json via webpack.common.js
+$version: "" !default;
+
 .katex {
     font: normal 1.21em KaTeX_Main, Times New Roman, serif;
     line-height: 1.2;
@@ -24,7 +27,6 @@ $mu: calc(1em / 18);
     }
 
     .katex-version::after {
-        // The version is dynamically set from package.json via webpack.common.js
         content: $version;
     }
 

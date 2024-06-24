@@ -1,8 +1,10 @@
 $font-folder: "../../fonts";
+$use-woff2: true !default;
+$use-woff: true !default;
+$use-ttf: true !default;
 
 @function generate-src($family, $family-suffix) {
     $src: null;
-    // $use-woff2, $use-woff, $use-ttf are dynamically set from environment variables via webpack.common.js, defaults to true
     @if $use-woff2 {
         $src: append($src, url('#{$font-folder}/KaTeX_#{$family}-#{$family-suffix}.woff2') format('woff2'), comma);
     }
