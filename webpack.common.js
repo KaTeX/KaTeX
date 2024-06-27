@@ -73,16 +73,14 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         cssLoaders[1].options.postcssOptions.plugins.push(require('cssnano')());
     }
 
-    const lessOptions = {modifyVars: {
-        version: `"${version}"`,
-    }};
+    let sassVariables = `$version: "${version}";\n`;
 
     // use only necessary fonts, overridable by environment variables
     let isCovered = false;
     for (const font of fonts) {
         const override = process.env[`USE_${font.toUpperCase()}`];
         const useFont = override === "true" || override !== "false" && !isCovered;
-        lessOptions.modifyVars[`use-${font}`] = useFont;
+        sassVariables += (`$use-${font}: ${useFont.toString()};\n`);
 
         const support = caniuse.feature(caniuse.features[font]).stats;
         isCovered = isCovered || useFont && browserslist.every(browser => {
@@ -124,13 +122,18 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                     ],
                 },
                 {
-                    test: /\.less$/,
+                    test: /\.scss$/,
                     use: [
                         dev ? 'style-loader' : MiniCssExtractPlugin.loader,
                         ...cssLoaders,
                         {
-                            loader: 'less-loader',
-                            options: {lessOptions},
+                            loader: 'sass-loader',
+                            options: {
+                                sassOptions: {
+                                    outputStyle: 'expanded',
+                                },
+                                additionalData: sassVariables,
+                            },
                         },
                     ],
                 },

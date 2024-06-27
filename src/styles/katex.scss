@@ -1,11 +1,11 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword */
-@import "fonts.less";
+@import "./fonts.scss";
 
 // The mu unit is defined as 1/18 em
-@mu: (1em / 18);
+$mu: calc(1em / 18);
 
 // The version is dynamically set from package.json via webpack.common.js
-@version: "";
+$version: "" !default;
 
 .katex {
     font: normal 1.21em KaTeX_Main, Times New Roman, serif;
@@ -27,7 +27,7 @@
     }
 
     .katex-version::after {
-        content: @version;
+        content: $version;
     }
 
     .katex-mathml {
@@ -168,13 +168,13 @@
 
     // This value is also used in fontMetrics.js, if you change it make sure the
     // values match.
-    @ptperem: 10;
-    @nulldelimiterspace: (1.2em / @ptperem);
+    $ptperem: 10;
+    $nulldelimiterspace: calc(1.2em / $ptperem);
 
-    @muspace: 0.055556em;       // 1mu
-    @thinspace: 0.16667em;      // 3mu
-    @mediumspace: 0.22222em;    // 4mu
-    @thickspace: 0.27778em;     // 5mu
+    $muspace: 0.055556em;       // 1mu
+    $thinspace: 0.16667em;      // 3mu
+    $mediumspace: 0.22222em;    // 4mu
+    $thickspace: 0.27778em;     // 5mu
 
     .vlist-t {
         display: inline-table;
@@ -328,47 +328,23 @@
         > .root {
             /* These values are taken from the definition of `\r@@t`,
              `\mkern 5mu` and `\mkern -10mu`. */
-            margin-left: 5*@mu;
-            margin-right: -10*@mu;
+            margin-left: calc(5*$mu);
+            margin-right: calc(-10*$mu);
         }
     }
 
     .sizing,
     .fontsize-ensurer {
-        @size1: 0.5;
-        @size2: 0.6;
-        @size3: 0.7;
-        @size4: 0.8;
-        @size5: 0.9;
-        @size6: 1;
-        @size7: 1.2;
-        @size8: 1.44;
-        @size9: 1.728;
-        @size10: 2.074;
-        @size11: 2.488;
+        $sizes: 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.2, 1.44, 1.728, 2.074, 2.488;
 
-        .generate-size-change(@from, @to) {
-            &.reset-size@{from}.size@{to} {
-                @sizeFromVariable: ~"size@{from}";
-                @sizeToVariable: ~"size@{to}";
-
-                font-size: (@@sizeToVariable / @@sizeFromVariable) * 1em;
+        @for $from from 1 through length($sizes) {
+            @for $to from 1 through length($sizes) {
+                &.reset-size#{$from}.size#{$to} {
+                    /* stylelint-disable-next-line */
+                    font-size: calc((nth($sizes, $to) / nth($sizes, $from)) * 1em);
+                }
             }
         }
-
-        .generate-to-size-change(@from, @currTo) when (@currTo =< 11) {
-            .generate-size-change(@from, @currTo);
-
-            .generate-to-size-change(@from, (@currTo + 1));
-        }
-
-        .generate-from-size-change(@currFrom) when (@currFrom =< 11) {
-            .generate-to-size-change(@currFrom, 1);
-
-            .generate-from-size-change((@currFrom + 1));
-        }
-
-        .generate-from-size-change(1);
     }
 
     .delimsizing {
@@ -390,7 +366,7 @@
 
     .nulldelimiter {
         display: inline-block;
-        width: @nulldelimiterspace;
+        width: $nulldelimiterspace;
     }
 
     .delimcenter {

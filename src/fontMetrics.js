@@ -75,7 +75,7 @@ const sigmasAndXis = {
 
     // This value determines how large a pt is, for metrics which are defined
     // in terms of pts.
-    // This value is also used in katex.less; if you change it make sure the
+    // This value is also used in katex.scss; if you change it make sure the
     // values match.
     ptPerEm: [10.0, 10.0, 10.0],
 
