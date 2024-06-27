@@ -3,7 +3,7 @@ id: font
 title: Font
 ---
 By changing the variables in the `src/styles/fonts.scss` file,
-several properties of the way fonts are used can be changed.
+you can change several properties of how KaTeX uses fonts.
 
 ## Font size and lengths
 By default, KaTeX math is rendered in a 1.21× larger font than the surrounding
@@ -35,7 +35,17 @@ KaTeX will automatically include only necessary fonts for target environments
 specified by [Browserslist config](https://github.com/browserslist/browserslist#queries).
 
 To force a font type to be included or excluded, set `USE_(FONT NAME)` environment
-variable to `"true"` or `"false"`, respectively.
+variable to `"true"` or `"false"`, respectively, during the build process.
+
+Alternatively, if you use [Sass](https://sass-lang.com/), you can include `src/styles/katex.scss` directly with variable overrides:
+
+```scss
+@use 'node_modules/katex/src/styles/katex' with (
+  $use-ttf: false;
+  $use-woff: false;
+  $use-woff2: true;
+);
+```
 
 ## Location of font files
 
@@ -44,3 +54,11 @@ The default build of KaTeX expects the KaTeX fonts to be located in a directory 
 1. Find the `sassVariables` variable in `webpack.common.js`. This is a string, and you add at the start or end of it `$font-folder: "${fontLocation}";\n`, with `fontLocation` pointing to the location of your fonts. Alternatively you can replace value in `src/styles/fonts.scss` file.  It is possible to use relative or absolute paths, so setting it to `"/fonts"` would cause it to search for the fonts in a root `fonts` folder, while `"../fonts"` would search in a `fonts` directory one level above the `katex.min.css` file.
 2. Rebuild KaTeX by running `yarn build` from the top-level directory.
 3. Use the newly generated `dist/katex.min.css` file, and place the fonts where you indicated.
+
+Alternatively, if you use [Sass](https://sass-lang.com/), you can include `src/styles/katex.scss` directly with a variable override:
+
+```scss
+@use 'node_modules/katex/src/styles/katex' with (
+  $font-folder: "path/to/fonts"
+);
+```
