@@ -19,7 +19,6 @@ const textFontWeights = {
 const textFontShapes = {
     "\\textit": "textit",
     "\\textup": "textup",
-    "\\emph": "textit",
 };
 
 const optionsWithFont = (group, options) => {
@@ -31,8 +30,10 @@ const optionsWithFont = (group, options) => {
         return options.withTextFontFamily(textFontFamilies[font]);
     } else if (textFontWeights[font]) {
         return options.withTextFontWeight(textFontWeights[font]);
-    } else if (options.fontShape === "textit" && font === "\\emph") {
-        return options.withTextFontShape("textup");
+    } else if (font === "\\emph") {
+        return options.fontShape === "textit" ?
+            options.withTextFontShape("textup") :
+            options.withTextFontShape("textit");
     }
 
     return options.withTextFontShape(textFontShapes[font]);

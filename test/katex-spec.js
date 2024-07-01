@@ -4241,3 +4241,9 @@ describe("\\relax", () => {
         expect`\kern2\relax em`.not.toParse();
     });
 });
+
+describe("\\emph", () => {
+    it("should emhpisize the text", () => {
+        expect`\emph{foo \emph{bar}}`.toBuildLike`\textit{foo \textup{bar}}`;
+    });
+});
