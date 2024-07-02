@@ -369,7 +369,7 @@ use `\ce` instead|
 |\ell|$\ell$||
 |\else|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
 |\em|<span style="color:firebrick;">Not supported</span>||
-|\emph|<span style="color:firebrick;">Not supported</span>||
+|\emph|$\emph{nested \emph{emphasis}}$|`\emph{nested \emph{emphasis}}`|
 |\empty|$\empty$||
 |\emptyset|$\emptyset$||
 |\enclose|<span style="color:firebrick;">Not supported</span>|Non standard
