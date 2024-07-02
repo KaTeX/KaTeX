@@ -81,7 +81,7 @@
     "eslint-plugin-flowtype": "^8.0.3",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-react": "^7.31.1",
-    "flow-bin": "^0.135.0",
+    "flow-bin": "^0.238.0",
     "fs-extra": "^10.1.0",
     "got": "^11.8.5",
     "husky": "^4.3.8",
