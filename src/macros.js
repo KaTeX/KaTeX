@@ -380,6 +380,12 @@ defineMacro("\\iff", "\\DOTSB\\;\\Longleftrightarrow\\;");
 defineMacro("\\implies", "\\DOTSB\\;\\Longrightarrow\\;");
 defineMacro("\\impliedby", "\\DOTSB\\;\\Longleftarrow\\;");
 
+// \def\dddot#1{{\mathop{#1}\limits^{\vbox to-1.4\ex@{\kern-\tw@\ex@
+//  \hbox{\normalfont ...}\vss}}}}
+// We use \overset which avoids the vertical shift of \mathop.
+defineMacro("\\dddot", "{\\overset{\\raisebox{-0.1ex}{\\normalsize ...}}{#1}}");
+defineMacro("\\ddddot", "{\\overset{\\raisebox{-0.1ex}{\\normalsize ....}}{#1}}");
+
 // AMSMath's automatic \dots, based on \mdots@@ macro.
 const dotsByToken = {
     ',': '\\dotsc',
