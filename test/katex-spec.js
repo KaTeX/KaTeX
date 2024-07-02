@@ -4243,7 +4243,19 @@ describe("\\relax", () => {
 });
 
 describe("\\emph", () => {
-    it("should emhpisize the text", () => {
+    it("should toggle italics", () => {
         expect`\emph{foo \emph{bar}}`.toBuildLike`\textit{foo \textup{bar}}`;
+    });
+
+    it("should toggle italics within text", () => {
+        expect`\text{\emph{foo \emph{bar}}}`.toBuildLike`\text{\textit{foo \textup{bar}}}`;
+    });
+
+    it("should toggle italics within textup", () => {
+        expect`\textup{\emph{foo \emph{bar}}}`.toBuildLike`\textup{\textit{foo \textup{bar}}}`;
+    });
+
+    it("should toggle italics within textit", () => {
+        expect`\textit{\emph{foo \emph{bar}}}`.toBuildLike`\textit{\textup{foo \textit{bar}}}`;
     });
 });
