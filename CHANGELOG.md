@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.11](https://github.com/KaTeX/KaTeX/compare/v0.16.10...v0.16.11) (2024-07-02)
+
+
+### Features
+
+* add \emph ([#3963](https://github.com/KaTeX/KaTeX/issues/3963)) ([9f34da4](https://github.com/KaTeX/KaTeX/commit/9f34da4b3cf228a7af8134c394394d780a089f2b)), closes [#3566](https://github.com/KaTeX/KaTeX/issues/3566)
+
 ## [0.16.10](https://github.com/KaTeX/KaTeX/compare/v0.16.9...v0.16.10) (2024-03-24)
 
 
