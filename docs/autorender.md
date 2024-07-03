@@ -128,6 +128,9 @@ in addition to five auto-render-specific keys:
 - `preProcess`: A callback function, `(math: string) => string`, used to process
   math expressions before rendering.
 
+- `supportEscapedSpecialCharsInText`: `boolean` (default: `false`). If `true`, `\$` are ignored outside of LaTeX math expressions.
+  For example: `Please enjoy this 2\$ coffee and I'll explain why $e = mc^2$.`
+
 The `displayMode` property of the options object is ignored, and is
 instead taken from the `display` key of the corresponding entry in the
 `delimiters` key.
