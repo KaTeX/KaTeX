@@ -14,7 +14,7 @@ function init() {
     input.addEventListener("input", reprocess, false);
     permalink.addEventListener("click", setSearch);
 
-    const options = {displayMode: true, throwOnError: true, trust: true};
+    let options = {displayMode: true, throwOnError: true, trust: true};
     const macros = {};
     const query = queryString.parse(window.location.search);
 
@@ -85,7 +85,71 @@ function init() {
         }
     });
 
+    // This sets default values
+    // Initialize an empty array to store the options as strings
+    const optionElements = [];
+
+    // Init array with ids of each option
+    const optionIds = ["displayMode", "leqno", "fleqn", "throwOnError",
+        "errorColor", "strict", "output", "trust", "macros"];
+
+    // Loop through each option ID
+    for (const id of optionIds) {
+
+        const element = document.getElementById(id);
+        // If value of element changes, call reprocess function
+        element.addEventListener("change", reprocess);
+        if (element.type === "checkbox") {
+            // if checkbox set its checked state based on options[id]
+            element.checked = options[id];
+        } else if (options[id]) {
+            // If id property of options is defined
+            if (element.placeholder === "JSON") {
+                // check if placeholder is "JSON"
+                // this means it is macros
+                // convert Js object to JSON string
+                element.value = JSON.stringify(options[id]);
+            } else {
+                //if not defined
+                element.value = options[id];
+            }
+        }
+
+        // Add the processed element to the optionElements array
+        optionElements.push(element);
+    }
+
+
     reprocess();
+
+    function changeOption() {
+        // Init empty object options
+        const options = {};
+
+        // Loop through each element in optionElements
+        for (const element of optionElements) {
+            let val;
+
+            // Check the type of the element
+            if (element.type === "checkbox") {
+                // if checkbox, value is set to true or false
+                val = element.checked;
+            } else if (element.placeholder === "JSON") {
+                // if placeholder JSON, then element is macros
+                // parse the JSON input entered into the macro
+                val = element.value ? JSON.parse(element.value) : undefined;
+            } else {
+                // For rest of the elements, set val to the value of the element
+                val = element.value;
+            }
+
+            // Set id of each element in the options object to its current val
+            options[element.id] = val;
+        }
+
+        return options;
+    }
+
 
     function setSearch() {
         const query = queryString.parse(window.location.search);
@@ -94,6 +158,7 @@ function init() {
     }
 
     function reprocess() {
+        options = changeOption();
         // Ignore changes to global macros caused by the expression
         options.macros = Object.assign({}, macros);
         try {
