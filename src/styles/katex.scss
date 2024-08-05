@@ -442,6 +442,7 @@ $version: "" !default;
     svg {
         display: block;
         position: absolute; // absolute relative to parent
+        z-index: 1;
         width: 100%;
         height: inherit;
 
