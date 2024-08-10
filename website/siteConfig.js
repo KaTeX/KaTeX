@@ -102,8 +102,8 @@ const users = [
     },
     {
         caption: 'MonsterWriter',
-        image: 'https://www.monsterwriter.app/assets/logo.png',
-        infoLink: 'https://www.monsterwriter.app/',
+        image: 'https://www.monsterwriter.com/assets/logo-200.png',
+        infoLink: 'https://www.monsterwriter.com/',
     },
     {
         caption: 'namu.wiki',
