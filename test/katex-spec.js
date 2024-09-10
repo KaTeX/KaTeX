@@ -3900,7 +3900,7 @@ describe("Unicode", function() {
     });
 
     it("should build relations", function() {
-        expect`∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙⟂⊨∌`.toBuild(strictSettings);
+        expect`∈∋∝∼∽≂≃≅≈≊≍≎≏≐≑≒≓≖≗≜≡≤≥≦≧≪≫≬≳≷≺≻≼≽≾≿∴∵∣≔≕⩴⋘⋙⟂⊨∌⥽⥼`.toBuild(strictSettings);
     });
 
     it("should parse relations", function() {
