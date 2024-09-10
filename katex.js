@@ -158,7 +158,7 @@ export default {
      */
     ParseError,
     /**
-     * The shema of Settings
+     * The schema of Settings
      */
     SETTINGS_SCHEMA,
     /**
