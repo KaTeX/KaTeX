@@ -674,6 +674,7 @@ defineSymbol(math, main, inner, "\u2026", "\\ldots", true);
 defineSymbol(math, main, inner, "\u22ef", "\\@cdots", true);
 defineSymbol(math, main, inner, "\u22f1", "\\ddots", true);
 defineSymbol(math, main, textord, "\u22ee", "\\varvdots"); // \vdots is a macro
+defineSymbol(text, main, textord, "\u22ee", "\\textvdots");
 defineSymbol(math, main, accent, "\u02ca", "\\acute");
 defineSymbol(math, main, accent, "\u02cb", "\\grave");
 defineSymbol(math, main, accent, "\u00a8", "\\ddot");

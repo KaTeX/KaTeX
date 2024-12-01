@@ -807,6 +807,10 @@ describe("A text parser", function() {
     it("should omit spaces after commands", function() {
         expect`\text{\textellipsis !}`.toParseLike`\text{\textellipsis!}`;
     });
+
+    it("should handle ⋮ and \\vdots", function() {
+        expect`\text{a \vdots b ⋮ d}`.toParse();
+    });
 });
 
 describe("A texvc builder", function() {
