@@ -5,8 +5,15 @@
   "main": "dist/katex.js",
   "exports": {
     ".": {
-      "require": "./dist/katex.js",
-      "import": "./dist/katex.mjs"
+      "require": {
+        "types": "./types/katex.d.ts",
+        "default": "./dist/katex.js"
+      },
+      "import": 
+        {
+          "types": "./types/katex.d.mts",
+          "default": "./dist/katex.mjs"
+        }
     },
     "./contrib/auto-render": {
       "require": "./dist/contrib/auto-render.js",
