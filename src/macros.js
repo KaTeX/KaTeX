@@ -341,8 +341,7 @@ defineMacro("\\lrcorner", "\\html@mathml{\\@lrcorner}{\\mathop{\\char\"231f}}");
 // \kern6\p@\hbox{.}\hbox{.}\hbox{.}}}
 // We'll call \varvdots, which gets a glyph from symbols.js.
 // The zero-width rule gets us an equivalent to the vertical 6pt kern.
-defineMacro("\\vdots",
-            "\\TextOrMath{\\textvdots}{{\\varvdots\\rule{0pt}{15pt}}}\\relax");
+defineMacro("\\vdots", "{\\varvdots\\rule{0pt}{15pt}}");
 defineMacro("\u22ee", "\\vdots");
 
 //////////////////////////////////////////////////////////////////////
