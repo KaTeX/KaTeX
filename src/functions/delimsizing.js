@@ -342,7 +342,7 @@ defineFunction({
         return middleDelim;
     },
     mathmlBuilder: (group, options) => {
-        // A Firefox \middle will strech a character vertically only if it
+        // A Firefox \middle will stretch a character vertically only if it
         // is in the fence part of the operator dictionary at:
         // https://www.w3.org/TR/MathML3/appendixc.html.
         // So we need to avoid U+2223 and use plain "|" instead.

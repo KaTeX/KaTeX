@@ -44,3 +44,4 @@ website/.yarn/*
 fonts.tar
 fonts.tar.gz
 temp/
+.idea/

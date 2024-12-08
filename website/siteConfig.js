@@ -16,6 +16,11 @@ const users = [
         infoLink: 'https://www.khanacademy.org/',
     },
     {
+        caption: 'BearBei 貝貝',
+        image: 'https://bearbei.com/pic/bearbeiLogoForKatexWebsite.png',
+        infoLink: 'https://bearbei.com',
+    },
+    {
         caption: 'CindyJS',
         image: 'https://cindyjs.org/assets/img/logo.png',
         infoLink: 'https://cindyjs.org/',
@@ -24,6 +29,11 @@ const users = [
         caption: 'CoCalc',
         image: '/img/cocalc_logo.svg',
         infoLink: 'https://cocalc.com/',
+    },
+    {
+        caption: 'Doctave',
+        image: 'https://www.doctave.com/assets/img/katex-integration-logo.webp',
+        infoLink: 'https://www.doctave.com/',
     },
     {
         caption: 'Dropbox Paper',
@@ -92,8 +102,8 @@ const users = [
     },
     {
         caption: 'MonsterWriter',
-        image: 'https://www.monsterwriter.app/assets/logo.png',
-        infoLink: 'https://www.monsterwriter.app/',
+        image: 'https://www.monsterwriter.com/assets/logo-200.png',
+        infoLink: 'https://www.monsterwriter.com/',
     },
     {
         caption: 'namu.wiki',
@@ -121,9 +131,19 @@ const users = [
         infoLink: 'https://rocket.chat/',
     },
     {
+        caption: 'Slab',
+        image: '/img/slab-logo.png',
+        infoLink: 'https://slab.com/',
+    },
+    {
         caption: 'Slides',
         image: 'https://s3.amazonaws.com/uploads.uservoice.com/logo/design_setting/116173/original/slides-symbol-150x150.png',
         infoLink: 'https://slides.com/',
+    },
+    {
+        caption: 'SnapXam',
+        image: 'https://www.snapxam.com/assets/images/snapxam-logo2-transparent.png',
+        infoLink: 'https://www.snapxam.com',
     },
     {
         caption: 'Snip',
@@ -146,6 +166,11 @@ const users = [
         infoLink: 'https://kookma.github.io/TW-Tamasha/',
     },
     {
+        caption: 'Techambition',
+        image: '/img/techambition.png',
+        infoLink: 'https://techambition.com',
+    },
+    {
         caption: 'TiddlyWiki',
         image: '/img/tiddlywiki_logo.svg',
         infoLink: 'https://tiddlywiki.com/',
@@ -159,6 +184,11 @@ const users = [
         caption: 'Vade Mecum Shelf',
         image: '/img/vade_mecum_shelf_logo.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
+    },
+    {
+        caption: 'zzllrr Mather',
+        image: 'https://github.com/zzllrr/mather/raw/master/img/logo.jpg',
+        infoLink: 'https://github.com/zzllrr/mather',
     },
 ];
 

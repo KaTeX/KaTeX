@@ -39,6 +39,11 @@ function getHLines(parser: Parser): boolean[] {
     const hlineInfo = [];
     parser.consumeSpaces();
     let nxt = parser.fetch().text;
+    if (nxt === "\\relax") { // \relax is an artifact of the \cr macro below
+        parser.consume();
+        parser.consumeSpaces();
+        nxt = parser.fetch().text;
+    }
     while (nxt === "\\hline" || nxt === "\\hdashline") {
         parser.consume();
         hlineInfo.push(nxt === "\\hdashline");
@@ -256,7 +261,7 @@ function parseArray(
 // Decides on a style for cells in an array according to whether the given
 // environment name starts with the letter 'd'.
 function dCellStyle(envName): StyleStr {
-    if (envName.substr(0, 1) === "d") {
+    if (envName.slice(0, 1) === "d") {
         return "display";
     } else {
         return "text";
@@ -568,8 +573,8 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     // We simulate this by adding (arraystretch - 1)em to the gap. This
     // does a reasonable job of adjusting arrays containing 1 em tall content.
 
-    // The 0.16 and 0.09 values are found emprically. They produce an array
-    // similar to LaTeX and in which content does not interfere with \hines.
+    // The 0.16 and 0.09 values are found empirically. They produce an array
+    // similar to LaTeX and in which content does not interfere with \hlines.
     const gap = (group.arraystretch === 0.5)
         ? 0.1  // {smallmatrix}, {subarray}
         : 0.16 + group.arraystretch - 1 + (group.addJot ? 0.09 : 0);

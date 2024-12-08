@@ -1,6 +1,99 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.11](https://github.com/KaTeX/KaTeX/compare/v0.16.10...v0.16.11) (2024-07-02)
+
+
+### Features
+
+* add \emph ([#3963](https://github.com/KaTeX/KaTeX/issues/3963)) ([9f34da4](https://github.com/KaTeX/KaTeX/commit/9f34da4b3cf228a7af8134c394394d780a089f2b)), closes [#3566](https://github.com/KaTeX/KaTeX/issues/3566)
+
+## [0.16.10](https://github.com/KaTeX/KaTeX/compare/v0.16.9...v0.16.10) (2024-03-24)
+
+
+### Bug Fixes
+
+* \edef bypassing maxExpand via exponential blowup ([e88b4c3](https://github.com/KaTeX/KaTeX/commit/e88b4c357f978b1bca8edfe3297f0aa309bcbe34))
+* escape \includegraphics src and alt ([c5897fc](https://github.com/KaTeX/KaTeX/commit/c5897fcd1f73da9612a53e6b5544f1d776e17770))
+* force protocol to be lowercase for better protocol filtering ([fc5af64](https://github.com/KaTeX/KaTeX/commit/fc5af64183a3ceb9be9d1c23a275999a728593de)), closes [/datatracker.ietf.org/doc/html/rfc3986#section-3](https://github.com//datatracker.ietf.org/doc/html/rfc3986/issues/section-3)
+* maxExpand limit with Unicode sub/superscripts ([085e21b](https://github.com/KaTeX/KaTeX/commit/085e21b5da05414efefa932570e7201a7c70e5b2))
+
+## [0.16.9](https://github.com/KaTeX/KaTeX/compare/v0.16.8...v0.16.9) (2023-10-02)
+
+
+### Features
+
+* Support bold Fraktur ([#3777](https://github.com/KaTeX/KaTeX/issues/3777)) ([240d5ae](https://github.com/KaTeX/KaTeX/commit/240d5aede915e0303929a9328745b1060e12004a))
+
+## [0.16.8](https://github.com/KaTeX/KaTeX/compare/v0.16.7...v0.16.8) (2023-06-24)
+
+
+### Features
+
+* expose error length and raw error message on ParseError ([#3820](https://github.com/KaTeX/KaTeX/issues/3820)) ([710774a](https://github.com/KaTeX/KaTeX/commit/710774aaebb38f43b1ec51c159fe9b9520c91424))
+
+## [0.16.7](https://github.com/KaTeX/KaTeX/compare/v0.16.6...v0.16.7) (2023-04-28)
+
+
+### Bug Fixes
+
+* **docs/support_table.md:** delete redundant "varPsi" ([#3814](https://github.com/KaTeX/KaTeX/issues/3814)) ([33a1b98](https://github.com/KaTeX/KaTeX/commit/33a1b98710c880d2d4a67aa0048f027a94b85702))
+
+## [0.16.6](https://github.com/KaTeX/KaTeX/compare/v0.16.5...v0.16.6) (2023-04-17)
+
+
+### Bug Fixes
+
+* Support `\let` via `macros` option ([#3738](https://github.com/KaTeX/KaTeX/issues/3738)) ([bdb0be2](https://github.com/KaTeX/KaTeX/commit/bdb0be201794d22adaee05438b07a2830efea9da)), closes [#3737](https://github.com/KaTeX/KaTeX/issues/3737) [#3737](https://github.com/KaTeX/KaTeX/issues/3737)
+
+## [0.16.5](https://github.com/KaTeX/KaTeX/compare/v0.16.4...v0.16.5) (2023-04-17)
+
+
+### Features
+
+* __defineFunction API exposing internal defineFunction ([#3805](https://github.com/KaTeX/KaTeX/issues/3805)) ([c7b1f84](https://github.com/KaTeX/KaTeX/commit/c7b1f84b7801a29dffdfa3db0ff35de289db80c0)), closes [#3756](https://github.com/KaTeX/KaTeX/issues/3756)
+
+## [0.16.4](https://github.com/KaTeX/KaTeX/compare/v0.16.3...v0.16.4) (2022-12-07)
+
+
+### Bug Fixes
+
+* space should prevent optional argument to \\ ([#3746](https://github.com/KaTeX/KaTeX/issues/3746)) ([a0deb34](https://github.com/KaTeX/KaTeX/commit/a0deb3410fd92340556fc4c9edb8ab586077e5bf)), closes [#3745](https://github.com/KaTeX/KaTeX/issues/3745)
+
+## [0.16.3](https://github.com/KaTeX/KaTeX/compare/v0.16.2...v0.16.3) (2022-10-22)
+
+
+### Bug Fixes
+
+* \hline after \cr ([#3735](https://github.com/KaTeX/KaTeX/issues/3735)) ([ebf6bf5](https://github.com/KaTeX/KaTeX/commit/ebf6bf5b50a98ac6c5aca1896c0a6ba985c1c91c)), closes [#3734](https://github.com/KaTeX/KaTeX/issues/3734)
+
+## [0.16.2](https://github.com/KaTeX/KaTeX/compare/v0.16.1...v0.16.2) (2022-08-29)
+
+
+### Bug Fixes
+
+* **auto-render:** concatenate content of successive text nodes ([#3422](https://github.com/KaTeX/KaTeX/issues/3422)) ([4d3fdd8](https://github.com/KaTeX/KaTeX/commit/4d3fdd8647a1c320dc7bcb9c9ea2af81379f700d))
+* Implement \pmb via CSS text-shadow ([#3505](https://github.com/KaTeX/KaTeX/issues/3505)) ([176552a](https://github.com/KaTeX/KaTeX/commit/176552a69183d71425b491d4cc2fa1d462a1246a))
+
+## [0.16.1](https://github.com/KaTeX/KaTeX/compare/v0.16.0...v0.16.1) (2022-08-28)
+
+
+### Bug Fixes
+
+* Use SVGs for some stacked delims ([#3686](https://github.com/KaTeX/KaTeX/issues/3686)) ([8a65a2e](https://github.com/KaTeX/KaTeX/commit/8a65a2e1fd69ffeee2fac62229f9f05ebf6afd45))
+
+# [0.16.0](https://github.com/KaTeX/KaTeX/compare/v0.15.6...v0.16.0) (2022-06-06)
+
+
+### Bug Fixes
+
+* **copy-tex:** Use JS (instead of CSS) to select full equation, solving display glitches ([#3586](https://github.com/KaTeX/KaTeX/issues/3586)) ([8c2d852](https://github.com/KaTeX/KaTeX/commit/8c2d852c4af213ba4e2f4a3b875498c367e9a119))
+
+
+### BREAKING CHANGES
+
+* **copy-tex:** copy-tex extension no longer has (or requires) a CSS file.
+
 ## [0.15.6](https://github.com/KaTeX/KaTeX/compare/v0.15.5...v0.15.6) (2022-05-20)
 
 
@@ -311,7 +404,7 @@ You can now use:
 - docs: Update \operatorname in supported_table.md 0.12.0 (#2571)
 - docs: Fix documentation typo in operatorname* (#2570)
 - docs: add warning re:defer to mhchem documentation (#2485)
-- docs: update Gastby logo and link (#2481)
+- docs: update Gatsby logo and link (#2481)
 - docs: add MonsterWriter to the users page (#2478)
 - docs: add comment re: \arrowvert (#2449)
 - docs: add link to Discussions (#2405)

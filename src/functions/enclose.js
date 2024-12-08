@@ -20,7 +20,7 @@ const htmlBuilder = (group, options) => {
     const inner = buildCommon.wrapFragment(
         html.buildGroup(group.body, options), options);
 
-    const label = group.label.substr(1);
+    const label = group.label.slice(1);
     let scale = options.sizeMultiplier;
     let img;
     let imgShift = 0;

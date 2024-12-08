@@ -447,7 +447,7 @@ defineMacro("\\dots", function(context) {
     const next = context.expandAfterFuture().text;
     if (next in dotsByToken) {
         thedots = dotsByToken[next];
-    } else if (next.substr(0, 4) === '\\not') {
+    } else if (next.slice(0, 4) === '\\not') {
         thedots = '\\dotsb';
     } else if (next in symbols.math) {
         if (utils.contains(['bin', 'rel'], symbols.math[next].group)) {
@@ -596,14 +596,6 @@ defineMacro("\\pmod", "\\pod{{\\rm mod}\\mkern6mu#1}");
 defineMacro("\\mod", "\\allowbreak" +
     "\\mathchoice{\\mkern18mu}{\\mkern12mu}{\\mkern12mu}{\\mkern12mu}" +
     "{\\rm mod}\\,\\,#1");
-
-// \pmb    --   A simulation of bold.
-// The version in ambsy.sty works by typesetting three copies of the argument
-// with small offsets. We use two copies. We omit the vertical offset because
-// of rendering problems that makeVList encounters in Safari.
-defineMacro("\\pmb", "\\html@mathml{" +
-    "\\@binrel{#1}{\\mathrlap{#1}\\kern0.5px#1}}" +
-    "{\\mathbf{#1}}");
 
 //////////////////////////////////////////////////////////////////////
 // LaTeX source2e

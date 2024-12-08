@@ -191,7 +191,7 @@ const svgSpan = function(
         height: number,
     } {
         let viewBoxWidth = 400000;  // default
-        const label = group.label.substr(1);
+        const label = group.label.slice(1);
         if (utils.contains(["widehat", "widecheck", "widetilde", "utilde"],
             label)) {
             // Each type in the `if` statement corresponds to one of the ParseNode

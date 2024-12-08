@@ -11,14 +11,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
-    - name: Use Node.js 12
-      uses: actions/setup-node@v2
+    - name: Enable Corepack
+      run: corepack enable
+
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
       with:
-        node-version: '12'
+        node-version: '20'
         cache: yarn
 
     - name: Install dependencies
@@ -40,7 +43,7 @@ jobs:
     - name: Build
       run: yarn build
 
-    - uses: codecov/codecov-action@v2
+    - uses: codecov/codecov-action@v3
       with:
         directory: ./coverage/
       timeout-minutes: 3
@@ -52,16 +55,18 @@ jobs:
     needs: test
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false
         fetch-depth: 0
 
-    - name: Use Node.js 16
-      uses: actions/setup-node@v2
+    - name: Enable Corepack
+      run: corepack enable
+
+    - name: Use Node.js 20
+      uses: actions/setup-node@v4
       with:
-        node-version: '16'
-        cache: yarn
+        node-version: '20'
 
     - name: Install dependencies
       run: yarn --immutable

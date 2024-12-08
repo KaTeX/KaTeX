@@ -72,7 +72,7 @@ type ParseNodeTypes = {
     |},
     // To avoid requiring run-time type assertions, this more carefully captures
     // the requirements on the fields per the op.js htmlBuilder logic:
-    // - `body` and `value` are NEVER set simultanouesly.
+    // - `body` and `value` are NEVER set simultaneously.
     // - When `symbol` is true, `body` is set.
     "op": {|
         type: "op",
@@ -413,6 +413,13 @@ type ParseNodeTypes = {
         mode: Mode,
         loc?: ?SourceLocation,
         body: AnyParseNode,
+    |},
+    "pmb": {|
+        type: "pmb",
+        mode: Mode,
+        loc?: ?SourceLocation,
+        mclass: string,
+        body: AnyParseNode[],
     |},
     "raisebox": {|
         type: "raisebox",

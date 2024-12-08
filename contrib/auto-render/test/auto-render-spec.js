@@ -6,15 +6,14 @@ import renderMathInElement from "../auto-render";
 
 beforeEach(function() {
     expect.extend({
-        toSplitInto: function(actual, left, right, result) {
+        toSplitInto: function(actual, result, delimiters) {
             const message = {
                 pass: true,
                 message: () => "'" + actual + "' split correctly",
             };
 
             const split =
-                  splitAtDelimiters(actual,
-                                    [{left: left, right: right, display: false}]);
+                  splitAtDelimiters(actual, delimiters);
 
             if (split.length !== result.length) {
                 message.pass = false;
@@ -60,60 +59,76 @@ beforeEach(function() {
 
 describe("A delimiter splitter", function() {
     it("doesn't split when there are no delimiters", function() {
-        expect("hello").toSplitInto("(", ")", [{type: "text", data: "hello"}]);
+        expect("hello").toSplitInto(
+            [
+                {type: "text", data: "hello"},
+            ],
+            [
+                {left: "(", right: ")", display: false},
+            ]);
     });
 
     it("doesn't create a math node with only one left delimiter", function() {
         expect("hello ( world").toSplitInto(
-            "(", ")",
             [
                 {type: "text", data: "hello "},
                 {type: "text", data: "( world"},
+            ],
+            [
+                {left: "(", right: ")", display: false},
             ]);
     });
 
     it("doesn't split when there's only a right delimiter", function() {
         expect("hello ) world").toSplitInto(
-            "(", ")",
             [
                 {type: "text", data: "hello ) world"},
+            ],
+            [
+                {left: "(", right: ")", display: false},
             ]);
     });
 
     it("splits when there are both delimiters", function() {
         expect("hello ( world ) boo").toSplitInto(
-            "(", ")",
             [
                 {type: "text", data: "hello "},
                 {type: "math", data: " world ",
                     rawData: "( world )", display: false},
                 {type: "text", data: " boo"},
+            ],
+            [
+                {left: "(", right: ")", display: false},
             ]);
     });
 
     it("splits on multi-character delimiters", function() {
         expect("hello [[ world ]] boo").toSplitInto(
-            "[[", "]]",
             [
                 {type: "text", data: "hello "},
                 {type: "math", data: " world ",
                     rawData: "[[ world ]]", display: false},
                 {type: "text", data: " boo"},
+            ],
+            [
+                {left: "[[", right: "]]", display: false},
             ]);
         expect("hello \\begin{equation} world \\end{equation} boo").toSplitInto(
-            "\\begin{equation}", "\\end{equation}",
             [
                 {type: "text", data: "hello "},
                 {type: "math", data: "\\begin{equation} world \\end{equation}",
                     rawData: "\\begin{equation} world \\end{equation}",
                     display: false},
                 {type: "text", data: " boo"},
+            ],
+            [
+                {left: "\\begin{equation}", right: "\\end{equation}",
+                    display: false},
             ]);
     });
 
-    it("splits mutliple times", function() {
+    it("splits multiple times", function() {
         expect("hello ( world ) boo ( more ) stuff").toSplitInto(
-            "(", ")",
             [
                 {type: "text", data: "hello "},
                 {type: "math", data: " world ",
@@ -122,44 +137,52 @@ describe("A delimiter splitter", function() {
                 {type: "math", data: " more ",
                     rawData: "( more )", display: false},
                 {type: "text", data: " stuff"},
+            ],
+            [
+                {left: "(", right: ")", display: false},
             ]);
     });
 
     it("leaves the ending when there's only a left delimiter", function() {
         expect("hello ( world ) boo ( left").toSplitInto(
-            "(", ")",
             [
                 {type: "text", data: "hello "},
                 {type: "math", data: " world ",
                     rawData: "( world )", display: false},
                 {type: "text", data: " boo "},
                 {type: "text", data: "( left"},
+            ],
+            [
+                {left: "(", right: ")", display: false},
             ]);
     });
 
     it("doesn't split when close delimiters are in {}s", function() {
         expect("hello ( world { ) } ) boo").toSplitInto(
-            "(", ")",
             [
                 {type: "text", data: "hello "},
                 {type: "math", data: " world { ) } ",
                     rawData: "( world { ) } )", display: false},
                 {type: "text", data: " boo"},
+            ],
+            [
+                {left: "(", right: ")", display: false},
             ]);
 
         expect("hello ( world { { } ) } ) boo").toSplitInto(
-            "(", ")",
             [
                 {type: "text", data: "hello "},
                 {type: "math", data: " world { { } ) } ",
                     rawData: "( world { { } ) } )", display: false},
                 {type: "text", data: " boo"},
+            ],
+            [
+                {left: "(", right: ")", display: false},
             ]);
     });
 
     it("correctly processes sequences of $..$", function() {
         expect("$hello$$world$$boo$").toSplitInto(
-            "$", "$",
             [
                 {type: "math", data: "hello",
                     rawData: "$hello$", display: false},
@@ -167,17 +190,22 @@ describe("A delimiter splitter", function() {
                     rawData: "$world$", display: false},
                 {type: "math", data: "boo",
                     rawData: "$boo$", display: false},
+            ],
+            [
+                {left: "$", right: "$", display: false},
             ]);
     });
 
     it("doesn't split at escaped delimiters", function() {
         expect("hello ( world \\) ) boo").toSplitInto(
-            "(", ")",
             [
                 {type: "text", data: "hello "},
                 {type: "math", data: " world \\) ",
                     rawData: "( world \\) )", display: false},
                 {type: "text", data: " boo"},
+            ],
+            [
+                {left: "(", right: ")", display: false},
             ]);
 
         /* TODO(emily): make this work maybe?
@@ -194,21 +222,25 @@ describe("A delimiter splitter", function() {
 
     it("splits when the right and left delimiters are the same", function() {
         expect("hello $ world $ boo").toSplitInto(
-            "$", "$",
             [
                 {type: "text", data: "hello "},
                 {type: "math", data: " world ",
                     rawData: "$ world $", display: false},
                 {type: "text", data: " boo"},
+            ],
+            [
+                {left: "$", right: "$", display: false},
             ]);
     });
 
     it("ignores \\$", function() {
         expect("$x = \\$5$").toSplitInto(
-            "$", "$",
             [
                 {type: "math", data: "x = \\$5",
                     rawData: "$x = \\$5$", display: false},
+            ],
+            [
+                {left: "$", right: "$", display: false},
             ]);
     });
 
@@ -288,5 +320,44 @@ describe("Pre-process callback", function() {
         });
         renderMathInElement(el2, {delimiters});
         expect(el1.innerHTML).toEqual(el2.innerHTML);
+    });
+});
+
+describe("Parse adjacent text nodes", function() {
+    it("parse adjacent text nodes with math", function() {
+        const textNodes = ['\\[',
+            'x^2 + y^2 = r^2',
+            '\\]'];
+        const el = document.createElement('div');
+        for (let i = 0; i < textNodes.length; i++) {
+            const txt = document.createTextNode(textNodes[i]);
+            el.appendChild(txt);
+        }
+        const el2 = document.createElement('div');
+        const txt = document.createTextNode(textNodes.join(''));
+        el2.appendChild(txt);
+        const delimiters = [{left: "\\[", right: "\\]", display: true}];
+        renderMathInElement(el, {delimiters});
+        renderMathInElement(el2, {delimiters});
+        expect(el).toStrictEqual(el2);
+    });
+
+    it("parse adjacent text nodes without math", function() {
+        const textNodes = ['Lorem ipsum dolor',
+            'sit amet',
+            'consectetur adipiscing elit'];
+        const el = document.createElement('div');
+        for (let i = 0; i < textNodes.length; i++) {
+            const txt = document.createTextNode(textNodes[i]);
+            el.appendChild(txt);
+        }
+        const el2 = document.createElement('div');
+        for (let i = 0; i < textNodes.length; i++) {
+            const txt = document.createTextNode(textNodes[i]);
+            el2.appendChild(txt);
+        }
+        const delimiters = [{left: "\\[", right: "\\]", display: true}];
+        renderMathInElement(el, {delimiters});
+        expect(el).toStrictEqual(el2);
     });
 });

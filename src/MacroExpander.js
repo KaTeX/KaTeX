@@ -246,25 +246,37 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
+     * Increment `expansionCount` by the specified amount.
+     * Throw an error if it exceeds `maxExpand`.
+     */
+    countExpansion(amount: number): void {
+        this.expansionCount += amount;
+        if (this.expansionCount > this.settings.maxExpand) {
+            throw new ParseError("Too many expansions: infinite loop or " +
+                "need to increase maxExpand setting");
+        }
+    }
+
+    /**
      * Expand the next token only once if possible.
      *
      * If the token is expanded, the resulting tokens will be pushed onto
-     * the stack in reverse order and will be returned as an array,
-     * also in reverse order.
+     * the stack in reverse order, and the number of such tokens will be
+     * returned.  This number might be zero or positive.
      *
-     * If not, the next token will be returned without removing it
-     * from the stack.  This case can be detected by a `Token` return value
-     * instead of an `Array` return value.
+     * If not, the return value is `false`, and the next token remains at the
+     * top of the stack.
      *
      * In either case, the next token will be on the top of the stack,
-     * or the stack will be empty.
+     * or the stack will be empty (in case of empty expansion
+     * and no other tokens).
      *
      * Used to implement `expandAfterFuture` and `expandNextToken`.
      *
      * If expandableOnly, only expandable tokens are expanded and
      * an undefined control sequence results in an error.
      */
-    expandOnce(expandableOnly?: boolean): Token | Token[] {
+    expandOnce(expandableOnly?: boolean): number | boolean {
         const topToken = this.popToken();
         const name = topToken.text;
         const expansion = !topToken.noexpand ? this._getExpansion(name) : null;
@@ -274,13 +286,9 @@ export default class MacroExpander implements MacroContextInterface {
                 throw new ParseError("Undefined control sequence: " + name);
             }
             this.pushToken(topToken);
-            return topToken;
+            return false;
         }
-        this.expansionCount++;
-        if (this.expansionCount > this.settings.maxExpand) {
-            throw new ParseError("Too many expansions: infinite loop or " +
-                "need to increase maxExpand setting");
-        }
+        this.countExpansion(1);
         let tokens = expansion.tokens;
         const args = this.consumeArgs(expansion.numArgs, expansion.delimiters);
         if (expansion.numArgs) {
@@ -310,7 +318,7 @@ export default class MacroExpander implements MacroContextInterface {
         }
         // Concatenate expansion onto top of stack.
         this.pushTokens(tokens);
-        return tokens;
+        return tokens.length;
     }
 
     /**
@@ -329,15 +337,14 @@ export default class MacroExpander implements MacroContextInterface {
      */
     expandNextToken(): Token {
         for (;;) {
-            const expanded = this.expandOnce();
-            // expandOnce returns Token if and only if it's fully expanded.
-            if (expanded instanceof Token) {
+            if (this.expandOnce() === false) {  // fully expanded
+                const token = this.stack.pop();
                 // the token after \noexpand is interpreted as if its meaning
                 // were ‘\relax’
-                if (expanded.treatAsRelax) {
-                    expanded.text = "\\relax";
+                if (token.treatAsRelax) {
+                    token.text = "\\relax";
                 }
-                return this.stack.pop();  // === expanded
+                return token;
             }
         }
 
@@ -365,17 +372,20 @@ export default class MacroExpander implements MacroContextInterface {
         const oldStackLength = this.stack.length;
         this.pushTokens(tokens);
         while (this.stack.length > oldStackLength) {
-            const expanded = this.expandOnce(true); // expand only expandable tokens
-            // expandOnce returns Token if and only if it's fully expanded.
-            if (expanded instanceof Token) {
-                if (expanded.treatAsRelax) {
+            // Expand only expandable tokens
+            if (this.expandOnce(true) === false) {  // fully expanded
+                const token = this.stack.pop();
+                if (token.treatAsRelax) {
                     // the expansion of \noexpand is the token itself
-                    expanded.noexpand = false;
-                    expanded.treatAsRelax = false;
+                    token.noexpand = false;
+                    token.treatAsRelax = false;
                 }
-                output.push(this.stack.pop());
+                output.push(token);
             }
         }
+        // Count all of these tokens as additional expansions, to prevent
+        // exponential blowup from linearly many \edef's.
+        this.countExpansion(output.length);
         return output;
     }
 

@@ -178,7 +178,7 @@ export default class Parser {
      * Parses an "expression", which is a list of atoms.
      *
      * `breakOnInfix`: Should the parsing stop when we hit infix nodes? This
-     *                 happens when functions have higher precendence han infix
+     *                 happens when functions have higher precedence han infix
      *                 nodes in implicit parses.
      *
      * `breakOnTokenText`: The text of the token that the expression should end
@@ -405,19 +405,20 @@ export default class Parser {
                 // We treat these similarly to the unicode-math package.
                 // So we render a string of Unicode (sub|super)scripts the
                 // same as a (sub|super)script of regular characters.
-                let str = uSubsAndSups[lex.text];
                 const isSub = unicodeSubRegEx.test(lex.text);
+                const subsupTokens = [];
+                subsupTokens.push(new Token(uSubsAndSups[lex.text]));
                 this.consume();
                 // Continue fetching tokens to fill out the string.
                 while (true) {
                     const token = this.fetch().text;
                     if (!(uSubsAndSups[token])) { break; }
                     if (unicodeSubRegEx.test(token) !== isSub) { break; }
+                    subsupTokens.unshift(new Token(uSubsAndSups[token]));
                     this.consume();
-                    str += uSubsAndSups[token];
                 }
                 // Now create a (sub|super)script.
-                const body = (new Parser(str, this.settings)).parse();
+                const body = this.subparse(subsupTokens);
                 if (isSub) {
                     subscript = {type: "ordgroup", mode: "math", body};
                 } else {
@@ -922,7 +923,7 @@ export default class Parser {
                     `Accented Unicode text character "${text[0]}" used in ` +
                     `math mode`, nucleus);
             }
-            text = unicodeSymbols[text[0]] + text.substr(1);
+            text = unicodeSymbols[text[0]] + text.slice(1);
         }
         // Strip off any combining characters
         const match = combiningDiacriticalMarksEndRegex.exec(text);

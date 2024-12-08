@@ -25,7 +25,7 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 
 import {PathNode, SvgNode, SymbolNode} from "./domTree";
-import {sqrtPath, innerPath} from "./svgGeometry";
+import {sqrtPath, innerPath, tallDelim} from "./svgGeometry";
 import buildCommon from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
@@ -229,6 +229,8 @@ const makeStackedDelim = function(
     let middle;
     let repeat;
     let bottom;
+    let svgLabel = "";
+    let viewBoxWidth = 0;
     top = repeat = bottom = delim;
     middle = null;
     // Also keep track of what font the delimiters are in
@@ -255,44 +257,64 @@ const makeStackedDelim = function(
         bottom = "\\Downarrow";
     } else if (utils.contains(verts, delim)) {
         repeat = "\u2223";
+        svgLabel = "vert";
+        viewBoxWidth = 333;
     } else if (utils.contains(doubleVerts, delim)) {
         repeat = "\u2225";
+        svgLabel = "doublevert";
+        viewBoxWidth = 556;
     } else if (delim === "[" || delim === "\\lbrack") {
         top = "\u23a1";
         repeat = "\u23a2";
         bottom = "\u23a3";
         font = "Size4-Regular";
+        svgLabel = "lbrack";
+        viewBoxWidth = 667;
     } else if (delim === "]" || delim === "\\rbrack") {
         top = "\u23a4";
         repeat = "\u23a5";
         bottom = "\u23a6";
         font = "Size4-Regular";
+        svgLabel = "rbrack";
+        viewBoxWidth = 667;
     } else if (delim === "\\lfloor" || delim === "\u230a") {
         repeat = top = "\u23a2";
         bottom = "\u23a3";
         font = "Size4-Regular";
+        svgLabel = "lfloor";
+        viewBoxWidth = 667;
     } else if (delim === "\\lceil" || delim === "\u2308") {
         top = "\u23a1";
         repeat = bottom = "\u23a2";
         font = "Size4-Regular";
+        svgLabel = "lceil";
+        viewBoxWidth = 667;
     } else if (delim === "\\rfloor" || delim === "\u230b") {
         repeat = top = "\u23a5";
         bottom = "\u23a6";
         font = "Size4-Regular";
+        svgLabel = "rfloor";
+        viewBoxWidth = 667;
     } else if (delim === "\\rceil" || delim === "\u2309") {
         top = "\u23a4";
         repeat = bottom = "\u23a5";
         font = "Size4-Regular";
+        svgLabel = "rceil";
+        viewBoxWidth = 667;
     } else if (delim === "(" || delim === "\\lparen") {
         top = "\u239b";
         repeat = "\u239c";
         bottom = "\u239d";
         font = "Size4-Regular";
+        svgLabel = "lparen";
+        viewBoxWidth = 875;
     } else if (delim === ")" || delim === "\\rparen") {
         top = "\u239e";
         repeat = "\u239f";
         bottom = "\u23a0";
         font = "Size4-Regular";
+        svgLabel = "rparen";
+        viewBoxWidth = 875;
     } else if (delim === "\\{" || delim === "\\lbrace") {
         top = "\u23a7";
         middle = "\u23a8";
@@ -342,7 +364,7 @@ const makeStackedDelim = function(
         middleFactor = 2; // repeat symmetrically above and below middle
     }
 
-    // Calcuate the minimal height that the delimiter can have.
+    // Calculate the minimal height that the delimiter can have.
     // It is at least the size of the top, bottom, and optional middle combined.
     const minHeight = topHeightTotal + bottomHeightTotal + middleHeightTotal;
 
@@ -365,37 +387,58 @@ const makeStackedDelim = function(
     // Calculate the depth
     const depth = realHeightTotal / 2 - axisHeight;
 
-
     // Now, we start building the pieces that will go into the vlist
     // Keep a list of the pieces of the stacked delimiter
     const stack = [];
 
-    // Add the bottom symbol
-    stack.push(makeGlyphSpan(bottom, font, mode));
-    stack.push(lap); // overlap
-
-    if (middle === null) {
-        // The middle section will be an SVG. Make it an extra 0.016em tall.
-        // We'll overlap by 0.008em at top and bottom.
-        const innerHeight = realHeightTotal - topHeightTotal - bottomHeightTotal
-            + 2 * lapInEms;
-        stack.push(makeInner(repeat, innerHeight, options));
+    if (svgLabel.length > 0) {
+        // Instead of stacking glyphs, create a single SVG.
+        // This evades browser problems with imprecise positioning of spans.
+        const midHeight = realHeightTotal - topHeightTotal - bottomHeightTotal;
+        const viewBoxHeight = Math.round(realHeightTotal  * 1000);
+        const pathStr = tallDelim(svgLabel, Math.round(midHeight * 1000));
+        const path = new PathNode(svgLabel, pathStr);
+        const width = (viewBoxWidth / 1000).toFixed(3) + "em";
+        const height = (viewBoxHeight / 1000).toFixed(3) + "em";
+        const svg = new SvgNode([path], {
+            "width": width,
+            "height": height,
+            "viewBox": `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
+        });
+        const wrapper = buildCommon.makeSvgSpan([], [svg], options);
+        wrapper.height = viewBoxHeight / 1000;
+        wrapper.style.width = width;
+        wrapper.style.height = height;
+        stack.push({type: "elem", elem: wrapper});
     } else {
-        // When there is a middle bit, we need the middle part and two repeated
-        // sections
-        const innerHeight = (realHeightTotal - topHeightTotal - bottomHeightTotal -
-            middleHeightTotal) / 2 + 2 * lapInEms;
-        stack.push(makeInner(repeat, innerHeight, options));
-        // Now insert the middle of the brace.
-        stack.push(lap);
-        stack.push(makeGlyphSpan(middle, font, mode));
-        stack.push(lap);
-        stack.push(makeInner(repeat, innerHeight, options));
-    }
+        // Stack glyphs
+        // Start by adding the bottom symbol
+        stack.push(makeGlyphSpan(bottom, font, mode));
+        stack.push(lap); // overlap
 
-    // Add the top symbol
-    stack.push(lap);
-    stack.push(makeGlyphSpan(top, font, mode));
+        if (middle === null) {
+            // The middle section will be an SVG. Make it an extra 0.016em tall.
+            // We'll overlap by 0.008em at top and bottom.
+            const innerHeight = realHeightTotal - topHeightTotal - bottomHeightTotal
+                + 2 * lapInEms;
+            stack.push(makeInner(repeat, innerHeight, options));
+        } else {
+            // When there is a middle bit, we need the middle part and two repeated
+            // sections
+            const innerHeight = (realHeightTotal - topHeightTotal -
+                bottomHeightTotal - middleHeightTotal) / 2 + 2 * lapInEms;
+            stack.push(makeInner(repeat, innerHeight, options));
+            // Now insert the middle of the brace.
+            stack.push(lap);
+            stack.push(makeGlyphSpan(middle, font, mode));
+            stack.push(lap);
+            stack.push(makeInner(repeat, innerHeight, options));
+        }
+
+        // Add the top symbol
+        stack.push(lap);
+        stack.push(makeGlyphSpan(top, font, mode));
+    }
 
     // Finally, build the vlist
     const newOptions = options.havingBaseStyle(Style.TEXT);
@@ -410,7 +453,7 @@ const makeStackedDelim = function(
         Style.TEXT, options, classes);
 };
 
-// All surds have 0.08em padding above the viniculum inside the SVG.
+// All surds have 0.08em padding above the vinculum inside the SVG.
 // That keeps browser span height rounding error from pinching the line.
 const vbPad = 80;   // padding above the surd, measured inside the viewBox.
 const emPad = 0.08; // padding, in ems, measured in the document.
@@ -419,10 +462,10 @@ const sqrtSvg = function(
     sqrtName: string,
     height: number,
     viewBoxHeight: number,
-    extraViniculum: number,
+    extraVinculum: number,
     options: Options,
 ): SvgSpan {
-    const path = sqrtPath(sqrtName, extraViniculum, viewBoxHeight);
+    const path = sqrtPath(sqrtName, extraVinculum, viewBoxHeight);
     const pathNode = new PathNode(sqrtName, path);
 
     const svg =  new SvgNode([pathNode], {
@@ -457,9 +500,9 @@ const makeSqrtImage = function(
 
     let sizeMultiplier = newOptions.sizeMultiplier;  // default
 
-    // The standard sqrt SVGs each have a 0.04em thick viniculum.
-    // If Settings.minRuleThickness is larger than that, we add extraViniculum.
-    const extraViniculum = Math.max(0,
+    // The standard sqrt SVGs each have a 0.04em thick vinculum.
+    // If Settings.minRuleThickness is larger than that, we add extraVinculum.
+    const extraVinculum = Math.max(0,
         options.minRuleThickness - options.fontMetrics().sqrtRuleThickness);
 
     // Create a span containing an SVG image of a sqrt symbol.
@@ -471,22 +514,22 @@ const makeSqrtImage = function(
 
     // We create viewBoxes with 80 units of "padding" above each surd.
     // Then browser rounding error on the parent span height will not
-    // encroach on the ink of the viniculum. But that padding is not
+    // encroach on the ink of the vinculum. But that padding is not
     // included in the TeX-like `height` used for calculation of
     // vertical alignment. So texHeight = span.height < span.style.height.
 
     if (delim.type === "small") {
         // Get an SVG that is derived from glyph U+221A in font KaTeX-Main.
         // 1000 unit normal glyph height.
-        viewBoxHeight = 1000 + 1000 * extraViniculum + vbPad;
+        viewBoxHeight = 1000 + 1000 * extraVinculum + vbPad;
         if (height < 1.0) {
             sizeMultiplier = 1.0;   // mimic a \textfont radical
         } else if (height < 1.4) {
             sizeMultiplier = 0.7;   // mimic a \scriptfont radical
         }
-        spanHeight = (1.0 + extraViniculum + emPad) / sizeMultiplier;
-        texHeight = (1.00 + extraViniculum) / sizeMultiplier;
-        span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, extraViniculum,
+        spanHeight = (1.0 + extraVinculum + emPad) / sizeMultiplier;
+        texHeight = (1.00 + extraVinculum) / sizeMultiplier;
+        span = sqrtSvg("sqrtMain", spanHeight, viewBoxHeight, extraVinculum,
             options);
         span.style.minWidth = "0.853em";
         advanceWidth = 0.833 / sizeMultiplier;  // from the font.
@@ -494,21 +537,21 @@ const makeSqrtImage = function(
     } else if (delim.type === "large") {
         // These SVGs come from fonts: KaTeX_Size1, _Size2, etc.
         viewBoxHeight = (1000 + vbPad) * sizeToMaxHeight[delim.size];
-        texHeight = (sizeToMaxHeight[delim.size] + extraViniculum) / sizeMultiplier;
-        spanHeight = (sizeToMaxHeight[delim.size] + extraViniculum + emPad)
+        texHeight = (sizeToMaxHeight[delim.size] + extraVinculum) / sizeMultiplier;
+        spanHeight = (sizeToMaxHeight[delim.size] + extraVinculum + emPad)
             / sizeMultiplier;
         span = sqrtSvg("sqrtSize" + delim.size, spanHeight, viewBoxHeight,
-            extraViniculum, options);
+            extraVinculum, options);
         span.style.minWidth = "1.02em";
         advanceWidth = 1.0 / sizeMultiplier; // 1.0 from the font.
 
     } else {
         // Tall sqrt. In TeX, this would be stacked using multiple glyphs.
         // We'll use a single SVG to accomplish the same thing.
-        spanHeight = height + extraViniculum + emPad;
-        texHeight = height + extraViniculum;
-        viewBoxHeight = Math.floor(1000 * height + extraViniculum) + vbPad;
-        span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, extraViniculum,
+        spanHeight = height + extraVinculum + emPad;
+        texHeight = height + extraVinculum;
+        viewBoxHeight = Math.floor(1000 * height + extraVinculum) + vbPad;
+        span = sqrtSvg("sqrtTall", spanHeight, viewBoxHeight, extraVinculum,
             options);
         span.style.minWidth = "0.742em";
         advanceWidth = 1.056;
@@ -524,7 +567,7 @@ const makeSqrtImage = function(
         // This actually should depend on the chosen font -- e.g. \boldmath
         // should use the thicker surd symbols from e.g. KaTeX_Main-Bold, and
         // have thicker rules.
-        ruleWidth: (options.fontMetrics().sqrtRuleThickness + extraViniculum)
+        ruleWidth: (options.fontMetrics().sqrtRuleThickness + extraVinculum)
             * sizeMultiplier,
     };
 };
