@@ -7,9 +7,8 @@ $mu: calc(1em / 18);
 // The version is dynamically set from package.json via webpack.common.js
 $version: "" !default;
 
-// make the display-margin configurable, see
-// <https://github.com/KaTeX/KaTeX/discussions/3637>
-@display-margin: 1em 0;
+// CSS margin property for math in display mode
+$display-margin: 1em 0 !default;
 
 .katex {
     font: normal 1.21em KaTeX_Main, Times New Roman, serif;
@@ -625,7 +624,7 @@ $version: "" !default;
 
 .katex-display {
     display: block;
-    margin: @display-margin;
+    margin: $display-margin;
     text-align: center;
 
     > .katex {
