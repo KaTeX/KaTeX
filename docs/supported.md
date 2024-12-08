@@ -6,7 +6,7 @@ This is a list of TeX functions supported by KaTeX. It is sorted into logical gr
 
 There is a similar [Support Table](support_table.md), sorted alphabetically, that lists both supported and un-supported functions.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
 <style>
 p {overflow-wrap: break-word;}
 table tr,
@@ -205,8 +205,8 @@ Math-mode Unicode (sub|super)script characters will render as if you had written
 | Italic      | $\text{𝐴-𝑍 𝑎-𝑧}$      | Sans serif        | $\text{𝖠-𝖹 𝖺-𝗓 𝟢-𝟫}$
 | Bold Italic | $\text{𝑨-𝒁 𝒂-𝒛}$      | Sans serif bold   | $\text{𝗔-𝗭 𝗮-𝘇 𝟬-𝟵}$
 | Script      | $\text{𝒜-𝒵}$         | Sans serif italic | $\text{𝘈-𝘡 𝘢-𝘻}$
-|  Fractur    | $\text{𝔄-ℨ}\text{ 𝔞-𝔷}$| Monospace        | $\text{𝙰-𝚉 𝚊-𝚣 𝟶-𝟿}$
-| Bold Fractur | $\text{𝕬-𝖅}\text{𝖆-𝖟}$ | |
+| Fraktur     | $\text{$𝔄$-$ℨ$}\text{ $𝔞$-$𝔷$}$| Monospace        | $\text{𝙰-𝚉 𝚊-𝚣 𝟶-𝟿}$
+| Bold Fraktur | $\text{𝕬-𝖅 𝖆-𝖟}$ | |
 
 </div>
 <div class="katex-hopscotch">
@@ -595,17 +595,17 @@ For color definition, KaTeX color functions will accept the standard HTML [pred
 
 ||||
 |:------------------------------|:------------------------------|:-----
-|$\mathrm{Ab0}$ `\mathrm{Ab0}`  |$\mathbf{Ab0}$ `\mathbf{Ab0}`  |$\mathit{Ab0}$ `\mathit{Ab0}`
-|$\mathnormal{Ab0}$ `\mathnormal{Ab0}`|$\textbf{Ab0}$ `\textbf{Ab0}`  |$\textit{Ab0}$ `\textit{Ab0}`
-|$\textrm{Ab0}$ `\textrm{Ab0}`  |$\bf Ab0$ `\bf Ab0`            |$\it Ab0$ `\it Ab0`
-|$\rm Ab0$ `\rm Ab0`            |$\bold{Ab0}$ `\bold{Ab0}`      |$\textup{Ab0}$ `\textup{Ab0}`
-|$\textnormal{Ab0}$ `\textnormal{Ab0}`|$\boldsymbol{Ab0}$ `\boldsymbol{Ab}`|$\Bbb{AB}$ `\Bbb{AB}`
-|$\text{Ab0}$ `\text{Ab0}`      |$\bm{Ab0}$ `\bm{Ab0}`          |$\mathbb{AB}$ `\mathbb{AB}`
-|$\mathsf{Ab0}$ `\mathsf{Ab0}`  |$\textmd{Ab0}$ `\textmd{Ab0}`  |$\frak{Ab0}$ `\frak{Ab0}`
-|$\textsf{Ab0}$ `\textsf{Ab0}`  |$\mathtt{Ab0}$ `\mathtt{Ab0}`  |$\mathfrak{Ab0}$ `\mathfrak{Ab0}`
-|$\sf Ab0$ `\sf Ab0`            |$\texttt{Ab0}$ `\texttt{Ab0}`  |$\mathcal{AB0}$ `\mathcal{AB0}`
-|                               |$\tt Ab0$ `\tt Ab0`            |$\cal AB0$ `\cal AB0`
-|                               |                               |$\mathscr{AB}$ `\mathscr{AB}`
+|$\mathrm{Ab0}$ `\mathrm{Ab0}`  |$\mathbf{Ab0}$ `\mathbf{Ab0}`  |$\mathsf{Ab0}$ `\mathsf{Ab0}`
+|$\mathnormal{Ab0}$ `\mathnormal{Ab0}`|$\textbf{Ab0}$ `\textbf{Ab0}`  |$\textsf{Ab0}$ `\textsf{Ab0}`
+|$\textrm{Ab0}$ `\textrm{Ab0}`  |$\bf Ab0$ `\bf Ab0`            |$\sf Ab0$ `\sf Ab0`
+|$\rm Ab0$ `\rm Ab0`            |$\bold{Ab0}$ `\bold{Ab0}`      |$\Bbb{AB}$ `\Bbb{AB}`
+|$\textnormal{Ab0}$ `\textnormal{Ab0}`|$\boldsymbol{Ab0}$ `\boldsymbol{Ab}`|$\mathbb{AB}$ `\mathbb{AB}`
+|$\text{Ab0}$ `\text{Ab0}`      |$\bm{Ab0}$ `\bm{Ab0}`          |$\frak{Ab0}$ `\frak{Ab0}`
+|$\textup{Ab0}$ `\textup{Ab0}`  |$\textmd{Ab0}$ `\textmd{Ab0}`  |$\mathfrak{Ab0}$ `\mathfrak{Ab0}`
+|$\mathit{Ab0}$ `\mathit{Ab0}`  |$\mathtt{Ab0}$ `\mathtt{Ab0}`  |$\mathcal{AB0}$ `\mathcal{AB0}`
+|$\textit{Ab0}$ `\textit{Ab0}`  |$\texttt{Ab0}$ `\texttt{Ab0}`  |$\cal AB0$ `\cal AB0`
+|$\it Ab0$ `\it Ab0`            |$\tt Ab0$ `\tt Ab0`            |$\mathscr{AB}$ `\mathscr{AB}`
+|$\emph{Ab0}$ `\emph{Ab0}`      |                               ||
 
 One can stack font family, font weight, and font shape by using the `\textXX` versions of the font functions. So `\textsf{\textbf{H}}` will produce $\textsf{\textbf{H}}$. The other versions do not stack, e.g., `\mathsf{\mathbf{H}}` will produce $\mathsf{\mathbf{H}}$.
 

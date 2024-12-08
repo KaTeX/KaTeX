@@ -31,6 +31,11 @@ const users = [
         infoLink: 'https://cocalc.com/',
     },
     {
+        caption: 'Doctave',
+        image: 'https://www.doctave.com/assets/img/katex-integration-logo.webp',
+        infoLink: 'https://www.doctave.com/',
+    },
+    {
         caption: 'Dropbox Paper',
         image: 'https://aem.dropbox.com/cms/content/dam/dropbox/www/en-us/branding/app-paper-ios@2x.png',
         infoLink: 'https://paper.dropbox.com/',
@@ -97,8 +102,8 @@ const users = [
     },
     {
         caption: 'MonsterWriter',
-        image: 'https://www.monsterwriter.app/assets/logo.png',
-        infoLink: 'https://www.monsterwriter.app/',
+        image: 'https://www.monsterwriter.com/assets/logo-200.png',
+        infoLink: 'https://www.monsterwriter.com/',
     },
     {
         caption: 'namu.wiki',
@@ -136,6 +141,11 @@ const users = [
         infoLink: 'https://slides.com/',
     },
     {
+        caption: 'SnapXam',
+        image: 'https://www.snapxam.com/assets/images/snapxam-logo2-transparent.png',
+        infoLink: 'https://www.snapxam.com',
+    },
+    {
         caption: 'Snip',
         image: '/img/snip.png',
         infoLink: 'https://getsnip.io',
@@ -154,6 +164,11 @@ const users = [
         caption: 'Tamasha',
         image: 'https://github.com/kookma/TW-Tamasha/raw/main/docs/tamasha.png',
         infoLink: 'https://kookma.github.io/TW-Tamasha/',
+    },
+    {
+        caption: 'Techambition',
+        image: '/img/techambition.png',
+        infoLink: 'https://techambition.com',
     },
     {
         caption: 'TiddlyWiki',

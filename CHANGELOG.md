@@ -1,6 +1,23 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.11](https://github.com/KaTeX/KaTeX/compare/v0.16.10...v0.16.11) (2024-07-02)
+
+
+### Features
+
+* add \emph ([#3963](https://github.com/KaTeX/KaTeX/issues/3963)) ([9f34da4](https://github.com/KaTeX/KaTeX/commit/9f34da4b3cf228a7af8134c394394d780a089f2b)), closes [#3566](https://github.com/KaTeX/KaTeX/issues/3566)
+
+## [0.16.10](https://github.com/KaTeX/KaTeX/compare/v0.16.9...v0.16.10) (2024-03-24)
+
+
+### Bug Fixes
+
+* \edef bypassing maxExpand via exponential blowup ([e88b4c3](https://github.com/KaTeX/KaTeX/commit/e88b4c357f978b1bca8edfe3297f0aa309bcbe34))
+* escape \includegraphics src and alt ([c5897fc](https://github.com/KaTeX/KaTeX/commit/c5897fcd1f73da9612a53e6b5544f1d776e17770))
+* force protocol to be lowercase for better protocol filtering ([fc5af64](https://github.com/KaTeX/KaTeX/commit/fc5af64183a3ceb9be9d1c23a275999a728593de)), closes [/datatracker.ietf.org/doc/html/rfc3986#section-3](https://github.com//datatracker.ietf.org/doc/html/rfc3986/issues/section-3)
+* maxExpand limit with Unicode sub/superscripts ([085e21b](https://github.com/KaTeX/KaTeX/commit/085e21b5da05414efefa932570e7201a7c70e5b2))
+
 ## [0.16.9](https://github.com/KaTeX/KaTeX/compare/v0.16.8...v0.16.9) (2023-10-02)
 
 

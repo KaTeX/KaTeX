@@ -22,7 +22,6 @@ See [Handling Errors](error.md) for more details.
 
 If you have discovered a potential security issue with KaTeX:
 
-1. Please report the issue privately by emailing [katex-security@mit.edu](mailto:katex-security@mit.edu).
-2. We will create a [GitHub Security Advisory](https://docs.github.com/en/code-security/repository-security-advisories/about-github-security-advisories-for-repositories) and (if desired) invite you as a collaborator for further discussion about the vulnerability and how to fix them. Please let us know your GitHub.com username so that we can add you.
-3. We will evaluate the vulnerability and, if necessary, release a fix and security advisory. We will credit you in the report.
-4. Please do not disclose the vulnerability publicly until after a fix has been released.
+1. Please report the issue privately by [opening a GitHub security advisory](https://github.com/KaTeX/KaTeX/security) or by emailing [katex-security@mit.edu](mailto:katex-security@mit.edu).
+2. We will evaluate the vulnerability and, if necessary, release a fix and security advisory. We will credit you in the report, and invite you to collaborate on the solution and/or its evaluation.
+3. Please do not disclose the vulnerability publicly until after a fix has been released.

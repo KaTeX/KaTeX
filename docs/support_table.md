@@ -6,7 +6,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 
 If you know the shape of a character, but not its name, [Detexify](https://detexify.kirelabs.org/classify.html) can help.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
 <style>
 table tr,
 table td {
@@ -369,7 +369,7 @@ use `\ce` instead|
 |\ell|$\ell$||
 |\else|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
 |\em|<span style="color:firebrick;">Not supported</span>||
-|\emph|<span style="color:firebrick;">Not supported</span>||
+|\emph|$\emph{nested \emph{emphasis}}$|`\emph{nested \emph{emphasis}}`|
 |\empty|$\empty$||
 |\emptyset|$\emptyset$||
 |\enclose|<span style="color:firebrick;">Not supported</span>|Non standard

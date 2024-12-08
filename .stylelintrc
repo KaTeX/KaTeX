@@ -1,5 +1,8 @@
 {
     "extends": "stylelint-config-standard",
+    "plugins": [
+        "stylelint-scss"
+    ],
     "rules": {
         "at-rule-no-vendor-prefix": null,
         "font-family-name-quotes": "always-where-required",
@@ -9,11 +12,14 @@
         "selector-class-pattern": null,
         "value-no-vendor-prefix": null,
         "value-keyword-case": ["lower", {"camelCaseSvgKeywords": true}],
+        "at-rule-no-unknown": null,
+        "scss/at-rule-no-unknown": true,
+        "annotation-no-unknown": null
     },
     "overrides": [
       {
-        "files": ["**/*.less"],
-        "customSyntax": "postcss-less",
+        "files": ["**/*.scss"],
+        "customSyntax": "postcss-scss"
       }
     ],
     "ignoreFiles": [
