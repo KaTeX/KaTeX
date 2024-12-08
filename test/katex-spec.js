@@ -1069,6 +1069,10 @@ describe("A rule parser", function() {
         expect(parse.width.number).toBeCloseTo(-1);
         expect(parse.height.number).toBeCloseTo(-0.2);
     });
+
+    it("should parse in text mode", function() {
+        expect(r`\text{a\rule{1em}{2em}b}`).toParse();
+    });
 });
 
 describe("A kern parser", function() {
