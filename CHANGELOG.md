@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.12](https://github.com/KaTeX/KaTeX/compare/v0.16.11...v0.16.12) (2024-12-08)
+
+
+### Features
+
+* **css:** configurable margin for display math ([#3638](https://github.com/KaTeX/KaTeX/issues/3638)) ([3405001](https://github.com/KaTeX/KaTeX/commit/3405001225b8ee0cf8b35b2e3a6c1fa2191e5fef))
+
 ## [0.16.11](https://github.com/KaTeX/KaTeX/compare/v0.16.10...v0.16.11) (2024-07-02)
 
 
