@@ -204,7 +204,7 @@ defineSymbol(math, main, rel, "\u21cc", "\\rightleftharpoons", true);
 
 // AMS Negated Binary Relations
 defineSymbol(math, ams, rel, "\u226e", "\\nless", true);
-// Symbol names preceeded by "@" each have a corresponding macro.
+// Symbol names preceded by "@" each have a corresponding macro.
 defineSymbol(math, ams, rel, "\ue010", "\\@nleqslant");
 defineSymbol(math, ams, rel, "\ue011", "\\@nleqq");
 defineSymbol(math, ams, rel, "\u2a87", "\\lneq", true);
@@ -673,7 +673,9 @@ defineSymbol(text, main, inner, "\u2026", "\\ldots", true);
 defineSymbol(math, main, inner, "\u2026", "\\ldots", true);
 defineSymbol(math, main, inner, "\u22ef", "\\@cdots", true);
 defineSymbol(math, main, inner, "\u22f1", "\\ddots", true);
-defineSymbol(math, main, textord, "\u22ee", "\\varvdots"); // \vdots is a macro
+// \vdots is a macro that uses one of these two symbols (with made-up names):
+defineSymbol(math, main, textord, "\u22ee", "\\varvdots");
+defineSymbol(text, main, textord, "\u22ee", "\\varvdots");
 defineSymbol(math, main, accent, "\u02ca", "\\acute");
 defineSymbol(math, main, accent, "\u02cb", "\\grave");
 defineSymbol(math, main, accent, "\u00a8", "\\ddot");
@@ -812,7 +814,11 @@ for (let i = 0; i < letters.length; i++) {
     defineSymbol(math, main, mathord, ch, wideChar);
     defineSymbol(text, main, textord, ch, wideChar);
 
-    wideChar = String.fromCharCode(0xD835, 0xDD04 + i);  // A-Z a-z Fractur
+    wideChar = String.fromCharCode(0xD835, 0xDD04 + i);  // A-Z a-z Fraktur
+    defineSymbol(math, main, mathord, ch, wideChar);
+    defineSymbol(text, main, textord, ch, wideChar);
+
+    wideChar = String.fromCharCode(0xD835, 0xDD6C + i);  // A-Z a-z bold Fraktur
     defineSymbol(math, main, mathord, ch, wideChar);
     defineSymbol(text, main, textord, ch, wideChar);
 

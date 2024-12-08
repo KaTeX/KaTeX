@@ -39,6 +39,10 @@ you'll need to first convert AsciiMath into LaTeX input, then call KaTeX.
 - [KaTeX-iOS](https://github.com/ianarawjo/KaTeX-iOS): iOS UIView that renders TeX expressions with KaTeX
 - [KatexUtils](https://cocoapods.org/pods/KatexUtils): KaTeX solution for newer iOS version, supports CocoaPods integration
 
+### Jekyll
+
+- [JekTex](https://github.com/yagarea/jektex): Fast and highly configurable Jekyll plug-in that renders math expressions using KaTeX. It can be used with github pages.
+
 ### React
 
 - [react-latex](https://github.com/zzish/react-latex): React component to render latex strings, based on KaTeX

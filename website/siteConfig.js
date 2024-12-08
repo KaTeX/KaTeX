@@ -16,6 +16,11 @@ const users = [
         infoLink: 'https://www.khanacademy.org/',
     },
     {
+        caption: 'BearBei 貝貝',
+        image: 'https://bearbei.com/pic/bearbeiLogoForKatexWebsite.png',
+        infoLink: 'https://bearbei.com',
+    },
+    {
         caption: 'CindyJS',
         image: 'https://cindyjs.org/assets/img/logo.png',
         infoLink: 'https://cindyjs.org/',
@@ -24,6 +29,11 @@ const users = [
         caption: 'CoCalc',
         image: '/img/cocalc_logo.svg',
         infoLink: 'https://cocalc.com/',
+    },
+    {
+        caption: 'Doctave',
+        image: 'https://www.doctave.com/assets/img/katex-integration-logo.webp',
+        infoLink: 'https://www.doctave.com/',
     },
     {
         caption: 'Dropbox Paper',
@@ -92,8 +102,8 @@ const users = [
     },
     {
         caption: 'MonsterWriter',
-        image: 'https://www.monsterwriter.app/assets/logo.png',
-        infoLink: 'https://www.monsterwriter.app/',
+        image: 'https://www.monsterwriter.com/assets/logo-200.png',
+        infoLink: 'https://www.monsterwriter.com/',
     },
     {
         caption: 'namu.wiki',
@@ -131,6 +141,11 @@ const users = [
         infoLink: 'https://slides.com/',
     },
     {
+        caption: 'SnapXam',
+        image: 'https://www.snapxam.com/assets/images/snapxam-logo2-transparent.png',
+        infoLink: 'https://www.snapxam.com',
+    },
+    {
         caption: 'Snip',
         image: '/img/snip.png',
         infoLink: 'https://getsnip.io',
@@ -149,6 +164,11 @@ const users = [
         caption: 'Tamasha',
         image: 'https://github.com/kookma/TW-Tamasha/raw/main/docs/tamasha.png',
         infoLink: 'https://kookma.github.io/TW-Tamasha/',
+    },
+    {
+        caption: 'Techambition',
+        image: '/img/techambition.png',
+        infoLink: 'https://techambition.com',
     },
     {
         caption: 'TiddlyWiki',

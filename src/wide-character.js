@@ -45,8 +45,9 @@ const wideLatinLetterData: Array<[string, string, string]> = [
     ["mathbb", "textbb", "AMS-Regular"],            // A-Z double-struck
     ["mathbb", "textbb", "AMS-Regular"],            // k double-struck
 
-    ["", "", ""],                           // A-Z bold Fraktur No font metrics
-    ["", "", ""],                           // a-z bold Fraktur.   No font.
+    // Note that we are using a bold font, but font metrics for regular Fraktur.
+    ["mathboldfrak", "textboldfrak", "Fraktur-Regular"],  // A-Z bold Fraktur
+    ["mathboldfrak", "textboldfrak", "Fraktur-Regular"],  // a-z bold Fraktur
 
     ["mathsf", "textsf", "SansSerif-Regular"],      // A-Z sans-serif
     ["mathsf", "textsf", "SansSerif-Regular"],      // a-z sans-serif

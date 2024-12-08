@@ -6,7 +6,7 @@ You can provide an object of options as the last argument to [`katex.render` and
 
 - `displayMode`: `boolean` (default: `false`). If `true` the math will be rendered in display mode. If `false` the math will be rendered in inline mode. Differences between the two modes include:
   - Display mode starts in `\displaystyle`, so `\int` and `\sum` are large, for example; while inline mode starts in `\textstyle`, where subscripts and superscripts usually don't stack on top of operators like `\sum`. You can always manually switch between `\displaystyle` and `\textstyle` using those commands.
-  - Display mode centers math on its on line and disables automatic line breaking (though you can customize this behavior with [custom CSS](issues.md)). In inline mode, KaTeX allows line breaks after outermost relations (like `=` or `<`) or binary operators (like `+` or `\times`), the same as TeX.
+  - Display mode centers math on its own line and disables automatic line breaking (though you can customize this behavior with [custom CSS](issues.md)). In inline mode, KaTeX allows line breaks after outermost relations (like `=` or `<`) or binary operators (like `+` or `\times`), the same as TeX.
 - `output`: `string`. Determines the markup language of the output. The valid choices are:
   - `html`: Outputs KaTeX in HTML only.
   - `mathml`: Outputs KaTeX in MathML only.
@@ -26,7 +26,7 @@ You can provide an object of options as the last argument to [`katex.render` and
 - `minRuleThickness`: `number`. Specifies a minimum thickness, in ems, for fraction lines, `\sqrt` top lines, `{array}` vertical lines, `\hline`, `\hdashline`, `\underline`, `\overline`, and the borders of `\fbox`, `\boxed`, and `\fcolorbox`. The usual value for these items is `0.04`, so for `minRuleThickness` to be effective it should probably take a value slightly above `0.04`, say `0.05` or `0.06`. Negative values will be ignored.
 - `colorIsTextColor`: `boolean`. In early versions of both KaTeX (<0.8.0) and MathJax, the `\color` function expected the content to be a function argument, as in `\color{blue}{hello}`. In current KaTeX, `\color` is a switch, as in `\color{blue} hello`. This matches LaTeX behavior. If you want the old `\color` behavior, set option `colorIsTextColor` to true.
 - `maxSize`: `number`. All user-specified sizes, e.g. in `\rule{500em}{500em}`, will be capped to `maxSize` ems. If set to `Infinity` (the default), users can make elements and spaces arbitrarily large.
-- `maxExpand`: `number`. Limit the number of macro expansions to the specified number, to prevent e.g. infinite macro loops. If set to `Infinity`, the macro expander will try to fully expand as in LaTeX. (default: 1000)
+- `maxExpand`: `number`. Limit the number of macro expansions to the specified number, to prevent e.g. infinite macro loops. `\edef` expansion counts all expanded tokens. If set to `Infinity`, the macro expander will try to fully expand as in LaTeX. (default: 1000)
 - `strict`: `boolean` or `string` or `function` (default: `"warn"`). If `false` or `"ignore`", allow features that make writing LaTeX convenient but are not actually supported by (Xe)LaTeX (similar to MathJax). If `true` or `"error"` (LaTeX faithfulness mode), throw an error for any such transgressions. If `"warn"` (the default), warn about such behavior via `console.warn`. Provide a custom function `handler(errorCode, errorMsg, token)` to customize behavior depending on the type of transgression (summarized by the string code `errorCode` and detailed in `errorMsg`); this function can also return `"ignore"`, `"error"`, or `"warn"` to use a built-in behavior.  A list of such features and their `errorCode`s:
 
   - `"unknownSymbol"`: Use of unknown Unicode symbol, which will likely also
@@ -50,6 +50,8 @@ You can provide an object of options as the last argument to [`katex.render` and
 - `trust`: `boolean` or `function` (default: `false`). If `false` (do not trust input), prevent any commands like `\includegraphics` that could enable adverse behavior, rendering them instead in `errorColor`. If `true` (trust input), allow all such commands. Provide a custom function `handler(context)` to customize behavior depending on the context (command, arguments e.g. a URL, etc.).  A list of possible contexts:
 
   - `{command: "\\url", url, protocol}`
+    where `protocol` is a lowercased string like `"http"` or `"https"`
+    that appears before a colon, or `"_relative"` for relative URLs.
   - `{command: "\\href", url, protocol}`
   - `{command: "\\includegraphics", url, protocol}`
   - `{command: "\\htmlClass", class}`
