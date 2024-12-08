@@ -7,6 +7,7 @@
  * [2] https://facebook.github.io/jest/docs/en/webpack.html
  */
 import './src/styles/katex.scss';
+import './src/styles/katex-swap.scss';
 import katex from './katex.js';
 
 export default katex;
