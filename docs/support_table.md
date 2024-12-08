@@ -314,8 +314,8 @@ use `\ce` instead|
 |{dcases}|$\begin{dcases}a&\text{if }b\\c&\text{if }d\end{dcases}$|`\begin{dcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{dcases}`|
 |\ddag|$\ddag$||
 |\ddagger|$\ddagger$||
-|\ddddot|<span style="color:firebrick;">Not supported</span>||
-|\dddot|<span style="color:firebrick;">Not supported</span>||
+|\ddddot|$\ddddot x$|`\ddddot x`|
+|\dddot|$\dddot x$|`\dddot x`|
 |\ddot|$\ddot x$|`\ddot x`|
 |\ddots|$\ddots$||
 |\DeclareMathOperator|<span style="color:firebrick;">Not supported</span>||
