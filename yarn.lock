@@ -8296,7 +8296,7 @@ __metadata:
     prettier: "npm:^2.7.1"
     query-string: "npm:^7.1.1"
     rimraf: "npm:^3.0.2"
-    rollup: "npm:^2.78.1"
+    rollup: "npm:^2.79.2"
     sass: "npm:^1.75.6"
     sass-loader: "npm:^14.2.1"
     selenium-webdriver: "npm:^4.4.0"
@@ -11635,7 +11635,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup@npm:^2.78.1":
+"rollup@npm:^2.79.2":
   version: 2.79.2
   resolution: "rollup@npm:2.79.2"
   dependencies:
