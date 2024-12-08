@@ -46,15 +46,24 @@ const splitAtDelimiters = function(text, delimiters) {
         if (index === -1) {
             break;
         }
+
+        const escaped = index > 0 && text[index - 1] === "\\";
         if (index > 0) {
             data.push({
                 type: "text",
-                data: text.slice(0, index),
+                data: text.slice(0, index - (escaped ? 1 : 0)),
             });
             text = text.slice(index); // now text starts with delimiter
         }
         // ... so this always succeeds:
         const i = delimiters.findIndex((delim) => text.startsWith(delim.left));
+
+        if (escaped) {
+            data[data.length - 1].data += text.slice(0, delimiters[i].left.length);
+            text = text.slice(delimiters[i].left.length);
+            continue;
+        }
+
         index = findEndOfMath(delimiters[i].right, text, delimiters[i].left.length);
         if (index === -1) {
             break;
