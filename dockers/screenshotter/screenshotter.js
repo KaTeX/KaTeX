@@ -71,7 +71,7 @@ const opts = require("commander")
     .option("--wait <secs>",
         "Wait this many seconds between page load and screenshot", parseFloat)
     .option("--browserstack", "Use Browserstack. The username and access key"
-        + " should be set as enviroment variable BROWSERSTACK_USER and"
+        + " should be set as environment variable BROWSERSTACK_USER and"
         + " BROWSERSTACK_ACCESS_KEY")
     .parse(process.argv)
     .opts();

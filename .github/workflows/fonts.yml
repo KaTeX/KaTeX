@@ -16,7 +16,7 @@ jobs:
       pull-requests: write # to remove label
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: ${{ format('refs/pull/{0}/merge', github.event.pull_request.number) }}
         persist-credentials: false # minimize exposure and prevent accidental pushes
@@ -89,7 +89,7 @@ jobs:
         password: ${{ secrets.GH_PACKAGES_TOKEN }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: ${{ format('refs/pull/{0}/merge', github.event.pull_request.number) }}
         persist-credentials: false

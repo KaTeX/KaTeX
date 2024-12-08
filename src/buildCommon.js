@@ -165,9 +165,13 @@ const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     // Math mode or Old font (i.e. \rm)
     const isFont = mode === "math" || (mode === "text" && options.font);
     const fontOrFamily = isFont ? options.font : options.fontFamily;
+    let wideFontName = "";
+    let wideFontClass = "";
     if (text.charCodeAt(0) === 0xD835) {
+        [wideFontName, wideFontClass] = wideCharacterFont(text, mode);
+    }
+    if (wideFontName.length > 0) {
         // surrogate pairs get special treatment
-        const [wideFontName, wideFontClass] = wideCharacterFont(text, mode);
         return makeSymbol(text, wideFontName, mode, options,
             classes.concat(wideFontClass));
     } else if (fontOrFamily) {

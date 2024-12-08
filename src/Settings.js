@@ -346,7 +346,11 @@ export default class Settings {
      */
     isTrusted(context: AnyTrustContext): boolean {
         if (context.url && !context.protocol) {
-            context.protocol = utils.protocolFromUrl(context.url);
+            const protocol = utils.protocolFromUrl(context.url);
+            if (protocol == null) {
+                return false;
+            }
+            context.protocol = protocol;
         }
         const trust = typeof this.trust === "function"
             ? this.trust(context)
