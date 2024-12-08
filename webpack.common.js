@@ -164,7 +164,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                     },
                 }),
             ],
-            splitChunks: {
+            splitChunks: dev ? undefined : {
                 cacheGroups: {
                     swap: {
                         test: /katex-swap\.scss$/,
