@@ -11,13 +11,13 @@ title: Browser
 <!-- KaTeX requires the use of the HTML5 doctype. Without it, KaTeX may not render properly -->
 <html>
   <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.13/dist/katex.min.css" integrity="sha384-zbfIHNuzh376xnNwg57dvZ5Efh5rIH7XhUz6oXBlVORc5vofb/+XJagCnNy5t4OV" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/katex.min.css" integrity="sha384-qie8IrqbqaY2Hfd2tXYr8sbiTGuyYnXqugyAK7KWAteXtbbELC2qZDmiw3+k8o6v" crossorigin="anonymous">
 
     <!-- The loading of KaTeX is deferred to speed up page rendering -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.13/dist/katex.min.js" integrity="sha384-hJogzKcXN+eoavCV4I7R4pxsAyyTn1Pb5B5+ivCOZn3w2SxZrgGvXmcCia0jnt6N" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/katex.min.js" integrity="sha384-MOHUH1hVz1cOPigfacQq/x/ELwbtVZDlWT0AaDcxFrL2Pyp9d9Qk/P5EiI0t/NZp" crossorigin="anonymous"></script>
 
     <!-- To automatically render math in text elements, include the auto-render extension: -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.13/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
         onload="renderMathInElement(document.body);"></script>
   </head>
   ...
@@ -29,15 +29,15 @@ If you include the `katex.js` directly, the `katex` object will be available as
 a global variable.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.13/dist/katex.css" integrity="sha384-Qy7KxdSXD19cH02HRj87Zc1wQ/lLWKLAoGwLhwf89Orq1EY9e5rb788MwF3rvQVP" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.13/dist/katex.js" integrity="sha384-LxDbY+dL9+EeFsbabqETJhBOS8pxwfi81S5qgnaQpzsYqLUfh+jMH51bN5hMRO2c" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/katex.css" integrity="sha384-3FyEAq+PYOWK202ByvmO0Wo4dA83J8eUbI8ojgorhasGBYDc4SqcbXn/25DVRkQf" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/katex.js" integrity="sha384-UNaShSm0CBUmLNrlaS8XxD+gXVABSBkkpkK92ZXQdr76HvEEm08Ur27acxmhQiOi" crossorigin="anonymous"></script>
 ```
 
 KaTeX also provides minified versions:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.13/dist/katex.min.css" integrity="sha384-zbfIHNuzh376xnNwg57dvZ5Efh5rIH7XhUz6oXBlVORc5vofb/+XJagCnNy5t4OV" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.13/dist/katex.min.js" integrity="sha384-hJogzKcXN+eoavCV4I7R4pxsAyyTn1Pb5B5+ivCOZn3w2SxZrgGvXmcCia0jnt6N" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/katex.min.css" integrity="sha384-qie8IrqbqaY2Hfd2tXYr8sbiTGuyYnXqugyAK7KWAteXtbbELC2qZDmiw3+k8o6v" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/katex.min.js" integrity="sha384-MOHUH1hVz1cOPigfacQq/x/ELwbtVZDlWT0AaDcxFrL2Pyp9d9Qk/P5EiI0t/NZp" crossorigin="anonymous"></script>
 ```
 
 The examples above load the script [deferred using the `defer` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
@@ -81,22 +81,22 @@ for more detail.
 ```html
 <script type="text/javascript">
     require([
-        "https://cdn.jsdelivr.net/npm/katex@0.16.13/dist/katex.js",
+        "https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/katex.js",
     ], katex => {
         ...
     });
 </script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.13/dist/katex.css" integrity="sha384-Qy7KxdSXD19cH02HRj87Zc1wQ/lLWKLAoGwLhwf89Orq1EY9e5rb788MwF3rvQVP" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/katex.css" integrity="sha384-3FyEAq+PYOWK202ByvmO0Wo4dA83J8eUbI8ojgorhasGBYDc4SqcbXn/25DVRkQf" crossorigin="anonymous">
 ```
 
 ### ECMAScript module
 ```html
 <script type="module" type="text/javascript">
-    import katex from 'https://cdn.jsdelivr.net/npm/katex@0.16.13/dist/katex.mjs';
+    import katex from 'https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/katex.mjs';
     ...
 </script>
-<script nomodule defer src="https://cdn.jsdelivr.net/npm/katex@0.16.13/dist/katex.js" integrity="sha384-LxDbY+dL9+EeFsbabqETJhBOS8pxwfi81S5qgnaQpzsYqLUfh+jMH51bN5hMRO2c" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.13/dist/katex.css" integrity="sha384-Qy7KxdSXD19cH02HRj87Zc1wQ/lLWKLAoGwLhwf89Orq1EY9e5rb788MwF3rvQVP" crossorigin="anonymous">
+<script nomodule defer src="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/katex.js" integrity="sha384-UNaShSm0CBUmLNrlaS8XxD+gXVABSBkkpkK92ZXQdr76HvEEm08Ur27acxmhQiOi" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/katex.css" integrity="sha384-3FyEAq+PYOWK202ByvmO0Wo4dA83J8eUbI8ojgorhasGBYDc4SqcbXn/25DVRkQf" crossorigin="anonymous">
 ```
 
 > Use [`nomodule` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
