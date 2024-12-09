@@ -152,17 +152,13 @@ $display-margin: 1em 0 !default;
         font-family: KaTeX_SansSerif;
     }
 
-    .mathsfit {
-        font-family: KaTeX_SansSerif;
-        font-style: italic;
-    }
-
     .mathboldsf,
     .textboldsf {
         font-family: KaTeX_SansSerif;
         font-weight: bold;
     }
 
+    .mathsfit,
     .mathitsf,
     .textitsf {
         font-family: KaTeX_SansSerif;
