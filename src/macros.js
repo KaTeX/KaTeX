@@ -146,7 +146,9 @@ defineMacro("\\char", function(context) {
 // \newcommand{\macro}[args]{definition}
 // \renewcommand{\macro}[args]{definition}
 // TODO: Optional arguments: \newcommand{\macro}[args][default]{definition}
-const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
+const newcommand = (
+    context, existsOK: boolean, nonexistsOK: boolean, skipIfExists: boolean
+) => {
     let arg = context.consumeArg().tokens;
     if (arg.length !== 1) {
         throw new ParseError(
@@ -181,16 +183,21 @@ const newcommand = (context, existsOK: boolean, nonexistsOK: boolean) => {
         arg = context.consumeArg().tokens;
     }
 
-    // Final arg is the expansion of the macro
-    context.macros.set(name, {
-        tokens: arg,
-        numArgs,
-    });
+    if (!(exists && skipIfExists)) {
+        // Final arg is the expansion of the macro
+        context.macros.set(name, {
+            tokens: arg,
+            numArgs,
+        });
+    }
     return '';
 };
-defineMacro("\\newcommand", (context) => newcommand(context, false, true));
-defineMacro("\\renewcommand", (context) => newcommand(context, true, false));
-defineMacro("\\providecommand", (context) => newcommand(context, true, true));
+defineMacro("\\newcommand",
+    (context) => newcommand(context, false, true, false));
+defineMacro("\\renewcommand",
+    (context) => newcommand(context, true, false, false));
+defineMacro("\\providecommand",
+    (context) => newcommand(context, true, true, true));
 
 // terminal (console) tools
 defineMacro("\\message", (context) => {

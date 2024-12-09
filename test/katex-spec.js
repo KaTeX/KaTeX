@@ -3659,17 +3659,15 @@ describe("A macro expander", function() {
         expect`\newcommand{\foo}{1}\foo\renewcommand{\foo}{2}\foo`.toParseLike`12`;
     });
 
-    it("\\providecommand (re)defines macros", () => {
+    it("\\providecommand defines but does not redefine macros", () => {
         expect`\providecommand\foo{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
         expect`\providecommand{\foo}{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
-        expect`\providecommand\bar{x^2}\bar+\bar`.toParseLike`x^2+x^2`;
-        expect`\providecommand{\bar}{x^2}\bar+\bar`.toParseLike`x^2+x^2`;
         expect`\newcommand{\foo}{1}\foo\providecommand{\foo}{2}\foo`
-            .toParseLike`12`;
+            .toParseLike`11`;
         expect`\providecommand{\foo}{1}\foo\renewcommand{\foo}{2}\foo`
             .toParseLike`12`;
         expect`\providecommand{\foo}{1}\foo\providecommand{\foo}{2}\foo`
-            .toParseLike`12`;
+            .toParseLike`11`;
     });
 
     it("\\newcommand is local", () => {
