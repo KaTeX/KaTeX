@@ -4,6 +4,8 @@ const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 // $FlowIgnore
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// $FlowIgnore
+const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
 const {version} = require("./package.json");
 
@@ -31,6 +33,10 @@ const targets /*: Array<Target> */ = [
         name: 'katex',
         entry: './katex.webpack.js',
         library: 'katex',
+    },
+    {
+        name: 'katex-swap',
+        entry: './src/styles/katex-swap.scss',
     },
     {
         name: 'contrib/auto-render',
@@ -148,6 +154,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
         },
         externals: 'katex',
         plugins: [
+            !dev && new RemoveEmptyScriptsPlugin(),
             !dev && new MiniCssExtractPlugin({
                 filename: minimize ? '[name].min.css' : '[name].css',
             }),
@@ -164,16 +171,6 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                     },
                 }),
             ],
-            splitChunks: dev ? undefined : {
-                cacheGroups: {
-                    swap: {
-                        test: /katex-swap\.scss$/,
-                        name: 'katex-swap',
-                        chunks: 'all',
-                        enforce: true,
-                    },
-                },
-            },
         },
         performance: {
             hints: false,
