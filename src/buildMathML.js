@@ -98,6 +98,8 @@ export const getVariant = function(
         return "bold";
     } else if (font === "mathbb") {
         return "double-struck";
+    } else if (font === "mathsfit") {
+        return "sans-serif-italic";
     } else if (font === "mathfrak") {
         return "fraktur";
     } else if (font === "mathscr" || font === "mathcal") {
