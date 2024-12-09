@@ -6,8 +6,8 @@ const {targets} = require('./webpack.common');
 process.env.NODE_ENV = 'esm';
 
 export default targets
-  .filter(({entry}) => entry.endsWith('js'))
-  .map(({name, entry}) => ({
+.filter(({entry}) => entry.endsWith('js'))
+.map(({name, entry}) => ({
     input: entry.replace('.webpack', ''),
     output: {
         file: `dist/${name}.mjs`,
