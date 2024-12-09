@@ -606,7 +606,7 @@ For color definition, KaTeX color functions will accept the standard HTML [pred
 |$\mathit{Ab0}$ `\mathit{Ab0}`  |$\mathtt{Ab0}$ `\mathtt{Ab0}`  |$\mathcal{AB0}$ `\mathcal{AB0}`
 |$\textit{Ab0}$ `\textit{Ab0}`  |$\texttt{Ab0}$ `\texttt{Ab0}`  |$\cal AB0$ `\cal AB0`
 |$\it Ab0$ `\it Ab0`            |$\tt Ab0$ `\tt Ab0`            |$\mathscr{AB}$ `\mathscr{AB}`
-|$\emph{Ab0}$ `\emph{Ab0}`      |                               ||
+|$\emph{Ab0}$ `\emph{Ab0}`      |$\mathsfit{Ab0}$ `\mathsfit{Ab0}`||
 
 One can stack font family, font weight, and font shape by using the `\textXX` versions of the font functions. So `\textsf{\textbf{H}}` will produce $\textsf{\textbf{H}}$. The other versions do not stack, e.g., `\mathsf{\mathbf{H}}` will produce $\mathsf{\mathbf{H}}$.
 
