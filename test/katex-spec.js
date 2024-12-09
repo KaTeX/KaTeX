@@ -2048,6 +2048,19 @@ describe("A MathML font tree-builder", function() {
         expect(markup).toContain("<mo>+</mo>");
     });
 
+    it("should render \\mathsfit{" + contents + "} with the correct mathvariants", function() {
+        const tex = `\\mathsfit{${contents}}`;
+        const tree = getParsed(tex);
+        const markup = buildMathML(tree, tex, defaultOptions).toMarkup();
+        expect(markup).toContain("<mi mathvariant=\"sans-serif-italic\">A</mi>");
+        expect(markup).toContain("<mi mathvariant=\"sans-serif-italic\">x</mi>");
+        expect(markup).toContain("<mn mathvariant=\"sans-serif-italic\">2</mn>");
+        expect(markup).toContain("<mi mathvariant=\"sans-serif-italic\">\u03c9</mi>"); // \omega
+        expect(markup).toContain("<mi mathvariant=\"sans-serif-italic\">\u03A9</mi>"); // \Omega
+        expect(markup).toContain("<mi mathvariant=\"sans-serif-italic\">\u0131</mi>"); // \imath
+        expect(markup).toContain("<mo>+</mo>");
+    });
+
     it("should render a combination of font and color changes", function() {
         let tex = r`\textcolor{blue}{\mathbb R}`;
         let tree = getParsed(tex);
