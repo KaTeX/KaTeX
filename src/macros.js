@@ -341,7 +341,7 @@ defineMacro("\\lrcorner", "\\html@mathml{\\@lrcorner}{\\mathop{\\char\"231f}}");
 // \kern6\p@\hbox{.}\hbox{.}\hbox{.}}}
 // We'll call \varvdots, which gets a glyph from symbols.js.
 // The zero-width rule gets us an equivalent to the vertical 6pt kern.
-defineMacro("\\vdots", "\\mathord{\\varvdots\\rule{0pt}{15pt}}");
+defineMacro("\\vdots", "{\\varvdots\\rule{0pt}{15pt}}");
 defineMacro("\u22ee", "\\vdots");
 
 //////////////////////////////////////////////////////////////////////
@@ -379,6 +379,12 @@ defineMacro("\\boxed", "\\fbox{$\\displaystyle{#1}$}");
 defineMacro("\\iff", "\\DOTSB\\;\\Longleftrightarrow\\;");
 defineMacro("\\implies", "\\DOTSB\\;\\Longrightarrow\\;");
 defineMacro("\\impliedby", "\\DOTSB\\;\\Longleftarrow\\;");
+
+// \def\dddot#1{{\mathop{#1}\limits^{\vbox to-1.4\ex@{\kern-\tw@\ex@
+//  \hbox{\normalfont ...}\vss}}}}
+// We use \overset which avoids the vertical shift of \mathop.
+defineMacro("\\dddot", "{\\overset{\\raisebox{-0.1ex}{\\normalsize ...}}{#1}}");
+defineMacro("\\ddddot", "{\\overset{\\raisebox{-0.1ex}{\\normalsize ....}}{#1}}");
 
 // AMSMath's automatic \dots, based on \mdots@@ macro.
 const dotsByToken = {

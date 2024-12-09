@@ -6,7 +6,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 
 If you know the shape of a character, but not its name, [Detexify](https://detexify.kirelabs.org/classify.html) can help.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.12/dist/katex.min.css" integrity="sha384-PDbUeNCuE6bOPudPOgFyIUEy3UJawJVwr3XlGO90FIuf5qNIoTLSgOJo/dC2ZXV/" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/katex.min.css" integrity="sha384-qie8IrqbqaY2Hfd2tXYr8sbiTGuyYnXqugyAK7KWAteXtbbELC2qZDmiw3+k8o6v" crossorigin="anonymous">
 <style>
 table tr,
 table td {
@@ -314,8 +314,8 @@ use `\ce` instead|
 |{dcases}|$\begin{dcases}a&\text{if }b\\c&\text{if }d\end{dcases}$|`\begin{dcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{dcases}`|
 |\ddag|$\ddag$||
 |\ddagger|$\ddagger$||
-|\ddddot|<span style="color:firebrick;">Not supported</span>||
-|\dddot|<span style="color:firebrick;">Not supported</span>||
+|\ddddot|$\ddddot x$|`\ddddot x`|
+|\dddot|$\dddot x$|`\dddot x`|
 |\ddot|$\ddot x$|`\ddot x`|
 |\ddots|$\ddots$||
 |\DeclareMathOperator|<span style="color:firebrick;">Not supported</span>||

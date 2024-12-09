@@ -1,6 +1,20 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.14](https://github.com/KaTeX/KaTeX/compare/v0.16.13...v0.16.14) (2024-12-08)
+
+
+### Features
+
+* \dddot and \ddddot support ([#3834](https://github.com/KaTeX/KaTeX/issues/3834)) ([bda35cd](https://github.com/KaTeX/KaTeX/commit/bda35cdb0a6bbbc52dd27c79e4d984688be3b745)), closes [#2744](https://github.com/KaTeX/KaTeX/issues/2744)
+
+## [0.16.13](https://github.com/KaTeX/KaTeX/compare/v0.16.12...v0.16.13) (2024-12-08)
+
+
+### Bug Fixes
+
+* `\vdots` and `\rule` support in text mode ([#3997](https://github.com/KaTeX/KaTeX/issues/3997)) ([0e08352](https://github.com/KaTeX/KaTeX/commit/0e0835262345d991df61a435800a16b069a4d5c7)), closes [#3990](https://github.com/KaTeX/KaTeX/issues/3990)
+
 ## [0.16.12](https://github.com/KaTeX/KaTeX/compare/v0.16.11...v0.16.12) (2024-12-08)
 
 

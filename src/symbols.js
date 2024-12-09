@@ -673,7 +673,9 @@ defineSymbol(text, main, inner, "\u2026", "\\ldots", true);
 defineSymbol(math, main, inner, "\u2026", "\\ldots", true);
 defineSymbol(math, main, inner, "\u22ef", "\\@cdots", true);
 defineSymbol(math, main, inner, "\u22f1", "\\ddots", true);
-defineSymbol(math, main, textord, "\u22ee", "\\varvdots"); // \vdots is a macro
+// \vdots is a macro that uses one of these two symbols (with made-up names):
+defineSymbol(math, main, textord, "\u22ee", "\\varvdots");
+defineSymbol(text, main, textord, "\u22ee", "\\varvdots");
 defineSymbol(math, main, accent, "\u02ca", "\\acute");
 defineSymbol(math, main, accent, "\u02cb", "\\grave");
 defineSymbol(math, main, accent, "\u00a8", "\\ddot");

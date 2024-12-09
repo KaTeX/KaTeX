@@ -11,7 +11,7 @@ included in the page, in addition to KaTeX.
 Load the extension by adding the following line to your HTML file.
 
 ```html
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.12/dist/contrib/mathtex-script-type.min.js" integrity="sha384-sg4gBRJTqTCyzYbB7e72xGs3dA2LK994XRZS6urZW6Uh6Mu3j2JJ3YG2s9HALO8U" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/contrib/mathtex-script-type.min.js" integrity="sha384-sg4gBRJTqTCyzYbB7e72xGs3dA2LK994XRZS6urZW6Uh6Mu3j2JJ3YG2s9HALO8U" crossorigin="anonymous"></script>
 ```
 You can download the script and use it locally, or from a local KaTeX installation instead.
 
@@ -23,9 +23,9 @@ Then, in the body, we use a `math/tex` script to typeset the equation `x+\sqrt{1
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.12/dist/katex.min.css" integrity="sha384-PDbUeNCuE6bOPudPOgFyIUEy3UJawJVwr3XlGO90FIuf5qNIoTLSgOJo/dC2ZXV/" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.12/dist/katex.min.js" integrity="sha384-VkqWq8xtm5YQk1BBXczQ8/Sx+DlCzF8cuS43bZwmtVXzRFtyLTqTCdP7MKmKo+KN" crossorigin="anonymous"></script>
-        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.12/dist/contrib/mathtex-script-type.min.js" integrity="sha384-sg4gBRJTqTCyzYbB7e72xGs3dA2LK994XRZS6urZW6Uh6Mu3j2JJ3YG2s9HALO8U" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/katex.min.css" integrity="sha384-qie8IrqbqaY2Hfd2tXYr8sbiTGuyYnXqugyAK7KWAteXtbbELC2qZDmiw3+k8o6v" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/katex.min.js" integrity="sha384-MOHUH1hVz1cOPigfacQq/x/ELwbtVZDlWT0AaDcxFrL2Pyp9d9Qk/P5EiI0t/NZp" crossorigin="anonymous"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/contrib/mathtex-script-type.min.js" integrity="sha384-sg4gBRJTqTCyzYbB7e72xGs3dA2LK994XRZS6urZW6Uh6Mu3j2JJ3YG2s9HALO8U" crossorigin="anonymous"></script>
     </head>
     <body>
         <script type="math/tex">x+\sqrt{1-x^2}</script>
@@ -35,4 +35,4 @@ Then, in the body, we use a `math/tex` script to typeset the equation `x+\sqrt{1
 
 ECMAScript module is also available:
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/katex@0.16.12/dist/contrib/mathtex-script-type.mjs" integrity="sha384-4EJvC5tvqq9XJxXvdD4JutBokuFw/dCe2AB4gZ9sRpwFFXECpL3qT43tmE0PkpVg" crossorigin="anonymous"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/katex@0.16.14/dist/contrib/mathtex-script-type.mjs" integrity="sha384-4EJvC5tvqq9XJxXvdD4JutBokuFw/dCe2AB4gZ9sRpwFFXECpL3qT43tmE0PkpVg" crossorigin="anonymous"></script>
