@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.15](https://github.com/KaTeX/KaTeX/compare/v0.16.14...v0.16.15) (2024-12-09)
+
+
+### Features
+
+* italic sans-serif in math mode via `\mathsfit` command ([#3998](https://github.com/KaTeX/KaTeX/issues/3998)) ([2218901](https://github.com/KaTeX/KaTeX/commit/22189018b63c9312ec4ad126804514a7390d60b5))
+
 ## [0.16.14](https://github.com/KaTeX/KaTeX/compare/v0.16.13...v0.16.14) (2024-12-08)
 
 
