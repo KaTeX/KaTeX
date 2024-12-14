@@ -6,6 +6,21 @@
 // with some references from https://www.npmjs.com/package/@types/katex
 
 /**
+ * For the `trust` option in `KatexOptions`, a custom function
+ * `handler(context)` can be provided to customize behavior depending on the
+ * context (command, arguments e.g. a URL, etc.)
+ * @see https://katex.org/docs/options
+ */
+export type TrustContext =
+    | { command: "\\url", url: string, protocol?: string }
+    | { command: "\\href", url: string, protocol?: string }
+    | { command: "\\includergraphics", url: string, protocol?: string }
+    | { command: "\\htmlClass", class: string }
+    | { command: "\\htmlId", id: string }
+    | { command: "\\htmlStyle", style: string }
+    | { command: "\\htmlData", attributes: Record<string, string> }
+
+/**
  * Options for `katex.render` and `katex.renderToString`.
  * @see https://katex.org/docs/options
  */
@@ -72,7 +87,7 @@ export interface KatexOptions {
      * A collection of custom macros.
      * @see https://katex.org/docs/options
      */
-    macros?: Record<string, string | object | (object) => string | object>;
+    macros?: Record<string, string | object | ((macroExpander:object) => string | object)>;
     /**
      * @type {number}
      *
@@ -146,7 +161,7 @@ export interface KatexOptions {
      * depending on the context (command, arguments e.g. a URL, etc.).
      * @see https://katex.org/docs/options
      */
-    trust?: boolean | ((context: any) => boolean);
+    trust?: boolean | ((context: TrustContext) => boolean);
     /**
      * @type {boolean}
      * @default [false]
