@@ -26,71 +26,61 @@ export type TrustContext =
  */
 export interface KatexOptions {
     /**
-     * @type {boolean}
-     * @default [false]
-     *
      * If `true` the math will be rendered in display mode.
      * If `false` the math will be rendered in inline mode.
      * @see https://katex.org/docs/options
+     * 
+     * @default false
      */
     displayMode?: boolean;
     /**
-     * @type {"html" | "mathml" | "htmlAndMathml"}
-     * @default [htmlAndMathml]
-     *
      * Determines the markup language of the output. The valid choices are:
      * - `html`: Outputs KaTeX in HTML only.
      * - `mathml`: Outputs KaTeX in MathML only.
      * - `htmlAndMathml`: Outputs HTML for visual rendering and includes MathML
      * for accessibility.
+     * 
+     * @default "htmlAndMathml"
      */
     output?: "html" | "mathml" | "htmlAndMathml";
     /**
-     * @type {boolean}
-     * @default [false]
-     *
      * If `true`, display math has `\tag`s rendered on the left instead of the
      * right, like `\usepackage[leqno]{amsmath}` in LaTeX.
+     * 
+     * @default false
      */
     leqno?: boolean;
     /**
-     * @type {boolean}
-     * @default [false]
-     *
      * If `true`, display math renders flush left with a `2em` left margin,
      * like `\documentclass[fleqn]` in LaTeX with the `amsmath` package.
+     * 
+     * @default false
      */
     fleqn?: boolean;
     /**
-     * @type {boolean}
-     * @default [true]
-     *
      * If `true`, KaTeX will throw a `ParseError` when it encounters an
      * unsupported command or invalid LaTeX.
      * If `false`, KaTeX will render unsupported commands as text, and render
      * invalid LaTeX as its source code with hover text giving the error, in
      * the color given by `errorColor`.
+     * 
+     * @default true
      */
     throwOnError?: boolean;
     /**
-     * @type {string}
-     * @default ['#cc0000']
-     *
      * A color string given in the format `"#XXX"` or `"#XXXXXX"`. This option
      * determines the color that unsupported commands and invalid LaTeX are
      * rendered in when `throwOnError` is set to `false`.
+     * 
+     * @default "#cc0000"
      */
     errorColor?: string;
     /**
-     * @type {Record<string, string>}
-     *
      * A collection of custom macros.
      * @see https://katex.org/docs/options
      */
     macros?: Record<string, string | object | ((macroExpander:object) => string | object)>;
     /**
-     * @type {number}
-     *
      * Specifies a minimum thickness, in ems, for fraction lines, `\sqrt` top
      * lines, `{array}` vertical lines, `\hline`, `\hdashline`, `\underline`,
      * `\overline`, and the borders of `\fbox`, `\boxed`, and `\fcolorbox`.
@@ -100,8 +90,6 @@ export interface KatexOptions {
      */
     minRuleThickness?: number;
     /**
-     * @type {boolean}
-     *
      * In early versions of both KaTeX (<0.8.0) and MathJax, the `\color`
      * function expected the content to be a function argument, as in
      * `\color{blue}{hello}`. In current KaTeX, `\color` is a switch, as in
@@ -110,28 +98,23 @@ export interface KatexOptions {
      */
     colorIsTextColor?: boolean;
     /**
-     * @type {number}
-     * @default [Infinity]
-     *
      * All user-specified sizes, e.g. in `\rule{500em}{500em}`, will be capped
      * to `maxSize` ems. If set to `Infinity` (the default), users can make
      * elements and spaces arbitrarily large.
+     * 
+     * @default Infinity
      */
     maxSize?: number;
     /**
-     * @type {number}
-     * @default [1000]
-     *
      * Limit the number of macro expansions to the specified number, to prevent
      * e.g. infinite macro loops. `\edef` expansion counts all expanded tokens.
      * If set to `Infinity`, the macro expander will try to fully expand as in
      * LaTeX.
+     * 
+     * @default 1000
      */
     maxExpand?: number;
     /**
-     * @type {boolean|string|(errorCode: any, errorMsg: any, token: any)=>any}
-     * @default ["warn"]
-     *
      * If `false` or `"ignore"`, allow features that make writing LaTeX
      * convenient but are not actually supported by (Xe)LaTeX
      * (similar to MathJax).
@@ -144,15 +127,14 @@ export interface KatexOptions {
      * can also return `"ignore"`, `"error"`, or `"warn"` to use a built-in
      * behavior.
      * @see https://katex.org/docs/options
+     * 
+     * @default "warn"
      */
     strict?:
         | boolean
         | "ignore" | "warn" | "error"
         | ((errorCode: string, errorMsg: string, token: object) => boolean | "ignore" | "warn" | "error" | undefined | null);
     /**
-     * @type {boolean|(context: any)=>any}
-     * @default [false]
-     *
      * If `false` (do not trust input), prevent any commands like
      * `\includegraphics` that could enable adverse behavior, rendering them
      * instead in `errorColor`.
@@ -160,18 +142,19 @@ export interface KatexOptions {
      * Provide a custom function `handler(context)` to customize behavior
      * depending on the context (command, arguments e.g. a URL, etc.).
      * @see https://katex.org/docs/options
-     */
+     * 
+     * @default false
+    */
     trust?: boolean | ((context: TrustContext) => boolean);
     /**
-     * @type {boolean}
-     * @default [false]
-     *
      * Run KaTeX code in the global group. As a consequence, macros defined at
      * the top level by `\def` and `\newcommand` are added to the macros
      * argument and can be used in subsequent render calls. In LaTeX,
      * constructs such as `\begin{equation}` and `$$` create a local group and
      * prevent definitions other than `\gdef` from becoming visible outside of
      * those blocks, so this is KaTeX's default behavior.
+     * 
+     * @default false
      */
     globalGroup?: boolean;
 }
@@ -216,7 +199,7 @@ declare function renderToString(tex: string, options?: KatexOptions): string;
  * @see https://katex.org/docs/error
  */
 declare class ParseError implements Error {
-    constructor(message: string, token?: any);
+    constructor(message: string, token?: object);
     name: "ParseError";
     position: number;
     length: number;
@@ -225,6 +208,7 @@ declare class ParseError implements Error {
 }
 
 declare const katex: {
+    version: string;
     render: typeof render;
     renderToString: typeof renderToString;
     ParseError: typeof ParseError;
