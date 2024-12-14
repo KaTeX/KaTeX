@@ -72,7 +72,7 @@ export interface KatexOptions {
      * A collection of custom macros.
      * @see https://katex.org/docs/options
      */
-    macros?: Record<string, string>;
+    macros?: Record<string, string | object | (object) => string | object>;
     /**
      * @type {number}
      *
