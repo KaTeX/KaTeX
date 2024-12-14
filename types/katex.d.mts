@@ -132,7 +132,7 @@ export interface KatexOptions {
      */
     strict?:
         | boolean
-        | string
+        | "ignore" | "warn" | "error"
         | ((errorCode: string, errorMsg: string, token: object) => boolean | "ignore" | "warn" | "error" | undefined | null);
     /**
      * @type {boolean|(context: any)=>any}
