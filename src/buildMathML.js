@@ -129,6 +129,28 @@ export const getVariant = function(
 };
 
 /**
+ * Check for <mi>.</mi> which is how a dot renders in MathML
+ */
+function isNumberPunctuation(group: ?MathNode): boolean {
+    if (!group) {
+        return false;
+    }
+    if (group.type === 'mi' && group.children.length === 1) {
+        const child = group.children[0];
+        return child instanceof TextNode && child.text === '.';
+    } else if (group.type === 'mo' && group.children.length === 1 &&
+        group.getAttribute('separator') === 'true' &&
+        group.getAttribute('lspace') === '0em' &&
+        group.getAttribute('rspace') === '0em'
+    ) {
+        const child = group.children[0];
+        return child instanceof TextNode && child.text === ',';
+    } else {
+        return false;
+    }
+}
+
+/**
  * Takes a list of nodes, builds them, and returns a list of the generated
  * MathML nodes.  Also combine consecutive <mtext> outputs into a single
  * <mtext> tag.
@@ -165,13 +187,25 @@ export const buildExpression = function(
                 lastGroup.children.push(...group.children);
                 continue;
             // Concatenate <mn>...</mn> followed by <mi>.</mi>
-            } else if (group.type === 'mi' && group.children.length === 1 &&
-                       lastGroup.type === 'mn') {
-                const child = group.children[0];
-                if (child instanceof TextNode && child.text === '.') {
-                    lastGroup.children.push(...group.children);
-                    continue;
+            } else if (isNumberPunctuation(group) && lastGroup.type === 'mn') {
+                lastGroup.children.push(...group.children);
+                continue;
+            // Concatenate <mi>.</mi> followed by <mn>...</mn>
+            } else if (group.type === 'mn' && isNumberPunctuation(lastGroup)) {
+                group.children = [...lastGroup.children, ...group.children];
+                groups.pop();
+            // Put preceding <mn>...</mn> or <mi>.</mi> inside base of
+            // <msup><mn>...base...</mn>...exponent...</msup> (or <msub>)
+            } else if ((group.type === 'msup' || group.type === 'msub') &&
+                group.children.length >= 1 &&
+                (lastGroup.type === 'mn' || isNumberPunctuation(lastGroup))
+            ) {
+                const base = group.children[0];
+                if (base instanceof MathNode && base.type === 'mn') {
+                    base.children = [...lastGroup.children, ...base.children];
+                    groups.pop();
                 }
+            // \not
             } else if (lastGroup.type === 'mi' && lastGroup.children.length === 1) {
                 const lastChild = lastGroup.children[0];
                 if (lastChild instanceof TextNode && lastChild.text === '\u0338' &&
