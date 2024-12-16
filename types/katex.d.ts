@@ -14,7 +14,7 @@
 export type TrustContext =
     | { command: "\\url", url: string, protocol?: string }
     | { command: "\\href", url: string, protocol?: string }
-    | { command: "\\includergraphics", url: string, protocol?: string }
+    | { command: "\\includegraphics", url: string, protocol?: string }
     | { command: "\\htmlClass", class: string }
     | { command: "\\htmlId", id: string }
     | { command: "\\htmlStyle", style: string }
@@ -210,3 +210,12 @@ export class ParseError implements Error {
 export const version: string;
 
 export as namespace katex;
+
+declare const katex: {
+    version: string;
+    render: typeof render;
+    renderToString: typeof renderToString;
+    ParseError: typeof ParseError;
+};
+
+export default katex;

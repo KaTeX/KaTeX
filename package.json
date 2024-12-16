@@ -10,7 +10,7 @@
         "default": "./dist/katex.js"
       },
       "import": {
-        "types": "./types/katex.d.mts",
+        "types": "./types/katex.d.ts",
         "default": "./dist/katex.mjs"
       }
     },
