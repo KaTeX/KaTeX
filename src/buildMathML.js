@@ -129,7 +129,9 @@ export const getVariant = function(
 };
 
 /**
- * Check for <mi>.</mi> which is how a dot renders in MathML
+ * Check for <mi>.</mi> which is how a dot renders in MathML,
+ * or <mo separator="true" lspace="0em" rspace="0em">,</mo>
+ * which is how a braced comma {,} renders in MathML
  */
 function isNumberPunctuation(group: ?MathNode): boolean {
     if (!group) {
