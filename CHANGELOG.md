@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.16](https://github.com/KaTeX/KaTeX/compare/v0.16.15...v0.16.16) (2024-12-17)
+
+
+### Features
+
+* ESM exports, TypeScript types ([#3992](https://github.com/KaTeX/KaTeX/issues/3992)) ([ea9c173](https://github.com/KaTeX/KaTeX/commit/ea9c173a0de953b49b2ce5d131e88b785f5dffa1))
+
 ## [0.16.15](https://github.com/KaTeX/KaTeX/compare/v0.16.14...v0.16.15) (2024-12-09)
 
 
