@@ -428,9 +428,35 @@ exports[`A MathML builder should concatenate digits into single <mn> 1`] = `
       <mn>
         0.34
       </mn>
+      <mo>
+        =
+      </mo>
+      <msup>
+        <mn>
+          .34
+        </mn>
+        <mn>
+          1
+        </mn>
+      </msup>
     </mrow>
     <annotation encoding="application/x-tex">
-      \\sin{\\alpha}=0.34
+      \\sin{\\alpha}=0.34=.34^1
+    </annotation>
+  </semantics>
+</math>
+`;
+
+exports[`A MathML builder should concatenate digits into single <mn> 2`] = `
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <semantics>
+    <mrow>
+      <mn>
+        1,000,000
+      </mn>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      1{,}000{,}000
     </annotation>
   </semantics>
 </math>

@@ -29,7 +29,8 @@ describe("A MathML builder", function() {
     });
 
     it('should concatenate digits into single <mn>', () => {
-        expect(getMathML("\\sin{\\alpha}=0.34")).toMatchSnapshot();
+        expect(getMathML("\\sin{\\alpha}=0.34=.34^1")).toMatchSnapshot();
+        expect(getMathML("1{,}000{,}000")).toMatchSnapshot();
     });
 
     it('should make prime operators into <mo> nodes', () => {
