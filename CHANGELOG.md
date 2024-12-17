@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.17](https://github.com/KaTeX/KaTeX/compare/v0.16.16...v0.16.17) (2024-12-17)
+
+
+### Bug Fixes
+
+* MathML combines multidigit numbers with sup/subscript, comma separators, and multicharacter text when outputting to DOM ([#3999](https://github.com/KaTeX/KaTeX/issues/3999)) ([7d79e22](https://github.com/KaTeX/KaTeX/commit/7d79e220f465c42d4334dc95f1c41e333667e168)), closes [#3995](https://github.com/KaTeX/KaTeX/issues/3995)
+
 ## [0.16.16](https://github.com/KaTeX/KaTeX/compare/v0.16.15...v0.16.16) (2024-12-17)
 
 
