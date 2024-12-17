@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["es2021", "dom"],
+    "moduleResolution": "bundler",
+    "forceConsistentCasingInFileNames": true
+  }
+}
