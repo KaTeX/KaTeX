@@ -50,7 +50,8 @@
     "cli.js",
     "src/",
     "contrib/",
-    "dist/"
+    "dist/",
+    "types/"
   ],
   "license": "MIT",
   "packageManager": "yarn@4.1.1",
