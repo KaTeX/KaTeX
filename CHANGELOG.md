@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.18](https://github.com/KaTeX/KaTeX/compare/v0.16.17...v0.16.18) (2024-12-18)
+
+
+### Bug Fixes
+
+* Actually publish TypeScript type definitions ([#4008](https://github.com/KaTeX/KaTeX/issues/4008)) ([629b873](https://github.com/KaTeX/KaTeX/commit/629b87354fdfc04a3769f09b69f6bbadebcb9ae8))
+
 ## [0.16.17](https://github.com/KaTeX/KaTeX/compare/v0.16.16...v0.16.17) (2024-12-17)
 
 
