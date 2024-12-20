@@ -20,6 +20,43 @@ export type TrustContext =
     | { command: "\\htmlStyle", style: string }
     | { command: "\\htmlData", attributes: Record<string, string> }
 
+
+type KatexCatcodes = Record<string, number>;
+
+interface KatexLexerInterFace {
+  input: string;
+  tokenRegex: RegExp;
+  settings: Required<KatexOptions>;
+  catcodes: KatexCatcodes;
+}
+
+interface KatexSourceLocation {
+  start: number;
+  end: number;
+  lexer: KatexLexerInterFace;
+}
+
+export interface KatexToken {
+  text: string;
+  loc: KatexSourceLocation;
+  noexpand: boolean | undefined;
+  treatAsRelax: boolean | undefined;
+}
+
+
+export type KatexLoggerFunction = (
+  errorCode:
+    | "unknownSymbol"
+    | "unicodeTextInMathMode"
+    | "mathVsTextUnits"
+    | "commentAtEnd"
+    | "htmlExtension"
+    | "newLineInDisplayMode",
+  errorMsg: string,
+  token: KatexToken,
+) => boolean | "error" | "warn" | "ignore" | undefined | null | void;
+
+
 /**
  * Options for `katex.render` and `katex.renderToString`.
  * @see https://katex.org/docs/options
@@ -133,7 +170,7 @@ export interface KatexOptions {
     strict?:
         | boolean
         | "ignore" | "warn" | "error"
-        | ((errorCode: string, errorMsg: string, token: object) => boolean | "ignore" | "warn" | "error" | undefined | null);
+        | KatexLoggerFunction;
     /**
      * If `false` (do not trust input), prevent any commands like
      * `\includegraphics` that could enable adverse behavior, rendering them
