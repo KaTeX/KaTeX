@@ -21,30 +21,30 @@ export type TrustContext =
     | { command: "\\htmlData", attributes: Record<string, string> }
 
 
-type KatexCatcodes = Record<string, number>;
+export type Catcodes = Record<string, number>;
 
-interface KatexLexerInterFace {
+export interface Lexer {
   input: string;
   tokenRegex: RegExp;
   settings: Required<KatexOptions>;
-  catcodes: KatexCatcodes;
+  catcodes: Catcodes;
 }
 
-interface KatexSourceLocation {
+export interface SourceLocation {
   start: number;
   end: number;
-  lexer: KatexLexerInterFace;
+  lexer: Lexer;
 }
 
-export interface KatexToken {
+export interface Token {
   text: string;
-  loc: KatexSourceLocation;
-  noexpand: boolean | undefined;
-  treatAsRelax: boolean | undefined;
+  loc: SourceLocation | undefined;
+  noexpand?: boolean;
+  treatAsRelax?: boolean;
 }
 
 
-export type KatexLoggerFunction = (
+export type StrictFunction = (
   errorCode:
     | "unknownSymbol"
     | "unicodeTextInMathMode"
@@ -53,8 +53,8 @@ export type KatexLoggerFunction = (
     | "htmlExtension"
     | "newLineInDisplayMode",
   errorMsg: string,
-  token: KatexToken,
-) => boolean | "error" | "warn" | "ignore" | undefined | null | void;
+  token: Token,
+) => boolean | "error" | "warn" | "ignore" | undefined;
 
 
 /**
@@ -170,7 +170,7 @@ export interface KatexOptions {
     strict?:
         | boolean
         | "ignore" | "warn" | "error"
-        | KatexLoggerFunction;
+        | StrictFunction;
     /**
      * If `false` (do not trust input), prevent any commands like
      * `\includegraphics` that could enable adverse behavior, rendering them
