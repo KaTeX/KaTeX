@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.19](https://github.com/KaTeX/KaTeX/compare/v0.16.18...v0.16.19) (2024-12-29)
+
+
+### Bug Fixes
+
+* **types:** improve `strict` function type ([#4009](https://github.com/KaTeX/KaTeX/issues/4009)) ([4228b4e](https://github.com/KaTeX/KaTeX/commit/4228b4eb529b8e35def66cc6e4fa467383b98c86))
+
 ## [0.16.18](https://github.com/KaTeX/KaTeX/compare/v0.16.17...v0.16.18) (2024-12-18)
 
 
