@@ -6,7 +6,7 @@ This is a list of TeX functions supported by KaTeX. It is sorted into logical gr
 
 There is a similar [Support Table](support_table.md), sorted alphabetically, that lists both supported and un-supported functions.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.15/dist/katex.min.css" integrity="sha384-Htz9HMhiwV8GuQ28Xr9pEs1B4qJiYu/nYLLwlDklR53QibDfmQzi7rYxXhMH/5/u" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/katex.min.css" integrity="sha384-7lU0muIg/i1plk7MgygDUp3/bNRA65orrBub4/OSWHECgwEsY83HaS1x3bljA/XV" crossorigin="anonymous">
 <style>
 p {overflow-wrap: break-word;}
 table tr,
@@ -595,18 +595,18 @@ For color definition, KaTeX color functions will accept the standard HTML [pred
 **Font**
 
 ||||
-|:------------------------------------|:-----------------------------------|:--------------------------------|
-|$\mathrm{Ab0}$ `\mathrm{Ab0}`        |$\mathbf{Ab0}$ `\mathbf{Ab0}`       |$\mathsf{Ab0}$ `\mathsf{Ab0}`    |
-|$\mathnormal{Ab0}$ `\mathnormal{Ab0}`|$\textbf{Ab0}$ `\textbf{Ab0}`       |$\textsf{Ab0}$ `\textsf{Ab0}`    |
-|$\textrm{Ab0}$ `\textrm{Ab0}`        |$\bf Ab0$ `\bf Ab0`                 |$\sf Ab0$ `\sf Ab0`              |
-|$\rm Ab0$ `\rm Ab0`                  |$\bold{Ab0}$ `\bold{Ab0}`           |$\mathsfit{Ab0}$ `\mathsfit{Ab0}`|
-|$\textnormal{Ab0}$ `\textnormal{Ab0}`|$\boldsymbol{Ab0}$ `\boldsymbol{Ab}`|$\Bbb{AB}$ `\Bbb{AB}`            |
-|$\text{Ab0}$ `\text{Ab0}`            |$\bm{Ab0}$ `\bm{Ab0}`               |$\mathbb{AB}$ `\mathbb{AB}`      |
-|$\textup{Ab0}$ `\textup{Ab0}`        |$\textmd{Ab0}$ `\textmd{Ab0}`       |$\frak{Ab0}$ `\frak{Ab0}`        |
-|$\mathit{Ab0}$ `\mathit{Ab0}`        |$\mathtt{Ab0}$ `\mathtt{Ab0}`       |$\mathfrak{Ab0}$ `\mathfrak{Ab0}`|
-|$\textit{Ab0}$ `\textit{Ab0}`        |$\texttt{Ab0}$ `\texttt{Ab0}`       |$\mathcal{AB0}$ `\mathcal{AB0}`  |
-|$\it Ab0$ `\it Ab0`                  |$\tt Ab0$ `\tt Ab0`                 |$\cal AB0$ `\cal AB0`            |
-|$\emph{Ab0}$ `\emph{Ab0}`            |                                    |$\mathscr{AB}$ `\mathscr{AB}`    |
+|:------------------------------------|:------------------------------------|:--------------------------------|
+|$\mathrm{Ab0}$ `\mathrm{Ab0}`        |$\mathbf{Ab0}$ `\mathbf{Ab0}`        |$\mathsf{Ab0}$ `\mathsf{Ab0}`    |
+|$\mathnormal{Ab0}$ `\mathnormal{Ab0}`|$\textbf{Ab0}$ `\textbf{Ab0}`        |$\textsf{Ab0}$ `\textsf{Ab0}`    |
+|$\textrm{Ab0}$ `\textrm{Ab0}`        |$\bf Ab0$ `\bf Ab0`                  |$\sf Ab0$ `\sf Ab0`              |
+|$\rm Ab0$ `\rm Ab0`                  |$\bold{Ab0}$ `\bold{Ab0}`            |$\mathsfit{Ab0}$ `\mathsfit{Ab0}`|
+|$\textnormal{Ab0}$ `\textnormal{Ab0}`|$\boldsymbol{Ab0}$ `\boldsymbol{Ab0}`|$\Bbb{AB}$ `\Bbb{AB}`            |
+|$\text{Ab0}$ `\text{Ab0}`            |$\bm{Ab0}$ `\bm{Ab0}`                |$\mathbb{AB}$ `\mathbb{AB}`      |
+|$\textup{Ab0}$ `\textup{Ab0}`        |$\textmd{Ab0}$ `\textmd{Ab0}`        |$\frak{Ab0}$ `\frak{Ab0}`        |
+|$\mathit{Ab0}$ `\mathit{Ab0}`        |$\mathtt{Ab0}$ `\mathtt{Ab0}`        |$\mathfrak{Ab0}$ `\mathfrak{Ab0}`|
+|$\textit{Ab0}$ `\textit{Ab0}`        |$\texttt{Ab0}$ `\texttt{Ab0}`        |$\mathcal{AB0}$ `\mathcal{AB0}`  |
+|$\it Ab0$ `\it Ab0`                  |$\tt Ab0$ `\tt Ab0`                  |$\cal AB0$ `\cal AB0`            |
+|$\emph{Ab0}$ `\emph{Ab0}`            |                                     |$\mathscr{AB}$ `\mathscr{AB}`    |
 
 One can stack font family, font weight, and font shape by using the `\textXX` versions of the font functions. So `\textsf{\textbf{H}}` will produce $\textsf{\textbf{H}}$. The other versions do not stack, e.g., `\mathsf{\mathbf{H}}` will produce $\mathsf{\mathbf{H}}$.
 

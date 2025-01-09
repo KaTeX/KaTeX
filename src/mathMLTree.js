@@ -95,7 +95,18 @@ export class MathNode implements MathDomNode {
         }
 
         for (let i = 0; i < this.children.length; i++) {
-            node.appendChild(this.children[i].toNode());
+            // Combine multiple TextNodes into one TextNode, to prevent
+            // screen readers from reading each as a separate word [#3995]
+            if (this.children[i] instanceof TextNode &&
+                this.children[i + 1] instanceof TextNode) {
+                let text = this.children[i].toText() + this.children[++i].toText();
+                while (this.children[i + 1] instanceof TextNode) {
+                    text += this.children[++i].toText();
+                }
+                node.appendChild(new TextNode(text).toNode());
+            } else {
+                node.appendChild(this.children[i].toNode());
+            }
         }
 
         return node;

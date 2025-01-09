@@ -138,11 +138,40 @@ const renderToHTMLTree = function(
     }
 };
 
+const version = __VERSION__;
+
+const __domTree = {
+    Span,
+    Anchor,
+    SymbolNode,
+    SvgNode,
+    PathNode,
+    LineNode,
+};
+
+// ESM exports
+export {
+    version,
+    render,
+    renderToString,
+    ParseError,
+    SETTINGS_SCHEMA,
+    generateParseTree as __parse,
+    renderToDomTree as __renderToDomTree,
+    renderToHTMLTree as __renderToHTMLTree,
+    setFontMetrics as __setFontMetrics,
+    defineSymbol as __defineSymbol,
+    defineFunction as __defineFunction,
+    defineMacro as __defineMacro,
+    __domTree,
+};
+
+// CJS exports and ESM default export
 export default {
     /**
      * Current KaTeX version
      */
-    version: __VERSION__,
+    version,
     /**
      * Renders the given LaTeX into an HTML+MathML combination, and adds
      * it as a child to the specified DOM node.
@@ -158,7 +187,7 @@ export default {
      */
     ParseError,
     /**
-     * The shema of Settings
+     * The schema of Settings
      */
     SETTINGS_SCHEMA,
     /**
@@ -210,16 +239,9 @@ export default {
     /**
      * Expose the dom tree node types, which can be useful for type checking nodes.
      *
-     * NOTE: This method is not currently recommended for public use.
+     * NOTE: These methods are not currently recommended for public use.
      * The internal tree representation is unstable and is very likely
      * to change. Use at your own risk.
      */
-    __domTree: {
-        Span,
-        Anchor,
-        SymbolNode,
-        SvgNode,
-        PathNode,
-        LineNode,
-    },
+    __domTree,
 };
