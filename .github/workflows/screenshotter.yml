@@ -81,12 +81,12 @@ jobs:
         docker logs ${{ job.services.selenium.id }}
         echo "::$TOKEN::"
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: new-${{ matrix.browser }}
         path: test/screenshotter/new
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: diff-${{ matrix.browser }}
