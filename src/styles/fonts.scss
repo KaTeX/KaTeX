@@ -2,6 +2,7 @@ $font-folder: "../../fonts" !default;
 $use-woff2: true !default;
 $use-woff: true !default;
 $use-ttf: true !default;
+$font-display: block !default;
 
 @function generate-src($family, $family-suffix) {
     $src: null;
@@ -46,6 +47,7 @@ $use-ttf: true !default;
         src: $src;
         font-weight: $weight;
         font-style: $style;
+        font-display: $font-display;
     }
 }
 
