@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.20](https://github.com/KaTeX/KaTeX/compare/v0.16.19...v0.16.20) (2025-01-12)
+
+
+### Bug Fixes
+
+* \providecommand does not overwrite existing macro ([#4000](https://github.com/KaTeX/KaTeX/issues/4000)) ([6d30fe4](https://github.com/KaTeX/KaTeX/commit/6d30fe47b06f9da9b836fe518d5cbbecf6a6a3a1)), closes [#3928](https://github.com/KaTeX/KaTeX/issues/3928)
+
 ## [0.16.19](https://github.com/KaTeX/KaTeX/compare/v0.16.18...v0.16.19) (2024-12-29)
 
 
