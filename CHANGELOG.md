@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.21](https://github.com/KaTeX/KaTeX/compare/v0.16.20...v0.16.21) (2025-01-17)
+
+
+### Bug Fixes
+
+* escape \htmlData attribute name ([57914ad](https://github.com/KaTeX/KaTeX/commit/57914ad91eff401357f44bf364b136d37eba04f8))
+
 ## [0.16.20](https://github.com/KaTeX/KaTeX/compare/v0.16.19...v0.16.20) (2025-01-12)
 
 
