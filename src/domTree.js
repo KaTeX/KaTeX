@@ -17,6 +17,7 @@ import {path} from "./svgGeometry";
 import type Options from "./Options";
 import {DocumentFragment} from "./tree";
 import {makeEm} from "./units";
+import ParseError from "./ParseError";
 
 import type {VirtualNode} from "./tree";
 
@@ -84,6 +85,16 @@ const toNode = function(tagName: string): HTMLElement {
 };
 
 /**
+ * https://w3c.github.io/html-reference/syntax.html#syntax-attributes
+ *
+ * > Attribute Names must consist of one or more characters
+ * other than the space characters, U+0000 NULL,
+ * '"', "'", ">", "/", "=", the control characters,
+ * and any characters that are not defined by Unicode.
+ */
+const invalidAttributeNameRegex = /[\s"'>/=\x00-\x1f]/;
+
+/**
  * Convert into an HTML markup string
  */
 const toMarkup = function(tagName: string): string {
@@ -110,6 +121,9 @@ const toMarkup = function(tagName: string): string {
     // Add the attributes
     for (const attr in this.attributes) {
         if (this.attributes.hasOwnProperty(attr)) {
+            if (invalidAttributeNameRegex.test(attr)) {
+                throw new ParseError(`Invalid attribute name '${attr}'`);
+            }
             markup += ` ${attr}="${utils.escape(this.attributes[attr])}"`;
         }
     }

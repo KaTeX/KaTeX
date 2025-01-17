@@ -39,6 +39,7 @@
         "no-array-constructor": 2,
         "no-console": 2,
         "no-const-assign": 2,
+        "no-control-regex": 0,
         "no-debugger": 2,
         "no-dupe-class-members": 2,
         "no-dupe-keys": 2,

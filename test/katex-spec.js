@@ -2158,6 +2158,24 @@ describe("An HTML extension builder", function() {
         const built = getBuilt(html, trustNonStrictSettings);
         expect(built).toMatchSnapshot();
     });
+
+    it("should throw Error when HTML attribute name is invalid", function() {
+        for (const char of [">", " ", "\t", "\n", "\r", "\"", "'", "/"]) {
+            try {
+                katex.renderToString(
+                    `\\htmlData{a${char}b=foo}{bar}`, trustNonStrictSettings);
+
+                // Render is expected to throw, so this should not be called.
+                expect(true).toBe(false);
+            } catch (error) {
+                expect(error).toBeInstanceOf(ParseError);
+                const message =
+                    `Invalid attribute name 'data-a${char.replace(/\s/, ' ')}b'`;
+                expect(error.message).toBe(`KaTeX parse error: ${message}`);
+                expect(error.rawMessage).toBe(message);
+            }
+        }
+    });
 });
 
 describe("A bin builder", function() {
