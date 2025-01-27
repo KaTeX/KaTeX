@@ -1,17 +1,75 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>KaTeX Test</title>
-        <script defer src="/main.js" type="text/javascript"></script>
-    </head>
-    <body>
-        <textarea id="input" rows="5">
+<!-- referenced from issue #1615 -->
+<head>
+    <meta charset="UTF-8">
+    <title>KaTeX Test</title>
+    <script defer src="/main.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <textarea id="input" rows="5">
 \left( x \right) \left( x^2 \right) % comment
 \left( \frac{a}{b} \right) \left( \frac{a^2}{b} \right)
 \left( \dfrac{a}{b} \right) \left( \dfrac{a^2}{b} \right)
-        </textarea>
-        <div id="math"></div>
-        <input id="permalink" type="button" value="permalink">
-    </body>
+  </textarea>
+    <div id="math"></div>
+    <input id="permalink" type="button" value="permalink">
+    <div id="options-panel">
+        <h3>KaTeX Options</h3>
+        <table>
+            <tr>
+                <td><label for="displayMode">displayMode</label></td>
+                <td><input type="checkbox" id="displayMode" checked /></td>
+            </tr>
+            <tr>
+                <td><label for="leqno">leqno</label></td>
+                <td><input type="checkbox" id="leqno" /></td>
+            </tr>
+            <tr>
+                <td><label for="fleqn">fleqn</label></td>
+                <td><input type="checkbox" id="fleqn" /></td>
+            </tr>
+            <tr>
+                <td><label for="throwOnError">throwOnError</label></td>
+                <td><input type="checkbox" id="throwOnError" checked /></td>
+            </tr>
+            <tr>
+                <td><label for="errorColor">errorColor</label></td>
+                <td><input type="color" id="errorColor" value="#cc0000" /></td>
+            </tr>
+            <tr>
+                <td><label for="strict">strict</label></td>
+                <td>
+                    <select id="strict">
+                        <option value="error">error</option>
+                        <option value="warn" selected>warn</option>
+                        <option value="ignore">ignore</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="output">output</label></td>
+                <td>
+                    <select id="output">
+                        <option value="htmlAndMathml" selected>htmlAndMathml</option>
+                        <option value="html">html
+
+                        <option value="mathml">mathml</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="trust">trust</label></td>
+                <td><input type="checkbox" id="trust" /></td>
+            </tr>
+        </table>
+        <h4><label for="macros">macros</label></h4>
+        <textarea id="macros" placeholder="JSON">
+        {
+            "\\f": "#1f(#2)"
+        }</textarea>
+    </div>
+</body>
+
 </html>
