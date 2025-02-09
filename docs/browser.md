@@ -51,7 +51,18 @@ asynchronously. Add [`async` attribute](https://developer.mozilla.org/en/HTML/El
 to `script` and use [`rel="preload"` and `onload` attribute](https://github.com/filamentgroup/loadCSS)
 on `link`.
 
-You can prefetch KaTeX fonts to prevent FOUT or FOIT. Use [Font Loading API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Font_Loading_API)
+By default, KaTeX fonts use `font-display: block` to prevent
+[Flash of Unstyled Text (FOUT)](https://css-tricks.com/fout-foit-foft/).
+If you would rather use `font-display: swap` to prevent
+[Flash of Invisible Text (FOIT)](https://css-tricks.com/fout-foit-foft/),
+include `katex-swap.css` or `katex-swap.min.css`:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex-swap.min.css" integrity="sha384-BOeBz8do6MyqL29GEdfRE4QpnXkZT1gm6U24snIZEDCLhc8wHmNIj6HwUs0tVDlJ" crossorigin="anonymous">
+```
+
+To prevent both FOUT and FOIT, you can prefetch KaTeX fonts.
+Use [Font Loading API](https://developer.mozilla.org/en-US/docs/Web/API/CSS_Font_Loading_API)
 or [Web Font Loader](https://github.com/typekit/webfontloader):
 
 ```html
