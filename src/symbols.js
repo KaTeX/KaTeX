@@ -711,7 +711,7 @@ defineSymbol(text, main, accent, "\u02d9", "\\."); // dot above
 defineSymbol(text, main, accent, "\u00b8", "\\c"); // cedilla
 defineSymbol(text, main, accent, "\u02da", "\\r"); // ring above
 defineSymbol(text, main, accent, "\u02c7", "\\v"); // caron
-defineSymbol(text, main, accent, "\u00a8", '\\"'); // diaresis
+defineSymbol(text, main, accent, "\u00a8", '\\"'); // diaeresis
 defineSymbol(text, main, accent, "\u02dd", "\\H"); // double acute
 defineSymbol(text, main, accent, "\u25ef", "\\textcircled"); // \bigcirc glyph
 
