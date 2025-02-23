@@ -192,7 +192,7 @@ defineFunctionBuilders({
             options);
     },
     mathmlBuilder(group, options) {
-        // Is the inner group a relevant horizonal brace?
+        // Is the inner group a relevant horizontal brace?
         let isBrace = false;
         let isOver;
         let isSup;
