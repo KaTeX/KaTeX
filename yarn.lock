@@ -4027,15 +4027,15 @@ __metadata:
   linkType: hard
 
 "browserstack-local@npm:^1.5.1":
-  version: 1.5.5
-  resolution: "browserstack-local@npm:1.5.5"
+  version: 1.5.6
+  resolution: "browserstack-local@npm:1.5.6"
   dependencies:
     agent-base: "npm:^6.0.2"
     https-proxy-agent: "npm:^5.0.1"
     is-running: "npm:^2.1.0"
     ps-tree: "npm:=1.2.0"
     temp-fs: "npm:^0.9.9"
-  checksum: 10/e484a29162afd4f522f3bc6a83557fef9e75a1e85eb6830697d1318f51c04f3d6211bde16bbe3a6dfc1b2b18f877ea71a78ee37ba75ad3b1ccb6c0e310e77e76
+  checksum: 10/3ca73ef9d99c650701e55909d391d0ad0a18400d4e477b2d893a90fb26167e0fd61a21dafee2cf736740ee99e6c24fcfd5b418f51543629bcb2f423ac74370ce
   languageName: node
   linkType: hard
 
