@@ -701,6 +701,17 @@ defineSymbol(text, main, textord, "\u00f8", "\\o", true);
 defineSymbol(text, main, textord, "\u00c6", "\\AE", true);
 defineSymbol(text, main, textord, "\u0152", "\\OE", true);
 defineSymbol(text, main, textord, "\u00d8", "\\O", true);
+defineSymbol(text, main, textord, "\u00f0", "\\dh", true);
+defineSymbol(text, main, textord, "\u00d0", "\\DH", true);
+defineSymbol(text, main, textord, "\u0111", "\\dj", true);
+defineSymbol(text, main, textord, "\u0110", "\\DJ", true);
+defineSymbol(text, main, textord, "\u0142", "\\l", true);
+defineSymbol(text, main, textord, "\u0141", "\\L", true);
+defineSymbol(text, main, textord, "\u014b", "\\ng", true);
+defineSymbol(text, main, textord, "\u014a", "\\NG", true);
+// TODO: Can't use function '\th' in text mode
+// defineSymbol(text, main, textord, "\u00fe", "\\th", true);
+// defineSymbol(text, main, textord, "\u00de", "\\TH", true);
 defineSymbol(text, main, accent, "\u02ca", "\\'"); // acute
 defineSymbol(text, main, accent, "\u02cb", "\\`"); // grave
 defineSymbol(text, main, accent, "\u02c6", "\\^"); // circumflex
