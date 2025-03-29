@@ -29,6 +29,7 @@ const webpack = require('webpack');
 const WebpackDevServer = require("webpack-dev-server");
 const webpackConfig = require("../../webpack.dev")[0];
 const data = require("../../test/screenshotter/ss_data");
+const { mathMLTree } = require('../../katex');
 
 // Change to KaTeX root directory so that webpack (in particular
 // babel-plugin-version-inline) runs correctly.
