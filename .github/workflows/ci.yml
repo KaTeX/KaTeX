@@ -25,7 +25,10 @@ jobs:
         cache: yarn
 
     - name: Install dependencies
-      run: yarn --immutable
+      run: |
+        echo "Installing dependencies..."
+        yarn --immutable
+        echo "Dependencies installed."
       env:
         YARN_ENABLE_SCRIPTS: 0 # disable postinstall scripts
 
@@ -69,7 +72,11 @@ jobs:
         node-version: '20'
 
     - name: Install dependencies
-      run: yarn --immutable
+      run: |
+        echo "Installing dependencies..."
+        yarn --immutable
+        yarn list --pattern "*"
+        echo "Dependencies installed."
       env:
         YARN_ENABLE_SCRIPTS: 0 # disable postinstall scripts
     - name: Run semantic-release
