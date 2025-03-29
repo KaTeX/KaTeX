@@ -1,4 +1,3 @@
-// @flow
 /* eslint no-console:0 */
 /**
  * This module contains general functions that can be used for building
@@ -765,6 +764,26 @@ const staticSvg = function(value: string, options: Options): SvgSpan {
     return span;
 };
 
+const handleMathitPrimes = function(
+    group: ParseNode<"mathord">,
+    options: Options,
+): HtmlDocumentFragment | SymbolNode {
+    const text = group.text;
+    const parts = [];
+    for (let i = 0; i < text.length; i++) {
+        const part = makeOrd({
+            type: "mathord",
+            mode: group.mode,
+            text: text[i],
+        }, options, "mathord");
+        parts.push(part);
+        if (text[i] === "'") {
+            parts.push(makeSpan(["mspace"], [], options));
+        }
+    }
+    return makeFragment(parts);
+};
+
 export default {
     fontMap,
     makeSymbol,
@@ -781,4 +800,5 @@ export default {
     staticSvg,
     svgData,
     tryCombineChars,
+    handleMathitPrimes,
 };

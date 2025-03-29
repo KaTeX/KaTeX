@@ -1,6 +1,3 @@
-// @flow
-// TODO(kevinb): implement \\sl and \\sc
-
 import {binrelClass} from "./mclass";
 import defineFunction, {normalizeArgument} from "../defineFunction";
 import utils from "../utils";
@@ -13,13 +10,41 @@ import type {ParseNode} from "../parseNode";
 const htmlBuilder = (group: ParseNode<"font">, options) => {
     const font = group.font;
     const newOptions = options.withFont(font);
-    return html.buildGroup(group.body, newOptions);
+    const body = html.buildGroup(group.body, newOptions);
+
+    if (font === "mathit") {
+        const parts = [];
+        for (let i = 0; i < body.length; i++) {
+            const part = body[i];
+            parts.push(part);
+            if (part instanceof SymbolNode && part.text === "'") {
+                parts.push(makeSpan(["mspace"], [], newOptions));
+            }
+        }
+        return makeFragment(parts);
+    }
+
+    return body;
 };
 
 const mathmlBuilder = (group: ParseNode<"font">, options) => {
     const font = group.font;
     const newOptions = options.withFont(font);
-    return mml.buildGroup(group.body, newOptions);
+    const body = mml.buildGroup(group.body, newOptions);
+
+    if (font === "mathit") {
+        const parts = [];
+        for (let i = 0; i < body.length; i++) {
+            const part = body[i];
+            parts.push(part);
+            if (part instanceof MathNode && part.text === "'") {
+                parts.push(new mathMLTree.MathNode("mspace", []));
+            }
+        }
+        return new mathMLTree.MathNode("mrow", parts);
+    }
+
+    return body;
 };
 
 const fontAliases = {

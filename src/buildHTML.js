@@ -1,4 +1,3 @@
-// @flow
 /**
  * This file does the main work of building a domTree structure from a parse
  * tree. The entry point is the `buildHTML` function, which takes a parse tree.
@@ -129,6 +128,19 @@ export const buildExpression = function(
             return buildCommon.makeGlue(space, glueOptions);
         }
     }, {node: dummyPrev}, dummyNext, isRoot);
+
+    // Handle spacing for primes in \mathit
+    if (options.font === "mathit") {
+        for (let i = 0; i < groups.length; i++) {
+            const group = groups[i];
+            if (group instanceof SymbolNode && group.text === "'") {
+                const prev = groups[i - 1];
+                if (prev instanceof SymbolNode && prev.classes.includes("mathit")) {
+                    group.classes.push("mspace");
+                }
+            }
+        }
+    }
 
     return groups;
 };
