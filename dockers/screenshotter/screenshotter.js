@@ -29,6 +29,7 @@ const webpack = require('webpack');
 const WebpackDevServer = require("webpack-dev-server");
 const webpackConfig = require("../../webpack.dev")[0];
 const data = require("../../test/screenshotter/ss_data");
+const { mathMLTree } = require('../../katex');
 
 // Change to KaTeX root directory so that webpack (in particular
 // babel-plugin-version-inline) runs correctly.
@@ -181,35 +182,37 @@ if (seleniumURL) {
 }
 
 (async() => {
-    if (!(katexURL || katexPort)) {
-        await pRetry(startServer, {retries: 50, minTimeout: 100});
-    }
-    if (opts.seleniumProxy) {
-        driver = await getProxyDriver();
-    } else {
-        if (opts.browserstack) {
-            await startBrowserstackLocal();
+    try {
+        if (!(katexURL || katexPort)) {
+            await pRetry(startServer, {retries: 50, minTimeout: 100});
         }
-        if (seleniumIP) {
-            await pRetry(tryConnect, {retries: 50, minTimeout: 100});
+        if (opts.seleniumProxy) {
+            driver = await getProxyDriver();
+        } else {
+            if (opts.browserstack) {
+                await startBrowserstackLocal();
+            }
+            if (seleniumIP) {
+                await pRetry(tryConnect, {retries: 50, minTimeout: 100});
+            }
+            driver = buildDriver();
         }
-        driver = buildDriver();
-    }
-    await setupDriver();
-    await findHostIP();
-    await takeScreenshots();
+        await setupDriver();
+        await findHostIP();
+        await takeScreenshots();
 
-    await driver.quit();
-    await devServer.stop();
-    if (bsLocal) {
-        const bsLocalStop = util.promisify(bsLocal.stop);
-        await bsLocalStop();
+        await driver.quit();
+        await devServer.stop();
+        if (bsLocal) {
+            const bsLocalStop = util.promisify(bsLocal.stop);
+            await bsLocalStop();
+        }
+        process.exit(exitStatus);
+    } catch (err) {
+        console.error("Error during screenshotter execution:", err);
+        process.exit(1);
     }
-    process.exit(exitStatus);
-})().catch(err => {
-    console.error(err);
-    process.exit(1);
-});
+})();
 
 //////////////////////////////////////////////////////////////////////
 // Start up development server

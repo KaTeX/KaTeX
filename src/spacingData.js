@@ -1,4 +1,3 @@
-// @flow
 /**
  * Describes spaces between different classes of atoms.
  */
@@ -84,6 +83,16 @@ export const spacings: {[$Keys<Spacings>]: Spacings} = {
         mpunct: thinspace,
         minner: thinspace,
     },
+    mathit: {
+        mord: thinspace,
+        mop: thinspace,
+        mbin: mediumspace,
+        mrel: thickspace,
+        mopen: thinspace,
+        mclose: thinspace,
+        mpunct: thinspace,
+        minner: thinspace,
+    },
 };
 
 // Spacing relationships for script and scriptscript styles
@@ -104,5 +113,14 @@ export const tightSpacings: {[$Keys<Spacings>]: Spacings} = {
     mpunct: {},
     minner: {
         mop: thinspace,
+    },
+    mathit: {
+        mord: thinspace,
+        mop: thinspace,
+        mbin: mediumspace,
+        mrel: thickspace,
+        mopen: thinspace,
+        mpunct: thinspace,
+        minner: thinspace,
     },
 };

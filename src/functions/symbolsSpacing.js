@@ -1,4 +1,3 @@
-// @flow
 import {defineFunctionBuilders} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
