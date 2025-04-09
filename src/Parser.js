@@ -208,7 +208,7 @@ export default class Parser {
                 break;
             }
             if (lex.text === "\\relax") {
-                this.consume(); // Consume before parseAtom, to avoid a \relax^{} error.
+                this.consume(); // Consume before parseAtom, to avoid \relax^{}
                 continue;
             }
             const atom = this.parseAtom(breakOnTokenText);
