@@ -287,7 +287,12 @@ export default class Parser {
         const symbol = symbolToken.text;
         this.consume();
         this.consumeSpaces(); // ignore spaces before sup/subscript argument
-        const group = this.parseGroup(name);
+
+        // Skip over allowed internal nodes such as \relax
+        let group: ?AnyParseNode;
+        do {
+            group = this.parseGroup(name);
+        } while (group?.type === "internal");
 
         if (!group) {
             throw new ParseError(
