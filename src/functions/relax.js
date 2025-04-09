@@ -7,6 +7,7 @@ defineFunction({
     props: {
         numArgs: 0,
         allowedInText: true,
+        allowedInArgument: true,
     },
     handler({parser}) {
         return {

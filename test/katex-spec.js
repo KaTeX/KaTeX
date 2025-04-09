@@ -280,6 +280,15 @@ describe("A subscript and superscript parser", function() {
     it("should work with Unicode (sub|super)script characters", function() {
         expect`A² + B²⁺³ + ¹²C + E₂³ + F₂₊₃`.toParseLike`A^{2} + B^{2+3} + ^{12}C + E_{2}^{3} + F_{2+3}`;
     });
+
+    it("should not fail if \\relax is in an atom", function() {
+        expect`\hskip1em\relax^2`.toParse(strictSettings);
+    });
+
+    it("should skip \\relax in super/subscripts", function() {
+        expect`x^\relax 2`.toParseLike`x^2`;
+        expect`x_\relax 2`.toParseLike`x_2`;
+    });
 });
 
 describe("A subscript and superscript tree-builder", function() {
@@ -3334,6 +3343,12 @@ describe("A macro expander", function() {
         expect`\text{\foo\bar\bar}`.toParseLike(r`\text{( , )}`, new Settings({macros: {
             "\\foo": "(#1,#2)",
             "\\bar": " ",
+        }}));
+    });
+
+    it("should treat \\relax as empty argument", function() {
+        expect`\text{\foo\relax x}`.toParseLike(r`\text{(,x)}`, new Settings({macros: {
+            "\\foo": "(#1,#2)",
         }}));
     });
 
