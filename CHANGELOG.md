@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.22](https://github.com/KaTeX/KaTeX/compare/v0.16.21...v0.16.22) (2025-04-09)
+
+
+### Bug Fixes
+
+* \relax in base or exponent of super/subscript ([#4045](https://github.com/KaTeX/KaTeX/issues/4045)) ([1f43c84](https://github.com/KaTeX/KaTeX/commit/1f43c84a175fb689f8c8d1d72b1e8b896a8b43d1))
+
 ## [0.16.21](https://github.com/KaTeX/KaTeX/compare/v0.16.20...v0.16.21) (2025-01-17)
 
 
