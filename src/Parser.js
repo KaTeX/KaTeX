@@ -207,14 +207,11 @@ export default class Parser {
             if (breakOnInfix && functions[lex.text] && functions[lex.text].infix) {
                 break;
             }
-            if (lex.text === "\\relax") {
-                this.consume(); // Consume before parseAtom, to avoid \relax^{}
-                continue;
-            }
             const atom = this.parseAtom(breakOnTokenText);
             if (!atom) {
                 break;
             } else if (atom.type === "internal") {
+                // Internal nodes do not appear in parse tree
                 continue;
             }
             body.push(atom);
@@ -336,6 +333,12 @@ export default class Parser {
         // The body of an atom is an implicit group, so that things like
         // \left(x\right)^2 work correctly.
         const base = this.parseGroup("atom", breakOnTokenText);
+
+        // Internal nodes (e.g. \relax) cannot support super/subscripts.
+        // Instead we will pick up super/subscripts with blank base next round.
+        if (base?.type === "internal") {
+            return base;
+        }
 
         // In text mode, we don't have superscripts or subscripts
         if (this.mode === "text") {
