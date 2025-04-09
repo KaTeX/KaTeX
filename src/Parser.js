@@ -207,6 +207,10 @@ export default class Parser {
             if (breakOnInfix && functions[lex.text] && functions[lex.text].infix) {
                 break;
             }
+            if (lex.text === "\\relax") {
+                this.consume(); // Consume before parseAtom, to avoid a \relax^{} error.
+                continue;
+            }
             const atom = this.parseAtom(breakOnTokenText);
             if (!atom) {
                 break;

@@ -31,6 +31,10 @@ describe("A parser", function() {
     it("should ignore whitespace in atom", function() {
         expect`    x   ^ y    `.toParseLike("x^y", strictSettings);
     });
+
+    it("should not fail if \\relax is in an atom", function() {
+        expect`\\hskip1em\\relax^2`.toParse(strictSettings);
+    });
 });
 
 describe("An ord parser", function() {
