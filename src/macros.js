@@ -16,6 +16,7 @@ import utils from "./utils";
 import {makeEm} from "./units";
 import ParseError from "./ParseError";
 
+import {assembleDerivativeExpr} from "./macros/derivatives";
 
 //////////////////////////////////////////////////////////////////////
 // macro tools
@@ -907,6 +908,17 @@ defineMacro("\\Zeta", "\\mathrm{Z}");
 defineMacro("\\argmin", "\\DOTSB\\operatorname*{arg\\,min}");
 defineMacro("\\argmax", "\\DOTSB\\operatorname*{arg\\,max}");
 defineMacro("\\plim", "\\DOTSB\\mathop{\\operatorname{plim}}\\limits");
+
+//////////////////////////////////////////////////////////////////////
+// derivative.sty
+// https://ctan.math.illinois.edu/macros/latex/contrib/derivative/derivative.pdf
+
+defineMacro(
+    "\\dv", (context) => assembleDerivativeExpr("\\textnormal{d}", context));
+defineMacro(
+    "\\odv", (context) => assembleDerivativeExpr("\\textnormal{d}", context));
+defineMacro(
+    "\\pdv", (context) => assembleDerivativeExpr("\\partial", context));
 
 //////////////////////////////////////////////////////////////////////
 // braket.sty
