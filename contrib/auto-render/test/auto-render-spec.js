@@ -6,14 +6,15 @@ import renderMathInElement from "../auto-render";
 
 beforeEach(function() {
     expect.extend({
-        toSplitInto: function(actual, result, delimiters) {
+        toSplitInto: function(actual, result,
+            delimiters, supportEscapedSpecialCharsInText) {
             const message = {
                 pass: true,
                 message: () => "'" + actual + "' split correctly",
             };
 
-            const split =
-                  splitAtDelimiters(actual, delimiters);
+            const split = splitAtDelimiters(actual,
+                delimiters, supportEscapedSpecialCharsInText);
 
             if (split.length !== result.length) {
                 message.pass = false;
@@ -65,7 +66,8 @@ describe("A delimiter splitter", function() {
             ],
             [
                 {left: "(", right: ")", display: false},
-            ]);
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
     });
 
     it("doesn't create a math node with only one left delimiter", function() {
@@ -76,7 +78,8 @@ describe("A delimiter splitter", function() {
             ],
             [
                 {left: "(", right: ")", display: false},
-            ]);
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
     });
 
     it("doesn't split when there's only a right delimiter", function() {
@@ -86,7 +89,8 @@ describe("A delimiter splitter", function() {
             ],
             [
                 {left: "(", right: ")", display: false},
-            ]);
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
     });
 
     it("splits when there are both delimiters", function() {
@@ -99,7 +103,8 @@ describe("A delimiter splitter", function() {
             ],
             [
                 {left: "(", right: ")", display: false},
-            ]);
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
     });
 
     it("splits on multi-character delimiters", function() {
@@ -112,7 +117,8 @@ describe("A delimiter splitter", function() {
             ],
             [
                 {left: "[[", right: "]]", display: false},
-            ]);
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
         expect("hello \\begin{equation} world \\end{equation} boo").toSplitInto(
             [
                 {type: "text", data: "hello "},
@@ -124,7 +130,8 @@ describe("A delimiter splitter", function() {
             [
                 {left: "\\begin{equation}", right: "\\end{equation}",
                     display: false},
-            ]);
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
     });
 
     it("splits multiple times", function() {
@@ -140,7 +147,8 @@ describe("A delimiter splitter", function() {
             ],
             [
                 {left: "(", right: ")", display: false},
-            ]);
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
     });
 
     it("leaves the ending when there's only a left delimiter", function() {
@@ -154,7 +162,8 @@ describe("A delimiter splitter", function() {
             ],
             [
                 {left: "(", right: ")", display: false},
-            ]);
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
     });
 
     it("doesn't split when close delimiters are in {}s", function() {
@@ -167,7 +176,8 @@ describe("A delimiter splitter", function() {
             ],
             [
                 {left: "(", right: ")", display: false},
-            ]);
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
 
         expect("hello ( world { { } ) } ) boo").toSplitInto(
             [
@@ -178,7 +188,8 @@ describe("A delimiter splitter", function() {
             ],
             [
                 {left: "(", right: ")", display: false},
-            ]);
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
     });
 
     it("correctly processes sequences of $..$", function() {
@@ -193,7 +204,8 @@ describe("A delimiter splitter", function() {
             ],
             [
                 {left: "$", right: "$", display: false},
-            ]);
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
     });
 
     it("doesn't split at escaped delimiters", function() {
@@ -206,18 +218,44 @@ describe("A delimiter splitter", function() {
             ],
             [
                 {left: "(", right: ")", display: false},
-            ]);
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
 
-        /* TODO(emily): make this work maybe?
-           expect("hello \\( ( world ) boo").toSplitInto(
-           "(", ")",
-           [
-           {type: "text", data: "hello \\( "},
-           {type: "math", data: " world ",
-           rawData: "( world )", display: false},
-           {type: "text", data: " boo"},
-           ]);
-        */
+        expect("hello ( world \\) ) boo").toSplitInto(
+            [
+                {type: "text", data: "hello "},
+                {type: "math", data: " world \\) ",
+                    rawData: "( world \\) )", display: false},
+                {type: "text", data: " boo"},
+            ],
+            [
+                {left: "(", right: ")", display: false},
+            ],
+            /* supportEscapedSpecialCharsInText */ true);
+
+        expect("hello \\( ( world ) boo").toSplitInto(
+            [
+                {type: "text", data: "hello \\"},
+                {type: "math", data: " ( world ",
+                    rawData: "( ( world )", display: false},
+                {type: "text", data: " boo"},
+            ],
+            [
+                {left: "(", right: ")", display: false},
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
+
+        expect("hello \\( ( world ) boo").toSplitInto(
+            [
+                {type: "text", data: "hello \\( "},
+                {type: "math", data: " world ",
+                    rawData: "( world )", display: false},
+                {type: "text", data: " boo"},
+            ],
+            [
+                {left: "(", right: ")", display: false},
+            ],
+            /* supportEscapedSpecialCharsInText */ true);
     });
 
     it("splits when the right and left delimiters are the same", function() {
@@ -230,7 +268,77 @@ describe("A delimiter splitter", function() {
             ],
             [
                 {left: "$", right: "$", display: false},
-            ]);
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
+    });
+
+    it("doesn't split at escaped delimiters in text mode", function() {
+        expect(
+            "I give you 2\\$ now if you can solve $y = x^{2}$ and 3\\$ tomorrow.",
+        ).toSplitInto(
+            [
+                {type: "text", data: "I give you 2\\$ now if you can solve "},
+                {type: "math", data: "y = x^{2}",
+                    rawData: "$y = x^{2}$", display: false},
+                {type: "text", data: " and 3\\$ tomorrow."},
+            ],
+            [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "\\[", right: "\\]", display: true},
+            ],
+            /* supportEscapedSpecialCharsInText */ true,
+        );
+
+        expect(
+            "I give you 2\\$ now if you can solve $y = x^{2}$ and 3\\$ tomorrow.").
+        toSplitInto(
+            [
+                {type: "text", data: "I give you 2\\"},
+                {type: "math", data: " now if you can solve ",
+                    rawData: "$ now if you can solve $", display: false},
+                {type: "text", data: "y = x^{2}"},
+                {type: "text", data: "$ and 3\\$ tomorrow."},
+            ],
+            [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true},
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
+
+        expect(
+                "Escapable characters in text mode: \
+                    \\$ \\% \\_ \\& \\# and in math mode: \
+                    $START_{1} \\$ \\% \\_ \\& \\# END_{1} \
+                    \text{, and in inlined text: \\$ \\% \\_ \\& \\# DONE}$, \
+                    thanks!").
+            toSplitInto(
+            [
+                {
+                    type: "text",
+                    data: "Escapable characters in text mode: \
+                    \\$ \\% \\_ \\& \\# and in math mode:                     ",
+                },
+                {
+                    type: "math",
+                    data: "START_{1} \\$ \\% \\_ \\& \\# END_{1} \
+                    \text{, and in inlined text: \\$ \\% \\_ \\& \\# DONE}",
+                    rawData: "$START_{1} \\$ \\% \\_ \\& \\# END_{1} \
+                    \text{, and in inlined text: \\$ \\% \\_ \\& \\# DONE}$",
+                    display: false,
+                },
+                {type: "text", data: ",                     thanks!"},
+            ],
+            [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true},
+            ],
+            /* supportEscapedSpecialCharsInText */ true);
     });
 
     it("ignores \\$", function() {
@@ -241,14 +349,26 @@ describe("A delimiter splitter", function() {
             ],
             [
                 {left: "$", right: "$", display: false},
-            ]);
+            ],
+            /* supportEscapedSpecialCharsInText */ false);
+
+        expect("$x = \\$5$").toSplitInto(
+            [
+                {type: "math", data: "x = \\$5",
+                    rawData: "$x = \\$5$", display: false},
+            ],
+            [
+                {left: "$", right: "$", display: false},
+            ],
+            /* supportEscapedSpecialCharsInText */ true);
     });
 
     it("remembers which delimiters are display-mode", function() {
-        const startData = "hello ( world ) boo";
-
-        expect(splitAtDelimiters(startData,
-                                 [{left:"(", right:")", display:true}])).toEqual(
+        expect(splitAtDelimiters("hello ( world ) boo",
+            [
+                {left: "(", right: ")", display: true},
+            ],
+            /* supportEscapedSpecialCharsInText */ false)).toEqual(
             [
                 {type: "text", data: "hello "},
                 {type: "math", data: " world ",
@@ -262,7 +382,8 @@ describe("A delimiter splitter", function() {
             [
                                      {left:"\\(", right:"\\)", display:false},
                                      {left:"$", right:"$", display:false},
-            ])).toEqual(
+            ],
+            /* supportEscapedSpecialCharsInText */ false)).toEqual(
             [
                 {type: "math", data: "\\fbox{\\(hi\\)}",
                     rawData: "$\\fbox{\\(hi\\)}$", display: false},
@@ -271,7 +392,8 @@ describe("A delimiter splitter", function() {
             [
                 {left:"\\(", right:"\\)", display:false},
                 {left:"$", right:"$", display:false},
-            ])).toEqual(
+            ],
+            /* supportEscapedSpecialCharsInText */ false)).toEqual(
             [
                 {type: "math", data: "\\fbox{$hi$}",
                     rawData: "\\(\\fbox{$hi$}\\)", display: false},
@@ -283,7 +405,8 @@ describe("A delimiter splitter", function() {
             [
                 {left:"$$", right:"$$", display:true},
                 {left:"$", right:"$", display:false},
-            ])).toEqual(
+            ],
+            /* supportEscapedSpecialCharsInText */ false)).toEqual(
             [
                 {type: "math", data: "hello",
                     rawData: "$hello$", display: false},
@@ -295,7 +418,8 @@ describe("A delimiter splitter", function() {
             [
                 {left:"$$", right:"$$", display:true},
                 {left:"$", right:"$", display:false},
-            ])).toEqual(
+            ],
+            /* supportEscapedSpecialCharsInText */ false)).toEqual(
             [
                 {type: "math", data: "hello",
                     rawData: "$hello$", display: false},
@@ -358,6 +482,35 @@ describe("Parse adjacent text nodes", function() {
         }
         const delimiters = [{left: "\\[", right: "\\]", display: true}];
         renderMathInElement(el, {delimiters});
+        expect(el).toStrictEqual(el2);
+    });
+});
+
+describe("support escaped special chars in text", function() {
+    it("renders escaped special chars in text and math", function() {
+        const textNodes = [ "Escapable characters in text mode: ",
+            "\\$ \\% \\_ \\& \\# ",
+            "and in math mode:",
+            "$ \\$ \\% \\_ \\& \\# \text{, and in inlined text: ",
+            "\\$ \\% \\_ \\& \\# } $,",
+            "thanks!" ];
+        const el = document.createElement('div');
+        for (let i = 0; i < textNodes.length; i++) {
+            const txt = document.createTextNode(textNodes[i]);
+            el.appendChild(txt);
+        }
+        const el2 = document.createElement('div');
+        const txt = document.createTextNode(textNodes.join(''));
+        el2.appendChild(txt);
+        const delimiters = [{left: "$", right: "$", display: false}];
+        renderMathInElement(el, {
+            delimiters,
+            supportEscapedSpecialCharsInText: true,
+        });
+        renderMathInElement(el2, {
+            delimiters,
+            supportEscapedSpecialCharsInText: true,
+        });
         expect(el).toStrictEqual(el2);
     });
 });
