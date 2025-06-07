@@ -106,6 +106,7 @@ export type MacroExpansion = {
     numArgs: number,
     delimiters?: string[][],
     unexpandable?: boolean, // used in \let
+    defaultArgs?: Token[][],
 };
 
 export type MacroDefinition = string | MacroExpansion |
