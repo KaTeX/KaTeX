@@ -3715,6 +3715,12 @@ describe("A macro expander", function() {
         expect`\newcommand\foo[1.5]{}`.not.toParse();
     });
 
+    it("\\newcommand accepts optional arguments", () => {
+        expect`\newcommand\foo[1][x]{#1^2}\foo +\foo[y]`.toParseLike`x^2+y^2`;
+        expect`\newcommand\foo[10][x]{#1^2}\foo 123456789`.toParseLike`x^2`;
+        expect`\newcommand\foo[10][x]{#1^2}\foo[0]123456789`.toParseLike`0^2`;
+    });
+
     // This may change in the future, if we support the extra features of
     // \hspace.
     it("should treat \\hspace, \\hskip like \\kern", function() {
