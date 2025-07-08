@@ -10,7 +10,6 @@ import ParseError from "./ParseError";
 import Style from "./Style";
 import buildCommon from "./buildCommon";
 import {Span, Anchor} from "./domTree";
-import utils from "./utils";
 import {makeEm} from "./units";
 import {spacings, tightSpacings} from "./spacingData";
 import {_htmlGroupBuilders as groupBuilders} from "./defineFunction";
@@ -110,9 +109,9 @@ export const buildExpression = function(
     traverseNonSpaceNodes(groups, (node, prev) => {
         const prevType = prev.classes[0];
         const type = node.classes[0];
-        if (prevType === "mbin" && utils.contains(binRightCanceller, type)) {
+        if (prevType === "mbin" && binRightCanceller.includes(type)) {
             prev.classes[0] = "mord";
-        } else if (type === "mbin" && utils.contains(binLeftCanceller, prevType)) {
+        } else if (type === "mbin" && binLeftCanceller.includes(prevType)) {
             node.classes[0] = "mord";
         }
     }, {node: dummyPrev}, dummyNext, isRoot);
