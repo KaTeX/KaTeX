@@ -4,7 +4,6 @@ import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import {SymbolNode} from "../domTree";
 import * as mathMLTree from "../mathMLTree";
-import utils from "../utils";
 import Style from "../Style";
 import {assembleSupSub} from "./utils/assembleSupSub";
 import {assertNodeType} from "../parseNode";
@@ -46,7 +45,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     let large = false;
     if (style.size === Style.DISPLAY.size &&
         group.symbol &&
-        !utils.contains(noSuccessor, group.name)) {
+        !noSuccessor.includes(group.name)) {
 
         // Most symbol operators get larger in displaystyle (rule 13)
         large = true;
@@ -147,7 +146,7 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
         // This is a symbol. Just add the symbol.
         node = new mathMLTree.MathNode(
             "mo", [mml.makeText(group.name, group.mode)]);
-        if (utils.contains(noSuccessor, group.name)) {
+        if (noSuccessor.includes(group.name)) {
             node.setAttribute("largeop", "false");
         }
     } else if (group.body) {
