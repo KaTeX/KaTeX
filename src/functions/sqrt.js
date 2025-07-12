@@ -3,7 +3,7 @@ import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import delimiter from "../delimiter";
-import Style from "../Style";
+import {TEXT, SCRIPTSCRIPT} from "../Style";
 import {makeEm} from "../units";
 
 import * as html from "../buildHTML";
@@ -46,7 +46,7 @@ defineFunction({
         const theta = metrics.defaultRuleThickness;
 
         let phi = theta;
-        if (options.style.id < Style.TEXT.id) {
+        if (options.style.id < TEXT.id) {
             phi = options.fontMetrics().xHeight;
         }
 
@@ -90,7 +90,7 @@ defineFunction({
             // Handle the optional root index
 
             // The index is always in scriptscript style
-            const newOptions = options.havingStyle(Style.SCRIPTSCRIPT);
+            const newOptions = options.havingStyle(SCRIPTSCRIPT);
             const rootm = html.buildGroup(group.index, newOptions, options);
 
             // The amount the index is shifted by. This is taken from the TeX

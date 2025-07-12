@@ -7,14 +7,14 @@ import parseTree from "../src/parseTree";
 import Options from "../src/Options";
 import ParseError from "../src/ParseError";
 import Settings from "../src/Settings";
-import Style from "../src/Style";
+import {TEXT} from "../src/Style";
 import {
     strictSettings, nonstrictSettings, trustSettings, r,
     getBuilt, getParsed, stripPositions,
 } from "./helpers";
 
 const defaultOptions = new Options({
-    style: Style.TEXT,
+    style: TEXT,
     size: 5,
     maxSize: Infinity,
 });

@@ -3,7 +3,7 @@ import defineFunction, {normalizeArgument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
-import Style from "../Style";
+import {DISPLAY, TEXT, SCRIPT, SCRIPTSCRIPT} from "../Style";
 import {assertNodeType} from "../parseNode";
 import {assert} from "../utils";
 
@@ -18,15 +18,15 @@ const adjustStyle = (size, originalStyle) => {
     if (size === "display") {
         // Get display style as a default.
         // If incoming style is sub/sup, use style.text() to get correct size.
-        style = style.id >= Style.SCRIPT.id ? style.text() : Style.DISPLAY;
+        style = style.id >= SCRIPT.id ? style.text() : DISPLAY;
     } else if (size === "text" &&
-        style.size === Style.DISPLAY.size) {
+        style.size === DISPLAY.size) {
         // We're in a \tfrac but incoming style is displaystyle, so:
-        style = Style.TEXT;
+        style = TEXT;
     } else if (size === "script") {
-        style = Style.SCRIPT;
+        style = SCRIPT;
     } else if (size === "scriptscript") {
-        style = Style.SCRIPTSCRIPT;
+        style = SCRIPTSCRIPT;
     }
     return style;
 };
@@ -76,7 +76,7 @@ const htmlBuilder = (group, options) => {
     let numShift;
     let clearance;
     let denomShift;
-    if (style.size === Style.DISPLAY.size || group.size === "display") {
+    if (style.size === DISPLAY.size || group.size === "display") {
         numShift = options.fontMetrics().num1;
         if (ruleWidth > 0) {
             clearance = 3 * ruleSpacing;
@@ -150,10 +150,10 @@ const htmlBuilder = (group, options) => {
 
     // Rule 15e
     let delimSize;
-    if (style.size === Style.DISPLAY.size) {
+    if (style.size === DISPLAY.size) {
         delimSize = options.fontMetrics().delim1;
-    } else if (style.size === Style.SCRIPTSCRIPT.size) {
-        delimSize = options.havingStyle(Style.SCRIPT).fontMetrics().delim2;
+    } else if (style.size === SCRIPTSCRIPT.size) {
+        delimSize = options.havingStyle(SCRIPT).fontMetrics().delim2;
     } else {
         delimSize = options.fontMetrics().delim2;
     }
@@ -202,7 +202,7 @@ const mathmlBuilder = (group, options) => {
     const style = adjustStyle(group.size, options.style);
     if (style.size !== options.style.size) {
         node = new mathMLTree.MathNode("mstyle", [node]);
-        const isDisplay = (style.size === Style.DISPLAY.size) ? "true" : "false";
+        const isDisplay = (style.size === DISPLAY.size) ? "true" : "false";
         node.setAttribute("displaystyle", isDisplay);
         node.setAttribute("scriptlevel", "0");
     }

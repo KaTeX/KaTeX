@@ -7,7 +7,7 @@
  */
 
 import ParseError from "./ParseError";
-import Style from "./Style";
+import {DISPLAY, TEXT, SCRIPT, SCRIPTSCRIPT} from "./Style";
 import buildCommon from "./buildCommon";
 import {Span, Anchor} from "./domTree";
 import utils from "./utils";
@@ -29,10 +29,10 @@ const binLeftCanceller = ["leftmost", "mbin", "mopen", "mrel", "mop", "mpunct"];
 const binRightCanceller = ["rightmost", "mrel", "mclose", "mpunct"];
 
 const styleMap = {
-    "display": Style.DISPLAY,
-    "text": Style.TEXT,
-    "script": Style.SCRIPT,
-    "scriptscript": Style.SCRIPTSCRIPT,
+    "display": DISPLAY,
+    "text": TEXT,
+    "script": SCRIPT,
+    "scriptscript": SCRIPTSCRIPT,
 };
 
 type Side = "left" | "right";

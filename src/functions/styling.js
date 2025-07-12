@@ -1,16 +1,16 @@
 // @flow
 import defineFunction from "../defineFunction";
 import mathMLTree from "../mathMLTree";
-import Style from "../Style";
+import {DISPLAY, TEXT, SCRIPT, SCRIPTSCRIPT} from "../Style";
 import {sizingGroup} from "./sizing";
 
 import * as mml from "../buildMathML";
 
 const styleMap = {
-    "display": Style.DISPLAY,
-    "text": Style.TEXT,
-    "script": Style.SCRIPT,
-    "scriptscript": Style.SCRIPTSCRIPT,
+    "display": DISPLAY,
+    "text": TEXT,
+    "script": SCRIPT,
+    "scriptscript": SCRIPTSCRIPT,
 };
 
 defineFunction({

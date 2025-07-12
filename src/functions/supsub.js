@@ -5,7 +5,7 @@ import {SymbolNode} from "../domTree";
 import mathMLTree from "../mathMLTree";
 import utils from "../utils";
 import {makeEm} from "../units";
-import Style from "../Style";
+import {DISPLAY} from "../Style";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -37,12 +37,12 @@ const htmlBuilderDelegate = function(
         // Operators handle supsubs differently when they have limits
         // (e.g. `\displaystyle\sum_2^3`)
         const delegate = base.limits &&
-            (options.style.size === Style.DISPLAY.size ||
+            (options.style.size === DISPLAY.size ||
             base.alwaysHandleSupSub);
         return delegate ? op.htmlBuilder : null;
     } else if (base.type === "operatorname") {
         const delegate = base.alwaysHandleSupSub &&
-            (options.style.size === Style.DISPLAY.size || base.limits);
+            (options.style.size === DISPLAY.size || base.limits);
         return delegate ? operatorname.htmlBuilder : null;
     } else if (base.type === "accent") {
         return utils.isCharacterBox(base.base) ? accent.htmlBuilder : null;
@@ -101,7 +101,7 @@ defineFunctionBuilders({
 
         // Rule 18c
         let minSupShift;
-        if (options.style === Style.DISPLAY) {
+        if (options.style === DISPLAY) {
             minSupShift = metrics.sup1;
         } else if (options.style.cramped) {
             minSupShift = metrics.sup3;
@@ -226,11 +226,11 @@ defineFunctionBuilders({
         } else if (!group.sub) {
             const base = group.base;
             if (base && base.type === "op" && base.limits &&
-                (options.style === Style.DISPLAY || base.alwaysHandleSupSub)) {
+                (options.style === DISPLAY || base.alwaysHandleSupSub)) {
                 nodeType = "mover";
             } else if (base && base.type === "operatorname" &&
                 base.alwaysHandleSupSub &&
-                (base.limits || options.style === Style.DISPLAY)) {
+                (base.limits || options.style === DISPLAY)) {
                 nodeType = "mover";
             } else {
                 nodeType = "msup";
@@ -238,11 +238,11 @@ defineFunctionBuilders({
         } else if (!group.sup) {
             const base = group.base;
             if (base && base.type === "op" && base.limits &&
-                (options.style === Style.DISPLAY || base.alwaysHandleSupSub)) {
+                (options.style === DISPLAY || base.alwaysHandleSupSub)) {
                 nodeType = "munder";
             } else if (base && base.type === "operatorname" &&
                 base.alwaysHandleSupSub &&
-                (base.limits || options.style === Style.DISPLAY)) {
+                (base.limits || options.style === DISPLAY)) {
                 nodeType = "munder";
             } else {
                 nodeType = "msub";
@@ -250,11 +250,11 @@ defineFunctionBuilders({
         } else {
             const base = group.base;
             if (base && base.type === "op" && base.limits &&
-                options.style === Style.DISPLAY) {
+                options.style === DISPLAY) {
                 nodeType = "munderover";
             } else if (base && base.type === "operatorname" &&
                 base.alwaysHandleSupSub &&
-                (options.style === Style.DISPLAY || base.limits)) {
+                (options.style === DISPLAY || base.limits)) {
                 nodeType = "munderover";
             } else {
                 nodeType = "msubsup";
