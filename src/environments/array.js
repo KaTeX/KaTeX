@@ -1030,7 +1030,7 @@ defineEnvironment({
         numArgs: 0,
     },
     handler(context) {
-        if (utils.contains(["gather", "gather*"], context.envName)) {
+        if (["gather", "gather*"].includes(context.envName)) {
             validateAmsEnvironmentContext(context);
         }
         const res = {
