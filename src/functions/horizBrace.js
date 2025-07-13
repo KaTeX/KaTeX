@@ -3,7 +3,7 @@ import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
 import stretchy from "../stretchy";
-import Style from "../Style";
+import {DISPLAY} from "../Style";
 import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
@@ -34,7 +34,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
 
     // Build the base group
     const body = html.buildGroup(
-        group.base, options.havingBaseStyle(Style.DISPLAY));
+        group.base, options.havingBaseStyle(DISPLAY));
 
     // Create the stretchy element
     const braceBody = stretchy.svgSpan(group, options);

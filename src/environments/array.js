@@ -1,6 +1,6 @@
 // @flow
 import buildCommon from "../buildCommon";
-import Style from "../Style";
+import {SCRIPT} from "../Style";
 import defineEnvironment from "../defineEnvironment";
 import {parseCD} from "./cd";
 import defineFunction from "../defineFunction";
@@ -299,7 +299,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         // But that needs adjustment because LaTeX applies \scriptstyle to the
         // entire array, including the colspace, but this function applies
         // \scriptstyle only inside each element.
-        const localMultiplier = options.havingStyle(Style.SCRIPT).sizeMultiplier;
+        const localMultiplier = options.havingStyle(SCRIPT).sizeMultiplier;
         arraycolsep = 0.2778 * (localMultiplier / options.sizeMultiplier);
     }
 

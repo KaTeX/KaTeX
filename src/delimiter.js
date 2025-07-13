@@ -22,7 +22,7 @@
  */
 
 import ParseError from "./ParseError";
-import Style from "./Style";
+import {TEXT, SCRIPT, SCRIPTSCRIPT} from "./Style";
 
 import {PathNode, SvgNode, SymbolNode} from "./domTree";
 import {sqrtPath, innerPath, tallDelim} from "./svgGeometry";
@@ -147,9 +147,9 @@ const makeLargeDelim = function(delim,
     const inner = mathrmSize(delim, size, mode, options);
     const span = styleWrap(
         buildCommon.makeSpan(["delimsizing", "size" + size], [inner], options),
-        Style.TEXT, options, classes);
+        TEXT, options, classes);
     if (center) {
-        centerSpan(span, options, Style.TEXT);
+        centerSpan(span, options, TEXT);
     }
     return span;
 };
@@ -441,7 +441,7 @@ const makeStackedDelim = function(
     }
 
     // Finally, build the vlist
-    const newOptions = options.havingBaseStyle(Style.TEXT);
+    const newOptions = options.havingBaseStyle(TEXT);
     const inner = buildCommon.makeVList({
         positionType: "bottom",
         positionData: depth,
@@ -450,7 +450,7 @@ const makeStackedDelim = function(
 
     return styleWrap(
         buildCommon.makeSpan(["delimsizing", "mult"], [inner], newOptions),
-        Style.TEXT, options, classes);
+        TEXT, options, classes);
 };
 
 // All surds have 0.08em padding above the vinculum inside the SVG.
@@ -651,9 +651,9 @@ type Delimiter =
 
 // Delimiters that never stack try small delimiters and large delimiters only
 const stackNeverDelimiterSequence = [
-    {type: "small", style: Style.SCRIPTSCRIPT},
-    {type: "small", style: Style.SCRIPT},
-    {type: "small", style: Style.TEXT},
+    {type: "small", style: SCRIPTSCRIPT},
+    {type: "small", style: SCRIPT},
+    {type: "small", style: TEXT},
     {type: "large", size: 1},
     {type: "large", size: 2},
     {type: "large", size: 3},
@@ -662,18 +662,18 @@ const stackNeverDelimiterSequence = [
 
 // Delimiters that always stack try the small delimiters first, then stack
 const stackAlwaysDelimiterSequence = [
-    {type: "small", style: Style.SCRIPTSCRIPT},
-    {type: "small", style: Style.SCRIPT},
-    {type: "small", style: Style.TEXT},
+    {type: "small", style: SCRIPTSCRIPT},
+    {type: "small", style: SCRIPT},
+    {type: "small", style: TEXT},
     {type: "stack"},
 ];
 
 // Delimiters that stack when large try the small and then large delimiters, and
 // stack afterwards
 const stackLargeDelimiterSequence = [
-    {type: "small", style: Style.SCRIPTSCRIPT},
-    {type: "small", style: Style.SCRIPT},
-    {type: "small", style: Style.TEXT},
+    {type: "small", style: SCRIPTSCRIPT},
+    {type: "small", style: SCRIPT},
+    {type: "small", style: TEXT},
     {type: "large", size: 1},
     {type: "large", size: 2},
     {type: "large", size: 3},
