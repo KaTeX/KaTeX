@@ -41,6 +41,22 @@ Alignedat: |
         a &= 1 & b &= 2 &\quad c &= 3\\
         3a &= 3 & 17b &= 34 &\quad 400c &= 1200
     \end{alignedat}
+AlignJot:
+    tex: |
+      \begin{align*}
+          hello\\
+          world
+      \end{align*} \\
+      goodbye
+    display: 1
+AlignJotTrailing:
+    tex: |
+      \begin{align*}
+          hello\\
+          world\\
+      \end{align*} \\
+      goodbye
+    display: 1
 Arrays: |
     \left(\begin{array}{|rl:c||}
         1&2&3\\ \hline
