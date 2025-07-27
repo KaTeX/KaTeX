@@ -2,7 +2,8 @@
   "compilerOptions": {
     "strict": true,
     "lib": ["es2021", "dom"],
-    "moduleResolution": "bundler",
-    "forceConsistentCasingInFileNames": true
+    "moduleResolution": "bundler",  // ✅ bundler-compatible resolution
+    "forceConsistentCasingInFileNames": true,
+    "module": "preserve"            // Required for bundler
   }
 }
