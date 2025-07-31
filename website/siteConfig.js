@@ -101,6 +101,11 @@ const users = [
         infoLink: 'https://www.messenger.com/',
     },
     {
+        caption: 'MintApps',
+        image: 'https://mintapps.org/favicon196.png',
+        infoLink: 'https://mintapps.org'
+    },
+    {
         caption: 'MonsterWriter',
         image: 'https://www.monsterwriter.com/assets/logo-200.png',
         infoLink: 'https://www.monsterwriter.com/',
