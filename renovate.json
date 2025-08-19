@@ -22,7 +22,7 @@
       "matchStrings": ["[-\"](?<browserTag>[a-z]+):(?<currentValue>[\\d.\\-]+)[\"\\s]"],
       "datasourceTemplate": "docker",
       "depNameTemplate": "selenium/standalone-{{browserTag}}",
-      "versioningTemplate": "regex:^3\\.141\\.59-(?<major>\\d+)$"
+      "versioningTemplate": "regex:^4\\.4\\.0-(?<major>\\d+)$"
     }, {
       "fileMatch": ["^\\.flowconfig$"],
       "matchStrings": ["\\[version\\]\\s*(?<currentValue>.*?)\\s"],
