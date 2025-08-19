@@ -657,6 +657,7 @@ defineSymbol(math, main, op, "\u222b", "\\int");
 defineSymbol(math, main, op, "\u222b", "\\intop");
 defineSymbol(math, main, op, "\u222c", "\\iint");
 defineSymbol(math, main, op, "\u222d", "\\iiint");
+defineSymbol(math, main, op, "\u2a0c", "\\iiiint");
 defineSymbol(math, main, op, "\u220f", "\\prod");
 defineSymbol(math, main, op, "\u2211", "\\sum");
 defineSymbol(math, main, op, "\u2a02", "\\bigotimes");
