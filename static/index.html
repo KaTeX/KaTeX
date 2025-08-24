@@ -1,17 +1,95 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>KaTeX Test</title>
         <script defer src="/main.js" type="text/javascript"></script>
     </head>
     <body>
-        <textarea id="input" rows="5">
+        <main>
+            <div id="options-panel">
+                <div>
+                    <label for="displayMode">displayMode</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="displayMode" checked/>
+                </div>
+                <div>
+                    <label for="leqno">leqno</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="leqno"/>
+                </div>
+                <div>
+                    <label for="fleqn">fleqn</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="fleqn"/>
+                </div>
+                <div>
+                    <label for="throwOnError">throwOnError</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="throwOnError" checked/>
+                </div>
+                <div>
+                    <label for="strict">strict</label>
+                </div>
+                <div>
+                    <select id="strict">
+                        <option value="error">error</option>
+                        <option value="warn" selected>warn</option>
+                        <option value="ignore">ignore</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="output">output</label>
+                </div>
+                <div>
+                    <select id="output">
+                        <option value="htmlAndMathml" selected>htmlAndMathml</option>
+                        <option value="html">html</option>
+                        <option value="mathml">mathml</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="trust">trust</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="trust" checked/>
+                </div>
+                <div class="inputs">
+                    <label for="macros">macros</label>
+                    <br />
+                    <textarea id="macros" placeholder="JSON">
+{
+    "\\f": "#1f(#2)"
+}</textarea>
+                </div>
+                <div class="inputs">
+                    <label for="before">before</label>
+                    <br />
+                    <textarea id="before" placeholder="Lore ipsum"></textarea>
+                </div>
+                <div class="inputs">
+                    <label for="after">after</label>
+                    <br />
+                    <textarea id="after" placeholder="Lorem ipsum"></textarea>
+                </div>
+                <div>
+                    <input id="permalink" type="button" value="Create permalink">
+                </div>
+            </div>
+            <textarea id="input" rows="5">
 \left( x \right) \left( x^2 \right) % comment
 \left( \frac{a}{b} \right) \left( \frac{a^2}{b} \right)
 \left( \dfrac{a}{b} \right) \left( \dfrac{a^2}{b} \right)
-        </textarea>
-        <div id="math"></div>
-        <input id="permalink" type="button" value="permalink">
+            </textarea>
+            <div id="math-container">
+                <span id="before-content"></span>
+                <span id="math"></span>
+                <span id="after-content"></span>
+            </div>
+        </main>
     </body>
 </html>
