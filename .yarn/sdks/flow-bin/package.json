@@ -1,5 +1,8 @@
 {
   "name": "flow-bin",
   "version": "0.135.0-sdk",
-  "type": "commonjs"
+  "type": "commonjs",
+  "bin": {
+    "flow": "cli.js"
+  }
 }
