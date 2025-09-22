@@ -4,14 +4,14 @@ import buildMathML from "./buildMathML";
 import buildCommon from "./buildCommon";
 import Options from "./Options";
 import Settings from "./Settings";
-import Style from "./Style";
+import {DISPLAY, TEXT} from "./Style";
 
 import type {AnyParseNode} from "./parseNode";
 import type {DomSpan} from "./domTree";
 
 const optionsFromSettings = function(settings: Settings) {
     return new Options({
-        style: (settings.displayMode ? Style.DISPLAY : Style.TEXT),
+        style: (settings.displayMode ? DISPLAY : TEXT),
         maxSize: settings.maxSize,
         minRuleThickness: settings.minRuleThickness,
     });
