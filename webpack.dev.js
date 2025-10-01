@@ -19,6 +19,15 @@ katexConfig.devServer = {
             watch: false,
         },
     ],
+    client: {
+        overlay: false,
+        webSocketURL: {
+            protocol: 'ws',
+            hostname: 'localhost',
+            port: PORT,
+            pathname: 'ws',
+        },
+    },
     // Allow server to be accessed from anywhere, which is useful for
     // testing.  This potentially reveals the source code to the world,
     // but this should not be a concern for testing open-source software.
