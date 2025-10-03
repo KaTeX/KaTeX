@@ -3717,17 +3717,17 @@ __metadata:
   linkType: hard
 
 "babel-loader@npm:^8.2.5":
-  version: 8.2.5
-  resolution: "babel-loader@npm:8.2.5"
+  version: 8.4.1
+  resolution: "babel-loader@npm:8.4.1"
   dependencies:
     find-cache-dir: "npm:^3.3.1"
-    loader-utils: "npm:^2.0.0"
+    loader-utils: "npm:^2.0.4"
     make-dir: "npm:^3.1.0"
     schema-utils: "npm:^2.6.5"
   peerDependencies:
     "@babel/core": ^7.0.0
     webpack: ">=2"
-  checksum: 10/2b40b410cb452f2a31e733f4493008aed42151d8787d2b5891cb0e58e795f97f9288f7274319eaa2d0b84c3d0d478dbdc0c2cd17c9bc3489e45ef504171e0e18
+  checksum: 10/b54ae3796a351e5b5186cd7a8d53a902b679a33a187424c2858e385850142139a4343524c9fddd0eb4356250e51e67e47a9efeef79d01e132976c406212cba1d
   languageName: node
   linkType: hard
 
@@ -8908,14 +8908,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loader-utils@npm:^2.0.0":
-  version: 2.0.2
-  resolution: "loader-utils@npm:2.0.2"
+"loader-utils@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "loader-utils@npm:2.0.4"
   dependencies:
     big.js: "npm:^5.2.2"
     emojis-list: "npm:^3.0.0"
     json5: "npm:^2.1.2"
-  checksum: 10/064089911ac6831af82c329243343f95027ed71bf9a544bfd27a4881d0759f535536eef0934a2a0e36aaecaa547ef8e52251c6d7c96db9e233b906bcde3b0787
+  checksum: 10/28bd9af2025b0cb2fc6c9c2d8140a75a3ab61016e5a86edf18f63732216e985a50bf2479a662555beb472a54d12292e380423705741bfd2b54cab883aa067f18
   languageName: node
   linkType: hard
 
