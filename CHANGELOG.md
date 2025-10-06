@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.23](https://github.com/KaTeX/KaTeX/compare/v0.16.22...v0.16.23) (2025-10-03)
+
+
+### Bug Fixes
+
+* Support `\def` with arguments via `macros` option ([#4087](https://github.com/KaTeX/KaTeX/issues/4087)) ([80a8158](https://github.com/KaTeX/KaTeX/commit/80a815856a8c26d78b3669e9c05fff00efe82247))
+
 ## [0.16.22](https://github.com/KaTeX/KaTeX/compare/v0.16.21...v0.16.22) (2025-04-09)
 
 

@@ -3656,6 +3656,18 @@ describe("A macro expander", function() {
         }});
     });
 
+    it("macros argument can simulate \\def with arguments", () => {
+        expect`\t x`.toParseLike("\\text{x}", {macros: {
+            "\\t": {
+                tokens: [
+                    {text: "}"}, {text: "1"}, {text: "#"}, {text: "{"},
+                    {text: "\\text"},
+                ],
+                numArgs: 1,
+            },
+        }});
+    });
+
     it("\\newcommand doesn't change settings.macros", () => {
         const macros = {};
         expect`\newcommand\foo{x^2}\foo+\foo`.toParse(new Settings({macros}));
