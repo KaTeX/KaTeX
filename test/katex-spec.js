@@ -914,17 +914,8 @@ describe("A color parser", function() {
 
 describe("Alpha hex color parser", function() {
     const alphaColorExpression1 = r`\textcolor{#ff000080}{x}`;
-    const alphaColorExpression2 = r`\textcolor{228B22BF}{y}`;
-    const alphaColorExpression3 = r`\textcolor{#1234ABCD}{z}`;
-    const badAlphaColorExpression1 = r`\textcolor{#ff00008g}{x}`;
-    const badAlphaColorExpression2 = r`\textcolor{#ff00008}{x}`;
-    const badAlphaColorExpression3 = r`\textcolor{#ff000080f}{x}`;
-
-    it("should parse 8-digit hex colors with alpha", function() {
-        expect(alphaColorExpression1).toParse();
-        expect(alphaColorExpression2).toParse();
-        expect(alphaColorExpression3).toParse();
-    });
+    const alphaColorExpression2 = r`\textcolor{#1234ABCD}{z}`;
+    const alphaColorExpression3 = r`\textcolor{#abc8}{w}`; // 4-digit with alpha
 
     it("should correctly extract alpha hex colors", function() {
         const parse1 = getParsed(alphaColorExpression1)[0];
@@ -932,14 +923,14 @@ describe("Alpha hex color parser", function() {
         const parse3 = getParsed(alphaColorExpression3)[0];
 
         expect(parse1.color).toEqual("#ff000080");
-        expect(parse2.color).toEqual("#228B22BF");
-        expect(parse3.color).toEqual("#1234ABCD");
+        expect(parse2.color).toEqual("#1234ABCD");
+        expect(parse3.color).toEqual("#abc8");
     });
 
-    it("should not parse invalid 8-digit hex colors", function() {
-        expect(badAlphaColorExpression1).not.toParse();
-        expect(badAlphaColorExpression2).not.toParse();
-        expect(badAlphaColorExpression3).not.toParse();
+    it("should not parse invalid alpha hex colors", function() {
+        expect(r`\textcolor{#ff00008g}{x}`).not.toParse();
+        expect(r`\textcolor{#ff00008}{x}`).not.toParse();
+        expect(r`\textcolor{#ff000080f}{x}`).not.toParse();
     });
 
     it("should build correctly with alpha colors", function() {

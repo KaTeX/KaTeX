@@ -680,7 +680,8 @@ export default class Parser {
         if (res == null) {
             return null;
         }
-        const match = (/^(#[a-f0-9]{3}|#?[a-f0-9]{6}|#?[a-f0-9]{8}|[a-z]+)$/i).exec(res.text);
+        const match = (/^(#[a-f0-9]{3,4}|#[a-f0-9]{6}|#[a-f0-9]{8}|[a-f0-9]{6}|[a-z]+)$/i)
+            .exec(res.text);
         if (!match) {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }
@@ -689,10 +690,6 @@ export default class Parser {
             // We allow a 6-digit HTML color spec without a leading "#".
             // This follows the xcolor package's HTML color model.
             // Predefined color names are all missed by this RegEx pattern.
-            color = "#" + color;
-        } else if (/^[0-9a-f]{8}$/i.test(color)) {
-            // We allow an 8-digit HTML color spec (with alpha) without a leading "#".
-            // This follows the same pattern as 6-digit colors.
             color = "#" + color;
         }
         return {
