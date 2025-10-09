@@ -29,7 +29,6 @@ import {sqrtPath, innerPath, tallDelim} from "./svgGeometry";
 import buildCommon from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
-import utils from "./utils";
 import {makeEm} from "./units";
 import fontMetricsData from "./fontMetricsData";
 
@@ -255,11 +254,11 @@ const makeStackedDelim = function(
         top = "\\Uparrow";
         repeat = "\u2016";
         bottom = "\\Downarrow";
-    } else if (utils.contains(verts, delim)) {
+    } else if (verts.includes(delim)) {
         repeat = "\u2223";
         svgLabel = "vert";
         viewBoxWidth = 333;
-    } else if (utils.contains(doubleVerts, delim)) {
+    } else if (doubleVerts.includes(delim)) {
         repeat = "\u2225";
         svgLabel = "doublevert";
         viewBoxWidth = 556;
@@ -621,10 +620,10 @@ const makeSizedDelim = function(
     }
 
     // Sized delimiters are never centered.
-    if (utils.contains(stackLargeDelimiters, delim) ||
-        utils.contains(stackNeverDelimiters, delim)) {
+    if (stackLargeDelimiters.includes(delim) ||
+        stackNeverDelimiters.includes(delim)) {
         return makeLargeDelim(delim, size, false, options, mode, classes);
-    } else if (utils.contains(stackAlwaysDelimiters, delim)) {
+    } else if (stackAlwaysDelimiters.includes(delim)) {
         return makeStackedDelim(
             delim, sizeToMaxHeight[size], false, options, mode, classes);
     } else {
@@ -759,9 +758,9 @@ const makeCustomSizedDelim = function(
 
     // Decide what sequence to use
     let sequence;
-    if (utils.contains(stackNeverDelimiters, delim)) {
+    if (stackNeverDelimiters.includes(delim)) {
         sequence = stackNeverDelimiterSequence;
-    } else if (utils.contains(stackLargeDelimiters, delim)) {
+    } else if (stackLargeDelimiters.includes(delim)) {
         sequence = stackLargeDelimiterSequence;
     } else {
         sequence = stackAlwaysDelimiterSequence;
