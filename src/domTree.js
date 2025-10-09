@@ -231,7 +231,7 @@ export class Span<ChildType: VirtualNode> implements HtmlDomNode {
     }
 
     hasClass(className: string): boolean {
-        return utils.contains(this.classes, className);
+        return this.classes.includes(className);
     }
 
     toNode(): HTMLElement {
@@ -272,7 +272,7 @@ export class Anchor implements HtmlDomNode {
     }
 
     hasClass(className: string): boolean {
-        return utils.contains(this.classes, className);
+        return this.classes.includes(className);
     }
 
     toNode(): HTMLElement {
@@ -308,7 +308,7 @@ export class Img implements VirtualNode {
     }
 
     hasClass(className: string): boolean {
-        return utils.contains(this.classes, className);
+        return this.classes.includes(className);
     }
 
     toNode(): Node {
@@ -410,7 +410,7 @@ export class SymbolNode implements HtmlDomNode {
     }
 
     hasClass(className: string): boolean {
-        return utils.contains(this.classes, className);
+        return this.classes.includes(className);
     }
 
     /**
