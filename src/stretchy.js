@@ -8,7 +8,6 @@
 import {LineNode, PathNode, SvgNode} from "./domTree";
 import buildCommon from "./buildCommon";
 import mathMLTree from "./mathMLTree";
-import utils from "./utils";
 import {makeEm} from "./units";
 
 import type Options from "./Options";
@@ -192,8 +191,7 @@ const svgSpan = function(
     } {
         let viewBoxWidth = 400000;  // default
         const label = group.label.slice(1);
-        if (utils.contains(["widehat", "widecheck", "widetilde", "utilde"],
-            label)) {
+        if (["widehat", "widecheck", "widetilde", "utilde"].includes(label)) {
             // Each type in the `if` statement corresponds to one of the ParseNode
             // types below. This narrowing is required to access `grp.base`.
             // $FlowFixMe
