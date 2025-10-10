@@ -843,7 +843,7 @@ describe("A color parser", function() {
     const customColorExpression2 = r`\textcolor{#fA6fA6}{x}`;
     const customColorExpression3 = r`\textcolor{fA6fA6}{x}`;
     const badCustomColorExpression1 = r`\textcolor{bad-color}{x}`;
-    const badCustomColorExpression2 = r`\textcolor{#fA6f}{x}`;
+    const badCustomColorExpression2 = r`\textcolor{#fA6f1}{x}`;
     const badCustomColorExpression3 = r`\textcolor{#gA6}{x}`;
     const oldColorExpression = r`\color{#fA6}xy`;
 
