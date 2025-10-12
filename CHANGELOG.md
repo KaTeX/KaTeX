@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.24](https://github.com/KaTeX/KaTeX/compare/v0.16.23...v0.16.24) (2025-10-12)
+
+
+### Features
+
+* support hex colors with alpha ([#4090](https://github.com/KaTeX/KaTeX/issues/4090)) ([8c9b306](https://github.com/KaTeX/KaTeX/commit/8c9b3063965acc0d6e6a0b6df4d051169de9e1a9)), closes [#4067](https://github.com/KaTeX/KaTeX/issues/4067) [#fA6](https://github.com/KaTeX/KaTeX/issues/fA6) [#fA6f1](https://github.com/KaTeX/KaTeX/issues/fA6f1)
+
 ## [0.16.23](https://github.com/KaTeX/KaTeX/compare/v0.16.22...v0.16.23) (2025-10-03)
 
 
