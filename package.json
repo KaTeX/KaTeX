@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.16.23",
+  "version": "0.16.25",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "exports": {
@@ -129,7 +129,8 @@
     "webpack": "^5.74.0",
     "webpack-bundle-analyzer": "^4.6.1",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.10.1"
+    "webpack-dev-server": "^4.10.1",
+    "webpack-remove-empty-scripts": "^1.0.4"
   },
   "bin": "cli.js",
   "scripts": {

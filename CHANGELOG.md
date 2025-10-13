@@ -1,6 +1,20 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.25](https://github.com/KaTeX/KaTeX/compare/v0.16.24...v0.16.25) (2025-10-13)
+
+
+### Features
+
+* **css:** provide `katex-swap.css` that uses `font-display: swap` ([#3940](https://github.com/KaTeX/KaTeX/issues/3940)) ([b3f9ce6](https://github.com/KaTeX/KaTeX/commit/b3f9ce691e89a52dea7ec8f10cc6ed4ddc8fc161)), closes [#2242](https://github.com/KaTeX/KaTeX/issues/2242)
+
+## [0.16.24](https://github.com/KaTeX/KaTeX/compare/v0.16.23...v0.16.24) (2025-10-12)
+
+
+### Features
+
+* support hex colors with alpha ([#4090](https://github.com/KaTeX/KaTeX/issues/4090)) ([8c9b306](https://github.com/KaTeX/KaTeX/commit/8c9b3063965acc0d6e6a0b6df4d051169de9e1a9)), closes [#4067](https://github.com/KaTeX/KaTeX/issues/4067) [#fA6](https://github.com/KaTeX/KaTeX/issues/fA6) [#fA6f1](https://github.com/KaTeX/KaTeX/issues/fA6f1)
+
 ## [0.16.23](https://github.com/KaTeX/KaTeX/compare/v0.16.22...v0.16.23) (2025-10-03)
 
 
