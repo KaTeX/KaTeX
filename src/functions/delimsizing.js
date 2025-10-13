@@ -4,7 +4,6 @@ import defineFunction from "../defineFunction";
 import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import ParseError from "../ParseError";
-import utils from "../utils";
 import {assertNodeType, checkSymbolNodeType} from "../parseNode";
 import {makeEm} from "../units";
 
@@ -61,7 +60,7 @@ function checkDelimiter(
     context: FunctionContext,
 ): SymbolParseNode {
     const symDelim = checkSymbolNodeType(delim);
-    if (symDelim && utils.contains(delimiters, symDelim.text)) {
+    if (symDelim && delimiters.includes(symDelim.text)) {
         return symDelim;
     } else if (symDelim) {
         throw new ParseError(

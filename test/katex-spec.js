@@ -280,6 +280,15 @@ describe("A subscript and superscript parser", function() {
     it("should work with Unicode (sub|super)script characters", function() {
         expect`A² + B²⁺³ + ¹²C + E₂³ + F₂₊₃`.toParseLike`A^{2} + B^{2+3} + ^{12}C + E_{2}^{3} + F_{2+3}`;
     });
+
+    it("should not fail if \\relax is in an atom", function() {
+        expect`\hskip1em\relax^2`.toParse(strictSettings);
+    });
+
+    it("should skip \\relax in super/subscripts", function() {
+        expect`x^\relax 2`.toParseLike`x^2`;
+        expect`x_\relax 2`.toParseLike`x_2`;
+    });
 });
 
 describe("A subscript and superscript tree-builder", function() {
@@ -834,7 +843,7 @@ describe("A color parser", function() {
     const customColorExpression2 = r`\textcolor{#fA6fA6}{x}`;
     const customColorExpression3 = r`\textcolor{fA6fA6}{x}`;
     const badCustomColorExpression1 = r`\textcolor{bad-color}{x}`;
-    const badCustomColorExpression2 = r`\textcolor{#fA6f}{x}`;
+    const badCustomColorExpression2 = r`\textcolor{#fA6f1}{x}`;
     const badCustomColorExpression3 = r`\textcolor{#gA6}{x}`;
     const oldColorExpression = r`\color{#fA6}xy`;
 
@@ -900,6 +909,34 @@ describe("A color parser", function() {
             macros: macros,
         });
         expect(macros).toEqual({});
+    });
+});
+
+describe("Alpha hex color parser", function() {
+    const alphaColorExpression1 = r`\textcolor{#ff000080}{x}`;
+    const alphaColorExpression2 = r`\textcolor{#1234ABCD}{z}`;
+    const alphaColorExpression3 = r`\textcolor{#abc8}{w}`; // 4-digit with alpha
+
+    it("should correctly extract alpha hex colors", function() {
+        const parse1 = getParsed(alphaColorExpression1)[0];
+        const parse2 = getParsed(alphaColorExpression2)[0];
+        const parse3 = getParsed(alphaColorExpression3)[0];
+
+        expect(parse1.color).toEqual("#ff000080");
+        expect(parse2.color).toEqual("#1234ABCD");
+        expect(parse3.color).toEqual("#abc8");
+    });
+
+    it("should not parse invalid alpha hex colors", function() {
+        expect(r`\textcolor{#ff00008g}{x}`).not.toParse();
+        expect(r`\textcolor{#ff00008}{x}`).not.toParse();
+        expect(r`\textcolor{#ff000080f}{x}`).not.toParse();
+    });
+
+    it("should build correctly with alpha colors", function() {
+        expect(alphaColorExpression1).toBuild();
+        expect(alphaColorExpression2).toBuild();
+        expect(alphaColorExpression3).toBuild();
     });
 });
 
@@ -2158,6 +2195,24 @@ describe("An HTML extension builder", function() {
         const built = getBuilt(html, trustNonStrictSettings);
         expect(built).toMatchSnapshot();
     });
+
+    it("should throw Error when HTML attribute name is invalid", function() {
+        for (const char of [">", " ", "\t", "\n", "\r", "\"", "'", "/"]) {
+            try {
+                katex.renderToString(
+                    `\\htmlData{a${char}b=foo}{bar}`, trustNonStrictSettings);
+
+                // Render is expected to throw, so this should not be called.
+                expect(true).toBe(false);
+            } catch (error) {
+                expect(error).toBeInstanceOf(ParseError);
+                const message =
+                    `Invalid attribute name 'data-a${char.replace(/\s/, ' ')}b'`;
+                expect(error.message).toBe(`KaTeX parse error: ${message}`);
+                expect(error.rawMessage).toBe(message);
+            }
+        }
+    });
 });
 
 describe("A bin builder", function() {
@@ -3319,6 +3374,12 @@ describe("A macro expander", function() {
         }}));
     });
 
+    it("should treat \\relax as empty argument", function() {
+        expect`\text{\foo\relax x}`.toParseLike(r`\text{(,x)}`, new Settings({macros: {
+            "\\foo": "(#1,#2)",
+        }}));
+    });
+
     it("should allow for space second argument (math version)", function() {
         expect`\foo\bar\bar`.toParseLike("(,)", new Settings({macros: {
             "\\foo": "(#1,#2)",
@@ -3623,6 +3684,18 @@ describe("A macro expander", function() {
         }});
     });
 
+    it("macros argument can simulate \\def with arguments", () => {
+        expect`\t x`.toParseLike("\\text{x}", {macros: {
+            "\\t": {
+                tokens: [
+                    {text: "}"}, {text: "1"}, {text: "#"}, {text: "{"},
+                    {text: "\\text"},
+                ],
+                numArgs: 1,
+            },
+        }});
+    });
+
     it("\\newcommand doesn't change settings.macros", () => {
         const macros = {};
         expect`\newcommand\foo{x^2}\foo+\foo`.toParse(new Settings({macros}));
@@ -3659,17 +3732,15 @@ describe("A macro expander", function() {
         expect`\newcommand{\foo}{1}\foo\renewcommand{\foo}{2}\foo`.toParseLike`12`;
     });
 
-    it("\\providecommand (re)defines macros", () => {
+    it("\\providecommand defines but does not redefine macros", () => {
         expect`\providecommand\foo{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
         expect`\providecommand{\foo}{x^2}\foo+\foo`.toParseLike`x^2+x^2`;
-        expect`\providecommand\bar{x^2}\bar+\bar`.toParseLike`x^2+x^2`;
-        expect`\providecommand{\bar}{x^2}\bar+\bar`.toParseLike`x^2+x^2`;
         expect`\newcommand{\foo}{1}\foo\providecommand{\foo}{2}\foo`
-            .toParseLike`12`;
+            .toParseLike`11`;
         expect`\providecommand{\foo}{1}\foo\renewcommand{\foo}{2}\foo`
             .toParseLike`12`;
         expect`\providecommand{\foo}{1}\foo\providecommand{\foo}{2}\foo`
-            .toParseLike`12`;
+            .toParseLike`11`;
     });
 
     it("\\newcommand is local", () => {

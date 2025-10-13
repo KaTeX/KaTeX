@@ -1,12 +1,18 @@
 {
   "name": "katex",
-  "version": "0.16.15",
+  "version": "0.16.24",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "exports": {
     ".": {
-      "require": "./dist/katex.js",
-      "import": "./dist/katex.mjs"
+      "require": {
+        "types": "./types/katex.d.ts",
+        "default": "./dist/katex.js"
+      },
+      "import": {
+        "types": "./types/katex.d.ts",
+        "default": "./dist/katex.mjs"
+      }
     },
     "./contrib/auto-render": {
       "require": "./dist/contrib/auto-render.js",
@@ -44,7 +50,8 @@
     "cli.js",
     "src/",
     "contrib/",
-    "dist/"
+    "dist/",
+    "types/"
   ],
   "license": "MIT",
   "packageManager": "yarn@4.1.1",

@@ -1,6 +1,69 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.24](https://github.com/KaTeX/KaTeX/compare/v0.16.23...v0.16.24) (2025-10-12)
+
+
+### Features
+
+* support hex colors with alpha ([#4090](https://github.com/KaTeX/KaTeX/issues/4090)) ([8c9b306](https://github.com/KaTeX/KaTeX/commit/8c9b3063965acc0d6e6a0b6df4d051169de9e1a9)), closes [#4067](https://github.com/KaTeX/KaTeX/issues/4067) [#fA6](https://github.com/KaTeX/KaTeX/issues/fA6) [#fA6f1](https://github.com/KaTeX/KaTeX/issues/fA6f1)
+
+## [0.16.23](https://github.com/KaTeX/KaTeX/compare/v0.16.22...v0.16.23) (2025-10-03)
+
+
+### Bug Fixes
+
+* Support `\def` with arguments via `macros` option ([#4087](https://github.com/KaTeX/KaTeX/issues/4087)) ([80a8158](https://github.com/KaTeX/KaTeX/commit/80a815856a8c26d78b3669e9c05fff00efe82247))
+
+## [0.16.22](https://github.com/KaTeX/KaTeX/compare/v0.16.21...v0.16.22) (2025-04-09)
+
+
+### Bug Fixes
+
+* \relax in base or exponent of super/subscript ([#4045](https://github.com/KaTeX/KaTeX/issues/4045)) ([1f43c84](https://github.com/KaTeX/KaTeX/commit/1f43c84a175fb689f8c8d1d72b1e8b896a8b43d1))
+
+## [0.16.21](https://github.com/KaTeX/KaTeX/compare/v0.16.20...v0.16.21) (2025-01-17)
+
+
+### Bug Fixes
+
+* escape \htmlData attribute name ([57914ad](https://github.com/KaTeX/KaTeX/commit/57914ad91eff401357f44bf364b136d37eba04f8))
+
+## [0.16.20](https://github.com/KaTeX/KaTeX/compare/v0.16.19...v0.16.20) (2025-01-12)
+
+
+### Bug Fixes
+
+* \providecommand does not overwrite existing macro ([#4000](https://github.com/KaTeX/KaTeX/issues/4000)) ([6d30fe4](https://github.com/KaTeX/KaTeX/commit/6d30fe47b06f9da9b836fe518d5cbbecf6a6a3a1)), closes [#3928](https://github.com/KaTeX/KaTeX/issues/3928)
+
+## [0.16.19](https://github.com/KaTeX/KaTeX/compare/v0.16.18...v0.16.19) (2024-12-29)
+
+
+### Bug Fixes
+
+* **types:** improve `strict` function type ([#4009](https://github.com/KaTeX/KaTeX/issues/4009)) ([4228b4e](https://github.com/KaTeX/KaTeX/commit/4228b4eb529b8e35def66cc6e4fa467383b98c86))
+
+## [0.16.18](https://github.com/KaTeX/KaTeX/compare/v0.16.17...v0.16.18) (2024-12-18)
+
+
+### Bug Fixes
+
+* Actually publish TypeScript type definitions ([#4008](https://github.com/KaTeX/KaTeX/issues/4008)) ([629b873](https://github.com/KaTeX/KaTeX/commit/629b87354fdfc04a3769f09b69f6bbadebcb9ae8))
+
+## [0.16.17](https://github.com/KaTeX/KaTeX/compare/v0.16.16...v0.16.17) (2024-12-17)
+
+
+### Bug Fixes
+
+* MathML combines multidigit numbers with sup/subscript, comma separators, and multicharacter text when outputting to DOM ([#3999](https://github.com/KaTeX/KaTeX/issues/3999)) ([7d79e22](https://github.com/KaTeX/KaTeX/commit/7d79e220f465c42d4334dc95f1c41e333667e168)), closes [#3995](https://github.com/KaTeX/KaTeX/issues/3995)
+
+## [0.16.16](https://github.com/KaTeX/KaTeX/compare/v0.16.15...v0.16.16) (2024-12-17)
+
+
+### Features
+
+* ESM exports, TypeScript types ([#3992](https://github.com/KaTeX/KaTeX/issues/3992)) ([ea9c173](https://github.com/KaTeX/KaTeX/commit/ea9c173a0de953b49b2ce5d131e88b785f5dffa1))
+
 ## [0.16.15](https://github.com/KaTeX/KaTeX/compare/v0.16.14...v0.16.15) (2024-12-09)
 
 
