@@ -10,7 +10,6 @@ import {getCharacterMetrics} from "./fontMetrics";
 import mathMLTree from "./mathMLTree";
 import ParseError from "./ParseError";
 import symbols, {ligatures} from "./symbols";
-import utils from "./utils";
 import {_mathmlGroupBuilders as groupBuilders} from "./defineFunction";
 import {MathNode, TextNode} from "./mathMLTree";
 
@@ -112,7 +111,7 @@ export const getVariant = function(
     }
 
     let text = group.text;
-    if (utils.contains(["\\imath", "\\jmath"], text)) {
+    if (["\\imath", "\\jmath"].includes(text)) {
         return null;
     }
 
@@ -291,7 +290,7 @@ export default function buildMathML(
     // tag correctly, unless it's a single <mrow> or <mtable>.
     let wrapper;
     if (expression.length === 1 && expression[0] instanceof MathNode &&
-        utils.contains(["mrow", "mtable"], expression[0].type)) {
+        ["mrow", "mtable"].includes(expression[0].type)) {
         wrapper = expression[0];
     } else {
         wrapper = new mathMLTree.MathNode("mrow", expression);
