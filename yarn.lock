@@ -4488,6 +4488,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"commander@npm:^14.0.2":
+  version: 14.0.2
+  resolution: "commander@npm:14.0.2"
+  checksum: 10/2d202db5e5f9bb770112a3c1579b893d17ac6f6d932183077308bdd96d0f87f0bbe6a68b5b9ed2cf3b2514be6bb7de637480703c0e2db9741ee1b383237deb26
+  languageName: node
+  linkType: hard
+
 "commander@npm:^2.20.0":
   version: 2.20.3
   resolution: "commander@npm:2.20.3"
@@ -4499,13 +4506,6 @@ __metadata:
   version: 7.2.0
   resolution: "commander@npm:7.2.0"
   checksum: 10/9973af10727ad4b44f26703bf3e9fdc323528660a7590efe3aa9ad5042b4584c0deed84ba443f61c9d6f02dade54a5a5d3c95e306a1e1630f8374ae6db16c06d
-  languageName: node
-  linkType: hard
-
-"commander@npm:^8.3.0":
-  version: 8.3.0
-  resolution: "commander@npm:8.3.0"
-  checksum: 10/6b7b5d334483ce24bd73c5dac2eab901a7dbb25fd983ea24a1eeac6e7166bb1967f641546e8abf1920afbde86a45fbfe5812fbc69d0dc451bb45ca416a12a3a3
   languageName: node
   linkType: hard
 
@@ -8610,7 +8610,7 @@ __metadata:
     browserslist: "npm:^4.21.3"
     browserstack-local: "npm:^1.5.1"
     caniuse-lite: "npm:^1.0.30001384"
-    commander: "npm:^8.3.0"
+    commander: "npm:^14.0.2"
     css-loader: "npm:^6.7.1"
     cssnano: "npm:^5.1.13"
     eslint: "npm:^8.23.0"
