@@ -102,5 +102,5 @@ export const calculateSize = function(
  * https://github.com/KaTeX/KaTeX/pull/2460.
  */
 export const makeEm = function(n: number): string {
-    return +n.toFixed(4) + "em";
+    return n.toFixed(2) + "em";
 };
