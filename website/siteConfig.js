@@ -190,6 +190,11 @@ const users = [
         image: 'https://github.com/zzllrr/mather/raw/master/img/logo.jpg',
         infoLink: 'https://github.com/zzllrr/mather',
     },
+    {
+        caption: 'Educase Tools',
+        image: 'https://images.educasetools.com/educase-logos/educase-primary-transparent-logo.png',
+        infoLink: 'https://www.educasetools.com',
+    }
 ];
 
 const {version} = require('../package.json');
