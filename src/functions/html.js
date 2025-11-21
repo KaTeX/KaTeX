@@ -52,12 +52,14 @@ defineFunction({
             case "\\htmlData": {
                 const data = value.split(",");
                 for (let i = 0; i < data.length; i++) {
-                    const keyVal = data[i].split("=");
-                    if (keyVal.length !== 2) {
+                    const keyVal = data[i].split(/=(.*)/s);
+                    if (keyVal.length !== 3) {
+                        // if data[i] contains no equals sign, `keyVal` is `[data[i]]`
                         throw new ParseError(
-                            "Error parsing key-value for \\htmlData");
+                            "Error parsing key-value for \\htmlData, there was no equals sign at all");
                     }
                     attributes["data-" + keyVal[0].trim()] = keyVal[1].trim();
+                    // keyVal[2] is the empty string
                 }
 
                 trustContext = {
