@@ -53,18 +53,18 @@ defineFunction({
                 const data = value.split(",");
                 for (let i = 0; i < data.length; i++) {
                     const indexFirstEq = data[i].indexOf("=");
-                    const keyVal = [
-                            data[i].substring(0, indexFirstEq),
-                            data[i].substring(indexFirstEq + 1),
-                        ];
-                    const keyVal = data[i].split(/=(.*)/s);
-                    if (keyVal.length !== 3) {
-                        // if data[i] contains no equals sign, `keyVal` is `[data[i]]`
+
+                    if (indexFirstEq === -1) {
                         throw new ParseError(
                             "Error parsing key-value for \\htmlData, there was no equals sign at all");
                     }
+                    
+                    const keyVal = [
+                        data[i].substring(0, indexFirstEq),
+                        data[i].substring(indexFirstEq + 1),
+                    ];
+            
                     attributes["data-" + keyVal[0].trim()] = keyVal[1].trim();
-                    // keyVal[2] is the empty string
                 }
 
                 trustContext = {
