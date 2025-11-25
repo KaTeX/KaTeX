@@ -52,11 +52,18 @@ defineFunction({
             case "\\htmlData": {
                 const data = value.split(",");
                 for (let i = 0; i < data.length; i++) {
-                    const keyVal = data[i].split("=");
-                    if (keyVal.length !== 2) {
+                    const indexFirstEq = data[i].indexOf("=");
+
+                    if (indexFirstEq === -1) {
                         throw new ParseError(
-                            "Error parsing key-value for \\htmlData");
+                            "Error parsing key-value for \\htmlData, there was no equals sign at all");
                     }
+                    
+                    const keyVal = [
+                        data[i].substring(0, indexFirstEq),
+                        data[i].substring(indexFirstEq + 1),
+                    ];
+            
                     attributes["data-" + keyVal[0].trim()] = keyVal[1].trim();
                 }
 

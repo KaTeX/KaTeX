@@ -2215,6 +2215,41 @@ describe("An HTML extension builder", function() {
     });
 });
 
+describe("The \\htmlData macro", function() {
+    const trustNonStrictSettings = new Settings({trust: true, strict: false});
+    it("should not fail if an argument contains a single equals sign", function() {
+        expect("\\htmlData{foo=a}{x}").toBuild(trustNonStrictSettings);
+    });
+
+    it("should not fail if an argument contains a multiple equals signs", function() {
+        expect("\\htmlData{foo=a=b}{x}").toBuild(trustNonStrictSettings);
+    });
+
+    it("should accept empty values", function() {
+        expect("\\htmlData{foo=}{x}").toBuild(trustNonStrictSettings);
+    });
+
+    it("should accept empty keys", function() {
+        expect("\\htmlData{=a}{x}").toBuild(trustNonStrictSettings);
+    });
+
+    it("should throw Error if an argument contains no equals signs", function() {
+        try {
+            katex.renderToString(
+                "\\htmlData{foo}{x}", trustNonStrictSettings);
+
+            // Render is expected to throw, so this should not be called.
+            expect(true).toBe(false);
+        } catch (error) {
+            expect(error).toBeInstanceOf(ParseError);
+            const message =
+                "Error parsing key-value for \\htmlData, there was no equals sign at all";
+            expect(error.message).toBe(`KaTeX parse error: ${message}`);
+            expect(error.rawMessage).toBe(message);
+        }
+    });
+});
+
 describe("A bin builder", function() {
     it("should create mbins normally", function() {
         const built = getBuilt`x + y`;
