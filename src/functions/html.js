@@ -52,6 +52,11 @@ defineFunction({
             case "\\htmlData": {
                 const data = value.split(",");
                 for (let i = 0; i < data.length; i++) {
+                    const indexFirstEq = data[i].indexOf("=");
+                    const keyVal = [
+                            data[i].substring(0, indexFirstEq),
+                            data[i].substring(indexFirstEq + 1),
+                        ];
                     const keyVal = data[i].split(/=(.*)/s);
                     if (keyVal.length !== 3) {
                         // if data[i] contains no equals sign, `keyVal` is `[data[i]]`
