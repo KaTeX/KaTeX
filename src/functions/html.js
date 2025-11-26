@@ -56,9 +56,9 @@ defineFunction({
 
                     if (indexFirstEq === -1) {
                         throw new ParseError(
-                            "Error parsing key-value for \\htmlData, there was no equals sign at all");
+                            "Error parsing key-value for \\htmlData, no equals sign at all");
                     }
-                    
+
                     const keyVal = [
                         data[i].substring(0, indexFirstEq),
                         data[i].substring(indexFirstEq + 1),
