@@ -63,7 +63,7 @@ defineFunction({
                         data[i].substring(0, indexFirstEq),
                         data[i].substring(indexFirstEq + 1),
                     ];
-            
+
                     attributes["data-" + keyVal[0].trim()] = keyVal[1].trim();
                 }
 
