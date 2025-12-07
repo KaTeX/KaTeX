@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.26](https://github.com/KaTeX/KaTeX/compare/v0.16.25...v0.16.26) (2025-12-07)
+
+
+### Bug Fixes
+
+* \mathop followed by integral symbol ([6fbad18](https://github.com/KaTeX/KaTeX/commit/6fbad18857351e4d2a88ed3e3348bd76caad9be3))
+
 ## [0.16.25](https://github.com/KaTeX/KaTeX/compare/v0.16.24...v0.16.25) (2025-10-13)
 
 
