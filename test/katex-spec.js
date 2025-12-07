@@ -2221,8 +2221,10 @@ describe("The \\htmlData macro", function() {
         expect("\\htmlData{foo=a}{x}").toBuild(trustNonStrictSettings);
     });
 
-    it("should not fail if an argument contains a multiple equals signs", () => {
-        expect("\\htmlData{foo=a=b}{x}").toBuild(trustNonStrictSettings);
+    it("should allow equals signs in value", () => {
+        const built = getBuilt(
+            "\\htmlData{foo=a=b}{x}", trustNonStrictSettings);
+        expect(built[0].attributes["data-foo"]).toEqual("a=b");
     });
 
     it("should accept empty values", () => {

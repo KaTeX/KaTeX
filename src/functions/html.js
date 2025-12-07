@@ -53,13 +53,13 @@ defineFunction({
                 const data = value.split(",");
                 for (let i = 0; i < data.length; i++) {
                     const item = data[i];
-                    const equals = item.indexOf("=");
-                    if (equals < 0) {
+                    const firstEquals = item.indexOf("=");
+                    if (firstEquals < 0) {
                         throw new ParseError(`\\htmlData key/value '${item}'` +
                             ` missing equals sign`);
                     }
-                    const key = item.slice(0, equals);
-                    const value = item.slice(equals + 1);
+                    const key = item.slice(0, firstEquals);
+                    const value = item.slice(firstEquals + 1);
                     attributes["data-" + key.trim()] = value;
                 }
 
