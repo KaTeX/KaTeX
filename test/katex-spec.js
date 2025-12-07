@@ -1579,6 +1579,8 @@ describe("An op symbol builder", function() {
         expect`\oint\nolimits_i^n`.toBuild();
         expect`\oiint\nolimits_i^n`.toBuild();
         expect`\oiiint\nolimits_i^n`.toBuild();
+        expect`\mathop{\int}`.toBuild();
+        expect`\mathop \int`.toBuild();
     });
 });
 
