@@ -2217,23 +2217,29 @@ describe("An HTML extension builder", function() {
 
 describe("The \\htmlData macro", function() {
     const trustNonStrictSettings = new Settings({trust: true, strict: false});
-    it("should not fail if an argument contains a single equals sign", function() {
+    it("should not fail if an argument contains a single equals sign", () => {
         expect("\\htmlData{foo=a}{x}").toBuild(trustNonStrictSettings);
     });
 
-    it("should not fail if an argument contains a multiple equals signs", function() {
+    it("should not fail if an argument contains a multiple equals signs", () => {
         expect("\\htmlData{foo=a=b}{x}").toBuild(trustNonStrictSettings);
     });
 
-    it("should accept empty values", function() {
+    it("should accept empty values", () => {
         expect("\\htmlData{foo=}{x}").toBuild(trustNonStrictSettings);
     });
 
-    it("should accept empty keys", function() {
+    it("should accept empty keys", () => {
         expect("\\htmlData{=a}{x}").toBuild(trustNonStrictSettings);
     });
 
-    it("should throw Error if an argument contains no equals signs", function() {
+    it("should preserve spaces in value", () => {
+        const built = getBuilt(
+            "\\htmlData{foo= bar }{x}", trustNonStrictSettings);
+        expect(built[0].attributes["data-foo"]).toEqual(" bar ");
+    });
+
+    it("should throw Error if an argument contains no equals signs", () => {
         try {
             katex.renderToString(
                 "\\htmlData{foo}{x}", trustNonStrictSettings);
@@ -2243,7 +2249,7 @@ describe("The \\htmlData macro", function() {
         } catch (error) {
             expect(error).toBeInstanceOf(ParseError);
             const message =
-                "Error parsing key-value for \\htmlData, there was no equals sign at all";
+                "\\htmlData key/value 'foo' missing equals sign";
             expect(error.message).toBe(`KaTeX parse error: ${message}`);
             expect(error.rawMessage).toBe(message);
         }
