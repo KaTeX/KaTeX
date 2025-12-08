@@ -220,10 +220,31 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
-     * Consume the specified number of (delimited) arguments from the token
-     * stream and return the resulting array of arguments.
+     * Consume the specified number of (delimited *or* defaulted) arguments
+     * from the token stream and return the resulting array of arguments.
      */
-    consumeArgs(numArgs: number, delimiters?: string[][]): Token[][] {
+    consumeArgs(numArgs: number, delimiters?: string[][], defaultArgs?: Token[][]): Token[][] {
+        const args: Token[][] = [];
+        if (defaultArgs) {
+            let scanning = true;
+            let j = defaultArgs.length;
+            for (let i = 0; i < j; i++) {
+                if (scanning) {
+                    this.consumeSpaces(); // \@ifnextchar gobbles any space following it
+                    if (this.future().text !== "[") {
+                        scanning = false;
+                    }
+                }
+                if (scanning) {
+                    this.popToken(); // don't include [ in tokens
+                    args.push(this.consumeArg(["]"]).tokens);
+                } else {
+                    args.push(defaultArgs[i]);
+                }
+            }
+            numArgs = numArgs - j;
+        }
+
         if (delimiters) {
             if (delimiters.length !== numArgs + 1) {
                 throw new ParseError(
@@ -239,7 +260,6 @@ export default class MacroExpander implements MacroContextInterface {
             }
         }
 
-        const args: Token[][] = [];
         for (let i = 0; i < numArgs; i++) {
             args.push(this.consumeArg(delimiters && delimiters[i + 1]).tokens);
         }
@@ -291,7 +311,7 @@ export default class MacroExpander implements MacroContextInterface {
         }
         this.countExpansion(1);
         let tokens = expansion.tokens;
-        const args = this.consumeArgs(expansion.numArgs, expansion.delimiters);
+        const args = this.consumeArgs(expansion.numArgs, expansion.delimiters, expansion.defaultArgs);
         if (expansion.numArgs) {
             // paste arguments in place of the placeholders
             tokens = tokens.slice(); // make a shallow copy
