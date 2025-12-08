@@ -46,6 +46,11 @@ const users = [
         infoLink: 'https://pandao.github.io/editor.md/en.html',
     },
     {
+        caption: 'Educase Tools',
+        image: 'https://images.educasetools.com/educase-logos/educase-primary-transparent-logo.png',
+        infoLink: 'https://www.educasetools.com',
+    },
+    {
         caption: 'Expii',
         image: '/img/expii_logo.png',
         infoLink: 'https://www.expii.com/',
@@ -190,11 +195,6 @@ const users = [
         image: 'https://github.com/zzllrr/mather/raw/master/img/logo.jpg',
         infoLink: 'https://github.com/zzllrr/mather',
     },
-    {
-        caption: 'Educase Tools',
-        image: 'https://images.educasetools.com/educase-logos/educase-primary-transparent-logo.png',
-        infoLink: 'https://www.educasetools.com',
-    }
 ];
 
 const {version} = require('../package.json');
