@@ -103,7 +103,7 @@ const users = [
     {
         caption: 'MintApps',
         image: 'https://mintapps.org/favicon196.png',
-        infoLink: 'https://mintapps.org'
+        infoLink: 'https://mintapps.org',
     },
     {
         caption: 'MonsterWriter',
