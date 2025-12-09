@@ -1529,6 +1529,22 @@ $extra{'Main-Regular'} = {
     'Select(0u20D7)','SetRBearing(153,1)',    # \vec
   ],
 
+  capitalgreek => [
+    'Select(0u41)', 'CopyReference()', 'Select(0u0391)', 'Paste()',  # \Alpha = A
+    'Select(0u42)', 'CopyReference()', 'Select(0u0392)', 'Paste()',  # \Beta = B
+    'Select(0u45)', 'CopyReference()', 'Select(0u0395)', 'Paste()',  # \Epsilon = E
+    'Select(0u5A)', 'CopyReference()', 'Select(0u0396)', 'Paste()',  # \Zeta = Z
+    'Select(0u48)', 'CopyReference()', 'Select(0u0397)', 'Paste()',  # \Eta = H
+    'Select(0u49)', 'CopyReference()', 'Select(0u0399)', 'Paste()',  # \Iota = I
+    'Select(0u4B)', 'CopyReference()', 'Select(0u039A)', 'Paste()',  # \Kappa = K
+    'Select(0u4D)', 'CopyReference()', 'Select(0u039C)', 'Paste()',  # \Mu = M
+    'Select(0u4E)', 'CopyReference()', 'Select(0u039D)', 'Paste()',  # \Nu = N
+    'Select(0u4F)', 'CopyReference()', 'Select(0u039F)', 'Paste()',  # \Omicron = O
+    'Select(0u50)', 'CopyReference()', 'Select(0u03A1)', 'Paste()',  # \Rho = P
+    'Select(0u54)', 'CopyReference()', 'Select(0u03A4)', 'Paste()',  # \Tau = T
+    'Select(0u58)', 'CopyReference()', 'Select(0u03A7)', 'Paste()',  # \Chi = X
+  ],
+
 };
 
 $extra{'Main-Bold'} = {
@@ -1802,12 +1818,22 @@ $extra{'Main-Bold'} = {
     'Select(0uB0)',  'SetRBearing(-147,1)',   # \degree
     'Select(0u20D7)','SetRBearing(154,1)',    # \vec
   ],
+
+  capitalgreek => $extra{'Main-Regular'}{'capitalgreek'},
+
 };
 
 $extra{'Main-Italic'} = {
   diacriticals => [
     'Select(0uB0)',  'SetRBearing(-160,1)',   # \degree
   ],
+
+  capitalgreek => $extra{'Main-Regular'}{'capitalgreek'},
+
+};
+
+$extra{'Main-BoldItalic'} = {
+  capitalgreek => $extra{'Main-Regular'}{'capitalgreek'},
 };
 
 $extra{'Size1'} = {
@@ -1884,24 +1910,36 @@ $extra{'Typewriter'} = {
     'Select(0uA0)','Clear()',
     'SetRBearing(525)',
   ],
+
+  capitalgreek => $extra{'Main-Regular'}{'capitalgreek'},
+
 };
 
 $extra{"SansSerif-Regular"} = {
   diacriticals => [
     'Select(0uB0)',  'SetRBearing(-142,1)',   # \degree
   ],
+
+  capitalgreek => $extra{'Main-Regular'}{'capitalgreek'},
+
 };
 
 $extra{"SansSerif-Italic"} = {
   diacriticals => [
     'Select(0uB0)',  'SetRBearing(-113,1)',   # \degree
   ],
+
+  capitalgreek => $extra{'Main-Regular'}{'capitalgreek'},
+
 };
 
 $extra{"SansSerif-Bold"} = {
   diacriticals => [
     'Select(0uB0)',  'SetRBearing(-58,1)',   # \degree
   ],
+
+  capitalgreek => $extra{'Main-Regular'}{'capitalgreek'},
+
 };
 
 #########################################################################
