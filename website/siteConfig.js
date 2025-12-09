@@ -107,7 +107,7 @@ const users = [
     },
     {
         caption: 'MintApps',
-        image: 'https://mintapps.org/favicon196.png',
+        image: '/img/mintapps_logo.png',
         infoLink: 'https://mintapps.org',
     },
     {
