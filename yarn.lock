@@ -3454,6 +3454,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ansis@npm:1.5.2":
+  version: 1.5.2
+  resolution: "ansis@npm:1.5.2"
+  checksum: 10/1b828d0fa311de30d383e75ca1141f30b2398cf2c3f4913a48ef4085ef917d9249aef001f711b0559ecf2e3b6427be0b3983c21360111399661e62216ae79e43
+  languageName: node
+  linkType: hard
+
 "anymatch@npm:^3.0.3, anymatch@npm:~3.1.2":
   version: 3.1.2
   resolution: "anymatch@npm:3.1.2"
@@ -8345,13 +8352,13 @@ __metadata:
   linkType: hard
 
 "js-yaml@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "js-yaml@npm:4.1.0"
+  version: 4.1.1
+  resolution: "js-yaml@npm:4.1.1"
   dependencies:
     argparse: "npm:^2.0.1"
   bin:
     js-yaml: bin/js-yaml.js
-  checksum: 10/c138a34a3fd0d08ebaf71273ad4465569a483b8a639e0b118ff65698d257c2791d3199e3f303631f2cb98213fa7b5f5d6a4621fd0fff819421b990d30d967140
+  checksum: 10/a52d0519f0f4ef5b4adc1cde466cb54c50d56e2b4a983b9d5c9c0f2f99462047007a6274d7e95617a21d3c91fde3ee6115536ed70991cd645ba8521058b78f77
   languageName: node
   linkType: hard
 
@@ -8654,6 +8661,7 @@ __metadata:
     webpack-bundle-analyzer: "npm:^4.6.1"
     webpack-cli: "npm:^4.10.0"
     webpack-dev-server: "npm:^4.10.1"
+    webpack-remove-empty-scripts: "npm:^1.0.4"
   bin:
     katex: cli.js
   languageName: unknown
@@ -13939,6 +13947,17 @@ __metadata:
     clone-deep: "npm:^4.0.1"
     wildcard: "npm:^2.0.0"
   checksum: 10/c22812671a93d938bed21c02461d0efb0a7ec0b0f5e7cf28853b2c428a9ad947a26076e97243b1d9cb1cc5a3f92f24e467fc442f03f6e583d082bb3f3f460baf
+  languageName: node
+  linkType: hard
+
+"webpack-remove-empty-scripts@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "webpack-remove-empty-scripts@npm:1.0.4"
+  dependencies:
+    ansis: "npm:1.5.2"
+  peerDependencies:
+    webpack: ">=5.32.0"
+  checksum: 10/2028235a7de344efb629a82f5e7e9adb6e7f8c1e5a84f8d693249142e9b8f7dfb2a4f6dbd89bf4e5781ddeccda5b160c812f6c17088c5b475d8880be88c5c56b
   languageName: node
   linkType: hard
 

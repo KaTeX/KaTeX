@@ -178,7 +178,7 @@ export default class Parser {
      * Parses an "expression", which is a list of atoms.
      *
      * `breakOnInfix`: Should the parsing stop when we hit infix nodes? This
-     *                 happens when functions have higher precedence han infix
+     *                 happens when functions have higher precedence than infix
      *                 nodes in implicit parses.
      *
      * `breakOnTokenText`: The text of the token that the expression should end
@@ -680,7 +680,9 @@ export default class Parser {
         if (res == null) {
             return null;
         }
-        const match = (/^(#[a-f0-9]{3}|#?[a-f0-9]{6}|[a-z]+)$/i).exec(res.text);
+        const match = (
+            /^(#[a-f0-9]{3,4}|#[a-f0-9]{6}|#[a-f0-9]{8}|[a-f0-9]{6}|[a-z]+)$/i
+        ).exec(res.text);
         if (!match) {
             throw new ParseError("Invalid color: '" + res.text + "'", res);
         }

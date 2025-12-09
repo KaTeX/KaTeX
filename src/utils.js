@@ -7,13 +7,6 @@
 import type {AnyParseNode} from "./parseNode";
 
 /**
- * Return whether an element is contained in a list
- */
-const contains = function<T>(list: Array<T>, elem: T): boolean {
-    return list.indexOf(elem) !== -1;
-};
-
-/**
  * Provide a default value if a setting is undefined
  * NOTE: Couldn't use `T` as the output type due to facebook/flow#5022.
  */
@@ -120,7 +113,6 @@ export const protocolFromUrl = function(url: string): string | null {
 };
 
 export default {
-    contains,
     deflt,
     escape,
     hyphenate,

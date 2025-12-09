@@ -843,7 +843,7 @@ describe("A color parser", function() {
     const customColorExpression2 = r`\textcolor{#fA6fA6}{x}`;
     const customColorExpression3 = r`\textcolor{fA6fA6}{x}`;
     const badCustomColorExpression1 = r`\textcolor{bad-color}{x}`;
-    const badCustomColorExpression2 = r`\textcolor{#fA6f}{x}`;
+    const badCustomColorExpression2 = r`\textcolor{#fA6f1}{x}`;
     const badCustomColorExpression3 = r`\textcolor{#gA6}{x}`;
     const oldColorExpression = r`\color{#fA6}xy`;
 
@@ -909,6 +909,34 @@ describe("A color parser", function() {
             macros: macros,
         });
         expect(macros).toEqual({});
+    });
+});
+
+describe("Alpha hex color parser", function() {
+    const alphaColorExpression1 = r`\textcolor{#ff000080}{x}`;
+    const alphaColorExpression2 = r`\textcolor{#1234ABCD}{z}`;
+    const alphaColorExpression3 = r`\textcolor{#abc8}{w}`; // 4-digit with alpha
+
+    it("should correctly extract alpha hex colors", function() {
+        const parse1 = getParsed(alphaColorExpression1)[0];
+        const parse2 = getParsed(alphaColorExpression2)[0];
+        const parse3 = getParsed(alphaColorExpression3)[0];
+
+        expect(parse1.color).toEqual("#ff000080");
+        expect(parse2.color).toEqual("#1234ABCD");
+        expect(parse3.color).toEqual("#abc8");
+    });
+
+    it("should not parse invalid alpha hex colors", function() {
+        expect(r`\textcolor{#ff00008g}{x}`).not.toParse();
+        expect(r`\textcolor{#ff00008}{x}`).not.toParse();
+        expect(r`\textcolor{#ff000080f}{x}`).not.toParse();
+    });
+
+    it("should build correctly with alpha colors", function() {
+        expect(alphaColorExpression1).toBuild();
+        expect(alphaColorExpression2).toBuild();
+        expect(alphaColorExpression3).toBuild();
     });
 });
 
@@ -1551,6 +1579,8 @@ describe("An op symbol builder", function() {
         expect`\oint\nolimits_i^n`.toBuild();
         expect`\oiint\nolimits_i^n`.toBuild();
         expect`\oiiint\nolimits_i^n`.toBuild();
+        expect`\mathop{\int}`.toBuild();
+        expect`\mathop \int`.toBuild();
     });
 });
 
@@ -2183,6 +2213,49 @@ describe("An HTML extension builder", function() {
                 expect(error.message).toBe(`KaTeX parse error: ${message}`);
                 expect(error.rawMessage).toBe(message);
             }
+        }
+    });
+});
+
+describe("The \\htmlData macro", function() {
+    const trustNonStrictSettings = new Settings({trust: true, strict: false});
+    it("should not fail if an argument contains a single equals sign", () => {
+        expect("\\htmlData{foo=a}{x}").toBuild(trustNonStrictSettings);
+    });
+
+    it("should allow equals signs in value", () => {
+        const built = getBuilt(
+            "\\htmlData{foo=a=b}{x}", trustNonStrictSettings);
+        expect(built[0].attributes["data-foo"]).toEqual("a=b");
+    });
+
+    it("should accept empty values", () => {
+        expect("\\htmlData{foo=}{x}").toBuild(trustNonStrictSettings);
+    });
+
+    it("should accept empty keys", () => {
+        expect("\\htmlData{=a}{x}").toBuild(trustNonStrictSettings);
+    });
+
+    it("should preserve spaces in value", () => {
+        const built = getBuilt(
+            "\\htmlData{foo= bar }{x}", trustNonStrictSettings);
+        expect(built[0].attributes["data-foo"]).toEqual(" bar ");
+    });
+
+    it("should throw Error if an argument contains no equals signs", () => {
+        try {
+            katex.renderToString(
+                "\\htmlData{foo}{x}", trustNonStrictSettings);
+
+            // Render is expected to throw, so this should not be called.
+            expect(true).toBe(false);
+        } catch (error) {
+            expect(error).toBeInstanceOf(ParseError);
+            const message =
+                "\\htmlData key/value 'foo' missing equals sign";
+            expect(error.message).toBe(`KaTeX parse error: ${message}`);
+            expect(error.rawMessage).toBe(message);
         }
     });
 });
@@ -3652,6 +3725,18 @@ describe("A macro expander", function() {
             "\\int": {
                 tokens: [{text: "\\limits"}, {text: "\\Oldint"}],
                 numArgs: 0,
+            },
+        }});
+    });
+
+    it("macros argument can simulate \\def with arguments", () => {
+        expect`\t x`.toParseLike("\\text{x}", {macros: {
+            "\\t": {
+                tokens: [
+                    {text: "}"}, {text: "1"}, {text: "#"}, {text: "{"},
+                    {text: "\\text"},
+                ],
+                numArgs: 1,
             },
         }});
     });

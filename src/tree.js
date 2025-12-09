@@ -1,7 +1,5 @@
 // @flow
 
-import utils from "./utils";
-
 import type {CssStyle, HtmlDomNode} from "./domTree";
 import type {MathDomNode} from "./mathMLTree";
 
@@ -21,7 +19,6 @@ export interface VirtualNode {
 export class DocumentFragment<ChildType: VirtualNode>
     implements HtmlDomNode, MathDomNode {
     children: $ReadOnlyArray<ChildType>;
-    // HtmlDomNode
     classes: string[];
     height: number;
     depth: number;
@@ -38,7 +35,7 @@ export class DocumentFragment<ChildType: VirtualNode>
     }
 
     hasClass(className: string): boolean {
-        return utils.contains(this.classes, className);
+        return this.classes.includes(className);
     }
 
     /** Convert the fragment into a node. */

@@ -1,6 +1,41 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.27](https://github.com/KaTeX/KaTeX/compare/v0.16.26...v0.16.27) (2025-12-07)
+
+
+### Features
+
+* support equals sign and surrounding whitespace in \htmlData attribute values ([#4112](https://github.com/KaTeX/KaTeX/issues/4112)) ([c77aaec](https://github.com/KaTeX/KaTeX/commit/c77aaec00c766f5bb02e332a1dc416b82a65fe8f))
+
+## [0.16.26](https://github.com/KaTeX/KaTeX/compare/v0.16.25...v0.16.26) (2025-12-07)
+
+
+### Bug Fixes
+
+* \mathop followed by integral symbol ([6fbad18](https://github.com/KaTeX/KaTeX/commit/6fbad18857351e4d2a88ed3e3348bd76caad9be3))
+
+## [0.16.25](https://github.com/KaTeX/KaTeX/compare/v0.16.24...v0.16.25) (2025-10-13)
+
+
+### Features
+
+* **css:** provide `katex-swap.css` that uses `font-display: swap` ([#3940](https://github.com/KaTeX/KaTeX/issues/3940)) ([b3f9ce6](https://github.com/KaTeX/KaTeX/commit/b3f9ce691e89a52dea7ec8f10cc6ed4ddc8fc161)), closes [#2242](https://github.com/KaTeX/KaTeX/issues/2242)
+
+## [0.16.24](https://github.com/KaTeX/KaTeX/compare/v0.16.23...v0.16.24) (2025-10-12)
+
+
+### Features
+
+* support hex colors with alpha ([#4090](https://github.com/KaTeX/KaTeX/issues/4090)) ([8c9b306](https://github.com/KaTeX/KaTeX/commit/8c9b3063965acc0d6e6a0b6df4d051169de9e1a9)), closes [#4067](https://github.com/KaTeX/KaTeX/issues/4067) [#fA6](https://github.com/KaTeX/KaTeX/issues/fA6) [#fA6f1](https://github.com/KaTeX/KaTeX/issues/fA6f1)
+
+## [0.16.23](https://github.com/KaTeX/KaTeX/compare/v0.16.22...v0.16.23) (2025-10-03)
+
+
+### Bug Fixes
+
+* Support `\def` with arguments via `macros` option ([#4087](https://github.com/KaTeX/KaTeX/issues/4087)) ([80a8158](https://github.com/KaTeX/KaTeX/commit/80a815856a8c26d78b3669e9c05fff00efe82247))
+
 ## [0.16.22](https://github.com/KaTeX/KaTeX/compare/v0.16.21...v0.16.22) (2025-04-09)
 
 
