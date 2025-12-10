@@ -4,6 +4,18 @@ body {
     font-size: 24px;
 }
 
+main {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    grid-template-rows: 1fr 2fr;
+    height: 100vh;
+}
+
+#math-container {
+    border-left: 2px solid #000;
+    padding-left: 10px;
+}
+
 #math {
     font-size: 72px;
 }
@@ -13,4 +25,34 @@ body {
     font-size: 100%;
     width: 100%;
     box-sizing: border-box;
+    color: #fff;
+    background-color: #000;
+}
+
+#options-panel {
+    padding: 1rem;
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(7, 1fr) repeat(3, 2fr) 1fr;
+
+    select {
+        font-size: 16px;
+        cursor: pointer;
+    }
+}
+
+.inputs {
+    grid-column: 1 / -1;
+
+    textarea {
+        margin-top: 5px;
+        width: 80%;
+        height: 70px;
+    }
+}
+
+#permalink {
+    font-size: 16px;
+    cursor: pointer;
 }

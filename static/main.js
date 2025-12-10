@@ -4,100 +4,106 @@
  */
 import katex from '../katex.webpack.js';
 import './main.css';
-import queryString from 'query-string';
 
 function init() {
     const input = document.getElementById("input");
-    let math = document.getElementById("math");
+    const math = document.getElementById("math");
     const permalink = document.getElementById("permalink");
+    const beforeContentElement = document.getElementById("before-content");
+    const afterContentElement = document.getElementById("after-content");
 
-    input.addEventListener("input", reprocess, false);
-    permalink.addEventListener("click", setSearch);
+    const options = {
+        displayMode: true,
+        leqno: false,
+        fleqn: false,
+        throwOnError: true,
+        strict: 'warn',
+        output: 'htmlAndMathml',
+        trust: true,
+        macros: '',
+        before: '',
+        after: '',
+    };
 
-    const options = {displayMode: true, throwOnError: true, trust: true};
-    const macros = {};
-    const query = queryString.parse(window.location.search);
+    let permalinkData = {};
 
-    if (query.text) {
-        input.value = query.text;
-    }
-
-    // Use `display=0` or `displayMode=0` (or `=f`/`=false`/`=n`/`=no`)
-    // to turn off displayMode (which is on by default).
-    const displayQuery = (query.displayMode || query.display);
-    if (displayQuery && displayQuery.match(/^(0|f|n)/)) {
-        options.displayMode = false;
-    }
-
-    // Use `leqno=1` (or `=t`/`=true`/`=y`/`=yes`) to put tags on left side.
-    if (query.leqno && query.leqno.match(/^(1|t|y)/)) {
-        options.leqno = true;
-    }
-
-    // Use `fleqn=1` (or `=t`/`=true`/`=y`/`=yes`) to put tags on left side.
-    if (query.fleqn && query.fleqn.match(/^(1|t|y)/)) {
-        options.fleqn = true;
-    }
-
-    // Use `strict=warn` for warning strict mode or `strict=error`
-    // (or `=1`/`=t`/`=true`/`=y`/`=yes`)
-    // to turn off displayMode (which is on by default).
-    if (query.strict) {
-        if (query.strict.match(/^(1|t|y|e)/)) {
-            options.strict = "error";
-        } if (query.strict && query.strict.match(/^(w)/)) {
-            options.strict = "warn";
-        }
-    }
-
-    // Use `trust=0` (or `=f`/`=false`/`=n`/`=no`) to not trust input.
-    if (query.trust && query.trust.match(/^(0|f|n)/)) {
-        options.trust = false;
-    }
-
-    // The `before` or `pre` search parameter puts normal text before the math.
-    // The `after` or `post` search parameter puts normal text after the math.
-    // Example use: testing baseline alignment.
-    if (query.before || query.after || query.pre || query.post) {
-        const mathContainer = math;
-        mathContainer.id = "math-container";
-
-        if (query.before || query.pre) {
-            const before = document.createTextNode(query.before || query.pre);
-            mathContainer.appendChild(before);
-        }
-
-        math = document.createElement("span");
-        math.id = "math";
-        mathContainer.appendChild(math);
-
-        if (query.after || query.post) {
-            const after = document.createTextNode(query.after || query.post);
-            mathContainer.appendChild(after);
-        }
-    }
-
-    // Macros can be specified via `\command=expansion` or single-character
-    // `c=expansion`.
-    Object.getOwnPropertyNames(query).forEach((key) => {
-        if (key.match(/^\\|^[^]$/)) {
-            macros[key] = query[key];
-        }
+    input.addEventListener("input", reprocess, options);
+    permalink.addEventListener("click", function() {
+        permalinkData = Object.assign({}, options, {code: input.value});
+        const encodedData = encodeURIComponent(JSON.stringify(permalinkData));
+        window.history.replaceState({}, '', `?data=${encodedData}`);
     });
+
+    const match = window.location.search.match(/[?&]data=([^&]*)/);
+
+    if (match) {
+        try {
+            permalinkData = JSON.parse(decodeURIComponent(match[1]));
+        } catch (e) {
+            console.warn(e);
+        }
+    }
+
+    if (permalinkData.code) {
+        input.value = permalinkData.code;
+    }
+
+    for (const id in options) {
+        if (!options.hasOwnProperty(id)) {
+            continue;
+        }
+
+        const element = document.getElementById(id);
+
+        if (element.type === "checkbox") {
+            element.addEventListener('change', function() {
+                const key = this.id;
+                options[key] = this.checked;
+            });
+            element.checked = permalinkData[id] ?? options[id];
+            options[id] = element.checked;
+        }
+
+        if (element.type === "select-one") {
+            element.addEventListener('change', function() {
+                const key = this.id;
+                options[key] = this.value;
+            });
+            element.value = permalinkData[id] ?? options[id];
+            options[id] = element.value;
+        }
+
+        if (element.type === "textarea") {
+            if (permalinkData[id]) {
+                element.value = permalinkData[id];
+            }
+
+            element.addEventListener('change', function() {
+                const key = this.id;
+                options[key] = this.value;
+            });
+        }
+
+        element.addEventListener("change", reprocess);
+    }
+
+    if (permalinkData.before) {
+        beforeContentElement.innerText = permalinkData.before;
+        options.before = permalinkData.before;
+    }
+
+    if (permalinkData.after) {
+        afterContentElement.innerText = permalinkData.after;
+        options.after = permalinkData.after;
+    }
 
     reprocess();
 
-    function setSearch() {
-        const query = queryString.parse(window.location.search);
-        query.text = input.value;
-        window.location.search = queryString.stringify(query);
-    }
-
     function reprocess() {
-        // Ignore changes to global macros caused by the expression
-        options.macros = Object.assign({}, macros);
         try {
             katex.render(input.value, math, options);
+            beforeContentElement.innerText = options.before || '';
+            afterContentElement.innerText = options.after || '';
         } catch (e) {
             if (e.__proto__ === katex.ParseError.prototype) {
                 console.error(e);
