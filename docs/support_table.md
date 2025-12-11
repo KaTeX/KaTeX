@@ -360,6 +360,7 @@ use `\ce` instead|
 |\downharpoonleft|$\downharpoonleft$||
 |\downharpoonright|$\downharpoonright$||
 |{drcases}|$\begin{drcases}a&\text{if }b\\c&\text{if }d\end{drcases}$|`\begin{drcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{drcases}`|
+|\dv|$\dv{f}{t} \dv[2]{y}{x}$|`\dv{f}{t} \dv[2]{y}{x}`|
 
 ## E
 
@@ -791,6 +792,7 @@ use `\ce` instead|
 |\O|$\text{\O}$|`\text{\O}`|
 |\o|$\text{\o}$|`\text{\o}`|
 |\odot|$\odot$||
+|\odv|$\odv{f}{t} \odv[2]{y}{x}$|`\odv{f}{t} \odv[2]{y}{x}`|
 |\OE|$\text{\OE}$|`\text{\OE}`|
 |\oe|$\text{\oe}$|`\text{\oe}`|
 |\officialeuro|<span style="color:firebrick;">Not supported</span>||
@@ -837,6 +839,7 @@ use `\ce` instead|
 |\parallel|$\parallel$||
 |\part|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
 |\partial|$\partial$||
+|\pdv|$\pdv{f}{t} \pdv[2,2][4]{\psi}{x, y}$|`\pdv{f}{t} \pdv[2,2][4]{\psi}{x, y}`|
 |\perp|$\perp$||
 |\phantom|$\Gamma^{\phantom{i}j}_{i\phantom{j}k}$|`\Gamma^{\phantom{i}j}_{i\phantom{j}k}`|
 |\phase|$\phase{-78^\circ}$|`\phase{-78^\circ}`|
