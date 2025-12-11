@@ -4,7 +4,7 @@ import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import {SymbolNode} from "../domTree";
 import * as mathMLTree from "../mathMLTree";
-import Style from "../Style";
+import {DISPLAY} from "../Style";
 import {assembleSupSub} from "./utils/assembleSupSub";
 import {assertNodeType} from "../parseNode";
 import {makeEm} from "../units";
@@ -43,7 +43,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     const style = options.style;
 
     let large = false;
-    if (style.size === Style.DISPLAY.size &&
+    if (style.size === DISPLAY.size &&
         group.symbol &&
         !noSuccessor.includes(group.name)) {
 
