@@ -136,7 +136,7 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                             loader: 'sass-loader',
                             options: {
                                 sassOptions: {
-                                    outputStyle: 'expanded',
+                                    style: 'expanded',
                                 },
                                 additionalData: sassVariables,
                             },
