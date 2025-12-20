@@ -1,4 +1,7 @@
-@use 'katex' with (
+@use 'fonts.scss' with (
   $font-display: swap,
+);
+
+@use 'katex' with (
   $version: $version,
 );

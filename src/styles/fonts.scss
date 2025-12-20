@@ -1,3 +1,5 @@
+@use "sass:list";
+
 $font-folder: "../../fonts" !default;
 $use-woff2: true !default;
 $use-woff: true !default;
@@ -7,13 +9,13 @@ $font-display: block !default;
 @function generate-src($family, $family-suffix) {
     $src: null;
     @if $use-woff2 {
-        $src: append($src, url('#{$font-folder}/KaTeX_#{$family}-#{$family-suffix}.woff2') format('woff2'), comma);
+        $src: list.append($src, url('#{$font-folder}/KaTeX_#{$family}-#{$family-suffix}.woff2') format('woff2'), comma);
     }
     @if $use-woff {
-        $src: append($src, url('#{$font-folder}/KaTeX_#{$family}-#{$family-suffix}.woff') format('woff'), comma);
+        $src: list.append($src, url('#{$font-folder}/KaTeX_#{$family}-#{$family-suffix}.woff') format('woff'), comma);
     }
     @if $use-ttf {
-        $src: append($src, url('#{$font-folder}/KaTeX_#{$family}-#{$family-suffix}.ttf') format('truetype'), comma);
+        $src: list.append($src, url('#{$font-folder}/KaTeX_#{$family}-#{$family-suffix}.ttf') format('truetype'), comma);
     }
 
     @return $src;
