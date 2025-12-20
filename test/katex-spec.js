@@ -1579,6 +1579,8 @@ describe("An op symbol builder", function() {
         expect`\oint\nolimits_i^n`.toBuild();
         expect`\oiint\nolimits_i^n`.toBuild();
         expect`\oiiint\nolimits_i^n`.toBuild();
+        expect`\mathop{\int}`.toBuild();
+        expect`\mathop \int`.toBuild();
     });
 });
 
@@ -2211,6 +2213,49 @@ describe("An HTML extension builder", function() {
                 expect(error.message).toBe(`KaTeX parse error: ${message}`);
                 expect(error.rawMessage).toBe(message);
             }
+        }
+    });
+});
+
+describe("The \\htmlData macro", function() {
+    const trustNonStrictSettings = new Settings({trust: true, strict: false});
+    it("should not fail if an argument contains a single equals sign", () => {
+        expect("\\htmlData{foo=a}{x}").toBuild(trustNonStrictSettings);
+    });
+
+    it("should allow equals signs in value", () => {
+        const built = getBuilt(
+            "\\htmlData{foo=a=b}{x}", trustNonStrictSettings);
+        expect(built[0].attributes["data-foo"]).toEqual("a=b");
+    });
+
+    it("should accept empty values", () => {
+        expect("\\htmlData{foo=}{x}").toBuild(trustNonStrictSettings);
+    });
+
+    it("should accept empty keys", () => {
+        expect("\\htmlData{=a}{x}").toBuild(trustNonStrictSettings);
+    });
+
+    it("should preserve spaces in value", () => {
+        const built = getBuilt(
+            "\\htmlData{foo= bar }{x}", trustNonStrictSettings);
+        expect(built[0].attributes["data-foo"]).toEqual(" bar ");
+    });
+
+    it("should throw Error if an argument contains no equals signs", () => {
+        try {
+            katex.renderToString(
+                "\\htmlData{foo}{x}", trustNonStrictSettings);
+
+            // Render is expected to throw, so this should not be called.
+            expect(true).toBe(false);
+        } catch (error) {
+            expect(error).toBeInstanceOf(ParseError);
+            const message =
+                "\\htmlData key/value 'foo' missing equals sign";
+            expect(error.message).toBe(`KaTeX parse error: ${message}`);
+            expect(error.rawMessage).toBe(message);
         }
     });
 });
