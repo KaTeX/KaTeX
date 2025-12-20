@@ -1,5 +1,6 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword */
 @use "sass:list";
+@use "sass:math";
 @use "fonts.scss";
 
 // The mu unit is defined as 1/18 em
@@ -346,7 +347,7 @@ $display-margin: 1em 0 !default;
             @for $to from 1 through list.length($sizes) {
                 &.reset-size#{$from}.size#{$to} {
                     /* stylelint-disable-next-line */
-                    font-size: calc((list.nth($sizes, $to) / list.nth($sizes, $from)) * 1em);
+                    font-size: calc(math.div(list.nth($sizes, $to), list.nth($sizes, $from)) * 1em);
                 }
             }
         }
