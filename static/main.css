@@ -4,6 +4,23 @@ body {
     font-size: 24px;
 }
 
+main {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    grid-template-rows: 1fr 2fr;
+    height: 100vh;
+    transition: grid-template-columns 0.8s ease;
+
+    &:has(#options-panel.collapsed) {
+        grid-template-columns: 1fr 33fr;
+    }
+}
+
+#math-container {
+    border-left: 2px solid #000;
+    padding-left: 10px;
+}
+
 #math {
     font-size: 72px;
 }
@@ -13,4 +30,50 @@ body {
     font-size: 100%;
     width: 100%;
     box-sizing: border-box;
+    color: #fff;
+    background-color: #000;
+}
+
+#options-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(7, 1fr) repeat(3, 2fr) 1fr;
+
+    select {
+        font-size: 16px;
+        cursor: pointer;
+    }
+}
+
+#options-panel {
+    padding: 1rem;
+    grid-row: 1 / -1;
+    overflow: hidden;
+
+    &.collapsed {
+        #options-container {
+            visibility: hidden;
+        }
+    }
+
+    img {
+        width: 2rem;
+        height: auto;
+        cursor: pointer;
+        transition: transform 0.8s ease;
+
+        &.rotated {
+            transform: rotate(180deg);
+        }
+    }
+}
+
+.inputs {
+    grid-column: 1 / -1;
+
+    textarea {
+        margin-top: 5px;
+        width: 80%;
+        height: 70px;
+    }
 }
