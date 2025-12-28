@@ -81,12 +81,17 @@ function init() {
 
         if (element.type === "textarea") {
             if (permalinkData[id]) {
-                element.value = permalinkData[id];
+                element.value = JSON.stringify(permalinkData[id], null, 4);
+                options[id] = permalinkData[id];
+            } else {
+                options[id] = element.value;
             }
 
             element.addEventListener('change', function() {
                 const key = this.id;
-                options[key] = this.value;
+                key === 'macros' ?
+                    options[key] = JSON.parse(this.value)
+                    : options[key] = this.value;
             });
         }
 
