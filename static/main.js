@@ -9,6 +9,8 @@ function init() {
     const input = document.getElementById("input");
     const math = document.getElementById("math");
     const permalink = document.getElementById("permalink");
+    const gearIcon = document.querySelector('#options-panel img');
+    const optionsPanel = document.getElementById('options-panel');
     const beforeContentElement = document.getElementById("before-content");
     const afterContentElement = document.getElementById("after-content");
 
@@ -20,13 +22,17 @@ function init() {
         strict: 'warn',
         output: 'htmlAndMathml',
         trust: true,
-        macros: '',
+        macros: {},
         before: '',
         after: '',
     };
 
     let permalinkData = {};
 
+    gearIcon.addEventListener('click', function() {
+        gearIcon.classList.toggle('rotated');
+        optionsPanel.classList.toggle('collapsed');
+    });
     input.addEventListener("input", reprocess, options);
     permalink.addEventListener("click", function() {
         permalinkData = Object.assign({}, options, {code: input.value});
