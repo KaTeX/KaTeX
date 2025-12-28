@@ -8,7 +8,6 @@ import './main.css';
 function init() {
     const input = document.getElementById("input");
     const math = document.getElementById("math");
-    const permalink = document.getElementById("permalink");
     const gearIcon = document.querySelector('#options-panel img');
     const optionsPanel = document.getElementById('options-panel');
     const beforeContentElement = document.getElementById("before-content");
@@ -34,11 +33,12 @@ function init() {
         optionsPanel.classList.toggle('collapsed');
     });
     input.addEventListener("input", reprocess, options);
-    permalink.addEventListener("click", function() {
-        permalinkData = Object.assign({}, options, {code: input.value});
-        const encodedData = encodeURIComponent(JSON.stringify(permalinkData));
+
+    function updatePermalink() {
+        const data = Object.assign({}, options, {code: input.value});
+        const encodedData = encodeURIComponent(JSON.stringify(data));
         window.history.replaceState({}, '', `?data=${encodedData}`);
-    });
+    }
 
     const match = window.location.search.match(/[?&]data=([^&]*)/);
 
@@ -124,6 +124,8 @@ function init() {
                 throw e;
             }
         }
+
+        updatePermalink();
     }
 
     if (module.hot) {
