@@ -40,11 +40,12 @@ function init() {
         window.history.replaceState({}, '', `?data=${encodedData}`);
     }
 
-    const match = window.location.search.match(/[?&]data=([^&]*)/);
+    const urlParams = new URLSearchParams(window.location.search);
+    const data = urlParams.get('data');
 
-    if (match) {
+    if (data) {
         try {
-            permalinkData = JSON.parse(decodeURIComponent(match[1]));
+            permalinkData = JSON.parse(data);
         } catch (e) {
             console.warn(e);
         }
