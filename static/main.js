@@ -84,7 +84,9 @@ function init() {
                 element.value = JSON.stringify(permalinkData[id], null, 4);
                 options[id] = permalinkData[id];
             } else {
-                options[id] = element.value;
+                id === 'macros' ?
+                    options[id] = JSON.parse(element.value)
+                    : options[id] = element.value;
             }
 
             element.addEventListener('change', function() {
