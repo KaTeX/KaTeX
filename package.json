@@ -3,6 +3,7 @@
   "version": "0.16.27",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
+  "types": "types/katex.d.ts",
   "exports": {
     ".": {
       "require": {
