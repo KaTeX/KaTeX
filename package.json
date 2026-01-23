@@ -1,8 +1,9 @@
 {
   "name": "katex",
-  "version": "0.16.27",
+  "version": "0.16.28",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
+  "types": "types/katex.d.ts",
   "exports": {
     ".": {
       "require": {
