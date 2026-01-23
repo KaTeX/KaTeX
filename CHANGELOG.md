@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.28](https://github.com/KaTeX/KaTeX/compare/v0.16.27...v0.16.28) (2026-01-22)
+
+
+### Bug Fixes
+
+* **type:** add missing types definition path to package.json ([#4125](https://github.com/KaTeX/KaTeX/issues/4125)) ([0ef8921](https://github.com/KaTeX/KaTeX/commit/0ef8921d189346b0ff8f84a77f7f552349b76893))
+
 ## [0.16.27](https://github.com/KaTeX/KaTeX/compare/v0.16.26...v0.16.27) (2025-12-07)
 
 
