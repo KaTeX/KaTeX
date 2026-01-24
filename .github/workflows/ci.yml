@@ -54,6 +54,13 @@ jobs:
     environment: release
     needs: test
 
+    # https://github.com/semantic-release/npm
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for trusted publishing and npm provenance
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -63,10 +70,10 @@ jobs:
     - name: Enable Corepack
       run: corepack enable
 
-    - name: Use Node.js 20
+    - name: Use Node.js 22
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '22'
 
     - name: Install dependencies
       run: yarn --immutable
@@ -76,8 +83,9 @@ jobs:
       run: yarn run semantic-release --debug
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GIT_AUTHOR_NAME: KaTeX bot
         GIT_AUTHOR_EMAIL: 33710906+KaTeX-bot@users.noreply.github.com
         GIT_COMMITTER_NAME: KaTeX bot
         GIT_COMMITTER_EMAIL: 33710906+KaTeX-bot@users.noreply.github.com
+        NPM_AUTH_TOKEN: ""

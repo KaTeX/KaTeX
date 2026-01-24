@@ -40,7 +40,7 @@
   "homepage": "https://katex.org",
   "repository": {
     "type": "git",
-    "url": "https://github.com/KaTeX/KaTeX.git"
+    "url": "git+https://github.com/KaTeX/KaTeX.git"
   },
   "funding": [
     "https://opencollective.com/katex",
@@ -70,7 +70,7 @@
     "@babel/runtime": "^7.18.9",
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-babel": "^5.3.1",
-    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "babel-jest": "^29.0.1",
     "babel-loader": "^8.2.5",
@@ -120,7 +120,7 @@
     "sass": "^1.75.6",
     "sass-loader": "^14.2.1",
     "selenium-webdriver": "^4.4.0",
-    "semantic-release": "^19.0.5",
+    "semantic-release": "^25.0.2",
     "sri-toolbox": "^0.2.0",
     "style-loader": "^3.3.1",
     "stylelint": "^14.11.0",
