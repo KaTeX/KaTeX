@@ -2,12 +2,12 @@ import buildMathML from "../src/buildMathML";
 import parseTree from "../src/parseTree";
 import Options from "../src/Options";
 import Settings from "../src/Settings";
-import Style from "../src/Style";
+import {DISPLAY, TEXT} from "../src/Style";
 
 const getMathML = function(expr, settings = new Settings()) {
-    let startStyle = Style.TEXT;
+    let startStyle = TEXT;
     if (settings.displayMode) {
-        startStyle = Style.DISPLAY;
+        startStyle = DISPLAY;
     }
 
     // Setup the default options

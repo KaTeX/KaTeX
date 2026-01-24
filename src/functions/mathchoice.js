@@ -1,7 +1,7 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import Style from "../Style";
+import {DISPLAY, TEXT, SCRIPT, SCRIPTSCRIPT} from "../Style";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -10,10 +10,10 @@ import type {ParseNode} from "../parseNode";
 
 const chooseMathStyle = (group: ParseNode<"mathchoice">, options) => {
     switch (options.style.size) {
-        case Style.DISPLAY.size: return group.display;
-        case Style.TEXT.size: return group.text;
-        case Style.SCRIPT.size: return group.script;
-        case Style.SCRIPTSCRIPT.size: return group.scriptscript;
+        case DISPLAY.size: return group.display;
+        case TEXT.size: return group.text;
+        case SCRIPT.size: return group.script;
+        case SCRIPTSCRIPT.size: return group.scriptscript;
         default: return group.text;
     }
 };
