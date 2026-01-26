@@ -172,7 +172,7 @@ export default class Parser {
         return parse;
     }
 
-    static endOfExpression: string[] = ["}", "\\endgroup", "\\end", "\\right", "&"];
+    static endOfExpression: Set<string> = new Set(["}", "\\endgroup", "\\end", "\\right", "&"]);
 
     /**
      * Parses an "expression", which is a list of atoms.
@@ -198,7 +198,7 @@ export default class Parser {
                 this.consumeSpaces();
             }
             const lex = this.fetch();
-            if (Parser.endOfExpression.indexOf(lex.text) !== -1) {
+            if (Parser.endOfExpression.has(lex.text)) {
                 break;
             }
             if (breakOnTokenText && lex.text === breakOnTokenText) {
