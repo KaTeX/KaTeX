@@ -2,6 +2,8 @@ $font-folder: "../../fonts" !default;
 $use-woff2: true !default;
 $use-woff: true !default;
 $use-ttf: true !default;
+$use-browser-math-font: false !default;
+$math-prefix: if($use-browser-math-font, math, null);
 $font-display: block !default;
 
 @function generate-src($family, $family-suffix) {
@@ -39,15 +41,18 @@ $font-display: block !default;
 }
 
 @mixin font-face($family, $weight, $style) {
-    $suffix: generate-suffix($weight, $style);
-    $src: generate-src($family, $suffix);
+    @if not $use-browser-math-font {
+        $suffix: generate-suffix($weight, $style);
+        $src: generate-src($family, $suffix);
+    
 
-    @font-face {
-        font-family: 'KaTeX_#{$family}';
-        src: $src;
-        font-weight: $weight;
-        font-style: $style;
-        font-display: $font-display;
+        @font-face {
+            font-family: 'KaTeX_#{$family}';
+            src: $src;
+            font-weight: $weight;
+            font-style: $style;
+            font-display: $font-display;
+        }
     }
 }
 
