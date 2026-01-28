@@ -3,7 +3,6 @@ $use-woff2: true !default;
 $use-woff: true !default;
 $use-ttf: true !default;
 $use-browser-math-font: false !default;
-$math-prefix: if($use-browser-math-font, math, ());
 $font-display: block !default;
 
 @function generate-src($family, $family-suffix) {
@@ -44,7 +43,6 @@ $font-display: block !default;
     @if not $use-browser-math-font {
         $suffix: generate-suffix($weight, $style);
         $src: generate-src($family, $suffix);
-    
 
         @font-face {
             font-family: 'KaTeX_#{$family}';
