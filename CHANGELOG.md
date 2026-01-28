@@ -1,7 +1,8 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
-## [0.16.28](https://github.com/KaTeX/KaTeX/compare/v0.16.27...v0.16.28) (2026-01-22)
+
+## [0.16.28](https://github.com/KaTeX/KaTeX/compare/v0.16.27...v0.16.28) (2026-01-25)
 
 
 ### Bug Fixes
