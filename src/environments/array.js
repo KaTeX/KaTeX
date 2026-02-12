@@ -61,6 +61,8 @@ const validateAmsEnvironmentContext = context => {
     }
 };
 
+const gatherEnvironments = new Set(["gather", "gather*"]);
+
 // autoTag (an argument to parseArray) can be one of three values:
 // * undefined: Regular (not-top-level) array; no tags on each row
 // * true: Automatic equation numbering, overridable by \tag
@@ -1030,7 +1032,7 @@ defineEnvironment({
         numArgs: 0,
     },
     handler(context) {
-        if (["gather", "gather*"].includes(context.envName)) {
+        if (gatherEnvironments.has(context.envName)) {
             validateAmsEnvironmentContext(context);
         }
         const res = {

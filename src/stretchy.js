@@ -178,6 +178,9 @@ const groupLength = function(arg: AnyParseNode): number {
     }
 };
 
+const wideAccentLabels =
+    new Set(["widehat", "widecheck", "widetilde", "utilde"]);
+
 const svgSpan = function(
     group: ParseNode<"accent"> | ParseNode<"accentUnder"> | ParseNode<"xArrow">
          | ParseNode<"horizBrace">,
@@ -191,7 +194,7 @@ const svgSpan = function(
     } {
         let viewBoxWidth = 400000;  // default
         const label = group.label.slice(1);
-        if (["widehat", "widecheck", "widetilde", "utilde"].includes(label)) {
+        if (wideAccentLabels.has(label)) {
             // Each type in the `if` statement corresponds to one of the ParseNode
             // types below. This narrowing is required to access `grp.base`.
             // $FlowFixMe

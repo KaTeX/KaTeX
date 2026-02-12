@@ -82,8 +82,8 @@ const renderElem = function(elem, optionsCopy) {
         } else if (childNode.nodeType === 1) {
             // Element node
             const className = ' ' + childNode.className + ' ';
-            const shouldRender = optionsCopy.ignoredTags.indexOf(
-                childNode.nodeName.toLowerCase()) === -1 &&
+            const shouldRender = !optionsCopy.ignoredTags.has(
+                childNode.nodeName.toLowerCase()) &&
                   optionsCopy.ignoredClasses.every(
                       x => className.indexOf(' ' + x + ' ') === -1);
 
@@ -129,6 +129,7 @@ const renderMathInElement = function(elem, options) {
     optionsCopy.ignoredTags = optionsCopy.ignoredTags || [
         "script", "noscript", "style", "textarea", "pre", "code", "option",
     ];
+    optionsCopy.ignoredTags = new Set(optionsCopy.ignoredTags);
     optionsCopy.ignoredClasses = optionsCopy.ignoredClasses || [];
     optionsCopy.errorCallback = optionsCopy.errorCallback || console.error;
 
