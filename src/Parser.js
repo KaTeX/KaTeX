@@ -954,7 +954,7 @@ export default class Parser {
         let symbol: AnyParseNode;
         if (symbols[this.mode][text]) {
             if (this.settings.strict && this.mode === 'math' &&
-                extraLatin.indexOf(text) >= 0) {
+                extraLatin.includes(text)) {
                 this.settings.reportNonstrict("unicodeTextInMathMode",
                     `Latin-1/Unicode text character "${text[0]}" used in ` +
                     `math mode`, nucleus);

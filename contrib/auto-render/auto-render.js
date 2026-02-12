@@ -85,7 +85,7 @@ const renderElem = function(elem, optionsCopy) {
             const shouldRender = !optionsCopy.ignoredTags.has(
                 childNode.nodeName.toLowerCase()) &&
                   optionsCopy.ignoredClasses.every(
-                      x => className.indexOf(' ' + x + ' ') === -1);
+                      x => !className.includes(' ' + x + ' '));
 
             if (shouldRender) {
                 renderElem(childNode, optionsCopy);
