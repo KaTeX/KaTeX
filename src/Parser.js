@@ -172,7 +172,8 @@ export default class Parser {
         return parse;
     }
 
-    static endOfExpression: Set<string> = new Set(["}", "\\endgroup", "\\end", "\\right", "&"]);
+    static endOfExpression: Set<string> =
+        new Set(["}", "\\endgroup", "\\end", "\\right", "&"]);
 
     /**
      * Parses an "expression", which is a list of atoms.
