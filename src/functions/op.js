@@ -313,6 +313,7 @@ defineFunction({
     ],
     props: {
         numArgs: 0,
+        allowedInArgument: true,
     },
     handler({parser, funcName}) {
         let fName = funcName;
