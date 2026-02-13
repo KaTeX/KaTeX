@@ -72,7 +72,7 @@ jobs:
 
     - name: Build and push
       if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@v6
       with:
         context: dockers/fonts
         tags: ${{ steps.check-image.outputs.result }}
