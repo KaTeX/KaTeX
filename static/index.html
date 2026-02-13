@@ -8,82 +8,94 @@
     <body>
         <main>
             <div id="options-panel">
-                <img src="gear.svg" alt="Options" />
+                <div id="options-toolbar">
+                    <button
+                        id="toggle-options"
+                        type="button"
+                        aria-controls="options-container"
+                        aria-expanded="true"
+                        aria-label="Hide options"
+                    >
+                        <img src="gear.svg" alt="">
+                    </button>
+                    <h2 id="options-heading">KaTeX options</h2>
+                </div>
                 <div id="options-container">
-                    <div>
+                    <div class="option-row option-row-check">
                         <label for="displayMode">displayMode</label>
+                        <input type="checkbox" id="displayMode" checked>
                     </div>
-                    <div>
-                        <input type="checkbox" id="displayMode" checked/>
-                    </div>
-                    <div>
+                    <div class="option-row option-row-check">
                         <label for="leqno">leqno</label>
+                        <input type="checkbox" id="leqno">
                     </div>
-                    <div>
-                        <input type="checkbox" id="leqno"/>
-                    </div>
-                    <div>
+                    <div class="option-row option-row-check">
                         <label for="fleqn">fleqn</label>
+                        <input type="checkbox" id="fleqn">
                     </div>
-                    <div>
-                        <input type="checkbox" id="fleqn"/>
-                    </div>
-                    <div>
+                    <div class="option-row option-row-check">
                         <label for="throwOnError">throwOnError</label>
+                        <input type="checkbox" id="throwOnError" checked>
                     </div>
-                    <div>
-                        <input type="checkbox" id="throwOnError" checked/>
+                    <div class="option-row option-row-check">
+                        <label for="trust">trust</label>
+                        <input type="checkbox" id="trust" checked>
                     </div>
-                    <div>
+                    <div class="option-row option-row-stacked">
                         <label for="strict">strict</label>
-                    </div>
-                    <div>
                         <select id="strict">
                             <option value="error">error</option>
                             <option value="warn" selected>warn</option>
                             <option value="ignore">ignore</option>
                         </select>
                     </div>
-                    <div>
+                    <div class="option-row option-row-stacked">
                         <label for="output">output</label>
-                    </div>
-                    <div>
                         <select id="output">
-                            <option value="htmlAndMathml" selected>htmlAndMathml</option>
+                            <option value="htmlAndMathml" selected>
+                                htmlAndMathml
+                            </option>
                             <option value="html">html</option>
                             <option value="mathml">mathml</option>
                         </select>
                     </div>
-                    <div>
-                        <label for="trust">trust</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" id="trust" checked/>
-                    </div>
-                    <div class="inputs">
+                    <div class="input-group">
                         <label for="macros">macros</label>
-                        <br />
                         <textarea id="macros" placeholder="JSON">
 {
     "\\f": "#1f(#2)"
 }</textarea>
                     </div>
-                    <div class="inputs">
+                    <div class="input-group">
                         <label for="before">before</label>
-                        <br />
-                        <textarea id="before" placeholder="Lore ipsum"></textarea>
+                        <textarea
+                            id="before"
+                            placeholder="Lorem ipsum"
+                        ></textarea>
                     </div>
-                    <div class="inputs">
+                    <div class="input-group">
                         <label for="after">after</label>
-                        <br />
-                        <textarea id="after" placeholder="Lorem ipsum"></textarea>
+                        <textarea
+                            id="after"
+                            placeholder="Lorem ipsum"
+                        ></textarea>
                     </div>
                 </div>
             </div>
-            <textarea id="input" rows="5">\left( x \right) \left( x^2 \right) % comment
+            <div
+                id="sidebar-resizer"
+                role="separator"
+                aria-label="Resize options panel"
+                aria-orientation="vertical"
+                tabindex="0"
+            ></div>
+            <textarea id="input" rows="5">
+\left( x \right) \left( x^2 \right) % comment
 \left( \frac{a}{b} \right) \left( \frac{a^2}{b} \right)
-\left( \dfrac{a}{b} \right) \left( \dfrac{a^2}{b} \right)</textarea>
+\left( \dfrac{a}{b} \right) \left( \dfrac{a^2}{b} \right)
+</textarea>
             <div id="math-container">
+                <div id="render-error" role="alert" aria-live="polite"></div>
                 <span id="before-content"></span>
                 <span id="math"></span>
                 <span id="after-content"></span>
