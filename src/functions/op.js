@@ -16,9 +16,9 @@ import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
 import type {ParseNode} from "../parseNode";
 
 // Most operators have a large successor symbol, but these don't.
-const noSuccessor = [
+const noSuccessor = new Set([
     "\\smallint",
-];
+]);
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "op", but also
 // "supsub" since some of them (like \int) can affect super/subscripting.
@@ -45,7 +45,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     let large = false;
     if (style.size === Style.DISPLAY.size &&
         group.symbol &&
-        !noSuccessor.includes(group.name)) {
+        !noSuccessor.has(group.name)) {
 
         // Most symbol operators get larger in displaystyle (rule 13)
         large = true;
@@ -146,7 +146,7 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
         // This is a symbol. Just add the symbol.
         node = new mathMLTree.MathNode(
             "mo", [mml.makeText(group.name, group.mode)]);
-        if (noSuccessor.includes(group.name)) {
+        if (noSuccessor.has(group.name)) {
             node.setAttribute("largeop", "false");
         }
     } else if (group.body) {

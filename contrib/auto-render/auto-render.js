@@ -82,10 +82,10 @@ const renderElem = function(elem, optionsCopy) {
         } else if (childNode.nodeType === 1) {
             // Element node
             const className = ' ' + childNode.className + ' ';
-            const shouldRender = optionsCopy.ignoredTags.indexOf(
-                childNode.nodeName.toLowerCase()) === -1 &&
+            const shouldRender = !optionsCopy.ignoredTags.has(
+                childNode.nodeName.toLowerCase()) &&
                   optionsCopy.ignoredClasses.every(
-                      x => className.indexOf(' ' + x + ' ') === -1);
+                      x => !className.includes(' ' + x + ' '));
 
             if (shouldRender) {
                 renderElem(childNode, optionsCopy);
@@ -126,9 +126,9 @@ const renderMathInElement = function(elem, options) {
 
         {left: "\\[", right: "\\]", display: true},
     ];
-    optionsCopy.ignoredTags = optionsCopy.ignoredTags || [
+    optionsCopy.ignoredTags = new Set(optionsCopy.ignoredTags || [
         "script", "noscript", "style", "textarea", "pre", "code", "option",
-    ];
+    ]);
     optionsCopy.ignoredClasses = optionsCopy.ignoredClasses || [];
     optionsCopy.errorCallback = optionsCopy.errorCallback || console.error;
 

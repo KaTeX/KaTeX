@@ -141,10 +141,10 @@ export function parseCD(parser: Parser): ParseNode<"array"> {
                 labels[1] = {type: "ordgroup", mode: "math", body: []};
 
                 // Process the arrow.
-                if ("=|.".indexOf(arrowChar) > -1) {
+                if ("=|.".includes(arrowChar)) {
                     // Three "arrows", ``@=`, `@|`, and `@.`, do not take labels.
                     // Do nothing here.
-                } else if ("<>AV".indexOf(arrowChar) > -1) {
+                } else if ("<>AV".includes(arrowChar)) {
                     // Four arrows, `@>>>`, `@<<<`, `@AAA`, and `@VVV`, each take
                     // two optional labels. E.g. the right-point arrow syntax is
                     // really:  @>{optional label}>{optional label}>

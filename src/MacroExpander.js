@@ -424,9 +424,9 @@ export default class MacroExpander implements MacroContextInterface {
             typeof definition === "function" ? definition(this) : definition;
         if (typeof expansion === "string") {
             let numArgs = 0;
-            if (expansion.indexOf("#") !== -1) {
+            if (expansion.includes("#")) {
                 const stripped = expansion.replace(/##/g, "");
-                while (stripped.indexOf("#" + (numArgs + 1)) !== -1) {
+                while (stripped.includes("#" + (numArgs + 1))) {
                     ++numArgs;
                 }
             }

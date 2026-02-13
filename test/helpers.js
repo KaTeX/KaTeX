@@ -37,7 +37,7 @@ const printActualErrorMessage = error => {
                 formatStackTrace(
                     // remove KaTeX internal stack entries
                     stack.split('\n')
-                        .filter(line => line.indexOf('new ParseError') === -1)
+                        .filter(line => !line.includes('new ParseError'))
                         .join('\n'),
                     {
                         rootDir: process.cwd(),
@@ -72,11 +72,11 @@ export function getBuilt(expr, settings = new Settings()) {
     expr = r(expr); // support tagging literals
     let rootNode = katex.__renderToDomTree(expr, settings);
 
-    if (rootNode.classes.indexOf('katex-error') >= 0) {
+    if (rootNode.classes.includes('katex-error')) {
         return rootNode;
     }
 
-    if (rootNode.classes.indexOf('katex-display') >= 0) {
+    if (rootNode.classes.includes('katex-display')) {
         rootNode = rootNode.children[0];
     }
 
@@ -88,7 +88,7 @@ export function getBuilt(expr, settings = new Settings()) {
     const children = [];
     for (let i = 0; i < builtHTML.children.length; i++) {
         children.push(...builtHTML.children[i].children.filter(
-            (node) => node.classes.indexOf("strut") < 0));
+            (node) => !node.classes.includes("strut")));
     }
     return children;
 }
