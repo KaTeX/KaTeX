@@ -82,7 +82,7 @@ main.options-collapsed {
     border: 1px solid #a9bad8;
     border-radius: 0.45rem;
     padding: 0;
-    background: linear-gradient(180deg, #f2f6ff, #dce6fb);
+    background: none;
     box-shadow: 0 1px 0 #2f3d54;
     cursor: pointer;
 }
@@ -95,11 +95,13 @@ main.options-collapsed {
 }
 
 #toggle-options:hover {
-    background: linear-gradient(180deg, #fff, #e6eefc);
+    border-color: #7fa5ff;
+    background: #7fa5ff1a;
 }
 
 #toggle-options:active {
-    background: linear-gradient(180deg, #d8e2f8, #c5d3f2);
+    border-color: #5a8aff;
+    background: #7fa5ff33;
 }
 
 #options-panel.collapsed #toggle-options img {
