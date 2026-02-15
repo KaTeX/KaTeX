@@ -2,7 +2,7 @@
 // Horizontal overlap functions
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import {makeEm} from "../units";
 
 import * as html from "../buildHTML";
@@ -60,7 +60,7 @@ defineFunction({
     },
     mathmlBuilder: (group, options) => {
         // mathllap, mathrlap, mathclap
-        const node = new mathMLTree.MathNode(
+        const node = new MathNode(
             "mpadded", [mml.buildGroup(group.body, options)]);
 
         if (group.alignment !== "rlap")    {

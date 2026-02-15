@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import stretchy from "../stretchy";
 import Style from "../Style";
 import {assertNodeType} from "../parseNode";
@@ -110,7 +110,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
 
 const mathmlBuilder: MathMLBuilder<"horizBrace"> = (group, options) => {
     const accentNode = stretchy.mathMLnode(group.label);
-    return new mathMLTree.MathNode(
+    return new MathNode(
         (group.isOver ? "mover" : "munder"),
         [mml.buildGroup(group.base, options), accentNode]
     );

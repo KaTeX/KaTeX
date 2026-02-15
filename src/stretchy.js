@@ -7,7 +7,7 @@
 
 import {LineNode, PathNode, SvgNode} from "./domTree";
 import buildCommon from "./buildCommon";
-import mathMLTree from "./mathMLTree";
+import {MathNode, TextNode} from "./mathMLTree";
 import {makeEm} from "./units";
 
 import type Options from "./Options";
@@ -59,10 +59,10 @@ const stretchyCodePoint: {[string]: string} = {
     "\\cdlongequal": "=",
 };
 
-const mathMLnode = function(label: string): mathMLTree.MathNode {
-    const node = new mathMLTree.MathNode(
+const mathMLnode = function(label: string): MathNode {
+    const node = new MathNode(
         "mo",
-        [new mathMLTree.TextNode(stretchyCodePoint[label.replace(/^\\/, '')])],
+        [new TextNode(stretchyCodePoint[label.replace(/^\\/, '')])],
     );
     node.setAttribute("stretchy", "true");
     return node;

@@ -1,7 +1,7 @@
 // @flow
 import {defineFunctionBuilders} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {MathNode, TextNode} from "../mathMLTree";
 import ParseError from "../ParseError";
 
 // A map of CSS-based spacing functions to their CSS class.
@@ -59,11 +59,11 @@ defineFunctionBuilders({
         let node;
 
         if (regularSpace.hasOwnProperty(group.text)) {
-            node = new mathMLTree.MathNode(
-                "mtext", [new mathMLTree.TextNode("\u00a0")]);
+            node = new MathNode(
+                "mtext", [new TextNode("\u00a0")]);
         } else if (cssSpace.hasOwnProperty(group.text)) {
             // CSS-based MathML spaces (\nobreak, \allowbreak) are ignored
-            return new mathMLTree.MathNode("mspace");
+            return new MathNode("mspace");
         } else {
             throw new ParseError(`Unknown type of space "${group.text}"`);
         }

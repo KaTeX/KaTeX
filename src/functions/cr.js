@@ -3,7 +3,7 @@
 
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import {calculateSize, makeEm} from "../units";
 import {assertNodeType} from "../parseNode";
 
@@ -48,7 +48,7 @@ defineFunction({
     },
 
     mathmlBuilder(group, options) {
-        const node = new mathMLTree.MathNode("mspace");
+        const node = new MathNode("mspace");
         if (group.newLine) {
             node.setAttribute("linebreak", "newline");
             if (group.size) {

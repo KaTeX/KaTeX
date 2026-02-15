@@ -5,7 +5,7 @@ import defineEnvironment from "../defineEnvironment";
 import {parseCD} from "./cd";
 import defineFunction from "../defineFunction";
 import defineMacro from "../defineMacro";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import ParseError from "../ParseError";
 import {assertNodeType, assertSymbolNodeType} from "../parseNode";
 import {checkSymbolNodeType} from "../parseNode";
@@ -540,13 +540,13 @@ const alignMap = {
 
 const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     const tbl = [];
-    const glue = new mathMLTree.MathNode("mtd", [], ["mtr-glue"]);
-    const tag = new mathMLTree.MathNode("mtd", [], ["mml-eqn-num"]);
+    const glue = new MathNode("mtd", [], ["mtr-glue"]);
+    const tag = new MathNode("mtd", [], ["mml-eqn-num"]);
     for (let i = 0; i < group.body.length; i++) {
         const rw = group.body[i];
         const row = [];
         for (let j = 0; j < rw.length; j++) {
-            row.push(new mathMLTree.MathNode("mtd",
+            row.push(new MathNode("mtd",
                 [mml.buildGroup(rw[j], options)]));
         }
         if (group.tags && group.tags[i]) {
@@ -558,9 +558,9 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
                 row.push(tag);
             }
         }
-        tbl.push(new mathMLTree.MathNode("mtr", row));
+        tbl.push(new MathNode("mtr", row));
     }
-    let table = new mathMLTree.MathNode("mtable", tbl);
+    let table = new MathNode("mtable", tbl);
 
     // Set column alignment, row spacing, column spacing, and
     // array lines by setting attributes on the table element.
@@ -666,13 +666,13 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     }
 
     if (menclose !== "") {
-        table = new mathMLTree.MathNode("menclose", [table]);
+        table = new MathNode("menclose", [table]);
         table.setAttribute("notation", menclose.trim());
     }
 
     if (group.arraystretch && group.arraystretch < 1) {
         // A small array. Wrap in scriptstyle so row gap is not too large.
-        table = new mathMLTree.MathNode("mstyle", [table]);
+        table = new MathNode("mstyle", [table]);
         table.setAttribute("scriptlevel", "1");
     }
 

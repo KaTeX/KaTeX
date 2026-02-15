@@ -1,7 +1,7 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
 
 import type {AnyParseNode} from '../parseNode';
@@ -27,7 +27,7 @@ const mathmlBuilder = (group, options) => {
     const inner = mml.buildExpression(group.body,
         options.withColor(group.color));
 
-    const node = new mathMLTree.MathNode("mstyle", inner);
+    const node = new MathNode("mstyle", inner);
 
     node.setAttribute("mathcolor", group.color);
 

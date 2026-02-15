@@ -1,7 +1,7 @@
 // @flow
 import buildCommon from "../buildCommon";
 import defineFunction from "../defineFunction";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 import {assertSymbolNodeType} from "../parseNode";
@@ -266,9 +266,9 @@ defineFunction({
         return label;
     },
     mathmlBuilder(group, options) {
-        let label = new mathMLTree.MathNode("mrow",
+        let label = new MathNode("mrow",
             [mml.buildGroup(group.label, options)]);
-        label = new mathMLTree.MathNode("mpadded", [label]);
+        label = new MathNode("mpadded", [label]);
         label.setAttribute("width", "0");
         if (group.side === "left") {
             label.setAttribute("lspace", "-1width");
@@ -276,7 +276,7 @@ defineFunction({
         // We have to guess at vertical alignment. We know the arrow is 1.8em tall,
         // But we don't know the height or depth of the label.
         label.setAttribute("voffset", "0.7em");
-        label = new mathMLTree.MathNode("mstyle", [label]);
+        label = new MathNode("mstyle", [label]);
         label.setAttribute("displaystyle", "false");
         label.setAttribute("scriptlevel", "1");
         return label;
@@ -307,7 +307,7 @@ defineFunction({
         return parent;
     },
     mathmlBuilder(group, options) {
-        return new mathMLTree.MathNode("mrow",
+        return new MathNode("mrow",
         [mml.buildGroup(group.fragment, options)]);
     },
 });

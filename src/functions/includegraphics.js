@@ -4,7 +4,7 @@ import type {Measurement} from "../units";
 import {calculateSize, validUnit, makeEm} from "../units";
 import ParseError from "../ParseError";
 import {Img} from "../domTree";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
 import type {CssStyle} from "../domTree";
 
@@ -130,7 +130,7 @@ defineFunction({
         return node;
     },
     mathmlBuilder: (group, options) => {
-        const node = new mathMLTree.MathNode("mglyph", []);
+        const node = new MathNode("mglyph", []);
         node.setAttribute("alt", group.alt);
 
         const height = calculateSize(group.height, options);

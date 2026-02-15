@@ -1,6 +1,6 @@
 // @flow
 import defineFunction from "../defineFunction";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import Style from "../Style";
 import {sizingGroup} from "./sizing";
 
@@ -54,7 +54,7 @@ defineFunction({
 
         const inner = mml.buildExpression(group.body, newOptions);
 
-        const node = new mathMLTree.MathNode("mstyle", inner);
+        const node = new MathNode("mstyle", inner);
 
         const styleAttributes = {
             "display": ["0", "true"],
