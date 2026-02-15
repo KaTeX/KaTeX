@@ -3,7 +3,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import {SymbolNode} from "../domTree";
-import * as mathMLTree from "../mathMLTree";
+import {MathNode, newDocumentFragment, TextNode} from "../mathMLTree";
 import Style from "../Style";
 import {assembleSupSub} from "./utils/assembleSupSub";
 import {assertNodeType} from "../parseNode";
@@ -144,28 +144,28 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
 
     if (group.symbol) {
         // This is a symbol. Just add the symbol.
-        node = new mathMLTree.MathNode(
+        node = new MathNode(
             "mo", [mml.makeText(group.name, group.mode)]);
         if (noSuccessor.includes(group.name)) {
             node.setAttribute("largeop", "false");
         }
     } else if (group.body) {
         // This is an operator with children. Add them.
-        node = new mathMLTree.MathNode(
+        node = new MathNode(
             "mo", mml.buildExpression(group.body, options));
     } else {
-        // This is a text operator. Add all of the characters from the
+        // This is a text operator. Add all the characters from the
         // operator's name.
-        node = new mathMLTree.MathNode(
-            "mi", [new mathMLTree.TextNode(group.name.slice(1))]);
+        node = new MathNode(
+            "mi", [new TextNode(group.name.slice(1))]);
         // Append an <mo>&ApplyFunction;</mo>.
         // ref: https://www.w3.org/TR/REC-MathML/chap3_2.html#sec3.2.4
-        const operator = new mathMLTree.MathNode("mo",
+        const operator = new MathNode("mo",
             [mml.makeText("\u2061", "text")]);
         if (group.parentIsSupSub) {
-            node = new mathMLTree.MathNode("mrow", [node, operator]);
+            node = new MathNode("mrow", [node, operator]);
         } else {
-            node = mathMLTree.newDocumentFragment([node, operator]);
+            node = newDocumentFragment([node, operator]);
         }
     }
 

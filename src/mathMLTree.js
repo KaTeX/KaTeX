@@ -188,7 +188,7 @@ export class TextNode implements MathDomNode {
  * This node represents a space, but may render as <mspace.../> or as text,
  * depending on the width.
  */
-class SpaceNode implements MathDomNode {
+export class SpaceNode implements MathDomNode {
     width: number;
     character: ?string;
 
@@ -258,10 +258,3 @@ class SpaceNode implements MathDomNode {
         }
     }
 }
-
-export default {
-    MathNode,
-    TextNode,
-    SpaceNode,
-    newDocumentFragment,
-};

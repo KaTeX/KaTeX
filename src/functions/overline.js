@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {MathNode, TextNode} from "../mathMLTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -45,11 +45,11 @@ defineFunction({
         return buildCommon.makeSpan(["mord", "overline"], [vlist], options);
     },
     mathmlBuilder(group, options) {
-        const operator = new mathMLTree.MathNode(
-            "mo", [new mathMLTree.TextNode("\u203e")]);
+        const operator = new MathNode(
+            "mo", [new TextNode("\u203e")]);
         operator.setAttribute("stretchy", "true");
 
-        const node = new mathMLTree.MathNode(
+        const node = new MathNode(
             "mover",
             [mml.buildGroup(group.body, options), operator]);
         node.setAttribute("accent", "true");

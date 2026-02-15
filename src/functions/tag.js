@@ -1,11 +1,11 @@
 // @flow
 import {defineFunctionBuilders} from "../defineFunction";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 
 import * as mml from "../buildMathML";
 
 const pad = () => {
-    const padNode = new mathMLTree.MathNode("mtd", []);
+    const padNode = new MathNode("mtd", []);
     padNode.setAttribute("width", "50%");
     return padNode;
 };
@@ -13,14 +13,14 @@ const pad = () => {
 defineFunctionBuilders({
     type: "tag",
     mathmlBuilder(group, options) {
-        const table = new mathMLTree.MathNode("mtable", [
-            new mathMLTree.MathNode("mtr", [
+        const table = new MathNode("mtable", [
+            new MathNode("mtr", [
                 pad(),
-                new mathMLTree.MathNode("mtd", [
+                new MathNode("mtd", [
                     mml.buildExpressionRow(group.body, options),
                 ]),
                 pad(),
-                new mathMLTree.MathNode("mtd", [
+                new MathNode("mtd", [
                     mml.buildExpressionRow(group.tag, options),
                 ]),
             ]),

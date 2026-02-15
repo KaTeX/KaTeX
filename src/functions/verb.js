@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {MathNode, TextNode} from "../mathMLTree";
 import ParseError from "../ParseError";
 
 import type {ParseNode} from "../parseNode";
@@ -41,8 +41,8 @@ defineFunction({
         );
     },
     mathmlBuilder(group, options) {
-        const text = new mathMLTree.TextNode(makeVerb(group));
-        const node = new mathMLTree.MathNode("mtext", [text]);
+        const text = new TextNode(makeVerb(group));
+        const node = new MathNode("mtext", [text]);
         node.setAttribute("mathvariant", "monospace");
         return node;
     },

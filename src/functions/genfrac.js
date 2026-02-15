@@ -2,7 +2,7 @@
 import defineFunction, {normalizeArgument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
-import mathMLTree from "../mathMLTree";
+import {MathNode, TextNode} from "../mathMLTree";
 import Style from "../Style";
 import {assertNodeType} from "../parseNode";
 import {assert} from "../utils";
@@ -185,7 +185,7 @@ const htmlBuilder = (group, options) => {
 };
 
 const mathmlBuilder = (group, options) => {
-    let node = new mathMLTree.MathNode(
+    let node = new MathNode(
         "mfrac",
         [
             mml.buildGroup(group.numer, options),
@@ -201,7 +201,7 @@ const mathmlBuilder = (group, options) => {
 
     const style = adjustStyle(group.size, options.style);
     if (style.size !== options.style.size) {
-        node = new mathMLTree.MathNode("mstyle", [node]);
+        node = new MathNode("mstyle", [node]);
         const isDisplay = (style.size === Style.DISPLAY.size) ? "true" : "false";
         node.setAttribute("displaystyle", isDisplay);
         node.setAttribute("scriptlevel", "0");
@@ -211,9 +211,9 @@ const mathmlBuilder = (group, options) => {
         const withDelims = [];
 
         if (group.leftDelim != null) {
-            const leftOp = new mathMLTree.MathNode(
+            const leftOp = new MathNode(
                 "mo",
-                [new mathMLTree.TextNode(group.leftDelim.replace("\\", ""))]
+                [new TextNode(group.leftDelim.replace("\\", ""))]
             );
 
             leftOp.setAttribute("fence", "true");
@@ -224,9 +224,9 @@ const mathmlBuilder = (group, options) => {
         withDelims.push(node);
 
         if (group.rightDelim != null) {
-            const rightOp = new mathMLTree.MathNode(
+            const rightOp = new MathNode(
                 "mo",
-                [new mathMLTree.TextNode(group.rightDelim.replace("\\", ""))]
+                [new TextNode(group.rightDelim.replace("\\", ""))]
             );
 
             rightOp.setAttribute("fence", "true");

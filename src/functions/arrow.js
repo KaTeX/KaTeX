@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import stretchy from "../stretchy";
 
 import * as html from "../buildHTML";
@@ -11,7 +11,7 @@ import type {ParseNode} from "../parseNode";
 
 // Helper function
 const paddedNode = group => {
-    const node = new mathMLTree.MathNode("mpadded", group ? [group] : []);
+    const node = new MathNode("mpadded", group ? [group] : []);
     node.setAttribute("width", "+0.6em");
     node.setAttribute("lspace", "0.3em");
     return node;
@@ -124,20 +124,20 @@ defineFunction({
             const upperNode = paddedNode(mml.buildGroup(group.body, options));
             if (group.below) {
                 const lowerNode = paddedNode(mml.buildGroup(group.below, options));
-                node = new mathMLTree.MathNode(
+                node = new MathNode(
                     "munderover", [arrowNode, lowerNode, upperNode]
                 );
             } else {
-                node = new mathMLTree.MathNode("mover", [arrowNode, upperNode]);
+                node = new MathNode("mover", [arrowNode, upperNode]);
             }
         } else if (group.below) {
             const lowerNode = paddedNode(mml.buildGroup(group.below, options));
-            node = new mathMLTree.MathNode("munder", [arrowNode, lowerNode]);
+            node = new MathNode("munder", [arrowNode, lowerNode]);
         } else {
             // This should never happen.
             // Parser.js throws an error if there is no argument.
             node = paddedNode();
-            node = new mathMLTree.MathNode("mover", [arrowNode, node]);
+            node = new MathNode("mover", [arrowNode, node]);
         }
         return node;
     },

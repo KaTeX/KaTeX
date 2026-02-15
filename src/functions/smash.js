@@ -2,7 +2,7 @@
 // smash, with optional [tb], as in AMS
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
@@ -94,7 +94,7 @@ defineFunction({
         return buildCommon.makeSpan(["mord"], [smashedNode], options);
     },
     mathmlBuilder: (group, options) => {
-        const node = new mathMLTree.MathNode(
+        const node = new MathNode(
             "mpadded", [mml.buildGroup(group.body, options)]);
 
         if (group.smashHeight) {

@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
 import {calculateSize} from "../units";
 
@@ -37,7 +37,7 @@ defineFunction({
         }, options);
     },
     mathmlBuilder(group, options) {
-        const node = new mathMLTree.MathNode(
+        const node = new MathNode(
             "mpadded", [mml.buildGroup(group.body, options)]);
         const dy = group.dy.number + group.dy.unit;
         node.setAttribute("voffset", dy);

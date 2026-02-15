@@ -2,7 +2,7 @@
 import buildCommon from "../buildCommon";
 import defineFunction from "../defineFunction";
 import delimiter from "../delimiter";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import ParseError from "../ParseError";
 import {assertNodeType, checkSymbolNodeType} from "../parseNode";
 import {makeEm} from "../units";
@@ -112,7 +112,7 @@ defineFunction({
             children.push(mml.makeText(group.delim, group.mode));
         }
 
-        const node = new mathMLTree.MathNode("mo", children);
+        const node = new MathNode("mo", children);
 
         if (group.mclass === "mopen" ||
             group.mclass === "mclose") {
@@ -277,7 +277,7 @@ defineFunction({
         const inner = mml.buildExpression(group.body, options);
 
         if (group.left !== ".") {
-            const leftNode = new mathMLTree.MathNode(
+            const leftNode = new MathNode(
                 "mo", [mml.makeText(group.left, group.mode)]);
 
             leftNode.setAttribute("fence", "true");
@@ -286,7 +286,7 @@ defineFunction({
         }
 
         if (group.right !== ".") {
-            const rightNode = new mathMLTree.MathNode(
+            const rightNode = new MathNode(
                 "mo", [mml.makeText(group.right, group.mode)]);
 
             rightNode.setAttribute("fence", "true");
@@ -348,7 +348,7 @@ defineFunction({
         const textNode = (group.delim === "\\vert" || group.delim === "|")
             ? mml.makeText("|", "text")
             : mml.makeText(group.delim, group.mode);
-        const middleNode = new mathMLTree.MathNode("mo", [textNode]);
+        const middleNode = new MathNode("mo", [textNode]);
         middleNode.setAttribute("fence", "true");
         // MathML gives 5/18em spacing to each <mo> element.
         // \middle should get delimiter spacing instead.

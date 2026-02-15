@@ -3,7 +3,7 @@
 
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {SpaceNode} from "../mathMLTree";
 import {calculateSize} from "../units";
 import {assertNodeType} from "../parseNode";
 
@@ -51,6 +51,6 @@ defineFunction({
     },
     mathmlBuilder(group, options) {
         const dimension = calculateSize(group.dimension, options);
-        return new mathMLTree.SpaceNode(dimension);
+        return new SpaceNode(dimension);
     },
 });
