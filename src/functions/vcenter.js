@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -37,7 +37,7 @@ defineFunction({
         // There is no way to do this in MathML.
         // Write a class as a breadcrumb in case some post-processor wants
         // to perform a vcenter adjustment.
-        return new mathMLTree.MathNode(
+        return new MathNode(
             "mpadded", [mml.buildGroup(group.body, options)], ["vcenter"]);
     },
 });
