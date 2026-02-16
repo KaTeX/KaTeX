@@ -52,7 +52,7 @@ export const getBaseElem = (group: AnyParseNode): AnyParseNode => {
     }
 };
 
-const nodes = new Set(["mathord", "textord", "atom"]);
+const characterNodesTypes = new Set(["mathord", "textord", "atom"]);
 
 /**
  * TeXbook algorithms often reference "character boxes", which are simply groups
@@ -60,7 +60,7 @@ const nodes = new Set(["mathord", "textord", "atom"]);
  * we find its innermost group, and see if it is a single character.
  */
 export const isCharacterBox = (group: AnyParseNode): boolean =>
-    nodes.has(getBaseElem(group).type);
+    characterNodesTypes.has(getBaseElem(group).type);
 
 /**
  * Return the protocol of a URL, or "_relative" if the URL does not specify a
