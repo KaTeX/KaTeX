@@ -5,7 +5,6 @@ import delimiter from "../delimiter";
 import mathMLTree from "../mathMLTree";
 import Style from "../Style";
 import {assertNodeType} from "../parseNode";
-import {assert} from "../utils";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -487,7 +486,12 @@ defineFunction({
     },
     handler: ({parser, funcName}, args) => {
         const numer = args[0];
-        const barSize = assert(assertNodeType(args[1], "infix").size);
+        const barSize = assertNodeType(args[1], "infix").size;
+
+        if (!barSize) {
+            throw new Error('Expected non-null, but got ' + String(barSize));
+        }
+
         const denom = args[2];
 
         const hasBarLine = barSize.number > 0;

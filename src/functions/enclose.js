@@ -2,7 +2,7 @@
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import utils from "../utils";
+import {isCharacterBox} from "../utils";
 import stretchy from "../stretchy";
 import {phasePath} from "../svgGeometry";
 import {PathNode, SvgNode} from "../domTree";
@@ -30,7 +30,7 @@ const htmlBuilder = (group, options) => {
     // We don't know the width of a group, so as a proxy, we test if
     // the subject is a single character. This captures most of the
     // subjects that should get the "tall" treatment.
-    const isSingleChar = utils.isCharacterBox(group.body);
+    const isSingleChar = isCharacterBox(group.body);
 
     if (label === "sout") {
         img = buildCommon.makeSpan(["stretchy", "sout"]);

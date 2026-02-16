@@ -2,7 +2,7 @@
 import defineFunction, {normalizeArgument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import utils from "../utils";
+import {getBaseElem, isCharacterBox} from "../utils";
 import stretchy from "../stretchy";
 import {assertNodeType} from "../parseNode";
 import {assertSpan, assertSymbolDomNode} from "../domTree";
@@ -53,7 +53,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
     const body = html.buildGroup(base, options.havingCrampedStyle());
 
     // Does the accent need to shift for the skew of a character?
-    const mustShift = group.isShifty && utils.isCharacterBox(base);
+    const mustShift = group.isShifty && isCharacterBox(base);
 
     // Calculate the skew of the accent. This is based on the line "If the
     // nucleus is not a single character, let s = 0; otherwise set s to the
@@ -64,7 +64,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
     if (mustShift) {
         // If the base is a character box, then we want the skew of the
         // innermost character. To do that, we find the innermost character:
-        const baseChar = utils.getBaseElem(base);
+        const baseChar = getBaseElem(base);
         // Then, we render its group to get the symbol inside it
         const baseGroup = html.buildGroup(baseChar, options.havingCrampedStyle());
         // Finally, we pull the skew off of the symbol.

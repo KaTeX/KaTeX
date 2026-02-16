@@ -2,7 +2,7 @@
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import mathMLTree from "../mathMLTree";
-import utils from "../utils";
+import {isCharacterBox} from "../utils";
 import type {AnyParseNode} from "../parseNode";
 
 import * as html from "../buildHTML";
@@ -77,7 +77,7 @@ defineFunction({
             mode: parser.mode,
             mclass: "m" + funcName.slice(5), // TODO(kevinb): don't prefix with 'm'
             body: ordargument(body),
-            isCharacterBox: utils.isCharacterBox(body),
+            isCharacterBox: isCharacterBox(body),
         };
     },
     htmlBuilder,
@@ -111,7 +111,7 @@ defineFunction({
             mode: parser.mode,
             mclass: binrelClass(args[0]),
             body: ordargument(args[1]),
-            isCharacterBox: utils.isCharacterBox(args[1]),
+            isCharacterBox: isCharacterBox(args[1]),
         };
     },
 });
@@ -159,7 +159,7 @@ defineFunction({
             mode: parser.mode,
             mclass,
             body: [supsub],
-            isCharacterBox: utils.isCharacterBox(supsub),
+            isCharacterBox: isCharacterBox(supsub),
         };
     },
     htmlBuilder,

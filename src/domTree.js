@@ -12,7 +12,7 @@
  * target environments support class inheritance
  */
 import {scriptFromCodepoint} from "./unicodeScripts";
-import utils from "./utils";
+import {escape, hyphenate} from "./utils";
 import {path} from "./svgGeometry";
 import type Options from "./Options";
 import {DocumentFragment} from "./tree";
@@ -102,7 +102,7 @@ const toMarkup = function(tagName: string): string {
 
     // Add the class
     if (this.classes.length) {
-        markup += ` class="${utils.escape(createClass(this.classes))}"`;
+        markup += ` class="${escape(createClass(this.classes))}"`;
     }
 
     let styles = "";
@@ -110,12 +110,12 @@ const toMarkup = function(tagName: string): string {
     // Add the styles, after hyphenation
     for (const style in this.style) {
         if (this.style.hasOwnProperty(style)) {
-            styles += `${utils.hyphenate(style)}:${this.style[style]};`;
+            styles += `${hyphenate(style)}:${this.style[style]};`;
         }
     }
 
     if (styles) {
-        markup += ` style="${utils.escape(styles)}"`;
+        markup += ` style="${escape(styles)}"`;
     }
 
     // Add the attributes
@@ -124,7 +124,7 @@ const toMarkup = function(tagName: string): string {
             if (invalidAttributeNameRegex.test(attr)) {
                 throw new ParseError(`Invalid attribute name '${attr}'`);
             }
-            markup += ` ${attr}="${utils.escape(this.attributes[attr])}"`;
+            markup += ` ${attr}="${escape(this.attributes[attr])}"`;
         }
     }
 
@@ -329,18 +329,18 @@ export class Img implements VirtualNode {
     }
 
     toMarkup(): string {
-        let markup = `<img src="${utils.escape(this.src)}"` +
-          ` alt="${utils.escape(this.alt)}"`;
+        let markup = `<img src="${escape(this.src)}"` +
+          ` alt="${escape(this.alt)}"`;
 
         // Add the styles, after hyphenation
         let styles = "";
         for (const style in this.style) {
             if (this.style.hasOwnProperty(style)) {
-                styles += `${utils.hyphenate(style)}:${this.style[style]};`;
+                styles += `${hyphenate(style)}:${this.style[style]};`;
             }
         }
         if (styles) {
-            markup += ` style="${utils.escape(styles)}"`;
+            markup += ` style="${escape(styles)}"`;
         }
 
         markup += "'/>";
@@ -460,7 +460,7 @@ export class SymbolNode implements HtmlDomNode {
         if (this.classes.length) {
             needsSpan = true;
             markup += " class=\"";
-            markup += utils.escape(createClass(this.classes));
+            markup += escape(createClass(this.classes));
             markup += "\"";
         }
 
@@ -471,16 +471,16 @@ export class SymbolNode implements HtmlDomNode {
         }
         for (const style in this.style) {
             if (this.style.hasOwnProperty(style)) {
-                styles += utils.hyphenate(style) + ":" + this.style[style] + ";";
+                styles += hyphenate(style) + ":" + this.style[style] + ";";
             }
         }
 
         if (styles) {
             needsSpan = true;
-            markup += " style=\"" + utils.escape(styles) + "\"";
+            markup += " style=\"" + escape(styles) + "\"";
         }
 
-        const escaped = utils.escape(this.text);
+        const escaped = escape(this.text);
         if (needsSpan) {
             markup += ">";
             markup += escaped;
@@ -527,7 +527,7 @@ export class SvgNode implements VirtualNode {
         // Apply attributes
         for (const attr in this.attributes) {
             if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                markup += ` ${attr}="${utils.escape(this.attributes[attr])}"`;
+                markup += ` ${attr}="${escape(this.attributes[attr])}"`;
             }
         }
 
@@ -568,9 +568,9 @@ export class PathNode implements VirtualNode {
 
     toMarkup(): string {
         if (this.alternate) {
-            return `<path d="${utils.escape(this.alternate)}"/>`;
+            return `<path d="${escape(this.alternate)}"/>`;
         } else {
-            return `<path d="${utils.escape(path[this.pathName])}"/>`;
+            return `<path d="${escape(path[this.pathName])}"/>`;
         }
     }
 }
@@ -601,7 +601,7 @@ export class LineNode implements VirtualNode {
 
         for (const attr in this.attributes) {
             if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                markup += ` ${attr}="${utils.escape(this.attributes[attr])}"`;
+                markup += ` ${attr}="${escape(this.attributes[attr])}"`;
             }
         }
 

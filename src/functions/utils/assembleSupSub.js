@@ -1,7 +1,7 @@
 // @flow
 import buildCommon from "../../buildCommon";
 import * as html from "../../buildHTML";
-import utils from "../../utils";
+import {isCharacterBox} from "../../utils";
 import type {StyleInterface} from "../../Style";
 import type Options from "../../Options";
 import type {DomSpan, SymbolNode} from "../../domTree";
@@ -20,7 +20,7 @@ export const assembleSupSub = (
     baseShift: number,
 ): DomSpan => {
     base = buildCommon.makeSpan([], [base]);
-    const subIsSingleCharacter = subGroup &&  utils.isCharacterBox(subGroup);
+    const subIsSingleCharacter = subGroup &&  isCharacterBox(subGroup);
     let sub;
     let sup;
     // We manually have to handle the superscripts and subscripts. This,
