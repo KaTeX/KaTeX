@@ -2,8 +2,8 @@
 import {defineFunctionBuilders} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import {SymbolNode} from "../domTree";
+import {isCharacterBox} from "../utils";
 import {MathNode} from "../mathMLTree";
-import utils from "../utils";
 import {makeEm} from "../units";
 import Style from "../Style";
 
@@ -45,7 +45,7 @@ const htmlBuilderDelegate = function(
             (options.style.size === Style.DISPLAY.size || base.limits);
         return delegate ? operatorname.htmlBuilder : null;
     } else if (base.type === "accent") {
-        return utils.isCharacterBox(base.base) ? accent.htmlBuilder : null;
+        return isCharacterBox(base.base) ? accent.htmlBuilder : null;
     } else if (base.type === "horizBrace") {
         const isSup = !group.sub;
         return isSup === base.isOver ? horizBrace.htmlBuilder : null;
@@ -80,11 +80,11 @@ defineFunctionBuilders({
         let supShift = 0;
         let subShift = 0;
 
-        const isCharacterBox = valueBase && utils.isCharacterBox(valueBase);
+        const isCharBox = valueBase && isCharacterBox(valueBase);
         if (valueSup) {
             const newOptions = options.havingStyle(options.style.sup());
             supm = html.buildGroup(valueSup, newOptions, options);
-            if (!isCharacterBox) {
+            if (!isCharBox) {
                 supShift = base.height - newOptions.fontMetrics().supDrop
                     * newOptions.sizeMultiplier / options.sizeMultiplier;
             }
@@ -93,7 +93,7 @@ defineFunctionBuilders({
         if (valueSub) {
             const newOptions = options.havingStyle(options.style.sub());
             subm = html.buildGroup(valueSub, newOptions, options);
-            if (!isCharacterBox) {
+            if (!isCharBox) {
                 subShift = base.depth + newOptions.fontMetrics().subDrop
                     * newOptions.sizeMultiplier / options.sizeMultiplier;
             }

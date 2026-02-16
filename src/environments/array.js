@@ -11,7 +11,6 @@ import {assertNodeType, assertSymbolNodeType} from "../parseNode";
 import {checkSymbolNodeType} from "../parseNode";
 import {Token} from "../Token";
 import {calculateSize, makeEm} from "../units";
-import utils from "../utils";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -458,7 +457,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
         let sepwidth;
         if (c > 0 || group.hskipBeforeAndAfter) {
-            sepwidth = utils.deflt(colDescr.pregap, arraycolsep);
+            sepwidth = colDescr.pregap ?? arraycolsep;
             if (sepwidth !== 0) {
                 colSep = buildCommon.makeSpan(["arraycolsep"], []);
                 colSep.style.width = makeEm(sepwidth);
@@ -489,7 +488,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         cols.push(col);
 
         if (c < nc - 1 || group.hskipBeforeAndAfter) {
-            sepwidth = utils.deflt(colDescr.postgap, arraycolsep);
+            sepwidth = colDescr.postgap ?? arraycolsep;
             if (sepwidth !== 0) {
                 colSep = buildCommon.makeSpan(["arraycolsep"], []);
                 colSep.style.width = makeEm(sepwidth);

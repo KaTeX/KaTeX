@@ -5,7 +5,7 @@
  * default settings.
  */
 
-import utils from "./utils";
+import {protocolFromUrl} from "./utils";
 import ParseError from "./ParseError";
 import {Token} from "./Token";
 
@@ -346,7 +346,7 @@ export default class Settings {
      */
     isTrusted(context: AnyTrustContext): boolean {
         if (context.url && !context.protocol) {
-            const protocol = utils.protocolFromUrl(context.url);
+            const protocol = protocolFromUrl(context.url);
             if (protocol == null) {
                 return false;
             }

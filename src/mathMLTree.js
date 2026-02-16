@@ -9,7 +9,7 @@
  * domTree.js, creating namespaced DOM nodes and HTML text markup respectively.
  */
 
-import utils from "./utils";
+import {escape} from "./utils";
 import {DocumentFragment} from "./tree";
 import {createClass} from "./domTree";
 import {makeEm} from "./units";
@@ -122,13 +122,13 @@ export class MathNode implements MathDomNode {
         for (const attr in this.attributes) {
             if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
                 markup += " " + attr + "=\"";
-                markup += utils.escape(this.attributes[attr]);
+                markup += escape(this.attributes[attr]);
                 markup += "\"";
             }
         }
 
         if (this.classes.length > 0) {
-            markup += ` class ="${utils.escape(createClass(this.classes))}"`;
+            markup += ` class ="${escape(createClass(this.classes))}"`;
         }
 
         markup += ">";
@@ -172,7 +172,7 @@ export class TextNode implements MathDomNode {
      * (representing the text itself).
      */
     toMarkup(): string {
-        return utils.escape(this.toText());
+        return escape(this.toText());
     }
 
     /**
