@@ -20,7 +20,10 @@ try {
 const {version} = require("./package.json");
 const fs = require("fs");
 
-const program = require("commander").version(version);
+const {Command} = require("commander");
+const program = new Command();
+program.version(version);
+
 for (const prop in katex.SETTINGS_SCHEMA) {
     if (katex.SETTINGS_SCHEMA.hasOwnProperty(prop)) {
         const opt = katex.SETTINGS_SCHEMA[prop];
@@ -110,3 +113,4 @@ if (require.main !== module) {
     options = program.parse(process.argv).opts();
     readMacros();
 }
+
