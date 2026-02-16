@@ -1,8 +1,8 @@
 // @flow
 import defineFunction, {normalizeArgument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
 import {getBaseElem, isCharacterBox} from "../utils";
+import {MathNode} from "../mathMLTree";
 import stretchy from "../stretchy";
 import {assertNodeType} from "../parseNode";
 import {assertSpan, assertSymbolDomNode} from "../domTree";
@@ -196,9 +196,9 @@ const mathmlBuilder: MathMLBuilder<"accent"> = (group, options) => {
     const accentNode =
         group.isStretchy ?
             stretchy.mathMLnode(group.label) :
-            new mathMLTree.MathNode("mo", [mml.makeText(group.label, group.mode)]);
+            new MathNode("mo", [mml.makeText(group.label, group.mode)]);
 
-    const node = new mathMLTree.MathNode(
+    const node = new MathNode(
         "mover",
         [mml.buildGroup(group.base, options), accentNode]);
 

@@ -1,8 +1,8 @@
 // @flow
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
 import {isCharacterBox} from "../utils";
+import {MathNode} from "../mathMLTree";
 import stretchy from "../stretchy";
 import {phasePath} from "../svgGeometry";
 import {PathNode, SvgNode} from "../domTree";
@@ -167,7 +167,7 @@ const htmlBuilder = (group, options) => {
 
 const mathmlBuilder = (group, options) => {
     let fboxsep = 0;
-    const node = new mathMLTree.MathNode(
+    const node = new MathNode(
         (group.label.indexOf("colorbox") > -1) ? "mpadded" : "menclose",
         [mml.buildGroup(group.body, options)]
     );

@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import delimiter from "../delimiter";
 import Style from "../Style";
 import {makeEm} from "../units";
@@ -114,12 +114,12 @@ defineFunction({
     mathmlBuilder(group, options) {
         const {body, index} = group;
         return index ?
-            new mathMLTree.MathNode(
+            new MathNode(
                 "mroot", [
                     mml.buildGroup(body, options),
                     mml.buildGroup(index, options),
                 ]) :
-            new mathMLTree.MathNode(
+            new MathNode(
                 "msqrt", [mml.buildGroup(body, options)]);
     },
 });

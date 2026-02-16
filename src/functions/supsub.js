@@ -2,8 +2,8 @@
 import {defineFunctionBuilders} from "../defineFunction";
 import buildCommon from "../buildCommon";
 import {SymbolNode} from "../domTree";
-import mathMLTree from "../mathMLTree";
 import {isCharacterBox} from "../utils";
+import {MathNode} from "../mathMLTree";
 import {makeEm} from "../units";
 import Style from "../Style";
 
@@ -261,7 +261,7 @@ defineFunctionBuilders({
             }
         }
 
-        return new mathMLTree.MathNode(nodeType, children);
+        return new MathNode(nodeType, children);
     },
 });
 

@@ -7,7 +7,6 @@
 
 import buildCommon from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
-import mathMLTree from "./mathMLTree";
 import ParseError from "./ParseError";
 import symbols, {ligatures} from "./symbols";
 import {_mathmlGroupBuilders as groupBuilders} from "./defineFunction";
@@ -36,7 +35,7 @@ export const makeText = function(
         text = symbols[mode][text].replace;
     }
 
-    return new mathMLTree.TextNode(text);
+    return new TextNode(text);
 };
 
 /**
@@ -47,7 +46,7 @@ export const makeRow = function(body: $ReadOnlyArray<MathDomNode>): MathDomNode 
     if (body.length === 1) {
         return body[0];
     } else {
-        return new mathMLTree.MathNode("mrow", body);
+        return new MathNode("mrow", body);
     }
 };
 
@@ -249,7 +248,7 @@ export const buildGroup = function(
     options: Options,
 ): MathNode {
     if (!group) {
-        return new mathMLTree.MathNode("mrow");
+        return new MathNode("mrow");
     }
 
     if (groupBuilders[group.type]) {
@@ -293,19 +292,19 @@ export default function buildMathML(
         ["mrow", "mtable"].includes(expression[0].type)) {
         wrapper = expression[0];
     } else {
-        wrapper = new mathMLTree.MathNode("mrow", expression);
+        wrapper = new MathNode("mrow", expression);
     }
 
     // Build a TeX annotation of the source
-    const annotation = new mathMLTree.MathNode(
-        "annotation", [new mathMLTree.TextNode(texExpression)]);
+    const annotation = new MathNode(
+        "annotation", [new TextNode(texExpression)]);
 
     annotation.setAttribute("encoding", "application/x-tex");
 
-    const semantics = new mathMLTree.MathNode(
+    const semantics = new MathNode(
         "semantics", [wrapper, annotation]);
 
-    const math = new mathMLTree.MathNode("math", [semantics]);
+    const math = new MathNode("math", [semantics]);
     math.setAttribute("xmlns", "http://www.w3.org/1998/Math/MathML");
     if (isDisplayMode) {
         math.setAttribute("display", "block");

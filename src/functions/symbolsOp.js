@@ -1,7 +1,7 @@
 // @flow
 import {defineFunctionBuilders} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 
 import * as mml from "../buildMathML";
 
@@ -14,7 +14,7 @@ defineFunctionBuilders({
             group.text, group.mode, options, ["m" + group.family]);
     },
     mathmlBuilder(group, options) {
-        const node = new mathMLTree.MathNode(
+        const node = new MathNode(
             "mo", [mml.makeText(group.text, group.mode)]);
         if (group.family === "bin") {
             const variant = mml.getVariant(group, options);

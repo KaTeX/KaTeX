@@ -1,8 +1,8 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
 import {isCharacterBox} from "../utils";
+import {MathNode} from "../mathMLTree";
 import type {AnyParseNode} from "../parseNode";
 
 import * as html from "../buildHTML";
@@ -18,24 +18,24 @@ function htmlBuilder(group: ParseNode<"mclass">, options) {
 }
 
 function mathmlBuilder(group: ParseNode<"mclass">, options) {
-    let node: mathMLTree.MathNode;
+    let node: MathNode;
     const inner = mml.buildExpression(group.body, options);
 
     if (group.mclass === "minner") {
-        node = new mathMLTree.MathNode("mpadded", inner);
+        node = new MathNode("mpadded", inner);
     } else if (group.mclass === "mord") {
         if (group.isCharacterBox) {
             node = inner[0];
             node.type = "mi";
         } else {
-            node = new mathMLTree.MathNode("mi", inner);
+            node = new MathNode("mi", inner);
         }
     } else {
         if (group.isCharacterBox) {
             node = inner[0];
             node.type = "mo";
         } else {
-            node = new mathMLTree.MathNode("mo", inner);
+            node = new MathNode("mo", inner);
         }
 
         // Set spacing based on what is the most likely adjacent atom type.
