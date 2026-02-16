@@ -489,7 +489,8 @@ defineFunction({
         const barSize = assertNodeType(args[1], "infix").size;
 
         if (!barSize) {
-            throw new Error('Expected non-null, but got ' + String(barSize));
+            throw new Error(
+                `\\\\abovefrac expected size, but got ${String(barSize)}`);
         }
 
         const denom = args[2];
