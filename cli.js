@@ -20,8 +20,7 @@ try {
 const {version} = require("./package.json");
 const fs = require("fs");
 
-const {Command} = require("commander");
-const program = new Command();
+const {program} = require("commander");
 program.version(version);
 
 for (const prop in katex.SETTINGS_SCHEMA) {
@@ -113,4 +112,3 @@ if (require.main !== module) {
     options = program.parse(process.argv).opts();
     readMacros();
 }
-
