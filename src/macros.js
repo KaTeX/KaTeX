@@ -287,7 +287,8 @@ defineMacro("\\underbar", "\\underline{\\text{#1}}");
 // It's thus treated like a \mathrel, but defined by a symbol that has zero
 // width but extends to the right.  We use \rlap to get that spacing.
 // For MathML we write U+0338 here. buildMathML.js will then do the overlay.
-defineMacro("\\not", '\\html@mathml{\\mathrel{\\mathrlap\\@not}}{\\char"338}');
+defineMacro("\\not", "\\html@mathml{\\mathrel{\\mathrlap\\@not}\\nobreak}" +
+    "{\\char\"338}");
 
 // Negated symbols from base/fontmath.ltx:
 // \def\neq{\not=} \let\ne=\neq
