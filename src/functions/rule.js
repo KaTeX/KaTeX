@@ -1,5 +1,5 @@
 // @flow
-import buildCommon from "../buildCommon";
+import {makeSpan} from "../buildCommon";
 import defineFunction from "../defineFunction";
 import {MathNode} from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
@@ -29,7 +29,7 @@ defineFunction({
     },
     htmlBuilder(group, options) {
         // Make an empty span for the rule
-        const rule = buildCommon.makeSpan(["mord", "rule"], [], options);
+        const rule = makeSpan(["mord", "rule"], [], options);
 
         // Calculate the shift, width, and height of the rule, and account for units
         const width = calculateSize(group.width, options);

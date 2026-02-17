@@ -1,6 +1,6 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeSpan} from "../buildCommon";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -67,7 +67,7 @@ defineFunction({
     htmlBuilder(group, options) {
         const newOptions = optionsWithFont(group, options);
         const inner = html.buildExpression(group.body, newOptions, true);
-        return buildCommon.makeSpan(["mord", "text"], inner, newOptions);
+        return makeSpan(["mord", "text"], inner, newOptions);
     },
     mathmlBuilder(group, options) {
         const newOptions = optionsWithFont(group, options);

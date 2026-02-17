@@ -1,6 +1,6 @@
 // @flow
 import defineFunction, {normalizeArgument} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeLineSpan, makeSpan, makeVList} from "../buildCommon";
 import delimiter from "../delimiter";
 import {MathNode, TextNode} from "../mathMLTree";
 import Style from "../Style";
@@ -59,9 +59,9 @@ const htmlBuilder = (group, options) => {
     if (group.hasBarLine) {
         if (group.barSize) {
             ruleWidth = calculateSize(group.barSize, options);
-            rule = buildCommon.makeLineSpan("frac-line", options, ruleWidth);
+            rule = makeLineSpan("frac-line", options, ruleWidth);
         } else {
-            rule = buildCommon.makeLineSpan("frac-line", options);
+            rule = makeLineSpan("frac-line", options);
         }
         ruleWidth = rule.height;
         ruleSpacing = rule.height;
@@ -104,7 +104,7 @@ const htmlBuilder = (group, options) => {
             denomShift += 0.5 * (clearance - candidateClearance);
         }
 
-        frac = buildCommon.makeVList({
+        frac = makeVList({
             positionType: "individualShift",
             children: [
                 {type: "elem", elem: denomm, shift: denomShift},
@@ -131,7 +131,7 @@ const htmlBuilder = (group, options) => {
 
         const midShift = -(axisHeight - 0.5 * ruleWidth);
 
-        frac = buildCommon.makeVList({
+        frac = makeVList({
             positionType: "individualShift",
             children: [
                 {type: "elem", elem: denomm, shift: denomShift},
@@ -168,7 +168,7 @@ const htmlBuilder = (group, options) => {
     }
 
     if (group.continued) {
-        rightDelim = buildCommon.makeSpan([]); // zero width for \cfrac
+        rightDelim = makeSpan([]); // zero width for \cfrac
     } else if (group.rightDelim == null) {
         rightDelim = html.makeNullDelimiter(options, ["mclose"]);
     } else {
@@ -177,9 +177,9 @@ const htmlBuilder = (group, options) => {
             options.havingStyle(style), group.mode, ["mclose"]);
     }
 
-    return buildCommon.makeSpan(
+    return makeSpan(
         ["mord"].concat(newOptions.sizingClasses(options)),
-        [leftDelim, buildCommon.makeSpan(["mfrac"], [frac]), rightDelim],
+        [leftDelim, makeSpan(["mfrac"], [frac]), rightDelim],
         options);
 };
 

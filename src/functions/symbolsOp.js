@@ -1,6 +1,6 @@
 // @flow
 import {defineFunctionBuilders} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {mathsym} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
 
 import * as mml from "../buildMathML";
@@ -10,7 +10,7 @@ import * as mml from "../buildMathML";
 defineFunctionBuilders({
     type: "atom",
     htmlBuilder(group, options) {
-        return buildCommon.mathsym(
+        return mathsym(
             group.text, group.mode, options, ["m" + group.family]);
     },
     mathmlBuilder(group, options) {

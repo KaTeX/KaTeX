@@ -1,5 +1,5 @@
 // @flow
-import buildCommon from "../buildCommon";
+import {wrapFragment} from "../buildCommon";
 import defineFunction from "../defineFunction";
 import {MathNode} from "../mathMLTree";
 import * as html from "../buildHTML";
@@ -255,7 +255,7 @@ defineFunction({
     },
     htmlBuilder(group, options) {
         const newOptions = options.havingStyle(options.style.sup());
-        const label = buildCommon.wrapFragment(
+        const label = wrapFragment(
             html.buildGroup(group.label, newOptions, options), options);
         label.classes.push("cd-label-" + group.side);
         label.style.bottom = makeEm(0.8 - label.depth);
@@ -300,7 +300,7 @@ defineFunction({
         // Wrap the vertical arrow and its labels.
         // The parent gets position: relative. The child gets position: absolute.
         // So CSS can locate the label correctly.
-        const parent = buildCommon.wrapFragment(
+        const parent = wrapFragment(
             html.buildGroup(group.fragment, options), options
         );
         parent.classes.push("cd-vert-arrow");

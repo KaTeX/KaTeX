@@ -1,6 +1,6 @@
 // @flow
 import {defineFunctionBuilders} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {mathsym, makeOrd, makeSpan} from "../buildCommon";
 import {MathNode, TextNode} from "../mathMLTree";
 import ParseError from "../ParseError";
 
@@ -38,17 +38,17 @@ defineFunctionBuilders({
             // things has an entry in the symbols table, so these will be turned
             // into appropriate outputs.
             if (group.mode === "text") {
-                const ord = buildCommon.makeOrd(group, options, "textord");
+                const ord = makeOrd(group, options, "textord");
                 ord.classes.push(className);
                 return ord;
             } else {
-                return buildCommon.makeSpan(["mspace", className],
-                    [buildCommon.mathsym(group.text, group.mode, options)],
+                return makeSpan(["mspace", className],
+                    [mathsym(group.text, group.mode, options)],
                     options);
             }
         } else if (cssSpace.hasOwnProperty(group.text)) {
             // Spaces based on just a CSS class.
-            return buildCommon.makeSpan(
+            return makeSpan(
                 ["mspace", cssSpace[group.text]],
                 [], options);
         } else {

@@ -5,7 +5,7 @@
  * parser.
  */
 
-import buildCommon from "./buildCommon";
+import {fontMap, makeSpan} from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import ParseError from "./ParseError";
 import symbols, {ligatures} from "./symbols";
@@ -118,9 +118,9 @@ export const getVariant = function(
         text = symbols[mode][text].replace;
     }
 
-    const fontName = buildCommon.fontMap[font].fontName;
+    const fontName = fontMap[font].fontName;
     if (getCharacterMetrics(text, fontName, mode)) {
-        return buildCommon.fontMap[font].variant;
+        return fontMap[font].variant;
     }
 
     return null;
@@ -316,5 +316,5 @@ export default function buildMathML(
     // of span are expected to have more fields in `buildHtml` contexts.
     const wrapperClass = forMathmlOnly ? "katex" : "katex-mathml";
     // $FlowFixMe
-    return buildCommon.makeSpan([wrapperClass], [math]);
+    return makeSpan([wrapperClass], [math]);
 }

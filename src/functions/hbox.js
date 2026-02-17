@@ -1,6 +1,6 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeFragment} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
 
 import * as html from "../buildHTML";
@@ -29,7 +29,7 @@ defineFunction({
     },
     htmlBuilder(group, options) {
         const elements = html.buildExpression(group.body, options, false);
-        return buildCommon.makeFragment(elements);
+        return makeFragment(elements);
     },
     mathmlBuilder(group, options) {
         return new MathNode(

@@ -1,6 +1,6 @@
 // @flow
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeVList} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
 
 import * as html from "../buildHTML";
@@ -27,7 +27,7 @@ defineFunction({
         const body = html.buildGroup(group.body, options);
         const axisHeight = options.fontMetrics().axisHeight;
         const dy = 0.5 * ((body.height - axisHeight) - (body.depth + axisHeight));
-        return buildCommon.makeVList({
+        return makeVList({
             positionType: "shift",
             positionData: dy,
             children: [{type: "elem", elem: body}],

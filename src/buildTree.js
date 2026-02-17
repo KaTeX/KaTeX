@@ -1,7 +1,7 @@
 // @flow
 import buildHTML from "./buildHTML";
 import buildMathML from "./buildMathML";
-import buildCommon from "./buildCommon";
+import {makeSpan} from "./buildCommon";
 import Options from "./Options";
 import Settings from "./Settings";
 import Style from "./Style";
@@ -26,7 +26,7 @@ const displayWrap = function(node: DomSpan, settings: Settings): DomSpan {
         if (settings.fleqn) {
             classes.push("fleqn");
         }
-        node = buildCommon.makeSpan(classes, [node]);
+        node = makeSpan(classes, [node]);
     }
     return node;
 };
@@ -42,12 +42,12 @@ export const buildTree = function(
         return  buildMathML(tree, expression, options, settings.displayMode, true);
     } else if (settings.output === "html") {
         const htmlNode = buildHTML(tree, options);
-        katexNode = buildCommon.makeSpan(["katex"], [htmlNode]);
+        katexNode = makeSpan(["katex"], [htmlNode]);
     } else {
         const mathMLNode = buildMathML(tree, expression, options,
             settings.displayMode, false);
         const htmlNode = buildHTML(tree, options);
-        katexNode = buildCommon.makeSpan(["katex"], [mathMLNode, htmlNode]);
+        katexNode = makeSpan(["katex"], [mathMLNode, htmlNode]);
     }
 
     return displayWrap(katexNode, settings);
@@ -60,7 +60,7 @@ export const buildHTMLTree = function(
 ): DomSpan {
     const options = optionsFromSettings(settings);
     const htmlNode = buildHTML(tree, options);
-    const katexNode = buildCommon.makeSpan(["katex"], [htmlNode]);
+    const katexNode = makeSpan(["katex"], [htmlNode]);
     return displayWrap(katexNode, settings);
 };
 

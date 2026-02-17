@@ -1,7 +1,7 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import defineMacro from "../defineMacro";
-import buildCommon from "../buildCommon";
+import {makeSpan} from "../buildCommon";
 import {MathNode, newDocumentFragment, SpaceNode, TextNode} from "../mathMLTree";
 import {SymbolNode} from "../domTree";
 import {assembleSupSub} from "./utils/assembleSupSub";
@@ -63,9 +63,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"operatorname"> = (grp, options) => 
                     .replace(/\u2217/, "*");
             }
         }
-        base = buildCommon.makeSpan(["mop"], expression, options);
+        base = makeSpan(["mop"], expression, options);
     } else {
-        base = buildCommon.makeSpan(["mop"], [], options);
+        base = makeSpan(["mop"], [], options);
     }
 
     if (hasLimits) {

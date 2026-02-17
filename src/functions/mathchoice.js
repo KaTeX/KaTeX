@@ -1,6 +1,6 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeFragment} from "../buildCommon";
 import Style from "../Style";
 
 import * as html from "../buildHTML";
@@ -42,7 +42,7 @@ defineFunction({
             options,
             false
         );
-        return buildCommon.makeFragment(elements);
+        return makeFragment(elements);
     },
     mathmlBuilder: (group, options) => {
         const body = chooseMathStyle(group, options);
