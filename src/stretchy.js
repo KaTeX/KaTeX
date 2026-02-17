@@ -11,7 +11,7 @@ import {MathNode, TextNode} from "./mathMLTree";
 import {makeEm} from "./units";
 
 import type Options from "./Options";
-import type {ParseNode, AnyParseNode} from "./parseNode";
+import type {ParseNode} from "./parseNode";
 import type {DomSpan, HtmlDomNode, SvgSpan} from "./domTree";
 
 const stretchyCodePoint: {[string]: string} = {
@@ -59,7 +59,7 @@ const stretchyCodePoint: {[string]: string} = {
     "\\cdlongequal": "=",
 };
 
-const mathMLnode = function(label: string): MathNode {
+export const mathMLnode = function(label: string): MathNode {
     const node = new MathNode(
         "mo",
         [new TextNode(stretchyCodePoint[label.replace(/^\\/, '')])],
@@ -170,15 +170,7 @@ const katexImagesData: {
         "shortrightharpoonabovebar"], 1.75, 716],
 };
 
-const groupLength = function(arg: AnyParseNode): number {
-    if (arg.type === "ordgroup") {
-        return arg.body.length;
-    } else {
-        return 1;
-    }
-};
-
-const svgSpan = function(
+export const svgSpan = function(
     group: ParseNode<"accent"> | ParseNode<"accentUnder"> | ParseNode<"xArrow">
          | ParseNode<"horizBrace">,
     options: Options,
@@ -198,7 +190,8 @@ const svgSpan = function(
             const grp: ParseNode<"accent"> | ParseNode<"accentUnder"> = group;
             // There are four SVG images available for each function.
             // Choose a taller image when there are more characters.
-            const numChars = groupLength(grp.base);
+            const numChars = grp.base.type === "ordgroup" ?
+                grp.base.body.length : 1;
             let viewBoxHeight;
             let pathName;
             let height;
@@ -308,7 +301,7 @@ const svgSpan = function(
     return span;
 };
 
-const encloseSpan = function(
+export const encloseSpan = function(
     inner: HtmlDomNode,
     label: string,
     topPad: number,
@@ -367,10 +360,4 @@ const encloseSpan = function(
     img.style.height = makeEm(totalHeight);
 
     return img;
-};
-
-export default {
-    encloseSpan,
-    mathMLnode,
-    svgSpan,
 };

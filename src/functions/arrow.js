@@ -2,7 +2,7 @@
 import defineFunction from "../defineFunction";
 import {makeSpan, makeVList, wrapFragment} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
-import stretchy from "../stretchy";
+import {mathMLnode, svgSpan} from "../stretchy";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -71,9 +71,9 @@ defineFunction({
             lowerGroup.classes.push(arrowPrefix + "-arrow-pad");
         }
 
-        const arrowBody = stretchy.svgSpan(group, options);
+        const arrowBody = svgSpan(group, options);
 
-        // Re shift: Note that stretchy.svgSpan returned arrowBody.depth = 0.
+        // Re shift: Note that svgSpan returned arrowBody.depth = 0.
         // The point we want on the math axis is at 0.5 * arrowBody.height.
         const arrowShift = -options.fontMetrics().axisHeight +
             0.5 * arrowBody.height;
@@ -114,7 +114,7 @@ defineFunction({
         return makeSpan(["mrel", "x-arrow"], [vlist], options);
     },
     mathmlBuilder(group, options) {
-        const arrowNode = stretchy.mathMLnode(group.label);
+        const arrowNode = mathMLnode(group.label);
         arrowNode.setAttribute(
             "minsize", group.label.charAt(0) === "x" ? "1.75em" : "3.0em"
         );

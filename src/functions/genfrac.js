@@ -1,7 +1,7 @@
 // @flow
 import defineFunction, {normalizeArgument} from "../defineFunction";
 import {makeLineSpan, makeSpan, makeVList} from "../buildCommon";
-import delimiter from "../delimiter";
+import {makeCustomSizedDelim} from "../delimiter";
 import {MathNode, TextNode} from "../mathMLTree";
 import Style from "../Style";
 import {assertNodeType} from "../parseNode";
@@ -162,7 +162,7 @@ const htmlBuilder = (group, options) => {
     if (group.leftDelim == null) {
         leftDelim = html.makeNullDelimiter(options, ["mopen"]);
     } else {
-        leftDelim = delimiter.customSizedDelim(
+        leftDelim = makeCustomSizedDelim(
             group.leftDelim, delimSize, true,
             options.havingStyle(style), group.mode, ["mopen"]);
     }
@@ -172,7 +172,7 @@ const htmlBuilder = (group, options) => {
     } else if (group.rightDelim == null) {
         rightDelim = html.makeNullDelimiter(options, ["mclose"]);
     } else {
-        rightDelim = delimiter.customSizedDelim(
+        rightDelim = makeCustomSizedDelim(
             group.rightDelim, delimSize, true,
             options.havingStyle(style), group.mode, ["mclose"]);
     }

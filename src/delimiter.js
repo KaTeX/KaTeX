@@ -481,7 +481,7 @@ const sqrtSvg = function(
 /**
  * Make a sqrt image of the given height,
  */
-const makeSqrtImage = function(
+export const makeSqrtImage = function(
     height: number,
     options: Options,
 ): {
@@ -600,12 +600,12 @@ const stackNeverDelimiters = [
 // Metrics of the different sizes. Found by looking at TeX's output of
 // $\bigl| // \Bigl| \biggl| \Biggl| \showlists$
 // Used to create stacked delimiters of appropriate sizes in makeSizedDelim.
-const sizeToMaxHeight = [0, 1.2, 1.8, 2.4, 3.0];
+export const sizeToMaxHeight = [0, 1.2, 1.8, 2.4, 3.0];
 
 /**
  * Used to create a delimiter of a specific size, where `size` is 1, 2, 3, or 4.
  */
-const makeSizedDelim = function(
+export const makeSizedDelim = function(
     delim: string,
     size: number,
     options: Options,
@@ -742,7 +742,7 @@ const traverseSequence = function(
  * Make a delimiter of a given height+depth, with optional centering. Here, we
  * traverse the sequences, and create a delimiter that the sequence tells us to.
  */
-const makeCustomSizedDelim = function(
+export const makeCustomSizedDelim = function(
     delim: string,
     height: number,
     center: boolean,
@@ -788,7 +788,7 @@ const makeCustomSizedDelim = function(
  * Make a delimiter for use with `\left` and `\right`, given a height and depth
  * of an expression that the delimiters surround.
  */
-const makeLeftRightDelim = function(
+export const makeLeftRightDelim = function(
     delim: string,
     height: number,
     depth: number,
@@ -823,12 +823,4 @@ const makeLeftRightDelim = function(
     // Finally, we defer to `makeCustomSizedDelim` with our calculated total
     // height
     return makeCustomSizedDelim(delim, totalHeight, true, options, mode, classes);
-};
-
-export default {
-    sqrtImage: makeSqrtImage,
-    sizedDelim: makeSizedDelim,
-    sizeToMaxHeight: sizeToMaxHeight,
-    customSizedDelim: makeCustomSizedDelim,
-    leftRightDelim: makeLeftRightDelim,
 };

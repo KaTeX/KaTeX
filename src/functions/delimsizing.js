@@ -1,7 +1,7 @@
 // @flow
 import {makeSpan} from "../buildCommon";
 import defineFunction from "../defineFunction";
-import delimiter from "../delimiter";
+import {makeLeftRightDelim, makeSizedDelim, sizeToMaxHeight} from "../delimiter";
 import {MathNode} from "../mathMLTree";
 import ParseError from "../ParseError";
 import {assertNodeType, checkSymbolNodeType} from "../parseNode";
@@ -101,8 +101,7 @@ defineFunction({
             return makeSpan([group.mclass]);
         }
 
-        // Use delimiter.sizedDelim to generate the delimiter.
-        return delimiter.sizedDelim(
+        return makeSizedDelim(
                 group.delim, group.size, options, group.mode, [group.mclass]);
     },
     mathmlBuilder: (group) => {
@@ -126,7 +125,7 @@ defineFunction({
         }
 
         node.setAttribute("stretchy", "true");
-        const size = makeEm(delimiter.sizeToMaxHeight[group.size]);
+        const size = makeEm(sizeToMaxHeight[group.size]);
         node.setAttribute("minsize", size);
         node.setAttribute("maxsize", size);
 
@@ -232,7 +231,7 @@ defineFunction({
         } else {
             // Otherwise, use leftRightDelim to generate the correct sized
             // delimiter.
-            leftDelim = delimiter.leftRightDelim(
+            leftDelim = makeLeftRightDelim(
                 group.left, innerHeight, innerDepth, options,
                 group.mode, ["mopen"]);
         }
@@ -249,7 +248,7 @@ defineFunction({
                 const isMiddle: IsMiddle = middleDelim.isMiddle;
                 if (isMiddle) {
                     // Apply the options that were active when \middle was called
-                    inner[i] = delimiter.leftRightDelim(
+                    inner[i] = makeLeftRightDelim(
                         isMiddle.delim, innerHeight, innerDepth,
                         isMiddle.options, group.mode, []);
                 }
@@ -263,7 +262,7 @@ defineFunction({
         } else {
             const colorOptions = group.rightColor ?
                 options.withColor(group.rightColor) : options;
-            rightDelim = delimiter.leftRightDelim(
+            rightDelim = makeLeftRightDelim(
                 group.right, innerHeight, innerDepth, colorOptions,
                 group.mode, ["mclose"]);
         }
@@ -326,7 +325,7 @@ defineFunction({
         if (group.delim === ".") {
             middleDelim = html.makeNullDelimiter(options, []);
         } else {
-            middleDelim = delimiter.sizedDelim(
+            middleDelim = makeSizedDelim(
                 group.delim, 1, options,
                 group.mode, []);
 

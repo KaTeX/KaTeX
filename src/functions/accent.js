@@ -3,7 +3,7 @@ import defineFunction, {normalizeArgument} from "../defineFunction";
 import {makeOrd, makeSpan, makeVList, staticSvg, svgData} from "../buildCommon";
 import {getBaseElem, isCharacterBox} from "../utils";
 import {MathNode} from "../mathMLTree";
-import stretchy from "../stretchy";
+import {mathMLnode, svgSpan} from "../stretchy";
 import {assertNodeType} from "../parseNode";
 import {assertSpan, assertSymbolDomNode} from "../domTree";
 import {makeEm} from "../units";
@@ -150,7 +150,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
         }, options);
 
     } else {
-        accentBody = stretchy.svgSpan(group, options);
+        accentBody = svgSpan(group, options);
 
         accentBody = makeVList({
             positionType: "firstBaseline",
@@ -195,7 +195,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
 const mathmlBuilder: MathMLBuilder<"accent"> = (group, options) => {
     const accentNode =
         group.isStretchy ?
-            stretchy.mathMLnode(group.label) :
+            mathMLnode(group.label) :
             new MathNode("mo", [mml.makeText(group.label, group.mode)]);
 
     const node = new MathNode(
