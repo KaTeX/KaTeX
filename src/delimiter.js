@@ -26,7 +26,7 @@ import Style from "./Style";
 
 import {PathNode, SvgNode, SymbolNode} from "./domTree";
 import {sqrtPath, innerPath, tallDelim} from "./svgGeometry";
-import buildCommon from "./buildCommon";
+import {makeSpan, makeSymbol, makeSvgSpan, makeVList} from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import symbols from "./symbols";
 import {makeEm} from "./units";
@@ -69,7 +69,7 @@ const styleWrap = function(
 ): DomSpan {
     const newOptions = options.havingBaseStyle(toStyle);
 
-    const span = buildCommon.makeSpan(
+    const span = makeSpan(
         classes.concat(newOptions.sizingClasses(options)),
         [delim], options);
 
@@ -111,7 +111,7 @@ const makeSmallDelim = function(
     mode: Mode,
     classes: string[],
 ): DomSpan {
-    const text = buildCommon.makeSymbol(delim, "Main-Regular", mode, options);
+    const text = makeSymbol(delim, "Main-Regular", mode, options);
     const span = styleWrap(text, style, options, classes);
     if (center) {
         centerSpan(span, options, style);
@@ -128,7 +128,7 @@ const mathrmSize = function(
     mode: Mode,
     options: Options,
 ): SymbolNode {
-    return buildCommon.makeSymbol(value, "Size" + size + "-Regular",
+    return makeSymbol(value, "Size" + size + "-Regular",
         mode, options);
 };
 
@@ -145,7 +145,7 @@ const makeLargeDelim = function(delim,
 ): DomSpan {
     const inner = mathrmSize(delim, size, mode, options);
     const span = styleWrap(
-        buildCommon.makeSpan(["delimsizing", "size" + size], [inner], options),
+        makeSpan(["delimsizing", "size" + size], [inner], options),
         Style.TEXT, options, classes);
     if (center) {
         centerSpan(span, options, Style.TEXT);
@@ -170,9 +170,9 @@ const makeGlyphSpan = function(
         sizeClass = "delim-size4";
     }
 
-    const corner = buildCommon.makeSpan(
+    const corner = makeSpan(
         ["delimsizinginner", sizeClass],
-        [buildCommon.makeSpan([], [buildCommon.makeSymbol(symbol, font, mode)])]);
+        [makeSpan([], [makeSymbol(symbol, font, mode)])]);
 
     // Since this will be passed into `makeVList` in the end, wrap the element
     // in the appropriate tag that VList uses.
@@ -197,7 +197,7 @@ const makeInner = function(
         "viewBox": "0 0 " + 1000 * width + " " + Math.round(1000 * height),
         "preserveAspectRatio": "xMinYMin",
     });
-    const span = buildCommon.makeSvgSpan([], [svgNode], options);
+    const span = makeSvgSpan([], [svgNode], options);
     span.height = height;
     span.style.height = makeEm(height);
     span.style.width = makeEm(width);
@@ -404,7 +404,7 @@ const makeStackedDelim = function(
             "height": height,
             "viewBox": `0 0 ${viewBoxWidth} ${viewBoxHeight}`,
         });
-        const wrapper = buildCommon.makeSvgSpan([], [svg], options);
+        const wrapper = makeSvgSpan([], [svg], options);
         wrapper.height = viewBoxHeight / 1000;
         wrapper.style.width = width;
         wrapper.style.height = height;
@@ -441,14 +441,14 @@ const makeStackedDelim = function(
 
     // Finally, build the vlist
     const newOptions = options.havingBaseStyle(Style.TEXT);
-    const inner = buildCommon.makeVList({
+    const inner = makeVList({
         positionType: "bottom",
         positionData: depth,
         children: stack,
     }, newOptions);
 
     return styleWrap(
-        buildCommon.makeSpan(["delimsizing", "mult"], [inner], newOptions),
+        makeSpan(["delimsizing", "mult"], [inner], newOptions),
         Style.TEXT, options, classes);
 };
 
@@ -475,7 +475,7 @@ const sqrtSvg = function(
         "preserveAspectRatio": "xMinYMin slice",
     });
 
-    return buildCommon.makeSvgSpan(["hide-tail"], [svg], options);
+    return makeSvgSpan(["hide-tail"], [svg], options);
 };
 
 /**

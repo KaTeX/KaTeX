@@ -1,6 +1,6 @@
 // @flow
 import {defineFunctionBuilders} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeSpan, makeVList} from "../buildCommon";
 import {SymbolNode} from "../domTree";
 import {isCharacterBox} from "../utils";
 import {MathNode} from "../mathMLTree";
@@ -153,7 +153,7 @@ defineFunctionBuilders({
                 {type: "elem", elem: supm, shift: -supShift, marginRight},
             ];
 
-            supsub = buildCommon.makeVList({
+            supsub = makeVList({
                 positionType: "individualShift",
                 children: vlistElem,
             }, options);
@@ -166,7 +166,7 @@ defineFunctionBuilders({
             const vlistElem =
                 [{type: "elem", elem: subm, marginLeft, marginRight}];
 
-            supsub = buildCommon.makeVList({
+            supsub = makeVList({
                 positionType: "shift",
                 positionData: subShift,
                 children: vlistElem,
@@ -176,7 +176,7 @@ defineFunctionBuilders({
             supShift = Math.max(supShift, minSupShift,
                 supm.depth + 0.25 * metrics.xHeight);
 
-            supsub = buildCommon.makeVList({
+            supsub = makeVList({
                 positionType: "shift",
                 positionData: -supShift,
                 children: [{type: "elem", elem: supm, marginRight}],
@@ -187,8 +187,8 @@ defineFunctionBuilders({
 
         // Wrap the supsub vlist in a span.msupsub to reset text-align.
         const mclass = html.getTypeOfDomTree(base, "right") || "mord";
-        return buildCommon.makeSpan([mclass],
-            [base, buildCommon.makeSpan(["msupsub"], [supsub])],
+        return makeSpan([mclass],
+            [base, makeSpan(["msupsub"], [supsub])],
             options);
     },
     mathmlBuilder(group, options) {

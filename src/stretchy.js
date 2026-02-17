@@ -6,7 +6,7 @@
  */
 
 import {LineNode, PathNode, SvgNode} from "./domTree";
-import buildCommon from "./buildCommon";
+import {makeSpan, makeSvgSpan} from "./buildCommon";
 import {MathNode, TextNode} from "./mathMLTree";
 import {makeEm} from "./units";
 
@@ -237,7 +237,7 @@ const svgSpan = function(
                 "preserveAspectRatio": "none",
             });
             return {
-                span: buildCommon.makeSvgSpan([], [svgNode], options),
+                span: makeSvgSpan([], [svgNode], options),
                 minWidth: 0,
                 height,
             };
@@ -278,7 +278,7 @@ const svgSpan = function(
                     "preserveAspectRatio": aligns[i] + " slice",
                 });
 
-                const span = buildCommon.makeSvgSpan(
+                const span = makeSvgSpan(
                     [widthClasses[i]], [svgNode], options);
                 if (numSvgChildren === 1) {
                     return {span, minWidth, height};
@@ -289,7 +289,7 @@ const svgSpan = function(
             }
 
             return {
-                span: buildCommon.makeSpan(["stretchy"], spans, options),
+                span: makeSpan(["stretchy"], spans, options),
                 minWidth,
                 height,
             };
@@ -320,7 +320,7 @@ const encloseSpan = function(
     const totalHeight = inner.height + inner.depth + topPad + bottomPad;
 
     if (/fbox|color|angl/.test(label)) {
-        img = buildCommon.makeSpan(["stretchy", label], [], options);
+        img = makeSpan(["stretchy", label], [], options);
 
         if (label === "fbox") {
             const color = options.color && options.getColor();
@@ -360,7 +360,7 @@ const encloseSpan = function(
             "height": makeEm(totalHeight),
         });
 
-        img = buildCommon.makeSvgSpan([], [svgNode], options);
+        img = makeSvgSpan([], [svgNode], options);
     }
 
     img.height = totalHeight;

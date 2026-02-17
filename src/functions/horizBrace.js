@@ -1,6 +1,6 @@
 // @flow
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeSpan, makeVList} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
 import stretchy from "../stretchy";
 import Style from "../Style";
@@ -43,7 +43,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
     // This first vlist contains the content and the brace:   equation
     let vlist;
     if (group.isOver) {
-        vlist = buildCommon.makeVList({
+        vlist = makeVList({
             positionType: "firstBaseline",
             children: [
                 {type: "elem", elem: body},
@@ -54,7 +54,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
         // $FlowFixMe: Replace this with passing "svg-align" into makeVList.
         vlist.children[0].children[0].children[1].classes.push("svg-align");
     } else {
-        vlist = buildCommon.makeVList({
+        vlist = makeVList({
             positionType: "bottom",
             positionData: body.depth + 0.1 + braceBody.height,
             children: [
@@ -77,12 +77,12 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
         //   ┏━━━━━━━━┓   or    ┏━━━┓     not    ┏━━━━━━━━━┓
         //    equation           eqn                 eqn
 
-        const vSpan = buildCommon.makeSpan(
+        const vSpan = makeSpan(
             ["mord", (group.isOver ? "mover" : "munder")],
             [vlist], options);
 
         if (group.isOver) {
-            vlist = buildCommon.makeVList({
+            vlist = makeVList({
                 positionType: "firstBaseline",
                 children: [
                     {type: "elem", elem: vSpan},
@@ -91,7 +91,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
                 ],
             }, options);
         } else {
-            vlist = buildCommon.makeVList({
+            vlist = makeVList({
                 positionType: "bottom",
                 positionData: vSpan.depth + 0.2 + supSubGroup.height +
                     supSubGroup.depth,
@@ -104,7 +104,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
         }
     }
 
-    return buildCommon.makeSpan(
+    return makeSpan(
         ["mord", (group.isOver ? "mover" : "munder")], [vlist], options);
 };
 

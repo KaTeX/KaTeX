@@ -13,7 +13,7 @@ import Settings, {SETTINGS_SCHEMA} from "./src/Settings";
 
 import {buildTree, buildHTMLTree} from "./src/buildTree";
 import parseTree from "./src/parseTree";
-import buildCommon from "./src/buildCommon";
+import {makeSpan} from "./src/buildCommon";
 import {
     Span,
     Anchor,
@@ -97,7 +97,7 @@ const renderError = function(
     if (options.throwOnError || !(error instanceof ParseError)) {
         throw error;
     }
-    const node = buildCommon.makeSpan(["katex-error"],
+    const node = makeSpan(["katex-error"],
         [new SymbolNode(expression)]);
     node.setAttribute("title", error.toString());
     node.setAttribute("style", `color:${options.errorColor}`);

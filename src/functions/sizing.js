@@ -1,5 +1,5 @@
 // @flow
-import buildCommon from "../buildCommon";
+import {makeFragment} from "../buildCommon";
 import defineFunction from "../defineFunction";
 import {MathNode} from "../mathMLTree";
 import {makeEm} from "../units";
@@ -38,7 +38,7 @@ export function sizingGroup(
         inner[i].depth *= multiplier;
     }
 
-    return buildCommon.makeFragment(inner);
+    return makeFragment(inner);
 }
 
 const sizeFuncs = [

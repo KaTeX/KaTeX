@@ -1,6 +1,6 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeSpan} from "../buildCommon";
 import {isCharacterBox} from "../utils";
 import {MathNode} from "../mathMLTree";
 import type {AnyParseNode} from "../parseNode";
@@ -9,8 +9,6 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type {ParseNode} from "../parseNode";
-
-const makeSpan = buildCommon.makeSpan;
 
 function htmlBuilder(group: ParseNode<"mclass">, options) {
     const elements = html.buildExpression(group.body, options, true);
