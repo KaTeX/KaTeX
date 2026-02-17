@@ -1,14 +1,12 @@
 // @flow
 import defineFunction, {normalizeArgument} from "../defineFunction";
-import type Parser from "../Parser";
 import buildCommon from "../buildCommon";
 import delimiter from "../delimiter";
 import {MathNode, TextNode} from "../mathMLTree";
-import type {AnyParseNode, ParseNode} from "../parseNode";
+import type {ParseNode} from "../parseNode";
 import Style from "../Style";
 import {assertNodeType} from "../parseNode";
 import type {StyleStr} from "../types";
-import type {Measurement} from "../units";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -215,38 +213,23 @@ const mathmlBuilder = (group, options) => {
     return node;
 };
 
-const makeGenfrac = (
-    parser: Parser,
-    fracData: {|
-        numer: AnyParseNode,
-        denom: AnyParseNode,
-        continued: boolean,
-        hasBarLine: boolean,
-        leftDelim: ?string,
-        rightDelim: ?string,
-        barSize: Measurement | null,
-    |},
+const wrapWithStyle = (
+    frac: ParseNode<"genfrac">,
     style?: StyleStr | null,
 ): ParseNode<"genfrac"> => {
-    const frac: ParseNode<"genfrac"> = {
-        type: "genfrac",
-        mode: parser.mode,
-        ...fracData,
-    };
-
     if (!style) {
         return frac;
     }
 
-    const stylingWrapper: ParseNode<"styling"> = {
+    const wrapper: ParseNode<"styling"> = {
         type: "styling",
-        mode: parser.mode,
+        mode: frac.mode,
         style,
         body: [frac],
     };
 
     // $FlowFixMe: defineFunction handler needs to return ParseNode<"genfrac">
-    return stylingWrapper;
+    return wrapper;
 };
 
 defineFunction({
@@ -307,7 +290,9 @@ defineFunction({
             style = "text";
         }
 
-        return makeGenfrac(parser, {
+        return wrapWithStyle({
+            type: "genfrac",
+            mode: parser.mode,
             numer,
             denom,
             continued,
@@ -418,7 +403,9 @@ defineFunction({
             size = stylArray[Number(styl.text)];
         }
 
-        return makeGenfrac(parser, {
+        return wrapWithStyle({
+            type: "genfrac",
+            mode: parser.mode,
             numer,
             denom,
             continued: false,
@@ -469,7 +456,9 @@ defineFunction({
         const denom = args[2];
 
         const hasBarLine = barSize.number > 0;
-        return makeGenfrac(parser, {
+        return {
+            type: "genfrac",
+            mode: parser.mode,
             numer,
             denom,
             continued: false,
@@ -477,6 +466,6 @@ defineFunction({
             barSize,
             leftDelim: null,
             rightDelim: null,
-        });
+        };
     },
 });
