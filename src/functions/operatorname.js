@@ -1,8 +1,8 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
 import defineMacro from "../defineMacro";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {makeSpan} from "../buildCommon";
+import {MathNode, newDocumentFragment, SpaceNode, TextNode} from "../mathMLTree";
 import {SymbolNode} from "../domTree";
 import {assembleSupSub} from "./utils/assembleSupSub";
 import {assertNodeType} from "../parseNode";
@@ -63,9 +63,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"operatorname"> = (grp, options) => 
                     .replace(/\u2217/, "*");
             }
         }
-        base = buildCommon.makeSpan(["mop"], expression, options);
+        base = makeSpan(["mop"], expression, options);
     } else {
-        base = buildCommon.makeSpan(["mop"], [], options);
+        base = makeSpan(["mop"], [], options);
     }
 
     if (hasLimits) {
@@ -86,9 +86,9 @@ const mathmlBuilder: MathMLBuilder<"operatorname"> = (group, options) => {
     let isAllString = true;  // default
     for (let i = 0; i < expression.length; i++) {
         const node = expression[i];
-        if (node instanceof mathMLTree.SpaceNode) {
+        if (node instanceof SpaceNode) {
             // Do nothing
-        } else if (node instanceof mathMLTree.MathNode) {
+        } else if (node instanceof MathNode) {
             switch (node.type) {
                 case "mi":
                 case "mn":
@@ -99,7 +99,7 @@ const mathmlBuilder: MathMLBuilder<"operatorname"> = (group, options) => {
                 case "mo": {
                     const child = node.children[0];
                     if (node.children.length === 1 &&
-                        child instanceof mathMLTree.TextNode) {
+                        child instanceof TextNode) {
                         child.text =
                             child.text.replace(/\u2212/, "-")
                                 .replace(/\u2217/, "*");
@@ -119,21 +119,21 @@ const mathmlBuilder: MathMLBuilder<"operatorname"> = (group, options) => {
     if (isAllString) {
         // Write a single TextNode instead of multiple nested tags.
         const word = expression.map(node => node.toText()).join("");
-        expression = [new mathMLTree.TextNode(word)];
+        expression = [new TextNode(word)];
     }
 
-    const identifier = new mathMLTree.MathNode("mi", expression);
+    const identifier = new MathNode("mi", expression);
     identifier.setAttribute("mathvariant", "normal");
 
     // \u2061 is the same as &ApplyFunction;
     // ref: https://www.w3schools.com/charsets/ref_html_entities_a.asp
-    const operator = new mathMLTree.MathNode("mo",
+    const operator = new MathNode("mo",
         [mml.makeText("\u2061", "text")]);
 
     if (group.parentIsSupSub) {
-        return new mathMLTree.MathNode("mrow", [identifier, operator]);
+        return new MathNode("mrow", [identifier, operator]);
     } else {
-        return mathMLTree.newDocumentFragment([identifier, operator]);
+        return newDocumentFragment([identifier, operator]);
     }
 };
 

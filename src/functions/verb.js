@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {makeSpan, makeSymbol, tryCombineChars} from "../buildCommon";
+import {MathNode, TextNode} from "../mathMLTree";
 import ParseError from "../ParseError";
 
 import type {ParseNode} from "../parseNode";
@@ -31,18 +31,18 @@ defineFunction({
             if (c === '~') {
                 c = '\\textasciitilde';
             }
-            body.push(buildCommon.makeSymbol(c, "Typewriter-Regular",
+            body.push(makeSymbol(c, "Typewriter-Regular",
                 group.mode, newOptions, ["mord", "texttt"]));
         }
-        return buildCommon.makeSpan(
+        return makeSpan(
             ["mord", "text"].concat(newOptions.sizingClasses(options)),
-            buildCommon.tryCombineChars(body),
+            tryCombineChars(body),
             newOptions,
         );
     },
     mathmlBuilder(group, options) {
-        const text = new mathMLTree.TextNode(makeVerb(group));
-        const node = new mathMLTree.MathNode("mtext", [text]);
+        const text = new TextNode(makeVerb(group));
+        const node = new MathNode("mtext", [text]);
         node.setAttribute("mathvariant", "monospace");
         return node;
     },

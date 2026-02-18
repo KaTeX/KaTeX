@@ -1,7 +1,7 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {makeFragment} from "../buildCommon";
+import {MathNode} from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
 
 import type {AnyParseNode} from '../parseNode';
@@ -20,14 +20,14 @@ const htmlBuilder = (group, options) => {
     // To accomplish this, we wrap the results in a fragment, so the inner
     // elements will be able to directly interact with their neighbors. For
     // example, `\color{red}{2 +} 3` has the same spacing as `2 + 3`
-    return buildCommon.makeFragment(elements);
+    return makeFragment(elements);
 };
 
 const mathmlBuilder = (group, options) => {
     const inner = mml.buildExpression(group.body,
         options.withColor(group.color));
 
-    const node = new mathMLTree.MathNode("mstyle", inner);
+    const node = new MathNode("mstyle", inner);
 
     node.setAttribute("mathcolor", group.color);
 

@@ -1,7 +1,7 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {makeFragment, makeSpan, makeVList} from "../buildCommon";
+import {MathNode} from "../mathMLTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -30,11 +30,11 @@ defineFunction({
 
         // \phantom isn't supposed to affect the elements it contains.
         // See "color" for more details.
-        return buildCommon.makeFragment(elements);
+        return makeFragment(elements);
     },
     mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(group.body, options);
-        return new mathMLTree.MathNode("mphantom", inner);
+        return new MathNode("mphantom", inner);
     },
 });
 
@@ -54,7 +54,7 @@ defineFunction({
         };
     },
     htmlBuilder: (group, options) => {
-        let node = buildCommon.makeSpan(
+        let node = makeSpan(
             [], [html.buildGroup(group.body, options.withPhantom())]);
         node.height = 0;
         node.depth = 0;
@@ -66,18 +66,18 @@ defineFunction({
         }
 
         // See smash for comment re: use of makeVList
-        node = buildCommon.makeVList({
+        node = makeVList({
             positionType: "firstBaseline",
             children: [{type: "elem", elem: node}],
         }, options);
 
         // For spacing, TeX treats \smash as a math group (same spacing as ord).
-        return buildCommon.makeSpan(["mord"], [node], options);
+        return makeSpan(["mord"], [node], options);
     },
     mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(ordargument(group.body), options);
-        const phantom = new mathMLTree.MathNode("mphantom", inner);
-        const node = new mathMLTree.MathNode("mpadded", [phantom]);
+        const phantom = new MathNode("mphantom", inner);
+        const node = new MathNode("mpadded", [phantom]);
         node.setAttribute("height", "0px");
         node.setAttribute("depth", "0px");
         return node;
@@ -100,17 +100,17 @@ defineFunction({
         };
     },
     htmlBuilder: (group, options) => {
-        const inner = buildCommon.makeSpan(
+        const inner = makeSpan(
             ["inner"],
             [html.buildGroup(group.body, options.withPhantom())]);
-        const fix = buildCommon.makeSpan(["fix"], []);
-        return buildCommon.makeSpan(
+        const fix = makeSpan(["fix"], []);
+        return makeSpan(
             ["mord", "rlap"], [inner, fix], options);
     },
     mathmlBuilder: (group, options) => {
         const inner = mml.buildExpression(ordargument(group.body), options);
-        const phantom = new mathMLTree.MathNode("mphantom", inner);
-        const node = new mathMLTree.MathNode("mpadded", [phantom]);
+        const phantom = new MathNode("mphantom", inner);
+        const node = new MathNode("mpadded", [phantom]);
         node.setAttribute("width", "0px");
         return node;
     },

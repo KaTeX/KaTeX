@@ -1,8 +1,9 @@
 {
   "name": "katex",
-  "version": "0.16.25",
+  "version": "0.16.28",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
+  "types": "types/katex.d.ts",
   "exports": {
     ".": {
       "require": {
@@ -113,11 +114,10 @@
     "postcss-preset-env": "^7.8.0",
     "postcss-scss": "^4.0.9",
     "prettier": "^2.7.1",
-    "query-string": "^7.1.1",
     "rimraf": "^3.0.2",
     "rollup": "^2.79.2",
-    "sass": "^1.75.6",
-    "sass-loader": "^14.2.1",
+    "sass": "^1.94.2",
+    "sass-loader": "^16.0.6",
     "selenium-webdriver": "^4.4.0",
     "semantic-release": "^19.0.5",
     "sri-toolbox": "^0.2.0",

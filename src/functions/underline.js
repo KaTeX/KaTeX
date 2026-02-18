@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {makeLineSpan, makeSpan, makeVList} from "../buildCommon";
+import {MathNode, TextNode} from "../mathMLTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -26,11 +26,11 @@ defineFunction({
         const innerGroup = html.buildGroup(group.body, options);
 
         // Create the line to go below the body
-        const line = buildCommon.makeLineSpan("underline-line", options);
+        const line = makeLineSpan("underline-line", options);
 
         // Generate the vlist, with the appropriate kerns
         const defaultRuleThickness = options.fontMetrics().defaultRuleThickness;
-        const vlist = buildCommon.makeVList({
+        const vlist = makeVList({
             positionType: "top",
             positionData: innerGroup.height,
             children: [
@@ -41,14 +41,14 @@ defineFunction({
             ],
         }, options);
 
-        return buildCommon.makeSpan(["mord", "underline"], [vlist], options);
+        return makeSpan(["mord", "underline"], [vlist], options);
     },
     mathmlBuilder(group, options) {
-        const operator = new mathMLTree.MathNode(
-            "mo", [new mathMLTree.TextNode("\u203e")]);
+        const operator = new MathNode(
+            "mo", [new TextNode("\u203e")]);
         operator.setAttribute("stretchy", "true");
 
-        const node = new mathMLTree.MathNode(
+        const node = new MathNode(
             "munder",
             [mml.buildGroup(group.body, options), operator]);
         node.setAttribute("accentunder", "true");

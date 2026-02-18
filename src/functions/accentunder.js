@@ -1,8 +1,8 @@
 // @flow
 // Horizontal overlap functions
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {makeSpan, makeVList} from "../buildCommon";
+import {MathNode} from "../mathMLTree";
 import stretchy from "../stretchy";
 
 import * as html from "../buildHTML";
@@ -36,7 +36,7 @@ defineFunction({
         const kern = group.label === "\\utilde" ? 0.12 : 0;
 
         // Generate the vlist, with the appropriate kerns
-        const vlist = buildCommon.makeVList({
+        const vlist = makeVList({
             positionType: "top",
             positionData: innerGroup.height,
             children: [
@@ -46,11 +46,11 @@ defineFunction({
             ],
         }, options);
 
-        return buildCommon.makeSpan(["mord", "accentunder"], [vlist], options);
+        return makeSpan(["mord", "accentunder"], [vlist], options);
     },
     mathmlBuilder: (group, options) => {
         const accentNode = stretchy.mathMLnode(group.label);
-        const node = new mathMLTree.MathNode(
+        const node = new MathNode(
             "munder",
             [mml.buildGroup(group.base, options), accentNode]
         );

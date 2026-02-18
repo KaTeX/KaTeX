@@ -17,7 +17,7 @@ const users = [
     },
     {
         caption: 'BearBei 貝貝',
-        image: 'https://bearbei.com/pic/bearbeiLogoForKatexWebsite.png',
+        image: 'https://bearbei.com/pic/3D/%E8%B2%9D%E8%B2%9D.png',
         infoLink: 'https://bearbei.com',
     },
     {
@@ -46,6 +46,11 @@ const users = [
         infoLink: 'https://pandao.github.io/editor.md/en.html',
     },
     {
+        caption: 'Educase Tools',
+        image: 'https://images.educasetools.com/educase-logos/educase-primary-transparent-logo.png',
+        infoLink: 'https://www.educasetools.com',
+    },
+    {
         caption: 'Expii',
         image: '/img/expii_logo.png',
         infoLink: 'https://www.expii.com/',
@@ -62,7 +67,7 @@ const users = [
     },
     {
         caption: 'Gitter',
-        image: 'https://assets.gitlab-static.net/uploads/-/system/project/avatar/3601513/gitter_logo.png',
+        image: 'https://blog.gitter.im/content/images/2016/01/gitter-logo.png',
         infoLink: 'https://gitter.im/',
     },
     {
@@ -97,8 +102,13 @@ const users = [
     },
     {
         caption: 'Messenger',
-        image: 'https://en.facebookbrand.com/wp-content/uploads/2016/09/messenger_icon2.png',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/b/be/Facebook_Messenger_logo_2020.svg',
         infoLink: 'https://www.messenger.com/',
+    },
+    {
+        caption: 'MintApps',
+        image: '/img/mintapps_logo.png',
+        infoLink: 'https://mintapps.org',
     },
     {
         caption: 'MonsterWriter',
@@ -137,7 +147,7 @@ const users = [
     },
     {
         caption: 'Slides',
-        image: 'https://s3.amazonaws.com/uploads.uservoice.com/logo/design_setting/116173/original/slides-symbol-150x150.png',
+        image: 'https://static.slid.es/logo/slides-logo-495x479.png',
         infoLink: 'https://slides.com/',
     },
     {
@@ -177,8 +187,8 @@ const users = [
     },
     {
         caption: 'Tutti Quanti Shelf',
-        image: 'https://raw.githubusercontent.com/tonton-pixel/tutti-quanti-shelf/master/icons/icon.png',
-        infoLink: 'https://github.com/tonton-pixel/tutti-quanti-shelf/',
+        image: 'https://codeberg.org/tonton-pixel/tutti-quanti-shelf/media/branch/master/icons/icon-256.png',
+        infoLink: 'https://codeberg.org/tonton-pixel/tutti-quanti-shelf',
     },
     {
         caption: 'Vade Mecum Shelf',

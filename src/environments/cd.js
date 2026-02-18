@@ -1,7 +1,7 @@
 // @flow
-import buildCommon from "../buildCommon";
+import {wrapFragment} from "../buildCommon";
 import defineFunction from "../defineFunction";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 import {assertSymbolNodeType} from "../parseNode";
@@ -255,7 +255,7 @@ defineFunction({
     },
     htmlBuilder(group, options) {
         const newOptions = options.havingStyle(options.style.sup());
-        const label = buildCommon.wrapFragment(
+        const label = wrapFragment(
             html.buildGroup(group.label, newOptions, options), options);
         label.classes.push("cd-label-" + group.side);
         label.style.bottom = makeEm(0.8 - label.depth);
@@ -266,9 +266,9 @@ defineFunction({
         return label;
     },
     mathmlBuilder(group, options) {
-        let label = new mathMLTree.MathNode("mrow",
+        let label = new MathNode("mrow",
             [mml.buildGroup(group.label, options)]);
-        label = new mathMLTree.MathNode("mpadded", [label]);
+        label = new MathNode("mpadded", [label]);
         label.setAttribute("width", "0");
         if (group.side === "left") {
             label.setAttribute("lspace", "-1width");
@@ -276,7 +276,7 @@ defineFunction({
         // We have to guess at vertical alignment. We know the arrow is 1.8em tall,
         // But we don't know the height or depth of the label.
         label.setAttribute("voffset", "0.7em");
-        label = new mathMLTree.MathNode("mstyle", [label]);
+        label = new MathNode("mstyle", [label]);
         label.setAttribute("displaystyle", "false");
         label.setAttribute("scriptlevel", "1");
         return label;
@@ -300,14 +300,14 @@ defineFunction({
         // Wrap the vertical arrow and its labels.
         // The parent gets position: relative. The child gets position: absolute.
         // So CSS can locate the label correctly.
-        const parent = buildCommon.wrapFragment(
+        const parent = wrapFragment(
             html.buildGroup(group.fragment, options), options
         );
         parent.classes.push("cd-vert-arrow");
         return parent;
     },
     mathmlBuilder(group, options) {
-        return new mathMLTree.MathNode("mrow",
+        return new MathNode("mrow",
         [mml.buildGroup(group.fragment, options)]);
     },
 });

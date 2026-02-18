@@ -1,8 +1,8 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
-import utils from "../utils";
+import {makeSpan} from "../buildCommon";
+import {isCharacterBox} from "../utils";
+import {MathNode} from "../mathMLTree";
 import type {AnyParseNode} from "../parseNode";
 
 import * as html from "../buildHTML";
@@ -10,32 +10,30 @@ import * as mml from "../buildMathML";
 
 import type {ParseNode} from "../parseNode";
 
-const makeSpan = buildCommon.makeSpan;
-
 function htmlBuilder(group: ParseNode<"mclass">, options) {
     const elements = html.buildExpression(group.body, options, true);
     return makeSpan([group.mclass], elements, options);
 }
 
 function mathmlBuilder(group: ParseNode<"mclass">, options) {
-    let node: mathMLTree.MathNode;
+    let node: MathNode;
     const inner = mml.buildExpression(group.body, options);
 
     if (group.mclass === "minner") {
-        node = new mathMLTree.MathNode("mpadded", inner);
+        node = new MathNode("mpadded", inner);
     } else if (group.mclass === "mord") {
         if (group.isCharacterBox) {
             node = inner[0];
             node.type = "mi";
         } else {
-            node = new mathMLTree.MathNode("mi", inner);
+            node = new MathNode("mi", inner);
         }
     } else {
         if (group.isCharacterBox) {
             node = inner[0];
             node.type = "mo";
         } else {
-            node = new mathMLTree.MathNode("mo", inner);
+            node = new MathNode("mo", inner);
         }
 
         // Set spacing based on what is the most likely adjacent atom type.
@@ -77,7 +75,7 @@ defineFunction({
             mode: parser.mode,
             mclass: "m" + funcName.slice(5), // TODO(kevinb): don't prefix with 'm'
             body: ordargument(body),
-            isCharacterBox: utils.isCharacterBox(body),
+            isCharacterBox: isCharacterBox(body),
         };
     },
     htmlBuilder,
@@ -111,7 +109,7 @@ defineFunction({
             mode: parser.mode,
             mclass: binrelClass(args[0]),
             body: ordargument(args[1]),
-            isCharacterBox: utils.isCharacterBox(args[1]),
+            isCharacterBox: isCharacterBox(args[1]),
         };
     },
 });
@@ -159,7 +157,7 @@ defineFunction({
             mode: parser.mode,
             mclass,
             body: [supsub],
-            isCharacterBox: utils.isCharacterBox(supsub),
+            isCharacterBox: isCharacterBox(supsub),
         };
     },
     htmlBuilder,

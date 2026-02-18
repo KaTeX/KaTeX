@@ -1,9 +1,9 @@
 // @flow
 // Limits, symbols
 import defineFunction, {ordargument} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {mathsym, makeSpan, makeSymbol, makeVList, staticSvg} from "../buildCommon";
 import {SymbolNode} from "../domTree";
-import * as mathMLTree from "../mathMLTree";
+import {MathNode, newDocumentFragment, TextNode} from "../mathMLTree";
 import Style from "../Style";
 import {assembleSupSub} from "./utils/assembleSupSub";
 import {assertNodeType} from "../parseNode";
@@ -64,7 +64,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             group.name = stash === "oiint" ? "\\iint" : "\\iiint";
         }
 
-        base = buildCommon.makeSymbol(
+        base = makeSymbol(
             group.name, fontName, "math", options,
             ["mop", "op-symbol", large ? "large-op" : "small-op"]);
 
@@ -72,9 +72,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             // We're in \oiint or \oiiint. Overlay the oval.
             // TODO: When font glyphs are available, delete this code.
             const italic = base.italic;
-            const oval = buildCommon.staticSvg(stash + "Size"
+            const oval = staticSvg(stash + "Size"
                 + (large ? "2" : "1"), options);
-            base = buildCommon.makeVList({
+            base = makeVList({
                 positionType: "individualShift",
                 children: [
                     {type: "elem", elem: base, shift: 0},
@@ -93,16 +93,16 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             base = inner[0];
             base.classes[0] = "mop"; // replace old mclass
         } else {
-            base = buildCommon.makeSpan(["mop"], inner, options);
+            base = makeSpan(["mop"], inner, options);
         }
     } else {
         // Otherwise, this is a text operator. Build the text from the
         // operator's name.
         const output = [];
         for (let i = 1; i < group.name.length; i++) {
-            output.push(buildCommon.mathsym(group.name[i], group.mode, options));
+            output.push(mathsym(group.name[i], group.mode, options));
         }
-        base = buildCommon.makeSpan(["mop"], output, options);
+        base = makeSpan(["mop"], output, options);
     }
 
     // If content of op is a single symbol, shift it vertically.
@@ -144,28 +144,28 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
 
     if (group.symbol) {
         // This is a symbol. Just add the symbol.
-        node = new mathMLTree.MathNode(
+        node = new MathNode(
             "mo", [mml.makeText(group.name, group.mode)]);
         if (noSuccessor.includes(group.name)) {
             node.setAttribute("largeop", "false");
         }
     } else if (group.body) {
         // This is an operator with children. Add them.
-        node = new mathMLTree.MathNode(
+        node = new MathNode(
             "mo", mml.buildExpression(group.body, options));
     } else {
-        // This is a text operator. Add all of the characters from the
+        // This is a text operator. Add all the characters from the
         // operator's name.
-        node = new mathMLTree.MathNode(
-            "mi", [new mathMLTree.TextNode(group.name.slice(1))]);
+        node = new MathNode(
+            "mi", [new TextNode(group.name.slice(1))]);
         // Append an <mo>&ApplyFunction;</mo>.
         // ref: https://www.w3.org/TR/REC-MathML/chap3_2.html#sec3.2.4
-        const operator = new mathMLTree.MathNode("mo",
+        const operator = new MathNode("mo",
             [mml.makeText("\u2061", "text")]);
         if (group.parentIsSupSub) {
-            node = new mathMLTree.MathNode("mrow", [node, operator]);
+            node = new MathNode("mrow", [node, operator]);
         } else {
-            node = mathMLTree.newDocumentFragment([node, operator]);
+            node = newDocumentFragment([node, operator]);
         }
     }
 
@@ -313,6 +313,7 @@ defineFunction({
     ],
     props: {
         numArgs: 0,
+        allowedInArgument: true,
     },
     handler({parser, funcName}) {
         let fName = funcName;

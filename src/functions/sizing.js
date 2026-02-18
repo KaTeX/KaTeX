@@ -1,7 +1,7 @@
 // @flow
-import buildCommon from "../buildCommon";
+import {makeFragment} from "../buildCommon";
 import defineFunction from "../defineFunction";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import {makeEm} from "../units";
 
 import * as html from "../buildHTML";
@@ -38,7 +38,7 @@ export function sizingGroup(
         inner[i].depth *= multiplier;
     }
 
-    return buildCommon.makeFragment(inner);
+    return makeFragment(inner);
 }
 
 const sizeFuncs = [
@@ -77,7 +77,7 @@ defineFunction({
         const newOptions = options.havingSize(group.size);
         const inner = mml.buildExpression(group.body, newOptions);
 
-        const node = new mathMLTree.MathNode("mstyle", inner);
+        const node = new MathNode("mstyle", inner);
 
         // TODO(emily): This doesn't produce the correct size for nested size
         // changes, because we don't keep state of what style we're currently

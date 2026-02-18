@@ -1,17 +1,16 @@
 // @flow
-import buildCommon from "../buildCommon";
+import {makeFragment, makeLineSpan, makeSpan, makeVList} from "../buildCommon";
 import Style from "../Style";
 import defineEnvironment from "../defineEnvironment";
 import {parseCD} from "./cd";
 import defineFunction from "../defineFunction";
 import defineMacro from "../defineMacro";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import ParseError from "../ParseError";
 import {assertNodeType, assertSymbolNodeType} from "../parseNode";
 import {checkSymbolNodeType} from "../parseNode";
 import {Token} from "../Token";
 import {calculateSize, makeEm} from "../units";
-import utils from "../utils";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -394,12 +393,12 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             const tag = group.tags[r];
             let tagSpan;
             if (tag === true) {  // automatic numbering
-                tagSpan = buildCommon.makeSpan(["eqn-num"], [], options);
+                tagSpan = makeSpan(["eqn-num"], [], options);
             } else if (tag === false) {
                 // \nonumber/\notag or starred environment
-                tagSpan = buildCommon.makeSpan([], [], options);
+                tagSpan = makeSpan([], [], options);
             } else {  // manual \tag
-                tagSpan = buildCommon.makeSpan([],
+                tagSpan = makeSpan([],
                     html.buildExpression(tag, options, true), options);
             }
             tagSpan.depth = rw.depth;
@@ -421,7 +420,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             // If there is more than one separator in a row, add a space
             // between them.
             if (!firstSeparator) {
-                colSep = buildCommon.makeSpan(["arraycolsep"], []);
+                colSep = makeSpan(["arraycolsep"], []);
                 colSep.style.width =
                     makeEm(options.fontMetrics().doubleRuleSep);
                 cols.push(colSep);
@@ -429,7 +428,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
             if (colDescr.separator === "|" || colDescr.separator === ":") {
                 const lineType = (colDescr.separator === "|") ? "solid" : "dashed";
-                const separator = buildCommon.makeSpan(
+                const separator = makeSpan(
                     ["vertical-separator"], [], options
                 );
                 separator.style.height = makeEm(totalHeight);
@@ -458,9 +457,9 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
         let sepwidth;
         if (c > 0 || group.hskipBeforeAndAfter) {
-            sepwidth = utils.deflt(colDescr.pregap, arraycolsep);
+            sepwidth = colDescr.pregap ?? arraycolsep;
             if (sepwidth !== 0) {
-                colSep = buildCommon.makeSpan(["arraycolsep"], []);
+                colSep = makeSpan(["arraycolsep"], []);
                 colSep.style.width = makeEm(sepwidth);
                 cols.push(colSep);
             }
@@ -479,30 +478,30 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             col.push({type: "elem", elem: elem, shift: shift});
         }
 
-        col = buildCommon.makeVList({
+        col = makeVList({
             positionType: "individualShift",
             children: col,
         }, options);
-        col = buildCommon.makeSpan(
+        col = makeSpan(
             ["col-align-" + (colDescr.align || "c")],
             [col]);
         cols.push(col);
 
         if (c < nc - 1 || group.hskipBeforeAndAfter) {
-            sepwidth = utils.deflt(colDescr.postgap, arraycolsep);
+            sepwidth = colDescr.postgap ?? arraycolsep;
             if (sepwidth !== 0) {
-                colSep = buildCommon.makeSpan(["arraycolsep"], []);
+                colSep = makeSpan(["arraycolsep"], []);
                 colSep.style.width = makeEm(sepwidth);
                 cols.push(colSep);
             }
         }
     }
-    body = buildCommon.makeSpan(["mtable"], cols);
+    body = makeSpan(["mtable"], cols);
 
     // Add \hline(s), if any.
     if (hlines.length > 0) {
-        const line = buildCommon.makeLineSpan("hline", options, ruleThickness);
-        const dashes = buildCommon.makeLineSpan("hdashline", options,
+        const line = makeLineSpan("hline", options, ruleThickness);
+        const dashes = makeLineSpan("hdashline", options,
             ruleThickness);
         const vListElems = [{type: "elem", elem: body, shift: 0}];
         while (hlines.length > 0) {
@@ -514,21 +513,21 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
                 vListElems.push({type: "elem", elem: line, shift: lineShift});
             }
         }
-        body = buildCommon.makeVList({
+        body = makeVList({
             positionType: "individualShift",
             children: vListElems,
         }, options);
     }
 
     if (tagSpans.length === 0) {
-        return buildCommon.makeSpan(["mord"], [body], options);
+        return makeSpan(["mord"], [body], options);
     } else {
-        let eqnNumCol = buildCommon.makeVList({
+        let eqnNumCol = makeVList({
             positionType: "individualShift",
             children: tagSpans,
         }, options);
-        eqnNumCol = buildCommon.makeSpan(["tag"], [eqnNumCol], options);
-        return buildCommon.makeFragment([body, eqnNumCol]);
+        eqnNumCol = makeSpan(["tag"], [eqnNumCol], options);
+        return makeFragment([body, eqnNumCol]);
     }
 };
 
@@ -540,13 +539,13 @@ const alignMap = {
 
 const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     const tbl = [];
-    const glue = new mathMLTree.MathNode("mtd", [], ["mtr-glue"]);
-    const tag = new mathMLTree.MathNode("mtd", [], ["mml-eqn-num"]);
+    const glue = new MathNode("mtd", [], ["mtr-glue"]);
+    const tag = new MathNode("mtd", [], ["mml-eqn-num"]);
     for (let i = 0; i < group.body.length; i++) {
         const rw = group.body[i];
         const row = [];
         for (let j = 0; j < rw.length; j++) {
-            row.push(new mathMLTree.MathNode("mtd",
+            row.push(new MathNode("mtd",
                 [mml.buildGroup(rw[j], options)]));
         }
         if (group.tags && group.tags[i]) {
@@ -558,9 +557,9 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
                 row.push(tag);
             }
         }
-        tbl.push(new mathMLTree.MathNode("mtr", row));
+        tbl.push(new MathNode("mtr", row));
     }
-    let table = new mathMLTree.MathNode("mtable", tbl);
+    let table = new MathNode("mtable", tbl);
 
     // Set column alignment, row spacing, column spacing, and
     // array lines by setting attributes on the table element.
@@ -666,13 +665,13 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     }
 
     if (menclose !== "") {
-        table = new mathMLTree.MathNode("menclose", [table]);
+        table = new MathNode("menclose", [table]);
         table.setAttribute("notation", menclose.trim());
     }
 
     if (group.arraystretch && group.arraystretch < 1) {
         // A small array. Wrap in scriptstyle so row gap is not too large.
-        table = new mathMLTree.MathNode("mstyle", [table]);
+        table = new MathNode("mstyle", [table]);
         table.setAttribute("scriptlevel", "1");
     }
 

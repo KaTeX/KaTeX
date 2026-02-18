@@ -1,7 +1,7 @@
 // @flow
 import {defineFunctionBuilders} from "../defineFunction";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {mathsym, makeOrd, makeSpan} from "../buildCommon";
+import {MathNode, TextNode} from "../mathMLTree";
 import ParseError from "../ParseError";
 
 // A map of CSS-based spacing functions to their CSS class.
@@ -38,17 +38,17 @@ defineFunctionBuilders({
             // things has an entry in the symbols table, so these will be turned
             // into appropriate outputs.
             if (group.mode === "text") {
-                const ord = buildCommon.makeOrd(group, options, "textord");
+                const ord = makeOrd(group, options, "textord");
                 ord.classes.push(className);
                 return ord;
             } else {
-                return buildCommon.makeSpan(["mspace", className],
-                    [buildCommon.mathsym(group.text, group.mode, options)],
+                return makeSpan(["mspace", className],
+                    [mathsym(group.text, group.mode, options)],
                     options);
             }
         } else if (cssSpace.hasOwnProperty(group.text)) {
             // Spaces based on just a CSS class.
-            return buildCommon.makeSpan(
+            return makeSpan(
                 ["mspace", cssSpace[group.text]],
                 [], options);
         } else {
@@ -59,11 +59,11 @@ defineFunctionBuilders({
         let node;
 
         if (regularSpace.hasOwnProperty(group.text)) {
-            node = new mathMLTree.MathNode(
-                "mtext", [new mathMLTree.TextNode("\u00a0")]);
+            node = new MathNode(
+                "mtext", [new TextNode("\u00a0")]);
         } else if (cssSpace.hasOwnProperty(group.text)) {
             // CSS-based MathML spaces (\nobreak, \allowbreak) are ignored
-            return new mathMLTree.MathNode("mspace");
+            return new MathNode("mspace");
         } else {
             throw new ParseError(`Unknown type of space "${group.text}"`);
         }

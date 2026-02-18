@@ -6,8 +6,8 @@
  */
 
 import {LineNode, PathNode, SvgNode} from "./domTree";
-import buildCommon from "./buildCommon";
-import mathMLTree from "./mathMLTree";
+import {makeSpan, makeSvgSpan} from "./buildCommon";
+import {MathNode, TextNode} from "./mathMLTree";
 import {makeEm} from "./units";
 
 import type Options from "./Options";
@@ -59,10 +59,10 @@ const stretchyCodePoint: {[string]: string} = {
     "\\cdlongequal": "=",
 };
 
-const mathMLnode = function(label: string): mathMLTree.MathNode {
-    const node = new mathMLTree.MathNode(
+const mathMLnode = function(label: string): MathNode {
+    const node = new MathNode(
         "mo",
-        [new mathMLTree.TextNode(stretchyCodePoint[label.replace(/^\\/, '')])],
+        [new TextNode(stretchyCodePoint[label.replace(/^\\/, '')])],
     );
     node.setAttribute("stretchy", "true");
     return node;
@@ -237,7 +237,7 @@ const svgSpan = function(
                 "preserveAspectRatio": "none",
             });
             return {
-                span: buildCommon.makeSvgSpan([], [svgNode], options),
+                span: makeSvgSpan([], [svgNode], options),
                 minWidth: 0,
                 height,
             };
@@ -278,7 +278,7 @@ const svgSpan = function(
                     "preserveAspectRatio": aligns[i] + " slice",
                 });
 
-                const span = buildCommon.makeSvgSpan(
+                const span = makeSvgSpan(
                     [widthClasses[i]], [svgNode], options);
                 if (numSvgChildren === 1) {
                     return {span, minWidth, height};
@@ -289,7 +289,7 @@ const svgSpan = function(
             }
 
             return {
-                span: buildCommon.makeSpan(["stretchy"], spans, options),
+                span: makeSpan(["stretchy"], spans, options),
                 minWidth,
                 height,
             };
@@ -320,7 +320,7 @@ const encloseSpan = function(
     const totalHeight = inner.height + inner.depth + topPad + bottomPad;
 
     if (/fbox|color|angl/.test(label)) {
-        img = buildCommon.makeSpan(["stretchy", label], [], options);
+        img = makeSpan(["stretchy", label], [], options);
 
         if (label === "fbox") {
             const color = options.color && options.getColor();
@@ -360,7 +360,7 @@ const encloseSpan = function(
             "height": makeEm(totalHeight),
         });
 
-        img = buildCommon.makeSvgSpan([], [svgNode], options);
+        img = makeSvgSpan([], [svgNode], options);
     }
 
     img.height = totalHeight;

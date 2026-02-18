@@ -1,7 +1,7 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {makeFragment} from "../buildCommon";
+import {MathNode} from "../mathMLTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -29,10 +29,10 @@ defineFunction({
     },
     htmlBuilder(group, options) {
         const elements = html.buildExpression(group.body, options, false);
-        return buildCommon.makeFragment(elements);
+        return makeFragment(elements);
     },
     mathmlBuilder(group, options) {
-        return new mathMLTree.MathNode(
+        return new MathNode(
           "mrow", mml.buildExpression(group.body, options)
         );
     },

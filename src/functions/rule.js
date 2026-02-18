@@ -1,7 +1,7 @@
 // @flow
-import buildCommon from "../buildCommon";
+import {makeSpan} from "../buildCommon";
 import defineFunction from "../defineFunction";
-import mathMLTree from "../mathMLTree";
+import {MathNode} from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
 import {calculateSize, makeEm} from "../units";
 
@@ -29,7 +29,7 @@ defineFunction({
     },
     htmlBuilder(group, options) {
         // Make an empty span for the rule
-        const rule = buildCommon.makeSpan(["mord", "rule"], [], options);
+        const rule = makeSpan(["mord", "rule"], [], options);
 
         // Calculate the shift, width, and height of the rule, and account for units
         const width = calculateSize(group.width, options);
@@ -58,12 +58,12 @@ defineFunction({
         const shift = (group.shift) ? calculateSize(group.shift, options) : 0;
         const color = options.color && options.getColor() || "black";
 
-        const rule = new mathMLTree.MathNode("mspace");
+        const rule = new MathNode("mspace");
         rule.setAttribute("mathbackground", color);
         rule.setAttribute("width", makeEm(width));
         rule.setAttribute("height", makeEm(height));
 
-        const wrapper = new mathMLTree.MathNode("mpadded", [rule]);
+        const wrapper = new MathNode("mpadded", [rule]);
         if (shift >= 0) {
             wrapper.setAttribute("height", makeEm(shift));
         } else {
