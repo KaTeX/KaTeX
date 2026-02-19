@@ -787,7 +787,31 @@ defineEnvironment({
         const symNode = checkSymbolNodeType(args[0]);
         const colalign: AnyParseNode[] =
             symNode ? [args[0]] : assertNodeType(args[0], "ordgroup").body;
-        const cols = colalign.map(function(nde) {
+        let myColAlign = [];
+        if (colalign[0].text === "*") {
+            const repeatCol = assertNodeType(colalign[1], "ordgroup");
+            let repeatString = "";
+            for (let i = 0; i < repeatCol.body.length ; i++) {
+                const iRepeat = assertNodeType(repeatCol.body[i], "textord");
+                repeatString += iRepeat.text ;
+            }
+            const nRepeat = parseInt(repeatString);
+            if (isNaN(nRepeat)) {
+                throw new ParseError("Repeat specification not a number: "
+                + repeatString, repeatCol);
+            }
+            const ca = assertNodeType(colalign[2], "ordgroup");
+            const caLength = ca.body.length;
+            for (let i = 0; i < nRepeat; i++) {
+                for (let j = 0; j < caLength ; j++) {
+                    const jca = assertNodeType(ca.body[j], "mathord");
+                    myColAlign.push(jca);
+                }
+            }
+        } else {
+            myColAlign = colalign;
+        }
+        const cols = myColAlign.map(function(nde) {
             const node = assertSymbolNodeType(nde);
             const ca = node.text;
             if ("lcr".includes(ca)) {
