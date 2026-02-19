@@ -59,7 +59,7 @@ const stretchyCodePoint: {[string]: string} = {
     "\\cdlongequal": "=",
 };
 
-export const mathMLnode = function(label: string): MathNode {
+export const stretchyMathML = function(label: string): MathNode {
     const node = new MathNode(
         "mo",
         [new TextNode(stretchyCodePoint[label.replace(/^\\/, '')])],
@@ -170,7 +170,7 @@ const katexImagesData: {
         "shortrightharpoonabovebar"], 1.75, 716],
 };
 
-export const svgSpan = function(
+export const stretchySvg = function(
     group: ParseNode<"accent"> | ParseNode<"accentUnder"> | ParseNode<"xArrow">
          | ParseNode<"horizBrace">,
     options: Options,
@@ -301,7 +301,7 @@ export const svgSpan = function(
     return span;
 };
 
-export const encloseSpan = function(
+export const stretchyEnclose = function(
     inner: HtmlDomNode,
     label: string,
     topPad: number,
