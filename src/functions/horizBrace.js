@@ -2,7 +2,7 @@
 import defineFunction from "../defineFunction";
 import {makeSpan, makeVList} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
-import stretchy from "../stretchy";
+import {stretchyMathML, stretchySvg} from "../stretchy";
 import Style from "../Style";
 import {assertNodeType} from "../parseNode";
 
@@ -37,7 +37,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
         group.base, options.havingBaseStyle(Style.DISPLAY));
 
     // Create the stretchy element
-    const braceBody = stretchy.svgSpan(group, options);
+    const braceBody = stretchySvg(group, options);
 
     // Generate the vlist, with the appropriate kerns        ┏━━━━━━━━┓
     // This first vlist contains the content and the brace:   equation
@@ -109,7 +109,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
 };
 
 const mathmlBuilder: MathMLBuilder<"horizBrace"> = (group, options) => {
-    const accentNode = stretchy.mathMLnode(group.label);
+    const accentNode = stretchyMathML(group.label);
     return new MathNode(
         (group.isOver ? "mover" : "munder"),
         [mml.buildGroup(group.base, options), accentNode]
