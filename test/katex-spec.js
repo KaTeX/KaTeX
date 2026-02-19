@@ -508,29 +508,42 @@ describe("A frac parser", function() {
     it("should parse cfrac, dfrac, tfrac, and genfrac as fracs", function() {
         const dfracParse = getParsed(dfracExpression)[0];
 
-        expect(dfracParse.type).toEqual("genfrac");
-        expect(dfracParse.numer).toBeDefined();
-        expect(dfracParse.denom).toBeDefined();
+        expect(dfracParse.type).toEqual("styling");
+        expect(dfracParse.style).toEqual("display");
+        expect(dfracParse.body[0].type).toEqual("genfrac");
+        expect(dfracParse.body[0].numer).toBeDefined();
+        expect(dfracParse.body[0].denom).toBeDefined();
 
         const tfracParse = getParsed(tfracExpression)[0];
 
-        expect(tfracParse.type).toEqual("genfrac");
-        expect(tfracParse.numer).toBeDefined();
-        expect(tfracParse.denom).toBeDefined();
+        expect(tfracParse.type).toEqual("styling");
+        expect(tfracParse.style).toEqual("text");
+        expect(tfracParse.body[0].type).toEqual("genfrac");
+        expect(tfracParse.body[0].numer).toBeDefined();
+        expect(tfracParse.body[0].denom).toBeDefined();
 
         const cfracParse = getParsed(cfracExpression)[0];
 
-        expect(cfracParse.type).toEqual("genfrac");
-        expect(cfracParse.numer).toBeDefined();
-        expect(cfracParse.denom).toBeDefined();
+        expect(cfracParse.type).toEqual("styling");
+        expect(cfracParse.style).toEqual("display");
+        expect(cfracParse.body[0].type).toEqual("genfrac");
+        expect(cfracParse.body[0].continued).toEqual(true);
+        expect(cfracParse.body[0].numer).toBeDefined();
+        expect(cfracParse.body[0].denom).toBeDefined();
 
         const genfracParse = getParsed(genfrac1)[0];
 
-        expect(genfracParse.type).toEqual("genfrac");
-        expect(genfracParse.numer).toBeDefined();
-        expect(genfracParse.denom).toBeDefined();
-        expect(genfracParse.leftDelim).toBeDefined();
-        expect(genfracParse.rightDelim).toBeDefined();
+        expect(genfracParse.type).toEqual("styling");
+        expect(genfracParse.style).toEqual("display");
+        expect(genfracParse.body[0].type).toEqual("genfrac");
+        expect(genfracParse.body[0].numer).toBeDefined();
+        expect(genfracParse.body[0].denom).toBeDefined();
+        expect(genfracParse.body[0].leftDelim).toBeDefined();
+        expect(genfracParse.body[0].rightDelim).toBeDefined();
+
+        const genfracAutoParse = getParsed(genfrac2)[0];
+
+        expect(genfracAutoParse.type).toEqual("genfrac");
     });
 
     it("should fail, given math as a line thickness to genfrac", function() {
@@ -671,6 +684,16 @@ describe("A genfrac builder", function() {
         expect`\genfrac ( ] {0.8pt}{}{a}{b+c}`.toBuild();
         expect`\genfrac {} {} {0.8pt}{}{a}{b+c}`.toBuild();
         expect`\genfrac [ {} {0.8pt}{}{a}{b+c}`.toBuild();
+    });
+
+    it("should render \\tfrac like \\textstyle\\frac", function() {
+        expect`x_{\tfrac{1}{2}}`.toBuildLike`x_{\textstyle\frac{1}{2}}`;
+    });
+
+    it("should render \\dfrac like \\displaystyle\\frac in subscripts", function() {
+        expect`x_{\dfrac{a}{b}}`.toBuildLike`x_{\displaystyle\frac{a}{b}}`;
+        expect`x_{y_{\dfrac{a}{b}}}`
+            .toBuildLike`x_{y_{\displaystyle\frac{a}{b}}}`;
     });
 });
 
