@@ -4251,7 +4251,7 @@ describe("Symbols", function() {
     });
 
     it("should render ligature commands like their unicode characters", () => {
-        expect`\text{\ae\AE\oe\OE\o\O\ss}`.toBuildLike(r`\text{æÆœŒøØß}`, strictSettings);
+        expect`\text{\ae\AE\dh\DH\dj\DJ\l\L\ng\NG\oe\OE\o\O\ss}`.toBuildLike(r`\text{æÆðÐđĐłŁŋŊœŒøØß}`, strictSettings);
     });
 });
 
