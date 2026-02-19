@@ -170,6 +170,9 @@ const katexImagesData: {
         "shortrightharpoonabovebar"], 1.75, 716],
 };
 
+const wideAccentLabels =
+    new Set(["widehat", "widecheck", "widetilde", "utilde"]);
+
 export const stretchySvg = function(
     group: ParseNode<"accent"> | ParseNode<"accentUnder"> | ParseNode<"xArrow">
          | ParseNode<"horizBrace">,
@@ -183,7 +186,7 @@ export const stretchySvg = function(
     } {
         let viewBoxWidth = 400000;  // default
         const label = group.label.slice(1);
-        if (["widehat", "widecheck", "widetilde", "utilde"].includes(label)) {
+        if (wideAccentLabels.has(label)) {
             // Each type in the `if` statement corresponds to one of the ParseNode
             // types below. This narrowing is required to access `grp.base`.
             // $FlowFixMe

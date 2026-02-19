@@ -168,7 +168,7 @@ const htmlBuilder = (group, options) => {
 const mathmlBuilder = (group, options) => {
     let fboxsep = 0;
     const node = new MathNode(
-        (group.label.indexOf("colorbox") > -1) ? "mpadded" : "menclose",
+        group.label.includes("colorbox") ? "mpadded" : "menclose",
         [mml.buildGroup(group.body, options)]
     );
     switch (group.label) {

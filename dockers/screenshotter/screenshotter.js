@@ -84,9 +84,9 @@ if (opts.include) {
     listOfCases = Object.keys(data);
 }
 if (opts.exclude) {
-    const exclude = opts.exclude.split(",");
+    const exclude = new Set(opts.exclude.split(","));
     listOfCases = listOfCases.filter(function(key) {
-        return exclude.indexOf(key) === -1;
+        return !exclude.has(key);
     });
 }
 

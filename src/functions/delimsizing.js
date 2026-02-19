@@ -34,7 +34,7 @@ const delimiterSizes = {
     "\\Bigg" : {mclass: "mord",     size: 4},
 };
 
-const delimiters = [
+const delimiters = new Set([
     "(", "\\lparen", ")", "\\rparen",
     "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
@@ -50,7 +50,7 @@ const delimiters = [
     "\\downarrow", "\\Downarrow",
     "\\updownarrow", "\\Updownarrow",
     ".",
-];
+]);
 
 type IsMiddle = {delim: string, options: Options};
 
@@ -60,7 +60,7 @@ function checkDelimiter(
     context: FunctionContext,
 ): SymbolParseNode {
     const symDelim = checkSymbolNodeType(delim);
-    if (symDelim && delimiters.includes(symDelim.text)) {
+    if (symDelim && delimiters.has(symDelim.text)) {
         return symDelim;
     } else if (symDelim) {
         throw new ParseError(

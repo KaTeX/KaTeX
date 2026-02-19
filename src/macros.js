@@ -449,6 +449,8 @@ const dotsByToken = {
     '\\DOTSX': '\\dotsx',
 };
 
+const dotsbGroups = new Set(['bin', 'rel']);
+
 defineMacro("\\dots", function(context) {
     // TODO: If used in text mode, should expand to \textellipsis.
     // However, in KaTeX, \textellipsis and \ldots behave the same
@@ -462,7 +464,7 @@ defineMacro("\\dots", function(context) {
     } else if (next.slice(0, 4) === '\\not') {
         thedots = '\\dotsb';
     } else if (next in symbols.math) {
-        if (['bin', 'rel'].includes(symbols.math[next].group)) {
+        if (dotsbGroups.has(symbols.math[next].group)) {
             thedots = '\\dotsb';
         }
     }
