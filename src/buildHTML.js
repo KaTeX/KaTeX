@@ -8,7 +8,7 @@
 
 import ParseError from "./ParseError";
 import Style from "./Style";
-import buildCommon from "./buildCommon";
+import {makeGlue, makeSpan, tryCombineChars} from "./buildCommon";
 import {Span, Anchor} from "./domTree";
 import {makeEm} from "./units";
 import {spacings, tightSpacings} from "./spacingData";
@@ -18,8 +18,6 @@ import {DocumentFragment} from "./tree";
 import type Options from "./Options";
 import type {AnyParseNode} from "./parseNode";
 import type {HtmlDomNode, DomSpan} from "./domTree";
-
-const makeSpan = buildCommon.makeSpan;
 
 // Binary atoms (first class `mbin`) change into ordinary atoms (`mord`)
 // depending on their surroundings. See TeXbook pg. 442-446, Rules 5 and 6,
@@ -79,7 +77,7 @@ export const buildExpression = function(
     }
 
     // Combine consecutive domTree.symbolNodes into a single symbolNode.
-    buildCommon.tryCombineChars(groups);
+    tryCombineChars(groups);
 
     // If `expression` is a partial group, let the parent handle spacings
     // to avoid processing groups multiple times.
@@ -129,7 +127,7 @@ export const buildExpression = function(
             ? tightSpacings[prevType][type]
             : spacings[prevType][type]) : null;
         if (space) { // Insert glue (spacing) after the `prev`.
-            return buildCommon.makeGlue(space, glueOptions);
+            return makeGlue(space, glueOptions);
         }
     }, {node: dummyPrev}, dummyNext, isRoot);
 

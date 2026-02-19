@@ -1,7 +1,7 @@
 // @flow
-import buildCommon from "../../buildCommon";
+import {makeSpan, makeVList} from "../../buildCommon";
 import * as html from "../../buildHTML";
-import utils from "../../utils";
+import {isCharacterBox} from "../../utils";
 import type {StyleInterface} from "../../Style";
 import type Options from "../../Options";
 import type {DomSpan, SymbolNode} from "../../domTree";
@@ -19,8 +19,8 @@ export const assembleSupSub = (
     slant: number,
     baseShift: number,
 ): DomSpan => {
-    base = buildCommon.makeSpan([], [base]);
-    const subIsSingleCharacter = subGroup &&  utils.isCharacterBox(subGroup);
+    base = makeSpan([], [base]);
+    const subIsSingleCharacter = subGroup &&  isCharacterBox(subGroup);
     let sub;
     let sup;
     // We manually have to handle the superscripts and subscripts. This,
@@ -58,7 +58,7 @@ export const assembleSupSub = (
             sub.kern +
             base.depth + baseShift;
 
-        finalGroup = buildCommon.makeVList({
+        finalGroup = makeVList({
             positionType: "bottom",
             positionData: bottom,
             children: [
@@ -78,7 +78,7 @@ export const assembleSupSub = (
         // that we are supposed to shift the limits by 1/2 of the slant,
         // but since we are centering the limits adding a full slant of
         // margin will shift by 1/2 that.
-        finalGroup = buildCommon.makeVList({
+        finalGroup = makeVList({
             positionType: "top",
             positionData: top,
             children: [
@@ -91,7 +91,7 @@ export const assembleSupSub = (
     } else if (sup) {
         const bottom = base.depth + baseShift;
 
-        finalGroup = buildCommon.makeVList({
+        finalGroup = makeVList({
             positionType: "bottom",
             positionData: bottom,
             children: [
@@ -112,9 +112,9 @@ export const assembleSupSub = (
     if (sub && slant !== 0 && !subIsSingleCharacter) {
         // A negative margin-left was applied to the lower limit.
         // Avoid an overlap by placing a spacer on the left on the group.
-        const spacer = buildCommon.makeSpan(["mspace"], [], options);
+        const spacer = makeSpan(["mspace"], [], options);
         spacer.style.marginRight = makeEm(slant);
         parts.unshift(spacer);
     }
-    return buildCommon.makeSpan(["mop", "op-limits"], parts, options);
+    return makeSpan(["mop", "op-limits"], parts, options);
 };

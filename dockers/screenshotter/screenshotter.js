@@ -40,7 +40,8 @@ const newDir = path.normalize(path.join("test", "screenshotter", "new"));
 //////////////////////////////////////////////////////////////////////
 // Process command line arguments
 
-const opts = require("commander")
+const {program} = require("commander");
+const opts = program
     .option("-b, --browser <firefox|chrome|ie|edge|safari>",
         "Name of the browser to use", "firefox")
     .option("-c, --container <id>",

@@ -1,7 +1,7 @@
 // @flow
 import {defineFunctionBuilders} from "../defineFunction";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {makeOrd} from "../buildCommon";
+import {MathNode} from "../mathMLTree";
 
 import * as mml from "../buildMathML";
 
@@ -19,10 +19,10 @@ const defaultVariant: {[string]: string} = {
 defineFunctionBuilders({
     type: "mathord",
     htmlBuilder(group, options) {
-        return buildCommon.makeOrd(group, options, "mathord");
+        return makeOrd(group, options, "mathord");
     },
     mathmlBuilder(group: ParseNode<"mathord">, options) {
-        const node = new mathMLTree.MathNode(
+        const node = new MathNode(
             "mi",
             [mml.makeText(group.text, group.mode, options)]);
 
@@ -37,7 +37,7 @@ defineFunctionBuilders({
 defineFunctionBuilders({
     type: "textord",
     htmlBuilder(group, options) {
-        return buildCommon.makeOrd(group, options, "textord");
+        return makeOrd(group, options, "textord");
     },
     mathmlBuilder(group: ParseNode<"textord">, options) {
         const text = mml.makeText(group.text, group.mode, options);
@@ -45,13 +45,13 @@ defineFunctionBuilders({
 
         let node;
         if (group.mode === 'text') {
-            node = new mathMLTree.MathNode("mtext", [text]);
+            node = new MathNode("mtext", [text]);
         } else if (/[0-9]/.test(group.text)) {
-            node = new mathMLTree.MathNode("mn", [text]);
+            node = new MathNode("mn", [text]);
         } else if (group.text === "\\prime") {
-            node = new mathMLTree.MathNode("mo", [text]);
+            node = new MathNode("mo", [text]);
         } else {
-            node = new mathMLTree.MathNode("mi", [text]);
+            node = new MathNode("mi", [text]);
         }
         if (variant !== defaultVariant[node.type]) {
             node.setAttribute("mathvariant", variant);

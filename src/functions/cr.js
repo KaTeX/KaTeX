@@ -2,8 +2,8 @@
 // Row breaks within tabular environments, and line breaks at top level
 
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {makeSpan} from "../buildCommon";
+import {MathNode} from "../mathMLTree";
 import {calculateSize, makeEm} from "../units";
 import {assertNodeType} from "../parseNode";
 
@@ -36,7 +36,7 @@ defineFunction({
     // not within tabular/array environments.
 
     htmlBuilder(group, options) {
-        const span = buildCommon.makeSpan(["mspace"], [], options);
+        const span = makeSpan(["mspace"], [], options);
         if (group.newLine) {
             span.classes.push("newline");
             if (group.size) {
@@ -48,7 +48,7 @@ defineFunction({
     },
 
     mathmlBuilder(group, options) {
-        const node = new mathMLTree.MathNode("mspace");
+        const node = new MathNode("mspace");
         if (group.newLine) {
             node.setAttribute("linebreak", "newline");
             if (group.size) {

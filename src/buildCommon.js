@@ -50,7 +50,7 @@ const lookupSymbol = function(
  * should if present come first in `classes`.
  * TODO(#953): Make `options` mandatory and always pass it in.
  */
-const makeSymbol = function(
+export const makeSymbol = function(
     value: string,
     fontName: string,
     mode: Mode,
@@ -95,7 +95,7 @@ const makeSymbol = function(
  * Makes a symbol in Main-Regular or AMS-Regular.
  * Used for rel, bin, open, close, inner, and punct.
  */
-const mathsym = function(
+export const mathsym = function(
     value: string,
     mode: Mode,
     options: Options,
@@ -152,7 +152,7 @@ const boldsymbol = function(
 /**
  * Makes either a mathord or textord in the correct font and color.
  */
-const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
+export const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
     group: ParseNode<NODETYPE>,
     options: Options,
     type: "mathord" | "textord",
@@ -277,7 +277,7 @@ const canCombine = (prev: SymbolNode, next: SymbolNode) => {
  * Combine consecutive domTree.symbolNodes into a single symbolNode.
  * Note: this function mutates the argument.
  */
-const tryCombineChars = (chars: HtmlDomNode[]): HtmlDomNode[] => {
+export const tryCombineChars = (chars: HtmlDomNode[]): HtmlDomNode[] => {
     for (let i = 0; i < chars.length - 1; i++) {
         const prev = chars[i];
         const next = chars[i + 1];
@@ -336,7 +336,7 @@ const sizeElementFromChildren = function(
  * TODO: add a separate argument for math class (e.g. `mop`, `mbin`), which
  * should if present come first in `classes`.
  */
-const makeSpan = function(
+export const makeSpan = function(
     classes?: string[],
     children?: HtmlDomNode[],
     options?: Options,
@@ -351,14 +351,14 @@ const makeSpan = function(
 
 // SVG one is simpler -- doesn't require height, depth, max-font setting.
 // This is also a separate method for typesafety.
-const makeSvgSpan = (
+export const makeSvgSpan = (
     classes?: string[],
     children?: SvgNode[],
     options?: Options,
     style?: CssStyle,
 ): SvgSpan => new Span(classes, children, options, style);
 
-const makeLineSpan = function(
+export const makeLineSpan = function(
     className: string,
     options: Options,
     thickness?: number,
@@ -377,7 +377,7 @@ const makeLineSpan = function(
  * Makes an anchor with the given href, list of classes, list of children,
  * and options.
  */
-const makeAnchor = function(
+export const makeAnchor = function(
     href: string,
     classes: string[],
     children: HtmlDomNode[],
@@ -393,7 +393,7 @@ const makeAnchor = function(
 /**
  * Makes a document fragment with the given list of children.
  */
-const makeFragment = function(
+export const makeFragment = function(
     children: HtmlDomNode[],
 ): HtmlDocumentFragment {
     const fragment = new DocumentFragment(children);
@@ -407,7 +407,7 @@ const makeFragment = function(
  * Wraps group in a span if it's a document fragment, allowing to apply classes
  * and styles
  */
-const wrapFragment = function(
+export const wrapFragment = function(
     group: HtmlDomNode,
     options: Options,
 ): HtmlDomNode {
@@ -534,7 +534,7 @@ const getVListChildrenAndDepth = function(params: VListParam): {
  *
  * See VListParam documentation above.
  */
-const makeVList = function(params: VListParam, options: Options): DomSpan {
+export const makeVList = function(params: VListParam, options: Options): DomSpan {
     const {children, depth} = getVListChildrenAndDepth(params);
 
     // Create a strut that is taller than any list item. The strut is added to
@@ -626,7 +626,7 @@ const makeVList = function(params: VListParam, options: Options): DomSpan {
 // Glue is a concept from TeX which is a flexible space between elements in
 // either a vertical or horizontal list. In KaTeX, at least for now, it's
 // static space between elements in a horizontal layout.
-const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
+export const makeGlue = (measurement: Measurement, options: Options): DomSpan => {
     // Make an empty span for the space
     const rule = makeSpan(["mspace"], [], options);
     const size = calculateSize(measurement, options);
@@ -678,7 +678,7 @@ const retrieveTextFontName = function(
  * - fontName: the "style" parameter to fontMetrics.getCharacterMetrics
  */
 // A map between tex font commands an MathML mathvariant attribute values
-const fontMap: {[string]: {| variant: FontVariant, fontName: string |}} = {
+export const fontMap: {[string]: {| variant: FontVariant, fontName: string |}} = {
     // styles
     "mathbf": {
         variant: "bold",
@@ -735,7 +735,7 @@ const fontMap: {[string]: {| variant: FontVariant, fontName: string |}} = {
     },
 };
 
-const svgData: {
+export const svgData: {
     [string]: ([string, number, number])
 } = {
      //   path, width, height
@@ -746,7 +746,7 @@ const svgData: {
     oiiintSize2: ["oiiintSize2", 1.98, 0.659],
 };
 
-const staticSvg = function(value: string, options: Options): SvgSpan {
+export const staticSvg = function(value: string, options: Options): SvgSpan {
     // Create a span with inline SVG for the element.
     const [pathName, width, height] = svgData[value];
     const path = new PathNode(pathName);
@@ -763,22 +763,4 @@ const staticSvg = function(value: string, options: Options): SvgSpan {
     span.style.height = makeEm(height);
     span.style.width = makeEm(width);
     return span;
-};
-
-export default {
-    fontMap,
-    makeSymbol,
-    mathsym,
-    makeSpan,
-    makeSvgSpan,
-    makeLineSpan,
-    makeAnchor,
-    makeFragment,
-    wrapFragment,
-    makeVList,
-    makeOrd,
-    makeGlue,
-    staticSvg,
-    svgData,
-    tryCombineChars,
 };

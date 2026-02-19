@@ -1,7 +1,7 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {makeSpan} from "../buildCommon";
+import {MathNode} from "../mathMLTree";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 import {binrelClass} from "./mclass";
@@ -30,14 +30,14 @@ defineFunction({
     },
     htmlBuilder(group: ParseNode<"pmb">, options) {
         const elements = html.buildExpression(group.body, options, true);
-        const node = buildCommon.makeSpan([group.mclass], elements, options);
+        const node = makeSpan([group.mclass], elements, options);
         node.style.textShadow = "0.02em 0.01em 0.04px";
         return node;
     },
     mathmlBuilder(group: ParseNode<"pmb">, style) {
         const inner = mml.buildExpression(group.body, style);
         // Wrap with an <mstyle> element.
-        const node = new mathMLTree.MathNode("mstyle", inner);
+        const node = new MathNode("mstyle", inner);
         node.setAttribute("style", "text-shadow: 0.02em 0.01em 0.04px");
         return node;
     },

@@ -1,8 +1,8 @@
 // @flow
 // smash, with optional [tb], as in AMS
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {makeSpan, makeVList} from "../buildCommon";
+import {MathNode} from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
 
 import * as html from "../buildHTML";
@@ -54,7 +54,7 @@ defineFunction({
         };
     },
     htmlBuilder: (group, options) => {
-        const node = buildCommon.makeSpan(
+        const node = makeSpan(
             [], [html.buildGroup(group.body, options)]);
 
         if (!group.smashHeight && !group.smashDepth) {
@@ -85,16 +85,16 @@ defineFunction({
         // makeVList applies "display: table-cell", which prevents the browser
         // from acting on that line height. So we'll call makeVList now.
 
-        const smashedNode = buildCommon.makeVList({
+        const smashedNode = makeVList({
             positionType: "firstBaseline",
             children: [{type: "elem", elem: node}],
         }, options);
 
         // For spacing, TeX treats \hphantom as a math group (same spacing as ord).
-        return buildCommon.makeSpan(["mord"], [smashedNode], options);
+        return makeSpan(["mord"], [smashedNode], options);
     },
     mathmlBuilder: (group, options) => {
-        const node = new mathMLTree.MathNode(
+        const node = new MathNode(
             "mpadded", [mml.buildGroup(group.body, options)]);
 
         if (group.smashHeight) {

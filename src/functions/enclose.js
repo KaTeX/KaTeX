@@ -1,9 +1,9 @@
 // @flow
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
-import utils from "../utils";
-import stretchy from "../stretchy";
+import {makeSpan, makeSvgSpan, makeVList, wrapFragment} from "../buildCommon";
+import {isCharacterBox} from "../utils";
+import {MathNode} from "../mathMLTree";
+import {stretchyEnclose} from "../stretchy";
 import {phasePath} from "../svgGeometry";
 import {PathNode, SvgNode} from "../domTree";
 import {calculateSize, makeEm} from "../units";
@@ -17,7 +17,7 @@ const htmlBuilder = (group, options) => {
     // \cancel, \bcancel, \xcancel, \sout, \fbox, \colorbox, \fcolorbox, \phase
     // Some groups can return document fragments.  Handle those by wrapping
     // them in a span.
-    const inner = buildCommon.wrapFragment(
+    const inner = wrapFragment(
         html.buildGroup(group.body, options), options);
 
     const label = group.label.slice(1);
@@ -30,10 +30,10 @@ const htmlBuilder = (group, options) => {
     // We don't know the width of a group, so as a proxy, we test if
     // the subject is a single character. This captures most of the
     // subjects that should get the "tall" treatment.
-    const isSingleChar = utils.isCharacterBox(group.body);
+    const isSingleChar = isCharacterBox(group.body);
 
     if (label === "sout") {
-        img = buildCommon.makeSpan(["stretchy", "sout"]);
+        img = makeSpan(["stretchy", "sout"]);
         img.height = options.fontMetrics().defaultRuleThickness / scale;
         imgShift = -0.5 * options.fontMetrics().xHeight;
 
@@ -60,7 +60,7 @@ const htmlBuilder = (group, options) => {
             "preserveAspectRatio": "xMinYMin slice",
         });
         // Wrap it in a span with overflow: hidden.
-        img = buildCommon.makeSvgSpan(["hide-tail"], [svgNode], options);
+        img = makeSvgSpan(["hide-tail"], [svgNode], options);
         img.style.height = makeEm(angleHeight);
         imgShift = inner.depth + lineWeight + clearance;
 
@@ -101,7 +101,7 @@ const htmlBuilder = (group, options) => {
             bottomPad =  topPad;
         }
 
-        img = stretchy.encloseSpan(inner, label, topPad, bottomPad, options);
+        img = stretchyEnclose(inner, label, topPad, bottomPad, options);
         if (/fbox|boxed|fcolorbox/.test(label)) {
             img.style.borderStyle = "solid";
             img.style.borderWidth = makeEm(ruleThickness);
@@ -121,7 +121,7 @@ const htmlBuilder = (group, options) => {
 
     let vlist;
     if (group.backgroundColor) {
-        vlist = buildCommon.makeVList({
+        vlist = makeVList({
             positionType: "individualShift",
             children: [
                 // Put the color background behind inner;
@@ -131,7 +131,7 @@ const htmlBuilder = (group, options) => {
         }, options);
     } else {
         const classes = /cancel|phase/.test(label) ? ["svg-align"] : [];
-        vlist = buildCommon.makeVList({
+        vlist = makeVList({
             positionType: "individualShift",
             children: [
                 // Write the \cancel stroke on top of inner.
@@ -159,15 +159,15 @@ const htmlBuilder = (group, options) => {
 
     if (/cancel/.test(label) && !isSingleChar) {
         // cancel does not create horiz space for its line extension.
-        return buildCommon.makeSpan(["mord", "cancel-lap"], [vlist], options);
+        return makeSpan(["mord", "cancel-lap"], [vlist], options);
     } else {
-        return buildCommon.makeSpan(["mord"], [vlist], options);
+        return makeSpan(["mord"], [vlist], options);
     }
 };
 
 const mathmlBuilder = (group, options) => {
     let fboxsep = 0;
-    const node = new mathMLTree.MathNode(
+    const node = new MathNode(
         group.label.includes("colorbox") ? "mpadded" : "menclose",
         [mml.buildGroup(group.body, options)]
     );

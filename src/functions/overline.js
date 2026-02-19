@@ -1,7 +1,7 @@
 // @flow
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
+import {makeLineSpan, makeSpan, makeVList} from "../buildCommon";
+import {MathNode, TextNode} from "../mathMLTree";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -28,11 +28,11 @@ defineFunction({
             options.havingCrampedStyle());
 
         // Create the line above the body
-        const line = buildCommon.makeLineSpan("overline-line", options);
+        const line = makeLineSpan("overline-line", options);
 
         // Generate the vlist, with the appropriate kerns
         const defaultRuleThickness = options.fontMetrics().defaultRuleThickness;
-        const vlist = buildCommon.makeVList({
+        const vlist = makeVList({
             positionType: "firstBaseline",
             children: [
                 {type: "elem", elem: innerGroup},
@@ -42,14 +42,14 @@ defineFunction({
             ],
         }, options);
 
-        return buildCommon.makeSpan(["mord", "overline"], [vlist], options);
+        return makeSpan(["mord", "overline"], [vlist], options);
     },
     mathmlBuilder(group, options) {
-        const operator = new mathMLTree.MathNode(
-            "mo", [new mathMLTree.TextNode("\u203e")]);
+        const operator = new MathNode(
+            "mo", [new TextNode("\u203e")]);
         operator.setAttribute("stretchy", "true");
 
-        const node = new mathMLTree.MathNode(
+        const node = new MathNode(
             "mover",
             [mml.buildGroup(group.body, options), operator]);
         node.setAttribute("accent", "true");

@@ -1,8 +1,8 @@
 // @flow
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
-import mathMLTree from "../mathMLTree";
-import delimiter from "../delimiter";
+import {makeSpan, makeVList, wrapFragment} from "../buildCommon";
+import {MathNode} from "../mathMLTree";
+import {makeSqrtImage} from "../delimiter";
 import Style from "../Style";
 import {makeEm} from "../units";
 
@@ -39,7 +39,7 @@ defineFunction({
 
         // Some groups can return document fragments.  Handle those by wrapping
         // them in a span.
-        inner = buildCommon.wrapFragment(inner, options);
+        inner = wrapFragment(inner, options);
 
         // Calculate the minimum size for the \surd delimiter
         const metrics = options.fontMetrics();
@@ -58,7 +58,7 @@ defineFunction({
 
         // Create a sqrt SVG of the required minimum size
         const {span: img, ruleWidth, advanceWidth} =
-            delimiter.sqrtImage(minDelimiterHeight, options);
+            makeSqrtImage(minDelimiterHeight, options);
 
         const delimDepth = img.height - ruleWidth;
 
@@ -74,7 +74,7 @@ defineFunction({
         inner.style.paddingLeft = makeEm(advanceWidth);
 
         // Overlay the image and the argument.
-        const body = buildCommon.makeVList({
+        const body = makeVList({
             positionType: "firstBaseline",
             children: [
                 {type: "elem", elem: inner, wrapperClasses: ["svg-align"]},
@@ -85,7 +85,7 @@ defineFunction({
         }, options);
 
         if (!group.index) {
-            return buildCommon.makeSpan(["mord", "sqrt"], [body], options);
+            return makeSpan(["mord", "sqrt"], [body], options);
         } else {
             // Handle the optional root index
 
@@ -98,28 +98,28 @@ defineFunction({
             const toShift = 0.6 * (body.height - body.depth);
 
             // Build a VList with the superscript shifted up correctly
-            const rootVList = buildCommon.makeVList({
+            const rootVList = makeVList({
                 positionType: "shift",
                 positionData: -toShift,
                 children: [{type: "elem", elem: rootm}],
             }, options);
             // Add a class surrounding it so we can add on the appropriate
             // kerning
-            const rootVListWrap = buildCommon.makeSpan(["root"], [rootVList]);
+            const rootVListWrap = makeSpan(["root"], [rootVList]);
 
-            return buildCommon.makeSpan(["mord", "sqrt"],
+            return makeSpan(["mord", "sqrt"],
                 [rootVListWrap, body], options);
         }
     },
     mathmlBuilder(group, options) {
         const {body, index} = group;
         return index ?
-            new mathMLTree.MathNode(
+            new MathNode(
                 "mroot", [
                     mml.buildGroup(body, options),
                     mml.buildGroup(index, options),
                 ]) :
-            new mathMLTree.MathNode(
+            new MathNode(
                 "msqrt", [mml.buildGroup(body, options)]);
     },
 });

@@ -1,9 +1,9 @@
 // @flow
 import {defineFunctionBuilders} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeSpan, makeVList} from "../buildCommon";
 import {SymbolNode} from "../domTree";
-import mathMLTree from "../mathMLTree";
-import utils from "../utils";
+import {isCharacterBox} from "../utils";
+import {MathNode} from "../mathMLTree";
 import {makeEm} from "../units";
 import Style from "../Style";
 
@@ -45,7 +45,7 @@ const htmlBuilderDelegate = function(
             (options.style.size === Style.DISPLAY.size || base.limits);
         return delegate ? operatorname.htmlBuilder : null;
     } else if (base.type === "accent") {
-        return utils.isCharacterBox(base.base) ? accent.htmlBuilder : null;
+        return isCharacterBox(base.base) ? accent.htmlBuilder : null;
     } else if (base.type === "horizBrace") {
         const isSup = !group.sub;
         return isSup === base.isOver ? horizBrace.htmlBuilder : null;
@@ -80,11 +80,11 @@ defineFunctionBuilders({
         let supShift = 0;
         let subShift = 0;
 
-        const isCharacterBox = valueBase && utils.isCharacterBox(valueBase);
+        const isCharBox = valueBase && isCharacterBox(valueBase);
         if (valueSup) {
             const newOptions = options.havingStyle(options.style.sup());
             supm = html.buildGroup(valueSup, newOptions, options);
-            if (!isCharacterBox) {
+            if (!isCharBox) {
                 supShift = base.height - newOptions.fontMetrics().supDrop
                     * newOptions.sizeMultiplier / options.sizeMultiplier;
             }
@@ -93,7 +93,7 @@ defineFunctionBuilders({
         if (valueSub) {
             const newOptions = options.havingStyle(options.style.sub());
             subm = html.buildGroup(valueSub, newOptions, options);
-            if (!isCharacterBox) {
+            if (!isCharBox) {
                 subShift = base.depth + newOptions.fontMetrics().subDrop
                     * newOptions.sizeMultiplier / options.sizeMultiplier;
             }
@@ -153,7 +153,7 @@ defineFunctionBuilders({
                 {type: "elem", elem: supm, shift: -supShift, marginRight},
             ];
 
-            supsub = buildCommon.makeVList({
+            supsub = makeVList({
                 positionType: "individualShift",
                 children: vlistElem,
             }, options);
@@ -166,7 +166,7 @@ defineFunctionBuilders({
             const vlistElem =
                 [{type: "elem", elem: subm, marginLeft, marginRight}];
 
-            supsub = buildCommon.makeVList({
+            supsub = makeVList({
                 positionType: "shift",
                 positionData: subShift,
                 children: vlistElem,
@@ -176,7 +176,7 @@ defineFunctionBuilders({
             supShift = Math.max(supShift, minSupShift,
                 supm.depth + 0.25 * metrics.xHeight);
 
-            supsub = buildCommon.makeVList({
+            supsub = makeVList({
                 positionType: "shift",
                 positionData: -supShift,
                 children: [{type: "elem", elem: supm, marginRight}],
@@ -187,8 +187,8 @@ defineFunctionBuilders({
 
         // Wrap the supsub vlist in a span.msupsub to reset text-align.
         const mclass = html.getTypeOfDomTree(base, "right") || "mord";
-        return buildCommon.makeSpan([mclass],
-            [base, buildCommon.makeSpan(["msupsub"], [supsub])],
+        return makeSpan([mclass],
+            [base, makeSpan(["msupsub"], [supsub])],
             options);
     },
     mathmlBuilder(group, options) {
@@ -261,7 +261,7 @@ defineFunctionBuilders({
             }
         }
 
-        return new mathMLTree.MathNode(nodeType, children);
+        return new MathNode(nodeType, children);
     },
 });
 
