@@ -1512,6 +1512,11 @@ describe("A TeX-compliant parser", function() {
         }
     });
 
+    it("should allow \\imath in sup/subscripts", function() {
+        expect(String.raw`x^\imath`).toParse();
+        expect(String.raw`x_\imath`).toParse();
+    });
+
     it("should parse multiple primes correctly", function() {
         expect`x''''`.toParse();
         expect`x_2''`.toParse();
