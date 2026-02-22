@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`A MathML builder \\html@mathml makes clean symbols 1`] = `
 <math xmlns="http://www.w3.org/1998/Math/MathML">

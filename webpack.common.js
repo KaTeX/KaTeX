@@ -121,6 +121,11 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                     use: 'babel-loader',
                 },
                 {
+                    test: /\.ts?$/,
+                    exclude: /node_modules/,
+                    use: 'babel-loader',
+                },
+                {
                     test: /\.css$/,
                     use: [
                         dev ? 'style-loader' : MiniCssExtractPlugin.loader,
@@ -151,6 +156,9 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                     },
                 },
             ],
+        },
+        resolve: {
+            extensions: ['.ts', '.js'],
         },
         externals: 'katex',
         plugins: [

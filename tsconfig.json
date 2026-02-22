@@ -1,8 +1,16 @@
 {
   "compilerOptions": {
     "strict": true,
-    "lib": ["es2021", "dom"],
+    "lib": ["es2023", "dom"],
+    "module": "esnext",
     "moduleResolution": "bundler",
-    "forceConsistentCasingInFileNames": true
-  }
+    "forceConsistentCasingInFileNames": true,
+    "allowImportingTsExtensions": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "baseUrl": "."
+  },
+  "include": ["src/**/*"]
 }

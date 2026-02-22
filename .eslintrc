@@ -21,7 +21,7 @@
           "objects": "always-multiline",
           "imports": "always-multiline",
           "exports": "always-multiline",
-          "functions": "only-multiline",
+          "functions": "only-multiline"
         }],
         "comma-spacing": [2, { "before": false, "after": true }],
         "constructor-super": 2,
@@ -86,7 +86,7 @@
         "import/no-duplicates": 0,
         // We use `import mod from "mod"` a lot.
         "import/no-named-as-default": 0,
-        "import/no-named-as-default-member": 0,
+        "import/no-named-as-default-member": 0
     },
     "env": {
         "es6": true,
@@ -116,6 +116,11 @@
             "jest": false
         }
     }, {
+        "files": ["contrib/**/*.js"],
+        "rules": {
+            "import/no-unresolved": ["error", { "ignore": ["katex"] }]
+        }
+    }, {
         "files": ["website/**/*.js"],
         "parserOptions": {
             "babelOptions": {
@@ -131,8 +136,17 @@
     }, {
         "files": [".github/workflows/*.{yaml,yml}/**/*.js"],
         "rules": {
-            "indent-legacy": [2, 4, {"SwitchCase": 1, "outerIIFEBody": 0}],
+            "indent-legacy": [2, 4, {"SwitchCase": 1, "outerIIFEBody": 0}]
         }
+    }, {
+      "files": ["**/*.ts"],
+      "parser": "@typescript-eslint/parser",
+      "extends": [
+        "plugin:@typescript-eslint/recommended"
+      ],
+      "rules": {
+        "flowtype/no-types-missing-file-annotation": "off"
+      }
     }],
     "root": true
 }

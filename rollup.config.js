@@ -1,5 +1,6 @@
 import babel from '@rollup/plugin-babel';
 import alias from '@rollup/plugin-alias';
+import typescript from '@rollup/plugin-typescript';
 
 const {targets} = require('./webpack.common');
 
@@ -14,6 +15,7 @@ export default targets
         format: 'es',
     },
     plugins: [
+        typescript({tsconfig: false}),
         babel({babelHelpers: 'runtime'}),
         alias({
             entries: [

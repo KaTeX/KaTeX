@@ -1,5 +1,3 @@
-// @flow
-
 /**
  * This file provides support for Unicode range U+1D400 to U+1D7FF,
  * Mathematical Alphanumeric Symbols.
@@ -8,7 +6,7 @@
  * the font information necessary to render it properly.
  */
 
-import type {Mode} from "./types";
+import type {Mode} from "./types/common";
 import ParseError from "./ParseError";
 
 /**
@@ -21,7 +19,7 @@ import ParseError from "./ParseError";
  *      * The font name, so that KaTeX can get font metrics.
  */
 
-const wideLatinLetterData: Array<[string, string, string]> = [
+const wideLatinLetterData = [
     ["mathbf", "textbf", "Main-Bold"],                // A-Z bold upright
     ["mathbf", "textbf", "Main-Bold"],                // a-z bold upright
 
@@ -63,20 +61,20 @@ const wideLatinLetterData: Array<[string, string, string]> = [
 
     ["mathtt", "texttt", "Typewriter-Regular"],     // A-Z monospace
     ["mathtt", "texttt", "Typewriter-Regular"],     // a-z monospace
-];
+] as const satisfies readonly (readonly [string, string, string])[];
 
-const wideNumeralData: Array<[string, string, string]> = [
+const wideNumeralData = [
     ["mathbf", "textbf", "Main-Bold"],                // 0-9 bold
     ["", "", ""],                         // 0-9 double-struck. No KaTeX font.
     ["mathsf", "textsf", "SansSerif-Regular"],        // 0-9 sans-serif
     ["mathboldsf", "textboldsf", "SansSerif-Bold"],   // 0-9 bold sans-serif
     ["mathtt", "texttt", "Typewriter-Regular"],       // 0-9 monospace
-];
+] as const satisfies readonly (readonly [string, string, string])[];
 
-export const wideCharacterFont = function(
+export const wideCharacterFont = (
     wideChar: string,
     mode: Mode,
-): [string, string] {
+): [string, string] => {
 
     // IE doesn't support codePointAt(). So work with the surrogate pair.
     const H = wideChar.charCodeAt(0);    // high surrogate
@@ -89,12 +87,12 @@ export const wideCharacterFont = function(
         // wideLatinLetterData contains exactly 26 chars on each row.
         // So we can calculate the relevant row. No traverse necessary.
         const i = Math.floor((codePoint - 0x1D400) / 26);
-        return [wideLatinLetterData[i][2], wideLatinLetterData[i][j]];
+        return [wideLatinLetterData[i]![2], wideLatinLetterData[i]![j]];
 
     } else if (0x1D7CE <= codePoint && codePoint <= 0x1D7FF) {
         // Numerals, ten per row.
         const i = Math.floor((codePoint - 0x1D7CE) / 10);
-        return [wideNumeralData[i][2], wideNumeralData[i][j]];
+        return [wideNumeralData[i]![2], wideNumeralData[i]![j]];
 
     } else if (codePoint === 0x1D6A5 || codePoint === 0x1D6A6) {
         // dotless i or j

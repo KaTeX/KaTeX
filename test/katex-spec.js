@@ -1929,28 +1929,28 @@ describe("An HTML font tree-builder", function() {
     it("should throw TypeError when the expression is of the wrong type", function() {
         expect(function() {
             katex.renderToString({badInputType: "yes"});
-        }).toThrowError(TypeError);
+        }).toThrow(TypeError);
         expect(function() {
             katex.renderToString([1, 2]);
-        }).toThrowError(TypeError);
+        }).toThrow(TypeError);
         expect(function() {
             katex.renderToString(undefined);
-        }).toThrowError(TypeError);
+        }).toThrow(TypeError);
         expect(function() {
             katex.renderToString(null);
-        }).toThrowError(TypeError);
+        }).toThrow(TypeError);
         expect(function() {
             katex.renderToString(1.234);
-        }).toThrowError(TypeError);
+        }).toThrow(TypeError);
     });
 
     it("should not throw TypeError when the expression is a supported type", function() {
         expect(function() {
             katex.renderToString(r`\sqrt{123}`);
-        }).not.toThrowError(TypeError);
+        }).not.toThrow(TypeError);
         expect(function() {
             katex.renderToString(new String(r`\sqrt{123}`));
-        }).not.toThrowError(TypeError);
+        }).not.toThrow(TypeError);
     });
 });
 
