@@ -140,7 +140,7 @@
   },
   "bin": "cli.js",
   "scripts": {
-    "test": "yarn test:lint && yarn test:flow && yarn test:jest",
+    "test": "yarn test:lint && yarn test:flow && yarn test:typecheck && yarn test:jest",
     "test:lint": "yarn test:lint:js && yarn test:lint:css",
     "test:lint:js": "eslint .",
     "test:lint:css": "stylelint src/styles/katex.scss static/main.css website/static/**/*.css",
@@ -152,6 +152,7 @@
     "test:screenshots": "yarn test:screenshots:update --verify",
     "test:screenshots:update": "dockers/screenshotter/screenshotter.sh",
     "test:perf": "NODE_ENV=test node test/perf-test.js",
+    "test:typecheck": "tsc --noEmit",
     "clean": "rm -rf dist/ node_modules/",
     "clean-install": "yarn clean && yarn",
     "start": "webpack serve --config webpack.dev.js",

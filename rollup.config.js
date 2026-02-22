@@ -15,7 +15,7 @@ export default targets
         format: 'es',
     },
     plugins: [
-        typescript({tsconfig: false}),
+        typescript(),
         babel({babelHelpers: 'runtime'}),
         alias({
             entries: [
