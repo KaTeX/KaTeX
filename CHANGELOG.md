@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.30](https://github.com/KaTeX/KaTeX/compare/v0.16.29...v0.16.30) (2026-02-22)
+
+
+### Bug Fixes
+
+* no line breaks after `\not` ([#4140](https://github.com/KaTeX/KaTeX/issues/4140)) ([2d1ba86](https://github.com/KaTeX/KaTeX/commit/2d1ba86143bd45540d5a773cfa456081318f3f33))
+
 ## [0.16.29](https://github.com/KaTeX/KaTeX/compare/v0.16.28...v0.16.29) (2026-02-22)
 
 
