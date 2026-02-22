@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.31](https://github.com/KaTeX/KaTeX/compare/v0.16.30...v0.16.31) (2026-02-22)
+
+
+### Bug Fixes
+
+* `\*frac` sizing ([#4137](https://github.com/KaTeX/KaTeX/issues/4137)) ([ef51f18](https://github.com/KaTeX/KaTeX/commit/ef51f18ded4ab9ba54ba750f2866241c4676c41c))
+
 ## [0.16.30](https://github.com/KaTeX/KaTeX/compare/v0.16.29...v0.16.30) (2026-02-22)
 
 
