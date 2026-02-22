@@ -238,12 +238,14 @@ export const makeOrd = function<NODETYPE: "spacing" | "mathord" | "textord">(
 
 /**
  * Returns true if subsequent symbolNodes have the same classes, skew, maxFont,
- * and styles.
+ * and styles. For mathnormal text, the left node must also have zero italic
+ * correction so we don't lose spacing between combined glyphs.
  */
 const canCombine = (prev: SymbolNode, next: SymbolNode) => {
     if (createClass(prev.classes) !== createClass(next.classes)
         || prev.skew !== next.skew
-        || prev.maxFontSize !== next.maxFontSize) {
+        || prev.maxFontSize !== next.maxFontSize
+        || (prev.italic !== 0 && prev.hasClass("mathnormal"))) {
         return false;
     }
 

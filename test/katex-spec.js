@@ -2339,6 +2339,36 @@ describe("A markup generator", function() {
         expect(markup).not.toContain("marginRight");
     });
 
+    it("doesn't combine mathnormal glyphs across italic correction", function() {
+        const markup = katex.renderToString("jk", {output: "html"});
+        const mathnormalSpans = markup.match(/class="mord mathnormal"/g) || [];
+        expect(mathnormalSpans.length).toBe(2);
+        expect(markup).toContain(">j</span><span class=\"mord mathnormal\"");
+    });
+
+    it("still combines mathnormal glyphs when italic correction is zero", function() {
+        const markup = katex.renderToString("ab", {output: "html"});
+        const mathnormalSpans = markup.match(/class="mord mathnormal"/g) || [];
+        expect(mathnormalSpans.length).toBe(1);
+        expect(markup).toContain(">ab</span>");
+    });
+
+    it("still combines non-mathnormal glyphs with italic correction", function() {
+        const markup = katex.renderToString(String.raw`\mathrm{fgh}`,
+            {output: "html"});
+        const rmSpans = markup.match(/class="mord mathrm"/g) || [];
+        expect(rmSpans.length).toBe(1);
+        expect(markup).toContain(">fgh</span>");
+    });
+
+    it("still combines \\mathit glyphs with nonzero font italic correction", function() {
+        const markup = katex.renderToString(String.raw`\mathit{fgvw}`,
+            {output: "html"});
+        const mathitSpans = markup.match(/class="mord mathit"/g) || [];
+        expect(mathitSpans.length).toBe(1);
+        expect(markup).toContain(">fgvw</span>");
+    });
+
     it("generates both MathML and HTML", function() {
         const markup = katex.renderToString("a");
 
