@@ -20,7 +20,9 @@ try {
 const {version} = require("./package.json");
 const fs = require("fs");
 
-const program = require("commander").version(version);
+const {program} = require("commander");
+program.version(version);
+
 for (const prop in katex.SETTINGS_SCHEMA) {
     if (katex.SETTINGS_SCHEMA.hasOwnProperty(prop)) {
         const opt = katex.SETTINGS_SCHEMA[prop];

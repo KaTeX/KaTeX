@@ -207,8 +207,8 @@ const makeInner = function(
 // Helpers for makeStackedDelim
 const lapInEms = 0.008;
 const lap = {type: "kern", size: -1 * lapInEms};
-const verts = ["|", "\\lvert", "\\rvert", "\\vert"];
-const doubleVerts = ["\\|", "\\lVert", "\\rVert", "\\Vert"];
+const verts = new Set(["|", "\\lvert", "\\rvert", "\\vert"]);
+const doubleVerts = new Set(["\\|", "\\lVert", "\\rVert", "\\Vert"]);
 
 /**
  * Make a stacked delimiter out of a given delimiter, with the total height at
@@ -254,11 +254,11 @@ const makeStackedDelim = function(
         top = "\\Uparrow";
         repeat = "\u2016";
         bottom = "\\Downarrow";
-    } else if (verts.includes(delim)) {
+    } else if (verts.has(delim)) {
         repeat = "\u2223";
         svgLabel = "vert";
         viewBoxWidth = 333;
-    } else if (doubleVerts.includes(delim)) {
+    } else if (doubleVerts.has(delim)) {
         repeat = "\u2225";
         svgLabel = "doublevert";
         viewBoxWidth = 556;
@@ -481,7 +481,7 @@ const sqrtSvg = function(
 /**
  * Make a sqrt image of the given height,
  */
-const makeSqrtImage = function(
+export const makeSqrtImage = function(
     height: number,
     options: Options,
 ): {
@@ -573,39 +573,39 @@ const makeSqrtImage = function(
 
 // There are three kinds of delimiters, delimiters that stack when they become
 // too large
-const stackLargeDelimiters = [
+const stackLargeDelimiters = new Set([
     "(", "\\lparen", ")", "\\rparen",
     "[", "\\lbrack", "]", "\\rbrack",
     "\\{", "\\lbrace", "\\}", "\\rbrace",
     "\\lfloor", "\\rfloor", "\u230a", "\u230b",
     "\\lceil", "\\rceil", "\u2308", "\u2309",
     "\\surd",
-];
+]);
 
 // delimiters that always stack
-const stackAlwaysDelimiters = [
+const stackAlwaysDelimiters = new Set([
     "\\uparrow", "\\downarrow", "\\updownarrow",
     "\\Uparrow", "\\Downarrow", "\\Updownarrow",
     "|", "\\|", "\\vert", "\\Vert",
     "\\lvert", "\\rvert", "\\lVert", "\\rVert",
     "\\lgroup", "\\rgroup", "\u27ee", "\u27ef",
     "\\lmoustache", "\\rmoustache", "\u23b0", "\u23b1",
-];
+]);
 
 // and delimiters that never stack
-const stackNeverDelimiters = [
+const stackNeverDelimiters = new Set([
     "<", ">", "\\langle", "\\rangle", "/", "\\backslash", "\\lt", "\\gt",
-];
+]);
 
 // Metrics of the different sizes. Found by looking at TeX's output of
 // $\bigl| // \Bigl| \biggl| \Biggl| \showlists$
 // Used to create stacked delimiters of appropriate sizes in makeSizedDelim.
-const sizeToMaxHeight = [0, 1.2, 1.8, 2.4, 3.0];
+export const sizeToMaxHeight = [0, 1.2, 1.8, 2.4, 3.0];
 
 /**
  * Used to create a delimiter of a specific size, where `size` is 1, 2, 3, or 4.
  */
-const makeSizedDelim = function(
+export const makeSizedDelim = function(
     delim: string,
     size: number,
     options: Options,
@@ -620,10 +620,10 @@ const makeSizedDelim = function(
     }
 
     // Sized delimiters are never centered.
-    if (stackLargeDelimiters.includes(delim) ||
-        stackNeverDelimiters.includes(delim)) {
+    if (stackLargeDelimiters.has(delim) ||
+        stackNeverDelimiters.has(delim)) {
         return makeLargeDelim(delim, size, false, options, mode, classes);
-    } else if (stackAlwaysDelimiters.includes(delim)) {
+    } else if (stackAlwaysDelimiters.has(delim)) {
         return makeStackedDelim(
             delim, sizeToMaxHeight[size], false, options, mode, classes);
     } else {
@@ -742,7 +742,7 @@ const traverseSequence = function(
  * Make a delimiter of a given height+depth, with optional centering. Here, we
  * traverse the sequences, and create a delimiter that the sequence tells us to.
  */
-const makeCustomSizedDelim = function(
+export const makeCustomSizedDelim = function(
     delim: string,
     height: number,
     center: boolean,
@@ -758,9 +758,9 @@ const makeCustomSizedDelim = function(
 
     // Decide what sequence to use
     let sequence;
-    if (stackNeverDelimiters.includes(delim)) {
+    if (stackNeverDelimiters.has(delim)) {
         sequence = stackNeverDelimiterSequence;
-    } else if (stackLargeDelimiters.includes(delim)) {
+    } else if (stackLargeDelimiters.has(delim)) {
         sequence = stackLargeDelimiterSequence;
     } else {
         sequence = stackAlwaysDelimiterSequence;
@@ -788,7 +788,7 @@ const makeCustomSizedDelim = function(
  * Make a delimiter for use with `\left` and `\right`, given a height and depth
  * of an expression that the delimiters surround.
  */
-const makeLeftRightDelim = function(
+export const makeLeftRightDelim = function(
     delim: string,
     height: number,
     depth: number,
@@ -823,12 +823,4 @@ const makeLeftRightDelim = function(
     // Finally, we defer to `makeCustomSizedDelim` with our calculated total
     // height
     return makeCustomSizedDelim(delim, totalHeight, true, options, mode, classes);
-};
-
-export default {
-    sqrtImage: makeSqrtImage,
-    sizedDelim: makeSizedDelim,
-    sizeToMaxHeight: sizeToMaxHeight,
-    customSizedDelim: makeCustomSizedDelim,
-    leftRightDelim: makeLeftRightDelim,
 };

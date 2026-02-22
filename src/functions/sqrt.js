@@ -2,7 +2,7 @@
 import defineFunction from "../defineFunction";
 import {makeSpan, makeVList, wrapFragment} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
-import delimiter from "../delimiter";
+import {makeSqrtImage} from "../delimiter";
 import Style from "../Style";
 import {makeEm} from "../units";
 
@@ -58,7 +58,7 @@ defineFunction({
 
         // Create a sqrt SVG of the required minimum size
         const {span: img, ruleWidth, advanceWidth} =
-            delimiter.sqrtImage(minDelimiterHeight, options);
+            makeSqrtImage(minDelimiterHeight, options);
 
         const delimDepth = img.height - ruleWidth;
 
