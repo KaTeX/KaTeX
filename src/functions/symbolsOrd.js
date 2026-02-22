@@ -1,6 +1,6 @@
 // @flow
 import {defineFunctionBuilders} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeOrd} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
 
 import * as mml from "../buildMathML";
@@ -19,7 +19,7 @@ const defaultVariant: {[string]: string} = {
 defineFunctionBuilders({
     type: "mathord",
     htmlBuilder(group, options) {
-        return buildCommon.makeOrd(group, options, "mathord");
+        return makeOrd(group, options, "mathord");
     },
     mathmlBuilder(group: ParseNode<"mathord">, options) {
         const node = new MathNode(
@@ -37,7 +37,7 @@ defineFunctionBuilders({
 defineFunctionBuilders({
     type: "textord",
     htmlBuilder(group, options) {
-        return buildCommon.makeOrd(group, options, "textord");
+        return makeOrd(group, options, "textord");
     },
     mathmlBuilder(group: ParseNode<"textord">, options) {
         const text = mml.makeText(group.text, group.mode, options);

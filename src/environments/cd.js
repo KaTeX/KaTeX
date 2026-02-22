@@ -1,5 +1,5 @@
 // @flow
-import buildCommon from "../buildCommon";
+import {wrapFragment} from "../buildCommon";
 import defineFunction from "../defineFunction";
 import {MathNode} from "../mathMLTree";
 import * as html from "../buildHTML";
@@ -141,10 +141,10 @@ export function parseCD(parser: Parser): ParseNode<"array"> {
                 labels[1] = {type: "ordgroup", mode: "math", body: []};
 
                 // Process the arrow.
-                if ("=|.".indexOf(arrowChar) > -1) {
+                if ("=|.".includes(arrowChar)) {
                     // Three "arrows", ``@=`, `@|`, and `@.`, do not take labels.
                     // Do nothing here.
-                } else if ("<>AV".indexOf(arrowChar) > -1) {
+                } else if ("<>AV".includes(arrowChar)) {
                     // Four arrows, `@>>>`, `@<<<`, `@AAA`, and `@VVV`, each take
                     // two optional labels. E.g. the right-point arrow syntax is
                     // really:  @>{optional label}>{optional label}>
@@ -255,7 +255,7 @@ defineFunction({
     },
     htmlBuilder(group, options) {
         const newOptions = options.havingStyle(options.style.sup());
-        const label = buildCommon.wrapFragment(
+        const label = wrapFragment(
             html.buildGroup(group.label, newOptions, options), options);
         label.classes.push("cd-label-" + group.side);
         label.style.bottom = makeEm(0.8 - label.depth);
@@ -300,7 +300,7 @@ defineFunction({
         // Wrap the vertical arrow and its labels.
         // The parent gets position: relative. The child gets position: absolute.
         // So CSS can locate the label correctly.
-        const parent = buildCommon.wrapFragment(
+        const parent = wrapFragment(
             html.buildGroup(group.fragment, options), options
         );
         parent.classes.push("cd-vert-arrow");

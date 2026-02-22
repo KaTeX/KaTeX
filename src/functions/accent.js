@@ -1,9 +1,9 @@
 // @flow
 import defineFunction, {normalizeArgument} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeOrd, makeSpan, makeVList, staticSvg, svgData} from "../buildCommon";
 import {getBaseElem, isCharacterBox} from "../utils";
 import {MathNode} from "../mathMLTree";
-import stretchy from "../stretchy";
+import {stretchyMathML, stretchySvg} from "../stretchy";
 import {assertNodeType} from "../parseNode";
 import {assertSpan, assertSymbolDomNode} from "../domTree";
 import {makeEm} from "../units";
@@ -95,10 +95,10 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
             // render combining characters when not preceded by a character.
             // So now we use an SVG.
             // If Safari reforms, we should consider reverting to the glyph.
-            accent = buildCommon.staticSvg("vec", options);
-            width = buildCommon.svgData.vec[1];
+            accent = staticSvg("vec", options);
+            width = svgData.vec[1];
         } else {
-            accent = buildCommon.makeOrd({mode: group.mode, text: group.label},
+            accent = makeOrd({mode: group.mode, text: group.label},
                 options, "textord");
             accent = assertSymbolDomNode(accent);
             // Remove the italic correction of the accent, because it only serves to
@@ -110,7 +110,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
             }
         }
 
-        accentBody = buildCommon.makeSpan(["accent-body"], [accent]);
+        accentBody = makeSpan(["accent-body"], [accent]);
 
         // "Full" accents expand the width of the resulting symbol to be
         // at least the width of the accent, and overlap directly onto the
@@ -140,7 +140,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
             accentBody.style.top = ".2em";
         }
 
-        accentBody = buildCommon.makeVList({
+        accentBody = makeVList({
             positionType: "firstBaseline",
             children: [
                 {type: "elem", elem: body},
@@ -150,9 +150,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
         }, options);
 
     } else {
-        accentBody = stretchy.svgSpan(group, options);
+        accentBody = stretchySvg(group, options);
 
-        accentBody = buildCommon.makeVList({
+        accentBody = makeVList({
             positionType: "firstBaseline",
             children: [
                 {type: "elem", elem: body},
@@ -172,7 +172,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
     }
 
     const accentWrap =
-        buildCommon.makeSpan(["mord", "accent"], [accentBody], options);
+        makeSpan(["mord", "accent"], [accentBody], options);
 
     if (supSubGroup) {
         // Here, we replace the "base" child of the supsub with our newly
@@ -195,7 +195,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
 const mathmlBuilder: MathMLBuilder<"accent"> = (group, options) => {
     const accentNode =
         group.isStretchy ?
-            stretchy.mathMLnode(group.label) :
+            stretchyMathML(group.label) :
             new MathNode("mo", [mml.makeText(group.label, group.mode)]);
 
     const node = new MathNode(

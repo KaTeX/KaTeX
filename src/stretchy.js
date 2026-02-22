@@ -6,12 +6,12 @@
  */
 
 import {LineNode, PathNode, SvgNode} from "./domTree";
-import buildCommon from "./buildCommon";
+import {makeSpan, makeSvgSpan} from "./buildCommon";
 import {MathNode, TextNode} from "./mathMLTree";
 import {makeEm} from "./units";
 
 import type Options from "./Options";
-import type {ParseNode, AnyParseNode} from "./parseNode";
+import type {ParseNode} from "./parseNode";
 import type {DomSpan, HtmlDomNode, SvgSpan} from "./domTree";
 
 const stretchyCodePoint: {[string]: string} = {
@@ -59,7 +59,7 @@ const stretchyCodePoint: {[string]: string} = {
     "\\cdlongequal": "=",
 };
 
-const mathMLnode = function(label: string): MathNode {
+export const stretchyMathML = function(label: string): MathNode {
     const node = new MathNode(
         "mo",
         [new TextNode(stretchyCodePoint[label.replace(/^\\/, '')])],
@@ -170,15 +170,10 @@ const katexImagesData: {
         "shortrightharpoonabovebar"], 1.75, 716],
 };
 
-const groupLength = function(arg: AnyParseNode): number {
-    if (arg.type === "ordgroup") {
-        return arg.body.length;
-    } else {
-        return 1;
-    }
-};
+const wideAccentLabels =
+    new Set(["widehat", "widecheck", "widetilde", "utilde"]);
 
-const svgSpan = function(
+export const stretchySvg = function(
     group: ParseNode<"accent"> | ParseNode<"accentUnder"> | ParseNode<"xArrow">
          | ParseNode<"horizBrace">,
     options: Options,
@@ -191,14 +186,15 @@ const svgSpan = function(
     } {
         let viewBoxWidth = 400000;  // default
         const label = group.label.slice(1);
-        if (["widehat", "widecheck", "widetilde", "utilde"].includes(label)) {
+        if (wideAccentLabels.has(label)) {
             // Each type in the `if` statement corresponds to one of the ParseNode
             // types below. This narrowing is required to access `grp.base`.
             // $FlowFixMe
             const grp: ParseNode<"accent"> | ParseNode<"accentUnder"> = group;
             // There are four SVG images available for each function.
             // Choose a taller image when there are more characters.
-            const numChars = groupLength(grp.base);
+            const numChars = grp.base.type === "ordgroup" ?
+                grp.base.body.length : 1;
             let viewBoxHeight;
             let pathName;
             let height;
@@ -237,7 +233,7 @@ const svgSpan = function(
                 "preserveAspectRatio": "none",
             });
             return {
-                span: buildCommon.makeSvgSpan([], [svgNode], options),
+                span: makeSvgSpan([], [svgNode], options),
                 minWidth: 0,
                 height,
             };
@@ -278,7 +274,7 @@ const svgSpan = function(
                     "preserveAspectRatio": aligns[i] + " slice",
                 });
 
-                const span = buildCommon.makeSvgSpan(
+                const span = makeSvgSpan(
                     [widthClasses[i]], [svgNode], options);
                 if (numSvgChildren === 1) {
                     return {span, minWidth, height};
@@ -289,7 +285,7 @@ const svgSpan = function(
             }
 
             return {
-                span: buildCommon.makeSpan(["stretchy"], spans, options),
+                span: makeSpan(["stretchy"], spans, options),
                 minWidth,
                 height,
             };
@@ -308,7 +304,7 @@ const svgSpan = function(
     return span;
 };
 
-const encloseSpan = function(
+export const stretchyEnclose = function(
     inner: HtmlDomNode,
     label: string,
     topPad: number,
@@ -320,7 +316,7 @@ const encloseSpan = function(
     const totalHeight = inner.height + inner.depth + topPad + bottomPad;
 
     if (/fbox|color|angl/.test(label)) {
-        img = buildCommon.makeSpan(["stretchy", label], [], options);
+        img = makeSpan(["stretchy", label], [], options);
 
         if (label === "fbox") {
             const color = options.color && options.getColor();
@@ -360,17 +356,11 @@ const encloseSpan = function(
             "height": makeEm(totalHeight),
         });
 
-        img = buildCommon.makeSvgSpan([], [svgNode], options);
+        img = makeSvgSpan([], [svgNode], options);
     }
 
     img.height = totalHeight;
     img.style.height = makeEm(totalHeight);
 
     return img;
-};
-
-export default {
-    encloseSpan,
-    mathMLnode,
-    svgSpan,
 };

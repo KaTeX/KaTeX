@@ -1,6 +1,6 @@
 // @flow
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeLineSpan, makeSpan, makeVList} from "../buildCommon";
 import {MathNode, TextNode} from "../mathMLTree";
 
 import * as html from "../buildHTML";
@@ -26,11 +26,11 @@ defineFunction({
         const innerGroup = html.buildGroup(group.body, options);
 
         // Create the line to go below the body
-        const line = buildCommon.makeLineSpan("underline-line", options);
+        const line = makeLineSpan("underline-line", options);
 
         // Generate the vlist, with the appropriate kerns
         const defaultRuleThickness = options.fontMetrics().defaultRuleThickness;
-        const vlist = buildCommon.makeVList({
+        const vlist = makeVList({
             positionType: "top",
             positionData: innerGroup.height,
             children: [
@@ -41,7 +41,7 @@ defineFunction({
             ],
         }, options);
 
-        return buildCommon.makeSpan(["mord", "underline"], [vlist], options);
+        return makeSpan(["mord", "underline"], [vlist], options);
     },
     mathmlBuilder(group, options) {
         const operator = new MathNode(

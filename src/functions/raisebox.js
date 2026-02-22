@@ -1,6 +1,6 @@
 // @flow
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeVList} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
 import {calculateSize} from "../units";
@@ -30,7 +30,7 @@ defineFunction({
     htmlBuilder(group, options) {
         const body = html.buildGroup(group.body, options);
         const dy = calculateSize(group.dy, options);
-        return buildCommon.makeVList({
+        return makeVList({
             positionType: "shift",
             positionData: -dy,
             children: [{type: "elem", elem: body}],

@@ -8,7 +8,7 @@
 
 import ParseError from "./ParseError";
 import Style from "./Style";
-import buildCommon from "./buildCommon";
+import {makeGlue, makeSpan, tryCombineChars} from "./buildCommon";
 import {Span, Anchor} from "./domTree";
 import {makeEm} from "./units";
 import {spacings, tightSpacings} from "./spacingData";
@@ -19,13 +19,15 @@ import type Options from "./Options";
 import type {AnyParseNode} from "./parseNode";
 import type {HtmlDomNode, DomSpan} from "./domTree";
 
-const makeSpan = buildCommon.makeSpan;
-
 // Binary atoms (first class `mbin`) change into ordinary atoms (`mord`)
 // depending on their surroundings. See TeXbook pg. 442-446, Rules 5 and 6,
 // and the text before Rule 19.
-const binLeftCanceller = ["leftmost", "mbin", "mopen", "mrel", "mop", "mpunct"];
-const binRightCanceller = ["rightmost", "mrel", "mclose", "mpunct"];
+const binLeftCanceller = new Set([
+    "leftmost", "mbin", "mopen", "mrel", "mop", "mpunct",
+]);
+const binRightCanceller = new Set([
+    "rightmost", "mrel", "mclose", "mpunct",
+]);
 
 const styleMap = {
     "display": Style.DISPLAY,
@@ -75,7 +77,7 @@ export const buildExpression = function(
     }
 
     // Combine consecutive domTree.symbolNodes into a single symbolNode.
-    buildCommon.tryCombineChars(groups);
+    tryCombineChars(groups);
 
     // If `expression` is a partial group, let the parent handle spacings
     // to avoid processing groups multiple times.
@@ -109,9 +111,9 @@ export const buildExpression = function(
     traverseNonSpaceNodes(groups, (node, prev) => {
         const prevType = prev.classes[0];
         const type = node.classes[0];
-        if (prevType === "mbin" && binRightCanceller.includes(type)) {
+        if (prevType === "mbin" && binRightCanceller.has(type)) {
             prev.classes[0] = "mord";
-        } else if (type === "mbin" && binLeftCanceller.includes(prevType)) {
+        } else if (type === "mbin" && binLeftCanceller.has(prevType)) {
             node.classes[0] = "mord";
         }
     }, {node: dummyPrev}, dummyNext, isRoot);
@@ -125,7 +127,7 @@ export const buildExpression = function(
             ? tightSpacings[prevType][type]
             : spacings[prevType][type]) : null;
         if (space) { // Insert glue (spacing) after the `prev`.
-            return buildCommon.makeGlue(space, glueOptions);
+            return makeGlue(space, glueOptions);
         }
     }, {node: dummyPrev}, dummyNext, isRoot);
 

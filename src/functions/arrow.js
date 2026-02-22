@@ -1,8 +1,8 @@
 // @flow
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeSpan, makeVList, wrapFragment} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
-import stretchy from "../stretchy";
+import {stretchyMathML, stretchySvg} from "../stretchy";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -57,7 +57,7 @@ defineFunction({
         // Some groups can return document fragments.  Handle those by wrapping
         // them in a span.
         let newOptions = options.havingStyle(style.sup());
-        const upperGroup = buildCommon.wrapFragment(
+        const upperGroup = wrapFragment(
             html.buildGroup(group.body, newOptions, options), options);
         const arrowPrefix = group.label.slice(0, 2) === "\\x" ? "x" : "cd";
         upperGroup.classes.push(arrowPrefix + "-arrow-pad");
@@ -66,14 +66,14 @@ defineFunction({
         if (group.below) {
             // Build the lower group
             newOptions = options.havingStyle(style.sub());
-            lowerGroup = buildCommon.wrapFragment(
+            lowerGroup = wrapFragment(
                 html.buildGroup(group.below, newOptions, options), options);
             lowerGroup.classes.push(arrowPrefix + "-arrow-pad");
         }
 
-        const arrowBody = stretchy.svgSpan(group, options);
+        const arrowBody = stretchySvg(group, options);
 
-        // Re shift: Note that stretchy.svgSpan returned arrowBody.depth = 0.
+        // Re shift: Note that stretchySvg returned arrowBody.depth = 0.
         // The point we want on the math axis is at 0.5 * arrowBody.height.
         const arrowShift = -options.fontMetrics().axisHeight +
             0.5 * arrowBody.height;
@@ -90,7 +90,7 @@ defineFunction({
             const lowerShift = -options.fontMetrics().axisHeight
                 + lowerGroup.height + 0.5 * arrowBody.height
                 + 0.111;
-            vlist = buildCommon.makeVList({
+            vlist = makeVList({
                 positionType: "individualShift",
                 children: [
                     {type: "elem", elem: upperGroup, shift: upperShift},
@@ -99,7 +99,7 @@ defineFunction({
                 ],
             }, options);
         } else {
-            vlist = buildCommon.makeVList({
+            vlist = makeVList({
                 positionType: "individualShift",
                 children: [
                     {type: "elem", elem: upperGroup, shift: upperShift},
@@ -111,10 +111,10 @@ defineFunction({
         // $FlowFixMe: Replace this with passing "svg-align" into makeVList.
         vlist.children[0].children[0].children[1].classes.push("svg-align");
 
-        return buildCommon.makeSpan(["mrel", "x-arrow"], [vlist], options);
+        return makeSpan(["mrel", "x-arrow"], [vlist], options);
     },
     mathmlBuilder(group, options) {
-        const arrowNode = stretchy.mathMLnode(group.label);
+        const arrowNode = stretchyMathML(group.label);
         arrowNode.setAttribute(
             "minsize", group.label.charAt(0) === "x" ? "1.75em" : "3.0em"
         );

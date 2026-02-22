@@ -5,7 +5,7 @@
  * parser.
  */
 
-import buildCommon from "./buildCommon";
+import {fontMap, makeSpan} from "./buildCommon";
 import {getCharacterMetrics} from "./fontMetrics";
 import ParseError from "./ParseError";
 import symbols, {ligatures} from "./symbols";
@@ -17,6 +17,9 @@ import type {AnyParseNode, SymbolParseNode} from "./parseNode";
 import type {DomSpan} from "./domTree";
 import type {MathDomNode} from "./mathMLTree";
 import type {FontVariant, Mode} from "./types";
+
+const noVariantSymbols = new Set(["\\imath", "\\jmath"]);
+const rowLikeTypes = new Set(["mrow", "mtable"]);
 
 /**
  * Takes a symbol and converts it into a MathML text node after performing
@@ -110,7 +113,7 @@ export const getVariant = function(
     }
 
     let text = group.text;
-    if (["\\imath", "\\jmath"].includes(text)) {
+    if (noVariantSymbols.has(text)) {
         return null;
     }
 
@@ -118,9 +121,9 @@ export const getVariant = function(
         text = symbols[mode][text].replace;
     }
 
-    const fontName = buildCommon.fontMap[font].fontName;
+    const fontName = fontMap[font].fontName;
     if (getCharacterMetrics(text, fontName, mode)) {
-        return buildCommon.fontMap[font].variant;
+        return fontMap[font].variant;
     }
 
     return null;
@@ -289,7 +292,7 @@ export default function buildMathML(
     // tag correctly, unless it's a single <mrow> or <mtable>.
     let wrapper;
     if (expression.length === 1 && expression[0] instanceof MathNode &&
-        ["mrow", "mtable"].includes(expression[0].type)) {
+        rowLikeTypes.has(expression[0].type)) {
         wrapper = expression[0];
     } else {
         wrapper = new MathNode("mrow", expression);
@@ -316,5 +319,5 @@ export default function buildMathML(
     // of span are expected to have more fields in `buildHtml` contexts.
     const wrapperClass = forMathmlOnly ? "katex" : "katex-mathml";
     // $FlowFixMe
-    return buildCommon.makeSpan([wrapperClass], [math]);
+    return makeSpan([wrapperClass], [math]);
 }

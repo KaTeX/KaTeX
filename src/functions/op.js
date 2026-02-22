@@ -1,7 +1,7 @@
 // @flow
 // Limits, symbols
 import defineFunction, {ordargument} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {mathsym, makeSpan, makeSymbol, makeVList, staticSvg} from "../buildCommon";
 import {SymbolNode} from "../domTree";
 import {MathNode, newDocumentFragment, TextNode} from "../mathMLTree";
 import Style from "../Style";
@@ -16,9 +16,9 @@ import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
 import type {ParseNode} from "../parseNode";
 
 // Most operators have a large successor symbol, but these don't.
-const noSuccessor = [
+const noSuccessor = new Set([
     "\\smallint",
-];
+]);
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "op", but also
 // "supsub" since some of them (like \int) can affect super/subscripting.
@@ -45,7 +45,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     let large = false;
     if (style.size === Style.DISPLAY.size &&
         group.symbol &&
-        !noSuccessor.includes(group.name)) {
+        !noSuccessor.has(group.name)) {
 
         // Most symbol operators get larger in displaystyle (rule 13)
         large = true;
@@ -64,7 +64,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             group.name = stash === "oiint" ? "\\iint" : "\\iiint";
         }
 
-        base = buildCommon.makeSymbol(
+        base = makeSymbol(
             group.name, fontName, "math", options,
             ["mop", "op-symbol", large ? "large-op" : "small-op"]);
 
@@ -72,9 +72,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             // We're in \oiint or \oiiint. Overlay the oval.
             // TODO: When font glyphs are available, delete this code.
             const italic = base.italic;
-            const oval = buildCommon.staticSvg(stash + "Size"
+            const oval = staticSvg(stash + "Size"
                 + (large ? "2" : "1"), options);
-            base = buildCommon.makeVList({
+            base = makeVList({
                 positionType: "individualShift",
                 children: [
                     {type: "elem", elem: base, shift: 0},
@@ -93,16 +93,16 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             base = inner[0];
             base.classes[0] = "mop"; // replace old mclass
         } else {
-            base = buildCommon.makeSpan(["mop"], inner, options);
+            base = makeSpan(["mop"], inner, options);
         }
     } else {
         // Otherwise, this is a text operator. Build the text from the
         // operator's name.
         const output = [];
         for (let i = 1; i < group.name.length; i++) {
-            output.push(buildCommon.mathsym(group.name[i], group.mode, options));
+            output.push(mathsym(group.name[i], group.mode, options));
         }
-        base = buildCommon.makeSpan(["mop"], output, options);
+        base = makeSpan(["mop"], output, options);
     }
 
     // If content of op is a single symbol, shift it vertically.
@@ -146,7 +146,7 @@ const mathmlBuilder: MathMLBuilder<"op"> = (group, options) => {
         // This is a symbol. Just add the symbol.
         node = new MathNode(
             "mo", [mml.makeText(group.name, group.mode)]);
-        if (noSuccessor.includes(group.name)) {
+        if (noSuccessor.has(group.name)) {
             node.setAttribute("largeop", "false");
         }
     } else if (group.body) {

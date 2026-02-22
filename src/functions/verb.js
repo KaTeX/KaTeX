@@ -1,6 +1,6 @@
 // @flow
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeSpan, makeSymbol, tryCombineChars} from "../buildCommon";
 import {MathNode, TextNode} from "../mathMLTree";
 import ParseError from "../ParseError";
 
@@ -31,12 +31,12 @@ defineFunction({
             if (c === '~') {
                 c = '\\textasciitilde';
             }
-            body.push(buildCommon.makeSymbol(c, "Typewriter-Regular",
+            body.push(makeSymbol(c, "Typewriter-Regular",
                 group.mode, newOptions, ["mord", "texttt"]));
         }
-        return buildCommon.makeSpan(
+        return makeSpan(
             ["mord", "text"].concat(newOptions.sizingClasses(options)),
-            buildCommon.tryCombineChars(body),
+            tryCombineChars(body),
             newOptions,
         );
     },

@@ -1,7 +1,7 @@
 // @flow
 // Horizontal overlap functions
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeSpan} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
 import {makeEm} from "../units";
 
@@ -29,16 +29,16 @@ defineFunction({
         let inner;
         if (group.alignment === "clap") {
             // ref: https://www.math.lsu.edu/~aperlis/publications/mathclap/
-            inner = buildCommon.makeSpan(
+            inner = makeSpan(
                 [], [html.buildGroup(group.body, options)]);
             // wrap, since CSS will center a .clap > .inner > span
-            inner = buildCommon.makeSpan(["inner"], [inner], options);
+            inner = makeSpan(["inner"], [inner], options);
         } else {
-            inner = buildCommon.makeSpan(
+            inner = makeSpan(
                 ["inner"], [html.buildGroup(group.body, options)]);
         }
-        const fix = buildCommon.makeSpan(["fix"], []);
-        let node = buildCommon.makeSpan(
+        const fix = makeSpan(["fix"], []);
+        let node = makeSpan(
             [group.alignment], [inner, fix], options);
 
         // At this point, we have correctly set horizontal alignment of the
@@ -46,7 +46,7 @@ defineFunction({
         // Next, use a strut to set the height of the HTML bounding box.
         // Otherwise, a tall argument may be misplaced.
         // This code resolved issue #1153
-        const strut = buildCommon.makeSpan(["strut"]);
+        const strut = makeSpan(["strut"]);
         strut.style.height = makeEm(node.height + node.depth);
         if (node.depth) {
             strut.style.verticalAlign = makeEm(-node.depth);
@@ -55,8 +55,8 @@ defineFunction({
 
         // Next, prevent vertical misplacement when next to something tall.
         // This code resolves issue #1234
-        node = buildCommon.makeSpan(["thinbox"], [node], options);
-        return buildCommon.makeSpan(["mord", "vbox"], [node], options);
+        node = makeSpan(["thinbox"], [node], options);
+        return makeSpan(["mord", "vbox"], [node], options);
     },
     mathmlBuilder: (group, options) => {
         // mathllap, mathrlap, mathclap

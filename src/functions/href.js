@@ -1,6 +1,6 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeAnchor} from "../buildCommon";
 import {assertNodeType} from "../parseNode";
 import {MathNode} from "../mathMLTree";
 
@@ -35,7 +35,7 @@ defineFunction({
     },
     htmlBuilder: (group, options) => {
         const elements = html.buildExpression(group.body, options, false);
-        return buildCommon.makeAnchor(group.href, [], elements, options);
+        return makeAnchor(group.href, [], elements, options);
     },
     mathmlBuilder: (group, options) => {
         let math = mml.buildExpressionRow(group.body, options);

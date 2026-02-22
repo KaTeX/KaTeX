@@ -2,7 +2,7 @@
 // Horizontal spacing commands
 
 import defineFunction from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeGlue} from "../buildCommon";
 import {SpaceNode} from "../mathMLTree";
 import {calculateSize} from "../units";
 import {assertNodeType} from "../parseNode";
@@ -47,7 +47,7 @@ defineFunction({
         };
     },
     htmlBuilder(group, options) {
-        return buildCommon.makeGlue(group.dimension, options);
+        return makeGlue(group.dimension, options);
     },
     mathmlBuilder(group, options) {
         const dimension = calculateSize(group.dimension, options);

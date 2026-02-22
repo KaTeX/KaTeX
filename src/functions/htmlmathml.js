@@ -1,6 +1,6 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeFragment} from "../buildCommon";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -10,6 +10,7 @@ defineFunction({
     names: ["\\html@mathml"],
     props: {
         numArgs: 2,
+        allowedInArgument: true,
         allowedInText: true,
     },
     handler: ({parser}, args) => {
@@ -26,7 +27,7 @@ defineFunction({
             options,
             false
         );
-        return buildCommon.makeFragment(elements);
+        return makeFragment(elements);
     },
     mathmlBuilder: (group, options) => {
         return mml.buildExpressionRow(group.mathml, options);

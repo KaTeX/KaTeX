@@ -1,6 +1,6 @@
 // @flow
 import defineFunction, {ordargument} from "../defineFunction";
-import buildCommon from "../buildCommon";
+import {makeSpan} from "../buildCommon";
 import {assertNodeType} from "../parseNode";
 import ParseError from "../ParseError";
 
@@ -91,7 +91,7 @@ defineFunction({
             classes.push(...group.attributes.class.trim().split(/\s+/));
         }
 
-        const span = buildCommon.makeSpan(classes, elements, options);
+        const span = makeSpan(classes, elements, options);
         for (const attr in group.attributes) {
             if (attr !== "class" && group.attributes.hasOwnProperty(attr)) {
                 span.setAttribute(attr, group.attributes[attr]);

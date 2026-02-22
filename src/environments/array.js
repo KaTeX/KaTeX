@@ -1,5 +1,5 @@
 // @flow
-import buildCommon from "../buildCommon";
+import {makeFragment, makeLineSpan, makeSpan, makeVList} from "../buildCommon";
 import Style from "../Style";
 import defineEnvironment from "../defineEnvironment";
 import {parseCD} from "./cd";
@@ -60,14 +60,16 @@ const validateAmsEnvironmentContext = context => {
     }
 };
 
+const gatherEnvironments = new Set(["gather", "gather*"]);
+
 // autoTag (an argument to parseArray) can be one of three values:
 // * undefined: Regular (not-top-level) array; no tags on each row
 // * true: Automatic equation numbering, overridable by \tag
 // * false: Tags allowed on each row, but no automatic numbering
 // This function *doesn't* work with the "split" environment name.
 function getAutoTag(name): ?boolean {
-    if (name.indexOf("ed") === -1) {
-        return name.indexOf("*") === -1;
+    if (!name.includes("ed")) {
+        return !name.includes("*");
     }
     // return undefined;
 }
@@ -393,12 +395,12 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             const tag = group.tags[r];
             let tagSpan;
             if (tag === true) {  // automatic numbering
-                tagSpan = buildCommon.makeSpan(["eqn-num"], [], options);
+                tagSpan = makeSpan(["eqn-num"], [], options);
             } else if (tag === false) {
                 // \nonumber/\notag or starred environment
-                tagSpan = buildCommon.makeSpan([], [], options);
+                tagSpan = makeSpan([], [], options);
             } else {  // manual \tag
-                tagSpan = buildCommon.makeSpan([],
+                tagSpan = makeSpan([],
                     html.buildExpression(tag, options, true), options);
             }
             tagSpan.depth = rw.depth;
@@ -420,7 +422,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             // If there is more than one separator in a row, add a space
             // between them.
             if (!firstSeparator) {
-                colSep = buildCommon.makeSpan(["arraycolsep"], []);
+                colSep = makeSpan(["arraycolsep"], []);
                 colSep.style.width =
                     makeEm(options.fontMetrics().doubleRuleSep);
                 cols.push(colSep);
@@ -428,7 +430,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
             if (colDescr.separator === "|" || colDescr.separator === ":") {
                 const lineType = (colDescr.separator === "|") ? "solid" : "dashed";
-                const separator = buildCommon.makeSpan(
+                const separator = makeSpan(
                     ["vertical-separator"], [], options
                 );
                 separator.style.height = makeEm(totalHeight);
@@ -459,7 +461,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         if (c > 0 || group.hskipBeforeAndAfter) {
             sepwidth = colDescr.pregap ?? arraycolsep;
             if (sepwidth !== 0) {
-                colSep = buildCommon.makeSpan(["arraycolsep"], []);
+                colSep = makeSpan(["arraycolsep"], []);
                 colSep.style.width = makeEm(sepwidth);
                 cols.push(colSep);
             }
@@ -478,11 +480,11 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             col.push({type: "elem", elem: elem, shift: shift});
         }
 
-        col = buildCommon.makeVList({
+        col = makeVList({
             positionType: "individualShift",
             children: col,
         }, options);
-        col = buildCommon.makeSpan(
+        col = makeSpan(
             ["col-align-" + (colDescr.align || "c")],
             [col]);
         cols.push(col);
@@ -490,18 +492,18 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         if (c < nc - 1 || group.hskipBeforeAndAfter) {
             sepwidth = colDescr.postgap ?? arraycolsep;
             if (sepwidth !== 0) {
-                colSep = buildCommon.makeSpan(["arraycolsep"], []);
+                colSep = makeSpan(["arraycolsep"], []);
                 colSep.style.width = makeEm(sepwidth);
                 cols.push(colSep);
             }
         }
     }
-    body = buildCommon.makeSpan(["mtable"], cols);
+    body = makeSpan(["mtable"], cols);
 
     // Add \hline(s), if any.
     if (hlines.length > 0) {
-        const line = buildCommon.makeLineSpan("hline", options, ruleThickness);
-        const dashes = buildCommon.makeLineSpan("hdashline", options,
+        const line = makeLineSpan("hline", options, ruleThickness);
+        const dashes = makeLineSpan("hdashline", options,
             ruleThickness);
         const vListElems = [{type: "elem", elem: body, shift: 0}];
         while (hlines.length > 0) {
@@ -513,21 +515,21 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
                 vListElems.push({type: "elem", elem: line, shift: lineShift});
             }
         }
-        body = buildCommon.makeVList({
+        body = makeVList({
             positionType: "individualShift",
             children: vListElems,
         }, options);
     }
 
     if (tagSpans.length === 0) {
-        return buildCommon.makeSpan(["mord"], [body], options);
+        return makeSpan(["mord"], [body], options);
     } else {
-        let eqnNumCol = buildCommon.makeVList({
+        let eqnNumCol = makeVList({
             positionType: "individualShift",
             children: tagSpans,
         }, options);
-        eqnNumCol = buildCommon.makeSpan(["tag"], [eqnNumCol], options);
-        return buildCommon.makeFragment([body, eqnNumCol]);
+        eqnNumCol = makeSpan(["tag"], [eqnNumCol], options);
+        return makeFragment([body, eqnNumCol]);
     }
 };
 
@@ -680,11 +682,11 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
 
 // Convenience function for align, align*, aligned, alignat, alignat*, alignedat.
 const alignedHandler = function(context, args) {
-    if (context.envName.indexOf("ed") === -1) {
+    if (!context.envName.includes("ed")) {
         validateAmsEnvironmentContext(context);
     }
     const cols = [];
-    const separationType = context.envName.indexOf("at") > -1 ? "alignat" : "align";
+    const separationType = context.envName.includes("at") ? "alignat" : "align";
     const isSplit = context.envName === "split";
     const res = parseArray(context.parser,
         {
@@ -788,7 +790,7 @@ defineEnvironment({
         const cols = colalign.map(function(nde) {
             const node = assertSymbolNodeType(nde);
             const ca = node.text;
-            if ("lcr".indexOf(ca) !== -1) {
+            if ("lcr".includes(ca)) {
                 return {
                     type: "align",
                     align: ca,
@@ -864,7 +866,7 @@ defineEnvironment({
                 parser.consume();
                 parser.consumeSpaces();
                 colAlign = parser.fetch().text;
-                if ("lcr".indexOf(colAlign) === -1) {
+                if (!"lcr".includes(colAlign)) {
                     throw new ParseError("Expected l or c or r", parser.nextToken);
                 }
                 parser.consume();
@@ -925,7 +927,7 @@ defineEnvironment({
             const node = assertSymbolNodeType(nde);
             const ca = node.text;
             // {subarray} only recognizes "l" & "c"
-            if ("lc".indexOf(ca) !== -1) {
+            if ("lc".includes(ca)) {
                 return {
                     type: "align",
                     align: ca,
@@ -993,8 +995,8 @@ defineEnvironment({
             type: "leftright",
             mode: context.mode,
             body: [res],
-            left: context.envName.indexOf("r") > -1 ? "." : "\\{",
-            right: context.envName.indexOf("r") > -1 ? "\\}" : ".",
+            left: context.envName.includes("r") ? "." : "\\{",
+            right: context.envName.includes("r") ? "\\}" : ".",
             rightColor: undefined,
         };
     },
@@ -1029,7 +1031,7 @@ defineEnvironment({
         numArgs: 0,
     },
     handler(context) {
-        if (["gather", "gather*"].includes(context.envName)) {
+        if (gatherEnvironments.has(context.envName)) {
             validateAmsEnvironmentContext(context);
         }
         const res = {

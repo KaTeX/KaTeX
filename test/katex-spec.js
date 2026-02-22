@@ -1535,6 +1535,11 @@ describe("A TeX-compliant parser", function() {
         }
     });
 
+    it("should allow \\imath in sup/subscripts", function() {
+        expect(String.raw`x^\imath`).toParse();
+        expect(String.raw`x_\imath`).toParse();
+    });
+
     it("should parse multiple primes correctly", function() {
         expect`x''''`.toParse();
         expect`x_2''`.toParse();
@@ -4257,6 +4262,25 @@ describe("Newlines via \\\\ and \\newline", function() {
         expect(markup).toMatch(
             /(<span class="base">.*?<\/span><span class="mspace newline"><\/span>){3}<span class="base">/);
         expect(markup).toMatchSnapshot();
+    });
+});
+
+describe("Automatic line breaking", function() {
+    it("should keep \\not with the following relation", () => {
+        const built = katex.__renderToDomTree(r`M\not=N`, new Settings());
+        const htmlTree = built.children[1];
+        const baseChildren = htmlTree.children.filter(node => node.hasClass("base"));
+
+        expect(baseChildren).toHaveLength(2);
+        expect(baseChildren[0].toMarkup()).toContain("=");
+    });
+
+    it("should still allow breaks after \\neq", () => {
+        const built = katex.__renderToDomTree(r`M\neq N`, new Settings());
+        const htmlTree = built.children[1];
+        const baseChildren = htmlTree.children.filter(node => node.hasClass("base"));
+
+        expect(baseChildren).toHaveLength(2);
     });
 });
 
