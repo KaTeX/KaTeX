@@ -268,7 +268,6 @@ type ParseNodeTypes = {
         hasBarLine: boolean,
         leftDelim: ?string,
         rightDelim: ?string,
-        size: StyleStr | "auto",
         barSize: Measurement | null,
     |},
     "hbox": {|
