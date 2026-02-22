@@ -4242,6 +4242,25 @@ describe("Newlines via \\\\ and \\newline", function() {
     });
 });
 
+describe("Automatic line breaking", function() {
+    it("should keep \\not with the following relation", () => {
+        const built = katex.__renderToDomTree(r`M\not=N`, new Settings());
+        const htmlTree = built.children[1];
+        const baseChildren = htmlTree.children.filter(node => node.hasClass("base"));
+
+        expect(baseChildren).toHaveLength(2);
+        expect(baseChildren[0].toMarkup()).toContain("=");
+    });
+
+    it("should still allow breaks after \\neq", () => {
+        const built = katex.__renderToDomTree(r`M\neq N`, new Settings());
+        const htmlTree = built.children[1];
+        const baseChildren = htmlTree.children.filter(node => node.hasClass("base"));
+
+        expect(baseChildren).toHaveLength(2);
+    });
+});
+
 describe("Symbols", function() {
     it("should parse \\text{\\i\\j}", () => {
         expect`\text{\i\j}`.toBuild(strictSettings);
