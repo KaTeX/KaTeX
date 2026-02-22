@@ -6,7 +6,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 
 If you know the shape of a character, but not its name, [Detexify](https://detexify.kirelabs.org/classify.html) can help.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.31/dist/katex.min.css" integrity="sha384-0G3gee2QrXAfb+o0TgFYYTj5pIFrijyuLieQCKEHAw+qqjghEpgvOqftyJRJ7hLA" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.32/dist/katex.min.css" integrity="sha384-8K5tjYRcv7hr4uuSd0QJJchz//nSR63itKQtnYvhozplQjQG85jQyfkH1YIMAkUv" crossorigin="anonymous">
 <style>
 table tr,
 table td {

@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.32](https://github.com/KaTeX/KaTeX/compare/v0.16.31...v0.16.32) (2026-02-22)
+
+
+### Bug Fixes
+
+* italic separation in \mathnormal ([#4143](https://github.com/KaTeX/KaTeX/issues/4143)) ([71305a0](https://github.com/KaTeX/KaTeX/commit/71305a05140ca6203092bfdc14f689168b26ab8c))
+
 ## [0.16.31](https://github.com/KaTeX/KaTeX/compare/v0.16.30...v0.16.31) (2026-02-22)
 
 
