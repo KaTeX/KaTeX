@@ -4,10 +4,12 @@
 const fs = require("fs");
 const childProcess = require("child_process");
 
-const opts = require("commander")
+const {program} = require("commander");
+const opts = program
     .option("-s, --spacing",
         "Print mismatches involving spacing commands")
-    .parse(process.argv);
+    .parse(process.argv)
+    .opts();
 
 require('@babel/register')({plugins: ["@babel/plugin-transform-modules-commonjs"]});
 const symbols = require("../src/symbols").default;

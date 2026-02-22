@@ -1,38 +1,20 @@
 // @flow
 import defineFunction, {normalizeArgument} from "../defineFunction";
 import {makeLineSpan, makeSpan, makeVList} from "../buildCommon";
-import delimiter from "../delimiter";
+import {makeCustomSizedDelim} from "../delimiter";
 import {MathNode, TextNode} from "../mathMLTree";
+import type {ParseNode} from "../parseNode";
 import Style from "../Style";
 import {assertNodeType} from "../parseNode";
+import type {StyleStr} from "../types";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 import {calculateSize, makeEm} from "../units";
 
-const adjustStyle = (size, originalStyle) => {
-    // Figure out what style this fraction should be in based on the
-    // function used
-    let style = originalStyle;
-    if (size === "display") {
-        // Get display style as a default.
-        // If incoming style is sub/sup, use style.text() to get correct size.
-        style = style.id >= Style.SCRIPT.id ? style.text() : Style.DISPLAY;
-    } else if (size === "text" &&
-        style.size === Style.DISPLAY.size) {
-        // We're in a \tfrac but incoming style is displaystyle, so:
-        style = Style.TEXT;
-    } else if (size === "script") {
-        style = Style.SCRIPT;
-    } else if (size === "scriptscript") {
-        style = Style.SCRIPTSCRIPT;
-    }
-    return style;
-};
-
 const htmlBuilder = (group, options) => {
     // Fractions are handled in the TeXbook on pages 444-445, rules 15(a-e).
-    const style = adjustStyle(group.size, options.style);
+    const style = options.style;
 
     const nstyle = style.fracNum();
     const dstyle = style.fracDen();
@@ -75,7 +57,7 @@ const htmlBuilder = (group, options) => {
     let numShift;
     let clearance;
     let denomShift;
-    if (style.size === Style.DISPLAY.size || group.size === "display") {
+    if (style.size === Style.DISPLAY.size) {
         numShift = options.fontMetrics().num1;
         if (ruleWidth > 0) {
             clearance = 3 * ruleSpacing;
@@ -162,7 +144,7 @@ const htmlBuilder = (group, options) => {
     if (group.leftDelim == null) {
         leftDelim = html.makeNullDelimiter(options, ["mopen"]);
     } else {
-        leftDelim = delimiter.customSizedDelim(
+        leftDelim = makeCustomSizedDelim(
             group.leftDelim, delimSize, true,
             options.havingStyle(style), group.mode, ["mopen"]);
     }
@@ -172,7 +154,7 @@ const htmlBuilder = (group, options) => {
     } else if (group.rightDelim == null) {
         rightDelim = html.makeNullDelimiter(options, ["mclose"]);
     } else {
-        rightDelim = delimiter.customSizedDelim(
+        rightDelim = makeCustomSizedDelim(
             group.rightDelim, delimSize, true,
             options.havingStyle(style), group.mode, ["mclose"]);
     }
@@ -184,7 +166,7 @@ const htmlBuilder = (group, options) => {
 };
 
 const mathmlBuilder = (group, options) => {
-    let node = new MathNode(
+    const node = new MathNode(
         "mfrac",
         [
             mml.buildGroup(group.numer, options),
@@ -196,14 +178,6 @@ const mathmlBuilder = (group, options) => {
     } else if (group.barSize) {
         const ruleWidth = calculateSize(group.barSize, options);
         node.setAttribute("linethickness", makeEm(ruleWidth));
-    }
-
-    const style = adjustStyle(group.size, options.style);
-    if (style.size !== options.style.size) {
-        node = new MathNode("mstyle", [node]);
-        const isDisplay = (style.size === Style.DISPLAY.size) ? "true" : "false";
-        node.setAttribute("displaystyle", isDisplay);
-        node.setAttribute("scriptlevel", "0");
     }
 
     if (group.leftDelim != null || group.rightDelim != null) {
@@ -239,10 +213,29 @@ const mathmlBuilder = (group, options) => {
     return node;
 };
 
+const wrapWithStyle = (
+    frac: ParseNode<"genfrac">,
+    style?: StyleStr | null,
+): ParseNode<"genfrac"> => {
+    if (!style) {
+        return frac;
+    }
+
+    const wrapper: ParseNode<"styling"> = {
+        type: "styling",
+        mode: frac.mode,
+        style,
+        body: [frac],
+    };
+
+    // $FlowFixMe: defineFunction handler needs to return ParseNode<"genfrac">
+    return wrapper;
+};
+
 defineFunction({
     type: "genfrac",
     names: [
-        "\\dfrac", "\\frac", "\\tfrac",
+        "\\cfrac", "\\dfrac", "\\frac", "\\tfrac",
         "\\dbinom", "\\binom", "\\tbinom",
         "\\\\atopfrac", // can’t be entered directly
         "\\\\bracefrac", "\\\\brackfrac",   // ditto
@@ -257,9 +250,9 @@ defineFunction({
         let hasBarLine;
         let leftDelim = null;
         let rightDelim = null;
-        let size = "auto";
 
         switch (funcName) {
+            case "\\cfrac":
             case "\\dfrac":
             case "\\frac":
             case "\\tfrac":
@@ -289,58 +282,29 @@ defineFunction({
                 throw new Error("Unrecognized genfrac command");
         }
 
-        switch (funcName) {
-            case "\\dfrac":
-            case "\\dbinom":
-                size = "display";
-                break;
-            case "\\tfrac":
-            case "\\tbinom":
-                size = "text";
-                break;
+        const continued = funcName === "\\cfrac";
+        let style = null;
+        if (continued || funcName.startsWith("\\d")) {
+            style = "display";
+        } else if (funcName.startsWith("\\t")) {
+            style = "text";
         }
 
-        return {
+        return wrapWithStyle({
             type: "genfrac",
             mode: parser.mode,
-            continued: false,
             numer,
             denom,
+            continued,
             hasBarLine,
             leftDelim,
             rightDelim,
-            size,
             barSize: null,
-        };
+        }, style);
     },
 
     htmlBuilder,
     mathmlBuilder,
-});
-
-defineFunction({
-    type: "genfrac",
-    names: ["\\cfrac"],
-    props: {
-        numArgs: 2,
-    },
-    handler: ({parser, funcName}, args) => {
-        const numer = args[0];
-        const denom = args[1];
-
-        return {
-            type: "genfrac",
-            mode: parser.mode,
-            continued: true,
-            numer,
-            denom,
-            hasBarLine: true,
-            leftDelim: null,
-            rightDelim: null,
-            size: "display",
-            barSize: null,
-        };
-    },
 });
 
 // Infix generalized fractions -- these are not rendered directly, but replaced
@@ -427,7 +391,7 @@ defineFunction({
         }
 
         // Find out if we want displaystyle, textstyle, etc.
-        let size = "auto";
+        let size = null;
         let styl = args[3];
         if (styl.type === "ordgroup") {
             if (styl.body.length > 0) {
@@ -439,7 +403,7 @@ defineFunction({
             size = stylArray[Number(styl.text)];
         }
 
-        return {
+        return wrapWithStyle({
             type: "genfrac",
             mode: parser.mode,
             numer,
@@ -449,12 +413,8 @@ defineFunction({
             barSize,
             leftDelim,
             rightDelim,
-            size,
-        };
+        }, size);
     },
-
-    htmlBuilder,
-    mathmlBuilder,
 });
 
 // \above is an infix fraction that also defines a fraction bar size.
@@ -506,10 +466,6 @@ defineFunction({
             barSize,
             leftDelim: null,
             rightDelim: null,
-            size: "auto",
         };
     },
-
-    htmlBuilder,
-    mathmlBuilder,
 });

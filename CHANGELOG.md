@@ -1,6 +1,27 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.31](https://github.com/KaTeX/KaTeX/compare/v0.16.30...v0.16.31) (2026-02-22)
+
+
+### Bug Fixes
+
+* `\*frac` sizing ([#4137](https://github.com/KaTeX/KaTeX/issues/4137)) ([ef51f18](https://github.com/KaTeX/KaTeX/commit/ef51f18ded4ab9ba54ba750f2866241c4676c41c))
+
+## [0.16.30](https://github.com/KaTeX/KaTeX/compare/v0.16.29...v0.16.30) (2026-02-22)
+
+
+### Bug Fixes
+
+* no line breaks after `\not` ([#4140](https://github.com/KaTeX/KaTeX/issues/4140)) ([2d1ba86](https://github.com/KaTeX/KaTeX/commit/2d1ba86143bd45540d5a773cfa456081318f3f33))
+
+## [0.16.29](https://github.com/KaTeX/KaTeX/compare/v0.16.28...v0.16.29) (2026-02-22)
+
+
+### Bug Fixes
+
+* `\imath` and other `\html@mathml` macros in arguments ([#4139](https://github.com/KaTeX/KaTeX/issues/4139)) ([a850cce](https://github.com/KaTeX/KaTeX/commit/a850cce7ccbf95a0b187313d1e54d8d40dfc7273))
+
 ## [0.16.28](https://github.com/KaTeX/KaTeX/compare/v0.16.27...v0.16.28) (2026-01-25)
 
 

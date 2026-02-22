@@ -18,6 +18,9 @@ import type {DomSpan} from "./domTree";
 import type {MathDomNode} from "./mathMLTree";
 import type {FontVariant, Mode} from "./types";
 
+const noVariantSymbols = new Set(["\\imath", "\\jmath"]);
+const rowLikeTypes = new Set(["mrow", "mtable"]);
+
 /**
  * Takes a symbol and converts it into a MathML text node after performing
  * optional replacement from symbols.js.
@@ -110,7 +113,7 @@ export const getVariant = function(
     }
 
     let text = group.text;
-    if (["\\imath", "\\jmath"].includes(text)) {
+    if (noVariantSymbols.has(text)) {
         return null;
     }
 
@@ -289,7 +292,7 @@ export default function buildMathML(
     // tag correctly, unless it's a single <mrow> or <mtable>.
     let wrapper;
     if (expression.length === 1 && expression[0] instanceof MathNode &&
-        ["mrow", "mtable"].includes(expression[0].type)) {
+        rowLikeTypes.has(expression[0].type)) {
         wrapper = expression[0];
     } else {
         wrapper = new MathNode("mrow", expression);
