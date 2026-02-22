@@ -60,14 +60,16 @@ const validateAmsEnvironmentContext = context => {
     }
 };
 
+const gatherEnvironments = new Set(["gather", "gather*"]);
+
 // autoTag (an argument to parseArray) can be one of three values:
 // * undefined: Regular (not-top-level) array; no tags on each row
 // * true: Automatic equation numbering, overridable by \tag
 // * false: Tags allowed on each row, but no automatic numbering
 // This function *doesn't* work with the "split" environment name.
 function getAutoTag(name): ?boolean {
-    if (name.indexOf("ed") === -1) {
-        return name.indexOf("*") === -1;
+    if (!name.includes("ed")) {
+        return !name.includes("*");
     }
     // return undefined;
 }
@@ -680,11 +682,11 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
 
 // Convenience function for align, align*, aligned, alignat, alignat*, alignedat.
 const alignedHandler = function(context, args) {
-    if (context.envName.indexOf("ed") === -1) {
+    if (!context.envName.includes("ed")) {
         validateAmsEnvironmentContext(context);
     }
     const cols = [];
-    const separationType = context.envName.indexOf("at") > -1 ? "alignat" : "align";
+    const separationType = context.envName.includes("at") ? "alignat" : "align";
     const isSplit = context.envName === "split";
     const res = parseArray(context.parser,
         {
@@ -788,7 +790,7 @@ defineEnvironment({
         const cols = colalign.map(function(nde) {
             const node = assertSymbolNodeType(nde);
             const ca = node.text;
-            if ("lcr".indexOf(ca) !== -1) {
+            if ("lcr".includes(ca)) {
                 return {
                     type: "align",
                     align: ca,
@@ -864,7 +866,7 @@ defineEnvironment({
                 parser.consume();
                 parser.consumeSpaces();
                 colAlign = parser.fetch().text;
-                if ("lcr".indexOf(colAlign) === -1) {
+                if (!"lcr".includes(colAlign)) {
                     throw new ParseError("Expected l or c or r", parser.nextToken);
                 }
                 parser.consume();
@@ -925,7 +927,7 @@ defineEnvironment({
             const node = assertSymbolNodeType(nde);
             const ca = node.text;
             // {subarray} only recognizes "l" & "c"
-            if ("lc".indexOf(ca) !== -1) {
+            if ("lc".includes(ca)) {
                 return {
                     type: "align",
                     align: ca,
@@ -993,8 +995,8 @@ defineEnvironment({
             type: "leftright",
             mode: context.mode,
             body: [res],
-            left: context.envName.indexOf("r") > -1 ? "." : "\\{",
-            right: context.envName.indexOf("r") > -1 ? "\\}" : ".",
+            left: context.envName.includes("r") ? "." : "\\{",
+            right: context.envName.includes("r") ? "\\}" : ".",
             rightColor: undefined,
         };
     },
@@ -1029,7 +1031,7 @@ defineEnvironment({
         numArgs: 0,
     },
     handler(context) {
-        if (["gather", "gather*"].includes(context.envName)) {
+        if (gatherEnvironments.has(context.envName)) {
             validateAmsEnvironmentContext(context);
         }
         const res = {

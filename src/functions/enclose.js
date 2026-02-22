@@ -3,7 +3,7 @@ import defineFunction from "../defineFunction";
 import {makeSpan, makeSvgSpan, makeVList, wrapFragment} from "../buildCommon";
 import {isCharacterBox} from "../utils";
 import {MathNode} from "../mathMLTree";
-import stretchy from "../stretchy";
+import {stretchyEnclose} from "../stretchy";
 import {phasePath} from "../svgGeometry";
 import {PathNode, SvgNode} from "../domTree";
 import {calculateSize, makeEm} from "../units";
@@ -101,7 +101,7 @@ const htmlBuilder = (group, options) => {
             bottomPad =  topPad;
         }
 
-        img = stretchy.encloseSpan(inner, label, topPad, bottomPad, options);
+        img = stretchyEnclose(inner, label, topPad, bottomPad, options);
         if (/fbox|boxed|fcolorbox/.test(label)) {
             img.style.borderStyle = "solid";
             img.style.borderWidth = makeEm(ruleThickness);
@@ -168,7 +168,7 @@ const htmlBuilder = (group, options) => {
 const mathmlBuilder = (group, options) => {
     let fboxsep = 0;
     const node = new MathNode(
-        (group.label.indexOf("colorbox") > -1) ? "mpadded" : "menclose",
+        group.label.includes("colorbox") ? "mpadded" : "menclose",
         [mml.buildGroup(group.body, options)]
     );
     switch (group.label) {
