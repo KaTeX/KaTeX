@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.33](https://github.com/KaTeX/KaTeX/compare/v0.16.32...v0.16.33) (2026-02-23)
+
+
+### Bug Fixes
+
+* **scss:** forward variables to fonts module ([#4146](https://github.com/KaTeX/KaTeX/issues/4146)) ([9349a64](https://github.com/KaTeX/KaTeX/commit/9349a64a051ca408da713baf061e32ade80ed22a))
+
 ## [0.16.32](https://github.com/KaTeX/KaTeX/compare/v0.16.31...v0.16.32) (2026-02-22)
 
 
