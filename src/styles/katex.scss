@@ -1,6 +1,15 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword */
 @use "sass:list";
 @use "sass:math";
+
+@forward "fonts.scss" with (
+    $font-folder: "../../fonts" !default,
+    $use-woff2: true !default,
+    $use-woff: true !default,
+    $use-ttf: true !default,
+    $font-display: block !default
+);
+
 @use "fonts.scss";
 
 // The mu unit is defined as 1/18 em
