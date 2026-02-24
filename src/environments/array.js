@@ -363,8 +363,8 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         }
         // In AMS multiline environments such as aligned and gathered, rows
         // correspond to lines that have additional \jot added to the
-        // \baselineskip via \openup.
-        if (group.addJot) {
+        // \baselineskip via \openup, other than the final line.
+        if (group.addJot && r < group.body.length - 1) {
             depth += jot;
         }
 
