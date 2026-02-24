@@ -32,6 +32,8 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
         group = assertNodeType(grp, "horizBrace");
     }
 
+    const atomClass = /bracket/.test(group.label) ? "minner" : "mord";
+
     // Build the base group
     const body = html.buildGroup(
         group.base, options.havingBaseStyle(Style.DISPLAY));
@@ -78,7 +80,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
         //    equation           eqn                 eqn
 
         const vSpan = makeSpan(
-            ["mord", (group.isOver ? "mover" : "munder")],
+            [atomClass, (group.isOver ? "mover" : "munder")],
             [vlist], options);
 
         if (group.isOver) {
@@ -105,7 +107,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
     }
 
     return makeSpan(
-        ["mord", (group.isOver ? "mover" : "munder")], [vlist], options);
+        [atomClass, (group.isOver ? "mover" : "munder")], [vlist], options);
 };
 
 const mathmlBuilder: MathMLBuilder<"horizBrace"> = (group, options) => {
