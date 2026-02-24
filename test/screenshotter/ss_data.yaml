@@ -125,6 +125,17 @@ DelimiterSizing: |
         a & b & c\\
         a & b & c\\
     \end{pmatrix}\; \Braket{ ϕ | \frac{∂^2}{∂ t^2} | ψ } \\
+Derivatives: |
+    \dv{}{x},\odv{y}{x},\odv[2]{}{x},\odv[n+1]{y}{x} \\
+    \pdv{}{x},\pdv{y}{x},\pdv[2]{}{x},\pdv[n+1]{y}{x} \\
+    \pdv[1,1][2]{z}{x,y},\pdv[2,2][4]{z}{x,y}, \pdv[1,a][1+a]{z}{x,y} \\
+    \pdv[2][2]{\tiny\begin{pmatrix}\phi & 0 \\0 & 1\end{pmatrix}}{x},
+    \pdv[1+2^n,{(1,2)},k,\Lambda][N_k+1]{\langle\psi_{1,ûnïcoδé}|\phi_\alpha\rangle} {x,y,z_{\mu,\sigma},\tau} \\
+DerivativesFallbacks: |
+    \square = \text{placeholder} \\
+    \odv[]{y}{x}, \pdv[]{y}{x} \\
+    \pdv[2][4]{z}{x,y}, \pdv[2,2][]{z}{x,y}, \pdv[2,2][4]{z}{x} \\
+    \pdv[2][6]{\psi}{x,y,z}, \pdv[2,2][]{\psi}{x,y,z}, \pdv[2,2,2][6]{\psi}{x} \\
 DisplayMode:
     tex: \sum_{i=0}^\infty \frac{1}{i}
     pre: pre
