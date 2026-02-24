@@ -813,7 +813,7 @@ use `\ce` instead|
 |\otimes|$\otimes$||
 |\over|${a+1 \over b+2}+c$|`{a+1 \over b+2}+c`|
 |\overbrace|$\overbrace{x+⋯+x}^{n\text{ times}}$|`\overbrace{x+⋯+x}^{n\text{ times}}`|
-|\overbracket|<span style="color:firebrick;">Not supported</span>||
+|\overbracket|$\overbracket{x+⋯+x}^{n\text{ times}}$|`\overbracket{x+⋯+x}^{n\text{ times}}`|
 |\overgroup|$\overgroup{AB}$|`\overgroup{AB}`|
 |\overleftarrow|$\overleftarrow{AB}$|`\overleftarrow{AB}`|
 |\overleftharpoon|$\overleftharpoon{AB}$|`\overleftharpoon{AB}`|
@@ -1132,7 +1132,7 @@ use `\ce` instead|
 |\ulcorner|$\ulcorner$||
 |\underbar|$\underbar{X}$|`\underbar{X}`|
 |\underbrace|$\underbrace{x+⋯+x}_{n\text{ times}}$|`\underbrace{x+⋯+x}_{n\text{ times}}`|
-|\underbracket|<span style="color:firebrick;">Not supported</span>||
+|\underbracket|$\underbracket{x+⋯+x}_{n\text{ times}}$|`\underbracket{x+⋯+x}_{n\text{ times}}`|
 |\undergroup|$\undergroup{AB}$|`\undergroup{AB}`|
 |\underleftarrow|$\underleftarrow{AB}$|`\underleftarrow{AB}`|
 |\underleftrightarrow|$\underleftrightarrow{AB}$|`\underleftrightarrow{AB}`|

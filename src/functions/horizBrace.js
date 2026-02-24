@@ -119,7 +119,7 @@ const mathmlBuilder: MathMLBuilder<"horizBrace"> = (group, options) => {
 // Horizontal stretchy braces
 defineFunction({
     type: "horizBrace",
-    names: ["\\overbrace", "\\underbrace"],
+    names: ["\\overbrace", "\\underbrace", "\\overbracket", "\\underbracket"],
     props: {
         numArgs: 1,
     },

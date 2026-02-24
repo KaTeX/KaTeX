@@ -34,7 +34,8 @@ table td {
 |$\dddot{a}$ `\dddot{a}`|$\overline{AB}$ `\overline{AB}` |$\overlinesegment{AB}$ `\overlinesegment{AB}`
 |$\ddddot{a}$ `\ddddot{a}`|$\underline{AB}$ `\underline{AB}`  |$\underlinesegment{AB}$ `\underlinesegment{AB}`
 |$\grave{a}$ `\grave{a}`|$\widecheck{ac}$ `\widecheck{ac}`  |$\underbar{X}$ `\underbar{X}`
-|$\hat{\theta}$ `\hat{\theta}`|$\widehat{ac}$ `\widehat{ac}`||
+|$\hat{\theta}$ `\hat{\theta}`|$\widehat{ac}$ `\widehat{ac}`|$\overbracket{AB}$ `\overbracket{AB}`
+|||$\underbracket{AB}$ `\underbracket{AB}`
 
 ***Accent functions inside \\text{…}***
 
@@ -239,7 +240,8 @@ Any character can be written with the `\char` function and the Unicode code in h
 |$\xcancel{ABC}$ `\xcancel{ABC}`|$\not =$ `\not =`
 |$\sout{abc}$ `\sout{abc}`|$\boxed{\pi=\frac c d}$ `\boxed{\pi=\frac c d}`
 |$a_{\angl n}$ `$a_{\angl n}`|$a_\angln$ `a_\angln`
-|$\phase{-78^\circ}$`\phase{-78^\circ}` |
+|$\phase{-78^\circ}$`\phase{-78^\circ}` |$\overbracket{a+b+c}^{\text{note}}$ `\overbracket{a+b+c}^{\text{note}}`
+||$\underbracket{a+b+c}_{\text{note}}$ `\underbracket{a+b+c}_{\text{note}}`
 
 `\tag{hi} x+y^{2x}`
 $$\tag{hi} x+y^{2x}$$

@@ -247,6 +247,20 @@ describe("renderA11yString", () => {
                 `"start underbrace, 1, plus, 2, end underbrace"`,
             );
         });
+
+        test("\\overbracket", () => {
+            const result = renderA11yString("\\overbracket{1+2}");
+            expect(result).toMatchInlineSnapshot(
+                `"start overbracket, 1, plus, 2, end overbracket"`,
+            );
+        });
+
+        test("\\underbracket", () => {
+            const result = renderA11yString("\\underbracket{1+2}");
+            expect(result).toMatchInlineSnapshot(
+                `"start underbracket, 1, plus, 2, end underbracket"`,
+            );
+        });
     });
 
     describe("infix", () => {

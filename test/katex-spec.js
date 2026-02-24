@@ -2597,6 +2597,68 @@ describe("A horizontal brace builder", function() {
     });
 });
 
+describe("A horizontal bracket parser", function() {
+    it("should not fail", function() {
+        expect`\overbracket{x}`.toParse();
+        expect`\overbracket{x^2}`.toParse();
+        expect`\overbracket{x}^2`.toParse();
+        expect`\overbracket x`.toParse();
+        expect`\underbracket{x}_2`.toParse();
+        expect`\underbracket{x}_2^2`.toParse();
+    });
+
+    it("should produce horizBrace", function() {
+        const parse = getParsed`\overbracket x`[0];
+
+        expect(parse.type).toEqual("horizBrace");
+    });
+
+    it("should produce horizBrace for underbracket", function() {
+        const parse = getParsed`\underbracket x`[0];
+
+        expect(parse.type).toEqual("horizBrace");
+    });
+
+    it("should set isOver correctly", function() {
+        const overParse = getParsed`\overbracket x`[0];
+        expect(overParse.isOver).toBe(true);
+
+        const underParse = getParsed`\underbracket x`[0];
+        expect(underParse.isOver).toBe(false);
+    });
+
+    it("should be grouped more tightly than supsubs", function() {
+        const parse = getParsed`\overbracket x^2`[0];
+
+        expect(parse.type).toEqual("supsub");
+    });
+});
+
+describe("A horizontal bracket builder", function() {
+    it("should not fail", function() {
+        expect`\overbracket{x}`.toBuild();
+        expect`\overbracket{x}^2`.toBuild();
+        expect`\underbracket{x}_2`.toBuild();
+        expect`\underbracket{x}_2^2`.toBuild();
+    });
+
+    it("should produce mords", function() {
+        expect(getBuilt`\overbracket x`[0].classes).toContain("mord");
+        expect(getBuilt`\overbracket{x}^2`[0].classes).toContain("mord");
+        expect(getBuilt`\overbracket +`[0].classes).toContain("mord");
+        expect(getBuilt`\overbracket +`[0].classes).not.toContain("mbin");
+        expect(getBuilt`\overbracket )^2`[0].classes).toContain("mord");
+        expect(getBuilt`\overbracket )^2`[0].classes).not.toContain("mclose");
+    });
+
+    it("should produce mords for underbracket", function() {
+        expect(getBuilt`\underbracket x`[0].classes).toContain("mord");
+        expect(getBuilt`\underbracket{x}_2`[0].classes).toContain("mord");
+        expect(getBuilt`\underbracket +`[0].classes).toContain("mord");
+        expect(getBuilt`\underbracket +`[0].classes).not.toContain("mbin");
+    });
+});
+
 describe("A boxed parser", function() {
     it("should not fail", function() {
         expect`\boxed{x}`.toParse();
