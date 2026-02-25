@@ -27,19 +27,38 @@ const findEndOfMath = function(delimiter, text, startIndex) {
     return -1;
 };
 
-const escapeRegex = function(string) {
-    return string.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+const escapeRegex = function(string, supportEscapedSpecialCharsInText) {
+    if (supportEscapedSpecialCharsInText) {
+        if (string === "$") {
+            /* negative lookbehind to find any dollar not preceded by a
+             backslash */
+            return "(?<!\\\\)\\$";
+        } else if (string === "(") {
+            /* negative lookbehind to find any parenthesis not preceded by a
+             backslash */
+            return "(?<!\\\\)\\(";
+        } else if (string === "\\(") {
+            return "\\\\\\(";
+        } else if (string === "\\$") {
+            return "\\\\\\$";
+        } else {
+            return string.replace(/[-/\\^$*+?.)|[\]{}]/g, "\\$&");
+        }
+    } else {
+        return string.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+    }
 };
 
 const amsRegex = /^\\begin{/;
 
-const splitAtDelimiters = function(text, delimiters) {
+const splitAtDelimiters = function(text, delimiters,
+    supportEscapedSpecialCharsInText) {
     let index;
     const data = [];
 
-    const regexLeft = new RegExp(
-        "(" + delimiters.map((x) => escapeRegex(x.left)).join("|") + ")"
-    );
+    const regexLeft = new RegExp("(" + delimiters.map((x) =>
+        escapeRegex(x.left, supportEscapedSpecialCharsInText),
+    ).join("|") + ")");
 
     while (true) {
         index = text.search(regexLeft);
