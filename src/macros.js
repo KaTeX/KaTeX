@@ -976,6 +976,29 @@ defineMacro("\\set", "\\bra@set{\\{\\,}{\\mid}{}{\\,\\}}");
 // actuarialangle.dtx
 defineMacro("\\angln", "{\\angl n}");
 
+//////////////////////////////////////////////////////////////////////
+// physics.sty
+
+// This package contains some macros widely useful in physics.
+// https://ctan.math.washington.edu/tex-archive/macros/latex/contrib/physics/physics.pdf
+
+defineMacro("\\abs", "\\lvert{#1}\\rvert");
+defineMacro("\\Abs", "\\Big\\lvert{#1}\\Big\\rvert");
+defineMacro("\\norm", "\\lVert{#1}\\rVert");
+defineMacro("\\Norm", "\\Big\\lVert{#1}\\Big\\rVert");
+defineMacro("\\eval", "\\Big\\vert_{#1}^{#2}");
+defineMacro("\\vb", "\\bold{#1}");
+defineMacro("\\vectorbold", "\\vb{#1}");
+defineMacro("\\vectorarrow", "\\overrightarrow{\\vb{#1}}");
+defineMacro("\\vectorunit", "\\widehat{\\vb{#1}}");
+defineMacro("\\dotproduct", "\\cdot");
+defineMacro("\\crossproduct", "\\times");
+defineMacro("\\dd", "\\textnormal{d}");
+defineMacro("\\gradient", "\\mathinner{\\nabla{#1}}");
+defineMacro("\\laplacian", "\\mathinner{\\nabla^2{#1}}");
+defineMacro("\\divergence", "\\mathinner{\\nabla\\dotproduct{#1}}");
+defineMacro("\\curl", "\\mathinner{\\nabla\\crossproduct{#1}}");
+
 // Custom Khan Academy colors, should be moved to an optional package
 defineMacro("\\blue", "\\textcolor{##6495ed}{#1}");
 defineMacro("\\orange", "\\textcolor{##ffa500}{#1}");

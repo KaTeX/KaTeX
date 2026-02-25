@@ -69,6 +69,8 @@ $\gdef\VERT{|}$
 |\aa|$\text{\aa}$|`\text{\aa}`|
 |\above|${a \above{2pt} b+1}$|`{a \above{2pt} b+1}`|
 |\abovewithdelims|<span style="color:firebrick;">Not supported</span>||
+|\abs|$\abs{a}$|`\abs{a}`|
+|\Abs|$\Abs{\frac{a}{b}}$|`\Abs{\frac{a}{b}}`|
 |\acute|$\acute e$|`\acute e`|
 |\AE|$\text{\AE}$|`\text{\AE}`|
 |\ae|$\text{\ae}$|`\text{\ae}`|
@@ -281,12 +283,14 @@ use `\ce` instead|
 |\cotg|$\cotg$||
 |\coth|$\coth$||
 |\cr|$\begin{matrix} a & b\cr c & d \end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \cr`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
+|\crossproduct|$\crossproduct$||
 |\csc|$\csc$||
 |\cssId|<span style="color:firebrick;">Not supported</span>|A PR is pending.
 |\ctg|$\ctg$||
 |\cth|$\cth$||
 |\Cup|$\Cup$||
 |\cup|$\cup$||
+|\curl|$\curl{E}$|`\curl{E}`|
 |\curlyeqprec|$\curlyeqprec$||
 |\curlyeqsucc|$\curlyeqsucc$||
 |\curlyvee|$\curlyvee$||
@@ -312,6 +316,7 @@ use `\ce` instead|
 |\dbinom|$\dbinom n k$|`\dbinom n k`|
 |\dblcolon|$\dblcolon$||
 |{dcases}|$\begin{dcases}a&\text{if }b\\c&\text{if }d\end{dcases}$|`\begin{dcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{dcases}`|
+|\dd|$\dd$||
 |\ddag|$\ddag$||
 |\ddagger|$\ddagger$||
 |\ddddot|$\ddddot x$|`\ddddot x`|
@@ -339,12 +344,14 @@ use `\ce` instead|
 |\displaylines|<span style="color:firebrick;">Not supported</span>||
 |\displaystyle|$\displaystyle\sum_0^n$|`\displaystyle\sum_0^n`|
 |\div|$\div$||
+|\divergence|$\divergence{B}$|`\divergence{B}`|
 |\divideontimes|$\divideontimes$||
 |\dot|$\dot x$|`\dot x`|
 |\Doteq|$\Doteq$||
 |\doteq|$\doteq$||
 |\doteqdot|$\doteqdot$||
 |\dotplus|$\dotplus$||
+|\dotproduct|$\dotproduct$||
 |\dots|$x_1 + \dots + x_n$|`x_1 + \dots + x_n`|
 |\dotsb|$x_1 +\dotsb + x_n$|`x_1 +\dotsb + x_n`|
 |\dotsc|$x,\dotsc,y$|`x,\dotsc,y`|
@@ -399,6 +406,7 @@ use `\ce` instead|
 |\eta|$\eta$||
 |\eth|$\eth$||
 |\euro|<span style="color:firebrick;">Not supported</span>||
+|\eval|$f(x)\eval{0}{1}$|`f(x)\eval{0}{1}`|
 |\exist|$\exist$||
 |\exists|$\exists$||
 |\exp|$\exp$||
@@ -446,6 +454,7 @@ use `\ce` instead|
 |\gggtr|$\gggtr$||
 |\gimel|$\gimel$||
 |\global|$\global\def\add#1#2{#1+#2} \add 2 3$|`\global\def\add#1#2{#1+#2} \add 2 3`|
+|\gradient|$\gradient{\psi}$|`\gradient{\psi}`|
 |\gnapprox|$\gnapprox$||
 |\gneq|$\gneq$||
 |\gneqq|$\gneqq$||
@@ -557,6 +566,7 @@ use `\ce` instead|
 |\land|$\land$||
 |\lang|$\lang A\rangle$|`\lang A\rangle`|
 |\langle|$\langle A\rangle$|`\langle A\rangle`|
+|\laplacian|$\laplacian{\psi}$|`\laplacian{\psi}`|
 |\Larr|$\Larr$||
 |\lArr|$\lArr$||
 |\larr|$\larr$||
@@ -752,6 +762,8 @@ use `\ce` instead|
 |\noexpand|||
 |\nolimits|$\lim\nolimits_x$|`\lim\nolimits_x`|
 |\nonumber|$$\begin{align}a&=b+c\nonumber\\d+e&=f\end{align}$$|`\begin{align}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \nonumber\\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{align}`|
+|\norm|$\norm{a}$|`\norm{a}`|
+|\Norm|$\Norm{\frac{a}{b}}$|`\Norm{\frac{a}{b}}`|
 |\normalfont|<span style="color:firebrick;">Not supported</span>||
 |\normalsize|$\normalsize normalsize$|`\normalsize normalsize`|
 |\not|$\not =$|`\not =`|
@@ -888,6 +900,7 @@ use `\ce` instead|
 |\rang|$\langle A\rang$|`\langle A\rang`|
 |\rangle|$\langle A\rangle$|`\langle A\rangle`|
 |\Rarr|$\Rarr$||
+|\rank|$\rank$||
 |\rArr|$\rArr$||
 |\rarr|$\rarr$||
 |\ratio|$\ratio$||
@@ -897,6 +910,7 @@ use `\ce` instead|
 |{rcases}|$\begin{rcases}a&\text{if }b\\c&\text{if }d\end{rcases}$|`\begin{rcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{rcases}`|
 |\rceil|$\rceil$||
 |\Re|$\Re$||
+|\Res|$\Res||
 |\real|$\real$||
 |\Reals|$\Reals$||
 |\reals|$\reals$||
@@ -1110,6 +1124,9 @@ use `\ce` instead|
 |\to|$\to$||
 |\toggle|<span style="color:firebrick;">Not supported</span>||
 |\top|$\top$||
+|\tr|$\tr$||
+|\Tr|$\Tr$||
+|\trace|$\trace$||
 |\triangle|$\triangle$||
 |\triangledown|$\triangledown$||
 |\triangleleft|$\triangleleft$||
@@ -1200,6 +1217,7 @@ use `\ce` instead|
 |\vartriangleright|$\vartriangleright$||
 |\varUpsilon|$\varUpsilon$||
 |\varXi|$\varXi$||
+|\vb|$\vb{a}$|`\vb{a}`|
 |\vcentcolon|$\mathrel{\vcentcolon =}$|`\mathrel{\vcentcolon =}`|
 |\vcenter|$a+\left(\vcenter{\frac{\frac a b}c}\right)$|`a+\left(\vcenter{\hbox{$\frac{\frac a b}c$}}\right)`<br>TeX (strict) syntax|
 |\vcenter|$a+\left(\vcenter{\frac{\frac a b}c}\right)$|`a+\left(\vcenter{\frac{\frac a b}c}\right)`<br>non-strict syntax|
@@ -1208,6 +1226,9 @@ use `\ce` instead|
 |\vdash|$\vdash$||
 |\vdots|$\vdots$||
 |\vec|$\vec{F}$|`\vec{F}`|
+|\vectorarrow|$\vectorarrow{a}$|`\vectorarrow{a}`|
+|\vectorbold|$\vectorbold{a}$|`\vectorbold{a}`|
+|\vectorunit|$\vectorunit{a}$|`\vectorunit{a}`|
 |\vee|$\vee$||
 |\veebar|$\veebar$||
 |\verb|$\verb!\frac a b!$|`\verb!\frac a b!`|

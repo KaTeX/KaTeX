@@ -261,8 +261,9 @@ defineFunction({
         "\\arcsin", "\\arccos", "\\arctan", "\\arctg", "\\arcctg",
         "\\arg", "\\ch", "\\cos", "\\cosec", "\\cosh", "\\cot", "\\cotg",
         "\\coth", "\\csc", "\\ctg", "\\cth", "\\deg", "\\dim", "\\exp",
-        "\\hom", "\\ker", "\\lg", "\\ln", "\\log", "\\sec", "\\sin",
-        "\\sinh", "\\sh", "\\tan", "\\tanh", "\\tg", "\\th",
+        "\\hom", "\\ker", "\\lg", "\\ln", "\\log", "\\rank", "\\Res",
+        "\\sec", "\\sin", "\\sinh", "\\sh", "\\tan", "\\tanh", "\\tr", "\\Tr",
+        "\\trace", "\\tg", "\\th",
     ],
     props: {
         numArgs: 0,
