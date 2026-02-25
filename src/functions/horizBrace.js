@@ -32,7 +32,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
         group = assertNodeType(grp, "horizBrace");
     }
 
-    const atomClass = /bracket/.test(group.label) ? "minner" : "mord";
+    const atomClass = group.label.includes("bracket") ? "minner" : "mord";
 
     // Build the base group
     const body = html.buildGroup(
@@ -130,7 +130,7 @@ defineFunction({
             type: "horizBrace",
             mode: parser.mode,
             label: funcName,
-            isOver: /^\\over/.test(funcName),
+            isOver: funcName.includes("\\over"),
             base: args[0],
         };
     },
