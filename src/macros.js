@@ -142,9 +142,8 @@ defineMacro("\\char", function(context) {
     return `\\@char{${number}}`;
 });
 
-// \newcommand{\macro}[args]{definition}
-// \renewcommand{\macro}[args]{definition}
-// TODO: Optional arguments: \newcommand{\macro}[args][default]{definition}
+// \newcommand{\macro}[args][default]{definition}
+// \renewcommand{\macro}[args][default]{definition}
 const newcommand = (
     context, existsOK: boolean, nonexistsOK: boolean, skipIfExists: boolean
 ) => {
@@ -166,6 +165,8 @@ const newcommand = (
     }
 
     let numArgs = 0;
+    let defaultArgs = null;
+
     arg = context.consumeArg().tokens;
     if (arg.length === 1 && arg[0].text === "[") {
         let argText = '';
@@ -181,12 +182,17 @@ const newcommand = (
         numArgs = parseInt(argText);
         arg = context.consumeArg().tokens;
     }
+    if (arg.length === 1 && arg[0].text == "[") {
+        defaultArgs = [context.consumeArg("]").tokens];
+        arg = context.consumeArg().tokens;
+    }
 
     if (!(exists && skipIfExists)) {
         // Final arg is the expansion of the macro
         context.macros.set(name, {
             tokens: arg,
             numArgs,
+            defaultArgs
         });
     }
     return '';
