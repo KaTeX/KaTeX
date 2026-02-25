@@ -140,8 +140,8 @@ The code can be linted by running `yarn test:lint`, which lints JavaScript
 files using ESLint and stylesheets using stylelint. They must pass to commit
 the changes.
 
-Some files have flowtype annotations and can be checked for type errors using
-Flow by running `yarn test:flow`. See [Flow](https://flow.org/) for more details.
+TypeScript files can be checked for type errors by running
+`yarn test:typecheck`.
 
 ## Pull Requests
 

@@ -6,7 +6,7 @@
  * the font information necessary to render it properly.
  */
 
-import type {Mode} from "./types/common";
+import type {Mode} from "./types";
 import ParseError from "./ParseError";
 
 /**

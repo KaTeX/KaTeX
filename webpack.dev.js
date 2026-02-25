@@ -1,10 +1,9 @@
-// @flow
 const {targets, createConfig} = require('./webpack.common');
 const path = require('path');
 const PORT = 7936;
 
 //                                                             dev   minify
-const katexConfig /*: Object*/ = createConfig(targets.shift(), true, false);
+const katexConfig = createConfig(targets.shift(), true, false);
 
 // add the entry point for test page
 katexConfig.entry.main = './static/main.js';
@@ -30,4 +29,4 @@ katexConfig.devServer = {
 module.exports = ([
     katexConfig,
     ...targets.map(target => createConfig(target, true, false)),
-] /*: Array<Object> */);
+]);

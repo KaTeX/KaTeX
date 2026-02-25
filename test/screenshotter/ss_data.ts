@@ -1,0 +1,48 @@
+/**
+ * Parse and polish the screenshotter data in ss_data.yaml.
+ *
+ * This module is responsible for reading the file ss_data.yaml,
+ * unify syntactic variations (like string vs. dict as test case body)
+ * and provide common functionality (like a query string encoded version).
+ * The export of this module is simply a dictionary of test cases.
+ */
+
+"use strict";
+export {};
+
+const fs = require("fs");
+const jsyaml = require("js-yaml");
+const querystring = require("querystring");
+
+const queryKeys = [
+    "tex", "pre", "post", "display", "noThrow", "errorColor", "styles",
+];
+type ScreenshotCase = {
+    tex: string;
+    macros?: Record<string, unknown>;
+    query?: string;
+    [key: string]: unknown;
+};
+
+const dict: Record<string, ScreenshotCase | string> =
+    jsyaml.load(fs.readFileSync(require.resolve("./ss_data.yaml"))) as
+    Record<string, ScreenshotCase | string>;
+for (const key in dict) {
+    if (dict.hasOwnProperty(key)) {
+        let itm = dict[key];
+        if (typeof itm === "string") {
+            itm = dict[key] = {tex: itm};
+        }
+        const query: Record<string, unknown> = {};
+        queryKeys.forEach(function(key) {
+            if (itm.hasOwnProperty(key)) {
+                query[key] = itm[key as keyof ScreenshotCase];
+            }
+        });
+        itm.query = querystring.stringify(query);
+        if (itm.macros) {
+            itm.query += "&" + querystring.stringify(itm.macros);
+        }
+    }
+}
+module.exports = dict;

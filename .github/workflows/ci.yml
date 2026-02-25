@@ -32,8 +32,8 @@ jobs:
     - name: Lint code
       run: yarn test:lint
 
-    - name: Run Flow
-      run: yarn test:flow
+    - name: Run TypeScript typecheck
+      run: yarn test:typecheck
       if: always()
 
     - name: Run Jest tests
