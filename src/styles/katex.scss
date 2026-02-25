@@ -457,6 +457,7 @@ $display-margin: 1em 0 !default;
     svg {
         display: block;
         position: absolute; // absolute relative to parent
+        z-index: auto;
         width: 100%;
         height: inherit;
 
