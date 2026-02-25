@@ -247,6 +247,8 @@ $$\tag{hi} x+y^{2x}$$
 `\tag*{hi} x+y^{2x}`
 $$\tag*{hi} x+y^{2x}$$
 
+If the argument to `\tag` or `\tag*` contains all text (no math), KaTeX will insert a targetable HTML id. Example: `tag{hi}` will result in `id="eqn-hi"`.
+
 ### Line Breaks
 
 KaTeX 0.10.0+ will insert automatic line breaks in inline math after relations or binary operators such as “=” or “+”. These can be suppressed by `\nobreak` or by placing math inside a pair of braces, as in `{F=ma}`. `\allowbreak` will allow automatic line breaks at locations other than relations or operators.

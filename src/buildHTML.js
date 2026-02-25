@@ -14,6 +14,8 @@ import {makeEm} from "./units";
 import {spacings, tightSpacings} from "./spacingData";
 import {_htmlGroupBuilders as groupBuilders} from "./defineFunction";
 import {DocumentFragment} from "./tree";
+import {assertNodeType, checkSymbolNodeType,
+    assertSymbolNodeType} from "./parseNode";
 
 import type Options from "./Options";
 import type {AnyParseNode} from "./parseNode";
@@ -317,9 +319,29 @@ function buildHTMLUnbreakable(children, options) {
 export default function buildHTML(tree: AnyParseNode[], options: Options): DomSpan {
     // Strip off outer tag wrapper for processing below.
     let tag = null;
+    let tagText = "";
     if (tree.length === 1 && tree[0].type === "tag") {
         tag = tree[0].tag;
         tree = tree[0].body;
+        // Retrieve the tag's input text, for use in an HTML id.
+        let textNode = assertNodeType(tag[0], "text");
+        const L = textNode.body.length;
+        if (assertSymbolNodeType(textNode.body[0]).text === "(" && L === 3 &&
+            assertSymbolNodeType(textNode.body[2]).text === ")") {
+            // omit parens inserted by \tag
+            textNode = assertNodeType(textNode.body[1], "ordgroup");
+        }
+        for (let i = 0; i < textNode.body.length; i++) {
+            if (!checkSymbolNodeType(textNode.body[i])) {
+                // A non-symbol input. Abort the HTML id.
+                tagText = "";
+                break;
+            }
+            const letter = assertNodeType(textNode.body[i], "textord").text;
+            if ("<>&'\"/".indexOf(letter) === -1) {
+                tagText += letter;
+            }
+        }
     }
 
     // Build the expression contained in the tree
@@ -385,6 +407,9 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
             buildExpression(tag, options, true)
         );
         tagChild.classes = ["tag"];
+        if (tagText.length > 0) {
+            tagChild.setAttribute("id", `eqn-${tagText}`);
+        }
         children.push(tagChild);
     } else if (eqnNum) {
         children.push(eqnNum);
