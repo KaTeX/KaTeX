@@ -47,7 +47,7 @@
     "https://github.com/sponsors/katex"
   ],
   "files": [
-    "katex.js",
+    "katex.ts",
     "cli.js",
     "src/",
     "contrib/",
@@ -60,17 +60,16 @@
     "@babel/core": "^7.29.0",
     "@babel/eslint-parser": "^7.28.6",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
-    "@babel/plugin-syntax-flow": "^7.28.6",
     "@babel/plugin-transform-react-jsx": "^7.28.6",
     "@babel/plugin-transform-runtime": "^7.29.0",
     "@babel/preset-env": "^7.29.0",
-    "@babel/preset-flow": "^7.27.1",
     "@babel/preset-react": "^7.28.5",
     "@babel/preset-typescript": "^7.28.5",
     "@babel/register": "^7.28.6",
     "@babel/runtime": "^7.28.6",
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-babel": "^5.3.1",
+    "@rollup/plugin-commonjs": "^28.0.9",
     "@rollup/plugin-typescript": "^12.3.0",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
@@ -90,10 +89,8 @@
     "eslint": "^8.23.0",
     "eslint-import-resolver-webpack": "^0.13.10",
     "eslint-plugin-actions": "^2.0.0",
-    "eslint-plugin-flowtype": "^8.0.3",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-react": "^7.31.1",
-    "flow-bin": "^0.135.0",
     "fs-extra": "^10.1.0",
     "got": "^11.8.5",
     "husky": "^4.3.8",
@@ -140,18 +137,17 @@
   },
   "bin": "cli.js",
   "scripts": {
-    "test": "yarn test:lint && yarn test:flow && yarn test:typecheck && yarn test:jest",
+    "test": "yarn test:lint && yarn test:typecheck && yarn test:jest",
     "test:lint": "yarn test:lint:js && yarn test:lint:css",
     "test:lint:js": "eslint .",
     "test:lint:css": "stylelint src/styles/katex.scss static/main.css website/static/**/*.css",
-    "test:flow": "flow",
     "test:jest": "jest",
     "test:jest:watch": "jest --watch",
     "test:jest:update": "jest --updateSnapshot",
     "test:jest:coverage": "jest --coverage",
     "test:screenshots": "yarn test:screenshots:update --verify",
     "test:screenshots:update": "dockers/screenshotter/screenshotter.sh",
-    "test:perf": "NODE_ENV=test node test/perf-test.js",
+    "test:perf": "NODE_ENV=test node -e \"require('@babel/register')({extensions:['.js','.ts']}); require('./test/perf-test.ts')\"",
     "test:typecheck": "tsc --noEmit",
     "clean": "rm -rf dist/ node_modules/",
     "clean-install": "yarn clean && yarn",
@@ -176,19 +172,19 @@
   },
   "jest": {
     "collectCoverageFrom": [
-      "src/**/*.js",
-      "contrib/**/*.js",
-      "!src/unicodeSymbols.js",
+      "src/**/*.{js,ts}",
+      "contrib/**/*.{js,ts}",
+      "!src/unicodeSymbols.{js,ts}",
       "!contrib/mhchem/**"
     ],
     "setupFilesAfterEnv": [
-      "<rootDir>/test/setup.js"
+      "<rootDir>/test/setup.ts"
     ],
     "snapshotSerializers": [
       "jest-serializer-html"
     ],
     "testMatch": [
-      "**/test/*-spec.js"
+      "**/test/*-spec.ts"
     ],
     "testEnvironmentOptions": {
       "url": "http://localhost/"
@@ -197,7 +193,7 @@
       "^.+\\.(js|ts)$": "babel-jest"
     },
     "moduleNameMapper": {
-      "^katex$": "<rootDir>/katex.js"
+      "^katex$": "<rootDir>/katex.ts"
     }
   }
 }

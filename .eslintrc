@@ -1,11 +1,7 @@
 {
     "parser": "@babel/eslint-parser",
-    "plugins": [
-        "flowtype"
-    ],
     "extends": [
         "eslint:recommended",
-        "plugin:flowtype/recommended",
         "plugin:actions/recommended",
         "plugin:import/recommended"
     ],
@@ -145,7 +141,16 @@
         "plugin:@typescript-eslint/recommended"
       ],
       "rules": {
-        "flowtype/no-types-missing-file-annotation": "off"
+        "max-len": "off",
+        "brace-style": "off",
+        "no-unused-vars": "off",
+        "no-constant-condition": "off",
+        "import/no-unresolved": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-unused-expressions": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/no-require-imports": "off"
       }
     }],
     "root": true

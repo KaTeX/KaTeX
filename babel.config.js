@@ -5,7 +5,6 @@ module.exports = api => {
         ["@babel/env", {
             loose: true,
         }],
-        "@babel/flow",
         "@babel/preset-typescript",
     ];
     if (isESMBuild) {

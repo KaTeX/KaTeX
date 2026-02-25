@@ -1,34 +1,20 @@
-// @flow
 const path = require('path');
-// $FlowIgnore
 const TerserPlugin = require('terser-webpack-plugin');
-// $FlowIgnore
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-// $FlowIgnore
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
 const {version} = require("./package.json");
 
-// $FlowIgnore
 const browserslist = require('browserslist')();
-// $FlowIgnore
 const caniuse = require('caniuse-lite');
 
 // from the least supported to the most supported
 const fonts = ['woff2', 'woff', 'ttf'];
 
-/*::
-type Target = {|
-    name: string, // the name of output JS/CSS
-    entry: string, // the path to the entry point
-    library?: string // the name of the exported module
-|};
-*/
-
 /**
  * List of targets to build
  */
-const targets /*: Array<Target> */ = [
+const targets = [
     {
         name: 'katex',
         entry: './katex.webpack.js',
@@ -49,7 +35,7 @@ const targets /*: Array<Target> */ = [
     },
     {
         name: 'contrib/copy-tex',
-        entry: './contrib/copy-tex/copy-tex.js',
+        entry: './contrib/copy-tex/copy-tex.ts',
     },
     {
         name: 'contrib/mathtex-script-type',
@@ -57,25 +43,22 @@ const targets /*: Array<Target> */ = [
     },
     {
         name: 'contrib/render-a11y-string',
-        entry: './contrib/render-a11y-string/render-a11y-string.js',
+        entry: './contrib/render-a11y-string/render-a11y-string.ts',
     },
 ];
 
 /**
  * Create a webpack config for given target
  */
-function createConfig(target /*: Target */, dev /*: boolean */,
-        minimize /*: boolean */) /*: Object */ {
-    const cssLoaders /*: Array<Object> */ = [{
+function createConfig(target, dev, minimize) {
+    const cssLoaders = [{
         loader: 'css-loader',
         options: {importLoaders: 1},
     }, {
         loader: 'postcss-loader',
-        // $FlowIgnore
         options: {postcssOptions: {plugins: [require('postcss-preset-env')()]}},
     }];
     if (minimize) {
-        // $FlowIgnore
         cssLoaders[1].options.postcssOptions.plugins.push(require('cssnano')());
     }
 
