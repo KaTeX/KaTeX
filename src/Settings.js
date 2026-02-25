@@ -48,6 +48,10 @@ export type TrustContextTypes = {
         command: "\\htmlData",
         attributes: {[string]: string},
     |},
+    "\\htmlAttr": {|
+        command: "\\htmlAttr",
+        attributes: {[string]: string},
+    |},
 };
 export type AnyTrustContext = $Values<TrustContextTypes>;
 export type TrustFunction = (context: AnyTrustContext) => ?boolean;
