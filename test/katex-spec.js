@@ -508,29 +508,42 @@ describe("A frac parser", function() {
     it("should parse cfrac, dfrac, tfrac, and genfrac as fracs", function() {
         const dfracParse = getParsed(dfracExpression)[0];
 
-        expect(dfracParse.type).toEqual("genfrac");
-        expect(dfracParse.numer).toBeDefined();
-        expect(dfracParse.denom).toBeDefined();
+        expect(dfracParse.type).toEqual("styling");
+        expect(dfracParse.style).toEqual("display");
+        expect(dfracParse.body[0].type).toEqual("genfrac");
+        expect(dfracParse.body[0].numer).toBeDefined();
+        expect(dfracParse.body[0].denom).toBeDefined();
 
         const tfracParse = getParsed(tfracExpression)[0];
 
-        expect(tfracParse.type).toEqual("genfrac");
-        expect(tfracParse.numer).toBeDefined();
-        expect(tfracParse.denom).toBeDefined();
+        expect(tfracParse.type).toEqual("styling");
+        expect(tfracParse.style).toEqual("text");
+        expect(tfracParse.body[0].type).toEqual("genfrac");
+        expect(tfracParse.body[0].numer).toBeDefined();
+        expect(tfracParse.body[0].denom).toBeDefined();
 
         const cfracParse = getParsed(cfracExpression)[0];
 
-        expect(cfracParse.type).toEqual("genfrac");
-        expect(cfracParse.numer).toBeDefined();
-        expect(cfracParse.denom).toBeDefined();
+        expect(cfracParse.type).toEqual("styling");
+        expect(cfracParse.style).toEqual("display");
+        expect(cfracParse.body[0].type).toEqual("genfrac");
+        expect(cfracParse.body[0].continued).toEqual(true);
+        expect(cfracParse.body[0].numer).toBeDefined();
+        expect(cfracParse.body[0].denom).toBeDefined();
 
         const genfracParse = getParsed(genfrac1)[0];
 
-        expect(genfracParse.type).toEqual("genfrac");
-        expect(genfracParse.numer).toBeDefined();
-        expect(genfracParse.denom).toBeDefined();
-        expect(genfracParse.leftDelim).toBeDefined();
-        expect(genfracParse.rightDelim).toBeDefined();
+        expect(genfracParse.type).toEqual("styling");
+        expect(genfracParse.style).toEqual("display");
+        expect(genfracParse.body[0].type).toEqual("genfrac");
+        expect(genfracParse.body[0].numer).toBeDefined();
+        expect(genfracParse.body[0].denom).toBeDefined();
+        expect(genfracParse.body[0].leftDelim).toBeDefined();
+        expect(genfracParse.body[0].rightDelim).toBeDefined();
+
+        const genfracAutoParse = getParsed(genfrac2)[0];
+
+        expect(genfracAutoParse.type).toEqual("genfrac");
     });
 
     it("should fail, given math as a line thickness to genfrac", function() {
@@ -671,6 +684,16 @@ describe("A genfrac builder", function() {
         expect`\genfrac ( ] {0.8pt}{}{a}{b+c}`.toBuild();
         expect`\genfrac {} {} {0.8pt}{}{a}{b+c}`.toBuild();
         expect`\genfrac [ {} {0.8pt}{}{a}{b+c}`.toBuild();
+    });
+
+    it("should render \\tfrac like \\textstyle\\frac", function() {
+        expect`x_{\tfrac{1}{2}}`.toBuildLike`x_{\textstyle\frac{1}{2}}`;
+    });
+
+    it("should render \\dfrac like \\displaystyle\\frac in subscripts", function() {
+        expect`x_{\dfrac{a}{b}}`.toBuildLike`x_{\displaystyle\frac{a}{b}}`;
+        expect`x_{y_{\dfrac{a}{b}}}`
+            .toBuildLike`x_{y_{\displaystyle\frac{a}{b}}}`;
     });
 });
 
@@ -1512,6 +1535,11 @@ describe("A TeX-compliant parser", function() {
         }
     });
 
+    it("should allow \\imath in sup/subscripts", function() {
+        expect(String.raw`x^\imath`).toParse();
+        expect(String.raw`x_\imath`).toParse();
+    });
+
     it("should parse multiple primes correctly", function() {
         expect`x''''`.toParse();
         expect`x_2''`.toParse();
@@ -2309,6 +2337,36 @@ describe("A markup generator", function() {
         expect(markup).toContain("\u03c3");  // sigma
         expect(markup).toContain("margin-right");
         expect(markup).not.toContain("marginRight");
+    });
+
+    it("doesn't combine mathnormal glyphs across italic correction", function() {
+        const markup = katex.renderToString("jk", {output: "html"});
+        const mathnormalSpans = markup.match(/class="mord mathnormal"/g) || [];
+        expect(mathnormalSpans.length).toBe(2);
+        expect(markup).toContain(">j</span><span class=\"mord mathnormal\"");
+    });
+
+    it("still combines mathnormal glyphs when italic correction is zero", function() {
+        const markup = katex.renderToString("ab", {output: "html"});
+        const mathnormalSpans = markup.match(/class="mord mathnormal"/g) || [];
+        expect(mathnormalSpans.length).toBe(1);
+        expect(markup).toContain(">ab</span>");
+    });
+
+    it("still combines non-mathnormal glyphs with italic correction", function() {
+        const markup = katex.renderToString(String.raw`\mathrm{fgh}`,
+            {output: "html"});
+        const rmSpans = markup.match(/class="mord mathrm"/g) || [];
+        expect(rmSpans.length).toBe(1);
+        expect(markup).toContain(">fgh</span>");
+    });
+
+    it("still combines \\mathit glyphs with nonzero font italic correction", function() {
+        const markup = katex.renderToString(String.raw`\mathit{fgvw}`,
+            {output: "html"});
+        const mathitSpans = markup.match(/class="mord mathit"/g) || [];
+        expect(mathitSpans.length).toBe(1);
+        expect(markup).toContain(">fgvw</span>");
     });
 
     it("generates both MathML and HTML", function() {
@@ -4234,6 +4292,25 @@ describe("Newlines via \\\\ and \\newline", function() {
         expect(markup).toMatch(
             /(<span class="base">.*?<\/span><span class="mspace newline"><\/span>){3}<span class="base">/);
         expect(markup).toMatchSnapshot();
+    });
+});
+
+describe("Automatic line breaking", function() {
+    it("should keep \\not with the following relation", () => {
+        const built = katex.__renderToDomTree(r`M\not=N`, new Settings());
+        const htmlTree = built.children[1];
+        const baseChildren = htmlTree.children.filter(node => node.hasClass("base"));
+
+        expect(baseChildren).toHaveLength(2);
+        expect(baseChildren[0].toMarkup()).toContain("=");
+    });
+
+    it("should still allow breaks after \\neq", () => {
+        const built = katex.__renderToDomTree(r`M\neq N`, new Settings());
+        const htmlTree = built.children[1];
+        const baseChildren = htmlTree.children.filter(node => node.hasClass("base"));
+
+        expect(baseChildren).toHaveLength(2);
     });
 });
 
