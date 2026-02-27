@@ -4312,6 +4312,7 @@ describe("Automatic line breaking", function() {
     it("should keep \\not with the following relation", () => {
         const built = katex.__renderToDomTree(r`M\not=N`, new Settings());
         const htmlTree = built.children[1];
+        // @ts-ignore
         const baseChildren = htmlTree.children.filter(node => node.hasClass("base"));
 
         expect(baseChildren).toHaveLength(2);
@@ -4321,6 +4322,7 @@ describe("Automatic line breaking", function() {
     it("should still allow breaks after \\neq", () => {
         const built = katex.__renderToDomTree(r`M\neq N`, new Settings());
         const htmlTree = built.children[1];
+        // @ts-ignore
         const baseChildren = htmlTree.children.filter(node => node.hasClass("base"));
 
         expect(baseChildren).toHaveLength(2);

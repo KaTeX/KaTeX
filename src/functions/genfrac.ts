@@ -9,8 +9,6 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 import {calculateSize, makeEm} from "../units";
 import type {StyleStr} from "../types";
-import type Options from "../Options";
-import type {StyleInterface} from "../Style";
 import type {HtmlBuilder, MathMLBuilder} from "../defineFunction";
 
 const htmlBuilder: HtmlBuilder<"genfrac"> = (group, options) => {

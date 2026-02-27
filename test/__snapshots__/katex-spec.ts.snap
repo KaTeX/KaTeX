@@ -1046,6 +1046,7 @@ exports[`An includegraphics builder should render with trust setting 1`] = `
     ],
     "depth": 0,
     "height": 0.9,
+    "maxFontSize": 0,
     "src": "https://cdn.kastatic.org/images/apple-touch-icon-57x57-precomposed.new.png",
     "style": {
       "height": "0.9em",

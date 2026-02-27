@@ -1,5 +1,19 @@
 /* eslint no-constant-condition:0 */
-const findEndOfMath = function(delimiter, text, startIndex) {
+
+export interface DelimiterSpec {
+    left: string;
+    right: string;
+    display: boolean;
+}
+
+export interface SplitAtDelimiterData {
+    type: "text" | "math";
+    data: string;
+    rawData?: string;
+    display?: boolean;
+}
+
+const findEndOfMath = function(delimiter: string, text: string, startIndex: number): number {
     // Adapted from
     // https://github.com/Khan/perseus/blob/master/src/perseus-markdown.jsx
     let index = startIndex;
@@ -27,15 +41,15 @@ const findEndOfMath = function(delimiter, text, startIndex) {
     return -1;
 };
 
-const escapeRegex = function(string) {
+const escapeRegex = function(string: string): string {
     return string.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
 };
 
 const amsRegex = /^\\begin{/;
 
-const splitAtDelimiters = function(text, delimiters) {
+const splitAtDelimiters = function(text: string, delimiters: DelimiterSpec[]): SplitAtDelimiterData[] {
     let index;
-    const data = [];
+    const data: SplitAtDelimiterData[] = [];
 
     const regexLeft = new RegExp(
         "(" + delimiters.map((x) => escapeRegex(x.left)).join("|") + ")"

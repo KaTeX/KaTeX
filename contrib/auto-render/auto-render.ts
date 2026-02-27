@@ -2,11 +2,24 @@
 
 import katex from "katex";
 import splitAtDelimiters from "./splitAtDelimiters";
+import type {DelimiterSpec} from "./splitAtDelimiters";
+
+interface RenderMathInElementOptions {
+    delimiters?: DelimiterSpec[];
+    preProcess?: (math: string) => string;
+    ignoredTags?: string[];
+    ignoredClasses?: string[];
+    errorCallback?: (msg: string, err: Error) => void;
+    displayMode?: boolean;
+    macros?: Record<string, string>;
+    [key: string]: unknown;
+}
 
 /* Note: optionsCopy is mutated by this method. If it is ever exposed in the
  * API, we should copy it before mutating.
  */
-const renderMathInText = function(text, optionsCopy) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const renderMathInText = function(text: string, optionsCopy: any) {
     const data = splitAtDelimiters(text, optionsCopy.delimiters);
     if (data.length === 1 && data[0].type === 'text') {
         // There is no formula in the text.
@@ -40,7 +53,7 @@ const renderMathInText = function(text, optionsCopy) {
                         "` with ",
                     e
                 );
-                fragment.appendChild(document.createTextNode(data[i].rawData));
+                fragment.appendChild(document.createTextNode(data[i].rawData!));
                 continue;
             }
             fragment.appendChild(span);
@@ -50,7 +63,8 @@ const renderMathInText = function(text, optionsCopy) {
     return fragment;
 };
 
-const renderElem = function(elem, optionsCopy) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const renderElem = function(elem: HTMLElement, optionsCopy: any) {
     for (let i = 0; i < elem.childNodes.length; i++) {
         const childNode = elem.childNodes[i];
         if (childNode.nodeType === 3) {
@@ -58,11 +72,11 @@ const renderElem = function(elem, optionsCopy) {
             // Concatenate all sibling text nodes.
             // Webkit browsers split very large text nodes into smaller ones,
             // so the delimiters may be split across different nodes.
-            let textContentConcat = childNode.textContent;
+            let textContentConcat = childNode.textContent ?? "";
             let sibling = childNode.nextSibling;
             let nSiblings = 0;
             while (sibling && (sibling.nodeType === Node.TEXT_NODE)) {
-                textContentConcat += sibling.textContent;
+                textContentConcat += sibling.textContent ?? "";
                 sibling = sibling.nextSibling;
                 nSiblings++;
             }
@@ -70,7 +84,7 @@ const renderElem = function(elem, optionsCopy) {
             if (frag) {
                 // Remove extra text nodes
                 for (let j = 0; j < nSiblings; j++) {
-                    childNode.nextSibling.remove();
+                    childNode.nextSibling!.remove();
                 }
                 i += frag.childNodes.length - 1;
                 elem.replaceChild(frag, childNode);
@@ -81,26 +95,27 @@ const renderElem = function(elem, optionsCopy) {
             }
         } else if (childNode.nodeType === 1) {
             // Element node
-            const className = ' ' + childNode.className + ' ';
+            const className = ' ' + (childNode as HTMLElement).className + ' ';
             const shouldRender = !optionsCopy.ignoredTags.has(
                 childNode.nodeName.toLowerCase()) &&
                   optionsCopy.ignoredClasses.every(
-                      x => !className.includes(' ' + x + ' '));
+                      (x: string) => !className.includes(' ' + x + ' '));
 
             if (shouldRender) {
-                renderElem(childNode, optionsCopy);
+                renderElem(childNode as HTMLElement, optionsCopy);
             }
         }
         // Otherwise, it's something else, and ignore it.
     }
 };
 
-const renderMathInElement = function(elem, options) {
+const renderMathInElement = function(elem: HTMLElement, options?: RenderMathInElementOptions) {
     if (!elem) {
         throw new Error("No element provided to render");
     }
 
-    const optionsCopy = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const optionsCopy: any = {};
 
     // Object.assign(optionsCopy, option)
     for (const option in options) {
@@ -126,7 +141,7 @@ const renderMathInElement = function(elem, options) {
 
         {left: "\\[", right: "\\]", display: true},
     ];
-    optionsCopy.ignoredTags = new Set(optionsCopy.ignoredTags || [
+    optionsCopy.ignoredTags = new Set<string>(optionsCopy.ignoredTags || [
         "script", "noscript", "style", "textarea", "pre", "code", "option",
     ]);
     optionsCopy.ignoredClasses = optionsCopy.ignoredClasses || [];

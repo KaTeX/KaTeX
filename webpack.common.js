@@ -26,7 +26,7 @@ const targets = [
     },
     {
         name: 'contrib/auto-render',
-        entry: './contrib/auto-render/auto-render.js',
+        entry: './contrib/auto-render/auto-render.ts',
         library: 'renderMathInElement',
     },
     {
