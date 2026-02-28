@@ -22,9 +22,15 @@ $version: "" !default;
 $display-margin: 1em 0 !default;
 
 .katex {
-    font: normal 1.21em KaTeX_Main, Times New Roman, serif;
-    line-height: 1.2;
+    @if $use-browser-math-font {
+        font: normal 1.21em math, KaTeX_Main, Times New Roman, serif;
+    }
 
+    @else {
+        font: normal 1.21em KaTeX_Main, Times New Roman, serif;
+    }
+
+    line-height: 1.2;
     // Protect elements inside .katex from inheriting text-indent.
     text-indent: 0;
 
@@ -101,7 +107,14 @@ $display-margin: 1em 0 !default;
 
     // Math fonts.
     .mathnormal {
-        font-family: KaTeX_Math;
+        @if $use-browser-math-font {
+            font-family: math, KaTeX_Math;
+        }
+
+        @else {
+            font-family: KaTeX_Math;
+        }
+
         font-style: italic;
     }
 
@@ -115,8 +128,15 @@ $display-margin: 1em 0 !default;
     }
 
     .mathbf {
-        font-family: KaTeX_Main;
-        font-weight: bold;
+        @if $use-browser-math-font {
+            font-family: math, KaTeX_Math;
+        }
+
+        @else {
+            font-family: KaTeX_Math;
+        }
+
+        font-style: bold;
     }
 
     .boldsymbol {
