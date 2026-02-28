@@ -91,7 +91,8 @@ describe("A MathML builder", function() {
         expect(
             getMathML("\\href{http://example.org}{\\alpha}", new Settings({trust: true})),
         ).toMatchSnapshot();
-        expect(getMathML("p \\Vdash \\beta \\href{http://example.org}{+ \\alpha} \\times \\gamma"));
+        expect(getMathML("p \\Vdash \\beta \\href{http://example.org}{+ \\alpha} " +
+                         "\\times \\gamma"));
     });
 
     it('should render mathchoice as if there was nothing', () => {
@@ -149,5 +150,20 @@ describe("A MathML builder", function() {
     it('\\html@mathml makes clean symbols', () => {
         expect(getMathML("\\copyright\\neq\\notin\u2258\\KaTeX"))
             .toMatchSnapshot();
+    });
+
+    it('should handle parenthesized expressions with superscripts correctly',
+    () => {
+        expect(getMathML("(x)^2")).toContain(
+            "<msup><mrow><mo stretchy=\"false\">(</mo><mi>x</mi>" +
+            "<mo stretchy=\"false\">)</mo></mrow><mn>2</mn></msup>");
+        expect(getMathML("((x))^2")).toContain(
+            "<msup><mrow><mo stretchy=\"false\">(</mo>" +
+            "<mo stretchy=\"false\">(</mo><mi>x</mi><mo stretchy=\"false\">)</mo>" +
+            "<mo stretchy=\"false\">)</mo></mrow><mn>2</mn></msup>");
+        expect(getMathML("(x+y)_1^2")).toContain(
+            "<msubsup><mrow><mo stretchy=\"false\">(</mo><mi>x</mi><mo>+</mo>" +
+            "<mi>y</mi><mo stretchy=\"false\">)</mo></mrow><mn>1</mn>" +
+            "<mn>2</mn></msubsup>");
     });
 });

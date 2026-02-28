@@ -21,6 +21,29 @@ import type {FontVariant, Mode} from "./types";
 const noVariantSymbols = new Set(["\\imath", "\\jmath"]);
 const rowLikeTypes = new Set(["mrow", "mtable"]);
 
+const closeToOpen = {
+    ")": "(",
+    "]": "[",
+    "}": "{",
+    "\u27e9": "\u27e8", // \rangle, \langle
+    "\u230b": "\u230a", // \rfloor, \lfloor
+    "\u2309": "\u2308", // \rceil, \lceil
+    "\u27ef": "\u27ee", // \rgroup, \lgroup
+    "\u23b1": "\u23b0", // \rmoustache, \lmoustache
+};
+
+/**
+ * Helper to get the text content of a MathNode if it's an <mo> with a single
+ * TextNode child.
+ */
+const getmoText = (node: ?MathDomNode): ?string => {
+    if (node instanceof MathNode && node.type === "mo" &&
+        node.children.length === 1 && node.children[0] instanceof TextNode) {
+        return node.children[0].text;
+    }
+    return null;
+};
+
 /**
  * Takes a symbol and converts it into a MathML text node after performing
  * optional replacement from symbols.js.
@@ -174,10 +197,45 @@ export const buildExpression = function(
         return [group];
     }
 
-    const groups = [];
+    const groups: MathNode[] = [];
     let lastGroup;
     for (let i = 0; i < expression.length; i++) {
         const group = buildGroup(expression[i], options);
+        // Check for parenthesized expression to wrap in an mrow base
+        if (group.type === "msup" || group.type === "msub" ||
+            group.type === "msubsup") {
+            const base = group.children[0];
+            const closeText = getmoText(base);
+            if (closeText && closeToOpen[closeText]) {
+                const openText = closeToOpen[closeText];
+                let j = groups.length - 1;
+                let stack = 1;
+                while (j >= 0) {
+                    const text = getmoText(groups[j]);
+                    if (text === closeText) {
+                        stack++;
+                    } else if (text === openText) {
+                        stack--;
+                        if (stack === 0) {
+                            break;
+                        }
+                    }
+                    j--;
+                }
+                if (j >= 0) {
+                    const mrowBody = groups.splice(j);
+                    // $FlowFixMe
+                    mrowBody.push(base);
+                    const newChildren = [makeRow(mrowBody)];
+                    for (let k = 1; k < group.children.length; k++) {
+                        newChildren.push(group.children[k]);
+                    }
+                    // $FlowFixMe: read-only array
+                    group.children = newChildren;
+                }
+            }
+        }
+
         if (group instanceof MathNode && lastGroup instanceof MathNode) {
             // Concatenate adjacent <mtext>s
             if (group.type === 'mtext' && lastGroup.type === 'mtext'
