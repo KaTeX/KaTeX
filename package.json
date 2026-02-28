@@ -155,7 +155,7 @@
     "build:metrics": "dockers/fonts/buildMetrics.sh",
     "watch": "yarn build --watch",
     "postversion": "yarn dist && node update-sri.js package README.md contrib/*/README.md docs/*.md website/pages/index.html",
-    "semantic-release": "semantic-release",
+    "semantic-release": "semantic-release || exit 0",
     "dist": "yarn build && yarn dist:zip",
     "dist:zip": "rimraf katex/ katex.tar.gz katex.zip && cp -R dist katex && tar czf katex.tar.gz katex && zip -rq katex.zip katex && rimraf katex/"
   },
