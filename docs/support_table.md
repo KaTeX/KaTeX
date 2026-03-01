@@ -326,6 +326,8 @@ use `\ce` instead|
 |\delta|$\delta$||
 |\Delta|$\Delta$||
 |\det|$\det$||
+|\DH|$\text{\DH}$|`\text{\DH}`|
+|\dh|$\text{\dh}$|`\text{\dh}`|
 |\Digamma|<span style="color:firebrick;">Not supported</span>||
 |\digamma|$\digamma$||
 |\dfrac|$\dfrac{a-1}{b-1}$|`\dfrac{a-1}{b-1}`|
@@ -340,6 +342,8 @@ use `\ce` instead|
 |\displaystyle|$\displaystyle\sum_0^n$|`\displaystyle\sum_0^n`|
 |\div|$\div$||
 |\divideontimes|$\divideontimes$||
+|\DJ|$\text{\DJ}$|`\text{\DJ}`|
+|\dj|$\text{\dj}$|`\text{\dj}`|
 |\dot|$\dot x$|`\dot x`|
 |\Doteq|$\Doteq$||
 |\doteq|$\doteq$||
@@ -549,8 +553,8 @@ use `\ce` instead|
 
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
-|\L|<span style="color:firebrick;">Not supported</span>||
-|\l|<span style="color:firebrick;">Not supported</span>||
+|\L|$\text{\L}$|`\text{\L}`|
+|\l|$\text{\l}$|`\text{\l}`|
 |\Lambda|$\Lambda$||
 |\lambda|$\lambda$||
 |\label|<span style="color:firebrick;">Not supported</span>||
@@ -733,6 +737,8 @@ use `\ce` instead|
 |\Newextarrow|<span style="color:firebrick;">Not supported</span>||
 |\newline|$a\newline b$|`a\newline b`|
 |\nexists|$\nexists$||
+|\NG|$\text{\NG}$|`\text{\NG}`|
+|\ng|$\text{\ng}$|`\text{\ng}`|
 |\ngeq|$\ngeq$||
 |\ngeqq|$\ngeqq$||
 |\ngeqslant|$\ngeqslant$||
