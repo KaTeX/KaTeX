@@ -1,6 +1,6 @@
 export {};
 
-const data = require("./screenshotter/ss_data");
+const data = require("./screenshotter/ss_data.js");
 
 describe("Screenshotter item", function() {
     for (const key in data) {
