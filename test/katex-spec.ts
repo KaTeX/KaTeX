@@ -3194,7 +3194,7 @@ describe("href and url commands", function() {
         const parsed = getParsed(
             "\\href{javascript:alert('x')}{foo}",
             new Settings({trust: (context) =>
-                !("protocol" in context) || context.protocol !== "javascript"}),
+                !("protocol" in context) || !["javascript", "data", "vbscript"].includes(context.protocol ?? "")}),
         );
         expect(parsed).toMatchSnapshot();
     });
@@ -3203,7 +3203,7 @@ describe("href and url commands", function() {
         const parsed = getParsed(
             "\\href{JavaScript:alert('x')}{foo}",
             new Settings({trust: (context) =>
-                !("protocol" in context) || context.protocol !== "javascript"}),
+                !("protocol" in context) || !["javascript", "data", "vbscript"].includes(context.protocol ?? "")}),
         );
         expect(parsed).toMatchSnapshot();
     });
