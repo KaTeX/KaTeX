@@ -122,8 +122,8 @@ defineFunctionBuilders({
                 group.base && group.base.type === "op" && group.base.name &&
                 (group.base.name === "\\oiint" || group.base.name === "\\oiiint");
             if (base instanceof SymbolNode || isOiint) {
-                const baseItalic = base instanceof SymbolNode ? base.italic : 0;
-                marginLeft = makeEm(-baseItalic);
+                // @ts-ignore
+                marginLeft = makeEm(-base.italic);
             }
         }
 
