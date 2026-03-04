@@ -2,7 +2,7 @@
 
 export const unicodeSubRegEx = /^[₊₋₌₍₎₀₁₂₃₄₅₆₇₈₉ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜᵤᵥₓᵦᵧᵨᵩᵪ]/;
 
-export const uSubsAndSups = Object.freeze({
+export const uSubsAndSups: Readonly<Record<string, string>> = Object.freeze({
     '₊': '+',
     '₋': '-',
     '₌': '=',
