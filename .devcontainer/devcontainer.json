@@ -3,7 +3,6 @@
   "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:14",
   "extensions": [
     "dbaeumer.vscode-eslint",
-    "flowtype.flow-for-vscode",
     "stylelint.vscode-stylelint",
     "arcanis.vscode-zipfs"
   ],

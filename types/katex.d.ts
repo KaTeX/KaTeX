@@ -66,7 +66,7 @@ export interface KatexOptions {
      * If `true` the math will be rendered in display mode.
      * If `false` the math will be rendered in inline mode.
      * @see https://katex.org/docs/options
-     * 
+     *
      * @default false
      */
     displayMode?: boolean;
@@ -76,21 +76,21 @@ export interface KatexOptions {
      * - `mathml`: Outputs KaTeX in MathML only.
      * - `htmlAndMathml`: Outputs HTML for visual rendering and includes MathML
      * for accessibility.
-     * 
+     *
      * @default "htmlAndMathml"
      */
     output?: "html" | "mathml" | "htmlAndMathml";
     /**
      * If `true`, display math has `\tag`s rendered on the left instead of the
      * right, like `\usepackage[leqno]{amsmath}` in LaTeX.
-     * 
+     *
      * @default false
      */
     leqno?: boolean;
     /**
      * If `true`, display math renders flush left with a `2em` left margin,
      * like `\documentclass[fleqn]` in LaTeX with the `amsmath` package.
-     * 
+     *
      * @default false
      */
     fleqn?: boolean;
@@ -100,7 +100,7 @@ export interface KatexOptions {
      * If `false`, KaTeX will render unsupported commands as text, and render
      * invalid LaTeX as its source code with hover text giving the error, in
      * the color given by `errorColor`.
-     * 
+     *
      * @default true
      */
     throwOnError?: boolean;
@@ -108,7 +108,7 @@ export interface KatexOptions {
      * A color string given in the format `"#XXX"` or `"#XXXXXX"`. This option
      * determines the color that unsupported commands and invalid LaTeX are
      * rendered in when `throwOnError` is set to `false`.
-     * 
+     *
      * @default "#cc0000"
      */
     errorColor?: string;
@@ -116,7 +116,8 @@ export interface KatexOptions {
      * A collection of custom macros.
      * @see https://katex.org/docs/options
      */
-    macros?: Record<string, string | object | ((macroExpander:object) => string | object)>;
+    macros?: Record<string, string | object | ((macroExpander:object)
+        => string | object)>;
     /**
      * Specifies a minimum thickness, in ems, for fraction lines, `\sqrt` top
      * lines, `{array}` vertical lines, `\hline`, `\hdashline`, `\underline`,
@@ -138,7 +139,7 @@ export interface KatexOptions {
      * All user-specified sizes, e.g. in `\rule{500em}{500em}`, will be capped
      * to `maxSize` ems. If set to `Infinity` (the default), users can make
      * elements and spaces arbitrarily large.
-     * 
+     *
      * @default Infinity
      */
     maxSize?: number;
@@ -147,7 +148,7 @@ export interface KatexOptions {
      * e.g. infinite macro loops. `\edef` expansion counts all expanded tokens.
      * If set to `Infinity`, the macro expander will try to fully expand as in
      * LaTeX.
-     * 
+     *
      * @default 1000
      */
     maxExpand?: number;
@@ -164,7 +165,7 @@ export interface KatexOptions {
      * can also return `"ignore"`, `"error"`, or `"warn"` to use a built-in
      * behavior.
      * @see https://katex.org/docs/options
-     * 
+     *
      * @default "warn"
      */
     strict?:
@@ -179,7 +180,7 @@ export interface KatexOptions {
      * Provide a custom function `handler(context)` to customize behavior
      * depending on the context (command, arguments e.g. a URL, etc.).
      * @see https://katex.org/docs/options
-     * 
+     *
      * @default false
     */
     trust?: boolean | ((context: TrustContext) => boolean);
@@ -190,7 +191,7 @@ export interface KatexOptions {
      * constructs such as `\begin{equation}` and `$$` create a local group and
      * prevent definitions other than `\gdef` from becoming visible outside of
      * those blocks, so this is KaTeX's default behavior.
-     * 
+     *
      * @default false
      */
     globalGroup?: boolean;

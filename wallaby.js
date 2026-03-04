@@ -2,8 +2,8 @@ const babelConfig = require("./babel.config.js");
 
 module.exports = function(wallaby) {
     const tests = [
-        "test/*-spec.js",
-        "contrib/**/test/*-spec.js",
+        "test/*-spec.ts",
+        "contrib/**/test/*-spec.ts",
     ];
 
     return {
@@ -13,9 +13,11 @@ module.exports = function(wallaby) {
         // of running a test.
         files: [
             "src/**/*.js",
-            "test/**/*.js",
+            "src/**/*.ts",
+            "test/**/*.ts",
             "contrib/**/*.js",
-            "katex.js",
+            "contrib/**/*.ts",
+            "katex.ts",
 
             // These paths are excluded.
             ...tests.map((test) => `!${test}`),
@@ -26,6 +28,7 @@ module.exports = function(wallaby) {
         // JSX in our source files so need to provide a babel configuration.
         compilers: {
             "**/*.js": wallaby.compilers.babel(babelConfig),
+            "**/*.ts": wallaby.compilers.babel(babelConfig),
         },
 
         env: {

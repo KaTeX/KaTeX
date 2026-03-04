@@ -1,8 +1,27 @@
 {
   "compilerOptions": {
     "strict": true,
-    "lib": ["es2021", "dom"],
+    "allowJs": true,
+    "checkJs": false,
+    "lib": ["es2023", "dom"],
+    "target": "es2023",
+    "module": "esnext",
     "moduleResolution": "bundler",
-    "forceConsistentCasingInFileNames": true
-  }
+    "forceConsistentCasingInFileNames": true,
+    "noUncheckedIndexedAccess": false,
+    "exactOptionalPropertyTypes": false,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "baseUrl": "."
+  },
+  "include": [
+    "katex.ts",
+    "src/**/*",
+    "contrib/**/*",
+    "test/**/*"
+  ],
+  "exclude": [
+    "contrib/mhchem/**"
+  ]
 }
