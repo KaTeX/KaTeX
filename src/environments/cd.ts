@@ -25,7 +25,6 @@ const newCell = (): ParseNode<"styling"> => {
     // The parseTree from this module must be constructed like the
     // one created by parseArray(), so an empty CD cell must
     // be a ParseNode<"styling">. And CD is always displaystyle.
-    // So these values are fixed and flow can do implicit typing.
     return {type: "styling", body: [], mode: "math", style: "display"};
 };
 

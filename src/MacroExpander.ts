@@ -347,10 +347,6 @@ export default class MacroExpander implements MacroContextInterface {
                 return token;
             }
         }
-
-        // Flow unable to figure out that this pathway is impossible.
-        // https://github.com/facebook/flow/issues/4808
-        throw new Error(); // eslint-disable-line no-unreachable
     }
 
     /**

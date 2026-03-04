@@ -1,6 +1,6 @@
 
 /**
- * This file consists only of basic flow types used in multiple places.
+ * This file consists only of basic types used in multiple places.
  * For types with javascript, create separate files by themselves.
  */
 
