@@ -1,9 +1,16 @@
+// @ts-check
 const {targets, createConfig} = require('./webpack.common');
+// @ts-ignore
 const path = require('path');
 const PORT = 7936;
 
 //                                                             dev   minify
-const katexConfig = createConfig(targets.shift(), true, false);
+const target = targets.shift();
+if (!target) {
+    throw new Error("No webpack targets defined");
+}
+/** @type {any} */
+const katexConfig = createConfig(target, true, false);
 
 // add the entry point for test page
 katexConfig.entry.main = './static/main.js';
@@ -26,6 +33,7 @@ katexConfig.devServer = {
     port: PORT,
 };
 
+/** @type {Array<object>} */
 module.exports = ([
     katexConfig,
     ...targets.map(target => createConfig(target, true, false)),

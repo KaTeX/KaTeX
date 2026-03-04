@@ -1,19 +1,36 @@
+// @ts-check
+// Module types aren't available because of Yarn PnP :-(
+// @ts-ignore
 const path = require('path');
+// @ts-ignore
 const TerserPlugin = require('terser-webpack-plugin');
+// @ts-ignore
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+// @ts-ignore
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
 const {version} = require("./package.json");
 
-const browserslist = require('browserslist')();
+// @ts-ignore
+const browserslist = /** @type {string[]} */ (require('browserslist')());
+// @ts-ignore
 const caniuse = require('caniuse-lite');
 
 // from the least supported to the most supported
 const fonts = ['woff2', 'woff', 'ttf'];
 
 /**
+ * @typedef {{
+ *   name: string,
+ *   entry: string,
+ *   library?: string,
+ * }} Target
+ */
+
+/**
  * List of targets to build
  */
+/** @type {Target[]} */
 const targets = [
     {
         name: 'katex',
@@ -49,16 +66,23 @@ const targets = [
 
 /**
  * Create a webpack config for given target
+ * @param {Target} target
+ * @param {boolean} dev
+ * @param {boolean} minimize
+ * @returns {object}
  */
 function createConfig(target, dev, minimize) {
+    /** @type {Array<any>} */
     const cssLoaders = [{
         loader: 'css-loader',
         options: {importLoaders: 1},
     }, {
         loader: 'postcss-loader',
+        // @ts-ignore
         options: {postcssOptions: {plugins: [require('postcss-preset-env')()]}},
     }];
     if (minimize) {
+        // @ts-ignore
         cssLoaders[1].options.postcssOptions.plugins.push(require('cssnano')());
     }
 
@@ -67,7 +91,9 @@ function createConfig(target, dev, minimize) {
     // use only necessary fonts, overridable by environment variables
     let isCovered = false;
     for (const font of fonts) {
-        const override = process.env[`USE_${font.toUpperCase()}`];
+        const override = /** @type {string | undefined} */
+            (process.env[`USE_${font.toUpperCase()}`]);
+        /** @type {boolean} */
         const useFont = override === "true" || override !== "false" && !isCovered;
         sassVariables += (`$use-${font}: ${useFont.toString()};\n`);
 

@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "strict": true,
+    "allowJs": true,
+    "checkJs": false,
     "lib": ["es2023", "dom"],
     "target": "es2023",
     "module": "esnext",
@@ -13,5 +15,14 @@
     "noEmit": true,
     "baseUrl": "."
   },
-  "include": ["katex.ts", "src/**/*", "contrib/**/*", "test/**/*"]
+  "include": [
+    "katex.ts",
+    "src/**/*",
+    "contrib/**/*",
+    "test/**/*",
+    "*.js"
+  ],
+  "exclude": [
+    "contrib/mhchem/**"
+  ]
 }
