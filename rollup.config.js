@@ -3,6 +3,7 @@ import alias from '@rollup/plugin-alias';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import fs from 'fs';
+import path from 'path';
 
 const {targets} = require('./webpack.common');
 
@@ -13,14 +14,20 @@ export default targets
 .map(({name, entry}) => {
     const input = entry.replace('.webpack', '');
     const tsInput = input.replace(/\.js$/, '.ts');
+    const outputFile = `dist/${name}.mjs`;
     return {
         input: !fs.existsSync(input) && fs.existsSync(tsInput) ? tsInput : input,
         output: {
-            file: `dist/${name}.mjs`,
+            file: outputFile,
             format: 'es',
         },
         plugins: [
-            typescript(),
+            typescript({
+                compilerOptions: {
+                    noEmit: false,
+                    outDir: path.dirname(outputFile),
+                },
+            }),
             commonjs(),
             babel({babelHelpers: 'runtime'}),
             alias({
