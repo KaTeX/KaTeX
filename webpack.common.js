@@ -1,19 +1,11 @@
-// @ts-check
-// Module types aren't available because of Yarn PnP :-(
-// @ts-ignore
 const path = require('path');
-// @ts-ignore
 const TerserPlugin = require('terser-webpack-plugin');
-// @ts-ignore
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-// @ts-ignore
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
 const {version} = require("./package.json");
 
-// @ts-ignore
 const browserslist = /** @type {string[]} */ (require('browserslist')());
-// @ts-ignore
 const caniuse = require('caniuse-lite');
 
 // from the least supported to the most supported
@@ -78,11 +70,9 @@ function createConfig(target, dev, minimize) {
         options: {importLoaders: 1},
     }, {
         loader: 'postcss-loader',
-        // @ts-ignore
         options: {postcssOptions: {plugins: [require('postcss-preset-env')()]}},
     }];
     if (minimize) {
-        // @ts-ignore
         cssLoaders[1].options.postcssOptions.plugins.push(require('cssnano')());
     }
 

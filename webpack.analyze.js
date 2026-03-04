@@ -1,6 +1,4 @@
-// @ts-check
 const {targets, createConfig} = require('./webpack.common');
-// @ts-ignore
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 //                                                              dev   minify

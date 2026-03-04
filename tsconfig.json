@@ -19,8 +19,7 @@
     "katex.ts",
     "src/**/*",
     "contrib/**/*",
-    "test/**/*",
-    "*.js"
+    "test/**/*"
   ],
   "exclude": [
     "contrib/mhchem/**"

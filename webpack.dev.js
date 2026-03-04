@@ -1,6 +1,4 @@
-// @ts-check
 const {targets, createConfig} = require('./webpack.common');
-// @ts-ignore
 const path = require('path');
 const PORT = 7936;
 
