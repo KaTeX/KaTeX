@@ -45,11 +45,7 @@ beforeEach(function() {
                 } else if (real.data !== correct.data) {
                     good = false;
                     diff = "data";
-                } else if (
-                    real.type === "math" &&
-                    correct.type === "math" &&
-                    real.display !== correct.display
-                ) {
+                } else if (real.display !== correct.display) {
                     good = false;
                     diff = "display";
                 }

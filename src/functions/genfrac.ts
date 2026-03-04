@@ -227,7 +227,7 @@ const wrapWithStyle = (
         body: [frac],
     };
 
-    // @ts-ignore
+    // @ts-ignore defineFunction handler needs to return ParseNode<"genfrac">
     return wrapper;
 };
 
@@ -344,6 +344,7 @@ defineFunction({
         };
     },
 });
+
 const stylArray: StyleStr[] = ["display", "text", "script", "scriptscript"];
 
 const delimFromValue = function(delimString: string): string | null {

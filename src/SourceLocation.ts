@@ -7,8 +7,8 @@ import type {LexerInterface} from "./Token";
 export default class SourceLocation {
     // The + prefix indicates that these fields aren't writeable
     readonly lexer: LexerInterface; // Lexer holding the input string.
-    readonly start: number; // Start offset, zero-based inclusive.
-    readonly end: number; // End offset, zero-based exclusive.
+    readonly start: number;         // Start offset, zero-based inclusive.
+    readonly end: number;           // End offset, zero-based exclusive.
 
     constructor(lexer: LexerInterface, start: number, end: number) {
         this.lexer = lexer;

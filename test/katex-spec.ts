@@ -14,6 +14,7 @@ import {
     getBuilt, getParsed, stripPositions,
 } from "./helpers";
 
+// TODO(ts)
 const buildMathML: any = buildMathMLOrig;
 const buildTree: any = buildTreeOrig;
 const katex: any = katexOrig;

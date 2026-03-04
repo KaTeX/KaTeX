@@ -51,6 +51,7 @@ export const buildTree = function(
 
     return displayWrap(katexNode, settings);
 };
+
 export const buildHTMLTree = function(
     tree: AnyParseNode[],
     expression: string,

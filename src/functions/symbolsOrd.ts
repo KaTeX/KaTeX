@@ -8,6 +8,7 @@ import type {ParseNode} from "../parseNode";
 
 // "mathord" and "textord" ParseNodes created in Parser.js from symbol Groups in
 // src/symbols.js.
+
 const defaultVariant: Record<string, string> = {
     "mi": "italic",
     "mn": "normal",

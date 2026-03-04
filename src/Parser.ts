@@ -236,7 +236,6 @@ export default class Parser {
 
         for (let i = 0; i < body.length; i++) {
             const node = body[i];
-
             if (node.type === "infix") {
                 if (overIndex !== -1) {
                     throw new ParseError(
@@ -871,20 +870,16 @@ export default class Parser {
         let n = group.length - 1;
         for (let i = 0; i < n; ++i) {
             const a = group[i];
-
             if (a.type !== "textord") {
                 continue;
             }
             const v = a.text;
             const next = group[i + 1];
-
             if (!next || next.type !== "textord") {
                 continue;
             }
-
             if (v === "-" && next.text === "-") {
                 const afterNext = group[i + 2];
-
                 if (i + 1 < n && afterNext && afterNext.type === "textord" && afterNext.text === "-") {
                     group.splice(i, 3, {
                         type: "textord",
@@ -903,7 +898,6 @@ export default class Parser {
                     n -= 1;
                 }
             }
-
             if ((v === "'" || v === "`") && next.text === v) {
                 group.splice(i, 2, {
                     type: "textord",

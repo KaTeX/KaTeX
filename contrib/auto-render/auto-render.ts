@@ -12,14 +12,25 @@ interface RenderMathInElementOptions {
     errorCallback?: (msg: string, err: Error) => void;
     displayMode?: boolean;
     macros?: Record<string, string>;
-    [key: string]: unknown;
+}
+
+interface RenderMathInElementOptionsCopy {
+    delimiters: DelimiterSpec[];
+    preProcess?: (math: string) => string;
+    ignoredTags: Set<string>;
+    ignoredClasses: string[];
+    errorCallback: (msg: string, err: Error) => void;
+    displayMode?: boolean;
+    macros?: Record<string, string>;
 }
 
 /* Note: optionsCopy is mutated by this method. If it is ever exposed in the
  * API, we should copy it before mutating.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const renderMathInText = function(text: string, optionsCopy: any) {
+const renderMathInText = function(
+    text: string,
+    optionsCopy: RenderMathInElementOptionsCopy
+) {
     const data = splitAtDelimiters(text, optionsCopy.delimiters);
     if (data.length === 1 && data[0].type === 'text') {
         // There is no formula in the text.
@@ -63,8 +74,10 @@ const renderMathInText = function(text: string, optionsCopy: any) {
     return fragment;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const renderElem = function(elem: HTMLElement, optionsCopy: any) {
+const renderElem = function(
+    elem: HTMLElement,
+    optionsCopy: RenderMathInElementOptionsCopy
+) {
     for (let i = 0; i < elem.childNodes.length; i++) {
         const childNode = elem.childNodes[i];
         if (childNode.nodeType === 3) {
@@ -114,15 +127,9 @@ const renderMathInElement = function(elem: HTMLElement, options?: RenderMathInEl
         throw new Error("No element provided to render");
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const optionsCopy: any = {};
+    const optionsCopy: Partial<RenderMathInElementOptionsCopy> = {};
 
-    // Object.assign(optionsCopy, option)
-    for (const option in options) {
-        if (options.hasOwnProperty(option)) {
-            optionsCopy[option] = options[option];
-        }
-    }
+    Object.assign(optionsCopy, options);
 
     // default options
     optionsCopy.delimiters = optionsCopy.delimiters || [
@@ -141,7 +148,7 @@ const renderMathInElement = function(elem: HTMLElement, options?: RenderMathInEl
 
         {left: "\\[", right: "\\]", display: true},
     ];
-    optionsCopy.ignoredTags = new Set<string>(optionsCopy.ignoredTags || [
+    optionsCopy.ignoredTags = new Set<string>(options?.ignoredTags || [
         "script", "noscript", "style", "textarea", "pre", "code", "option",
     ]);
     optionsCopy.ignoredClasses = optionsCopy.ignoredClasses || [];
@@ -151,7 +158,7 @@ const renderMathInElement = function(elem: HTMLElement, options?: RenderMathInEl
     // math elements within a single call to `renderMathInElement`.
     optionsCopy.macros = optionsCopy.macros || {};
 
-    renderElem(elem, optionsCopy);
+    renderElem(elem, optionsCopy as RenderMathInElementOptionsCopy);
 };
 
 export default renderMathInElement;

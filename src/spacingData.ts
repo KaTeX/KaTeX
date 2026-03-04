@@ -33,7 +33,7 @@ export type Spacings = Partial<{
 }> & {};
 
 // Spacing relationships for display and text styles
-export const spacings: { [key in keyof Spacings]?: Spacings } = {
+export const spacings: {[key in keyof Spacings]?: Spacings} = {
     mord: {
         mop: thinspace,
         mbin: mediumspace,
@@ -86,7 +86,7 @@ export const spacings: { [key in keyof Spacings]?: Spacings } = {
 };
 
 // Spacing relationships for script and scriptscript styles
-export const tightSpacings: { [key in keyof Spacings]?: Spacings } = {
+export const tightSpacings: {[key in keyof Spacings]?: Spacings} = {
     mord: {
         mop: thinspace,
     },

@@ -4,6 +4,7 @@ import Options from "../src/Options";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
 
+// TODO(ts)
 const buildMathML: any = buildMathMLOrig;
 const parseTree: any = parseTreeOrig;
 
