@@ -141,7 +141,7 @@ files using ESLint and stylesheets using stylelint. They must pass to commit
 the changes.
 
 TypeScript files can be checked for type errors by running
-`yarn test:typecheck`.
+`yarn test:ts`.
 
 ## Pull Requests
 

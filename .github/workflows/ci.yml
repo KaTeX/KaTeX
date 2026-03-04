@@ -33,7 +33,7 @@ jobs:
       run: yarn test:lint
 
     - name: Run TypeScript typecheck
-      run: yarn test:typecheck
+      run: yarn test:ts
       if: always()
 
     - name: Run Jest tests
