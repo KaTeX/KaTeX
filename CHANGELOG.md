@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.34](https://github.com/KaTeX/KaTeX/compare/v0.16.33...v0.16.34) (2026-03-05)
+
+
+### Bug Fixes
+
+* emoji with variation selector ([#4151](https://github.com/KaTeX/KaTeX/issues/4151)) ([c2606e5](https://github.com/KaTeX/KaTeX/commit/c2606e5db91ae199ee1ff0c8c2f7f9f70fcf589b))
+
 ## [0.16.33](https://github.com/KaTeX/KaTeX/compare/v0.16.32...v0.16.33) (2026-02-23)
 
 
