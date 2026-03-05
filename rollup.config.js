@@ -29,7 +29,10 @@ export default targets
                 },
             }),
             commonjs(),
-            babel({babelHelpers: 'runtime'}),
+            babel({
+                babelHelpers: 'runtime',
+                extensions: ['.js', '.mjs', '.cjs', '.ts'],
+            }),
             alias({
                 entries: [
                     {find: 'katex', replacement: '../katex.mjs'},
