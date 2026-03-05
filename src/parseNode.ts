@@ -401,12 +401,6 @@ type ParseNodeTypes = {
         loc?: SourceLocation | null | undefined;
         body: AnyParseNode[];
     };
-    "hphantom": {
-        type: "hphantom";
-        mode: Mode;
-        loc?: SourceLocation | null | undefined;
-        body: AnyParseNode;
-    };
     "vphantom": {
         type: "vphantom";
         mode: Mode;
