@@ -335,7 +335,6 @@ defineMacro("\u231E", "\\llcorner");
 defineMacro("\u231F", "\\lrcorner");
 defineMacro("\u00A9", "\\copyright");
 defineMacro("\u00AE", "\\textregistered");
-defineMacro("\uFE0F", "\\textregistered");
 
 // The KaTeX fonts have corners at codepoints that don't match Unicode.
 // For MathML purposes, use the Unicode code point.

@@ -4127,7 +4127,17 @@ describe("Unicode", function() {
 
     it("should parse symbols", function() {
         expect("£¥ℂℍℑℎℓℕ℘ℙℚℜℝℤℲℵðℶℷℸ⅁∀∁∂∃∇∞∠∡∢♠♡♢♣♭♮♯✓°¬‼⋮\u00B7\u00A9").toBuild(strictSettings);
-        expect("\\text{£¥ℂℍℎ\u00A9\u00AE\uFE0F}").toBuild(strictSettings);
+        expect("\\text{£¥ℂℍℎ\u00A9\u00AE}").toBuild(strictSettings);
+    });
+
+    it("should not treat emoji variation selectors as registered signs", function() {
+        const parsed = getParsed("🏳️‍🌈", nonstrictSettings);
+        expect(parsed).toHaveLength(4);
+        expect(parsed[1]).toMatchObject({
+            type: "textord",
+            mode: "text",
+            text: "\uFE0F",
+        });
     });
 
     it("should build Greek capital letters", function() {
