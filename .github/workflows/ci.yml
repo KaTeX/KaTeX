@@ -43,7 +43,7 @@ jobs:
     - name: Build
       run: yarn build
 
-    - uses: codecov/codecov-action@v3
+    - uses: codecov/codecov-action@v5
       with:
         directory: ./coverage/
       timeout-minutes: 3
