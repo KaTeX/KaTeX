@@ -43,6 +43,9 @@ jobs:
     - name: Build
       run: yarn build
 
+    - name: Verify built bundle
+      run: yarn test:build
+
     - uses: codecov/codecov-action@v3
       with:
         directory: ./coverage/
