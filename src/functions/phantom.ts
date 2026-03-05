@@ -1,5 +1,6 @@
 import defineFunction, {ordargument} from "../defineFunction";
-import {makeFragment, makeSpan, makeVList} from "../buildCommon";
+import defineMacro from "../defineMacro";
+import {makeFragment, makeSpan} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
 
 import * as html from "../buildHTML";
@@ -37,51 +38,7 @@ defineFunction({
     },
 });
 
-defineFunction({
-    type: "hphantom",
-    names: ["\\hphantom"],
-    props: {
-        numArgs: 1,
-        allowedInText: true,
-    },
-    handler: ({parser}, args) => {
-        const body = args[0];
-        return {
-            type: "hphantom",
-            mode: parser.mode,
-            body,
-        };
-    },
-    htmlBuilder: (group, options) => {
-        let node = makeSpan(
-            [], [html.buildGroup(group.body, options.withPhantom())]);
-        node.height = 0;
-        node.depth = 0;
-        if (node.children) {
-            for (let i = 0; i < node.children.length; i++) {
-                node.children[i].height = 0;
-                node.children[i].depth = 0;
-            }
-        }
-
-        // See smash for comment re: use of makeVList
-        node = makeVList({
-            positionType: "firstBaseline",
-            children: [{type: "elem", elem: node}],
-        }, options);
-
-        // For spacing, TeX treats \smash as a math group (same spacing as ord).
-        return makeSpan(["mord"], [node], options);
-    },
-    mathmlBuilder: (group, options) => {
-        const inner = mml.buildExpression(ordargument(group.body), options);
-        const phantom = new MathNode("mphantom", inner);
-        const node = new MathNode("mpadded", [phantom]);
-        node.setAttribute("height", "0px");
-        node.setAttribute("depth", "0px");
-        return node;
-    },
-});
+defineMacro("\\hphantom", "\\smash{\\phantom{#1}}");
 
 defineFunction({
     type: "vphantom",
