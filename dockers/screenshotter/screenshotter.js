@@ -125,6 +125,54 @@ function cmd() {
         cmd, args, {encoding: "utf-8"}).replace(/\n$/, "");
 }
 
+function isDockerDesktop() {
+    try {
+        const operatingSystem = cmd("docker", "info", "-f", "{{.OperatingSystem}}");
+        return /Docker Desktop/i.test(operatingSystem);
+    } catch (e) {
+        return false;
+    }
+}
+
+function parseDockerPort(portInfo) {
+    const lines = portInfo
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(Boolean);
+    if (!lines.length) {
+        throw new Error("No published Docker port found.");
+    }
+
+    let best;
+    for (const line of lines) {
+        const idx = line.lastIndexOf(":");
+        if (idx < 0) {
+            continue;
+        }
+        const port = line.slice(idx + 1);
+        if (!/^\d+$/.test(port)) {
+            continue;
+        }
+
+        let host = line.slice(0, idx).replace(/^\[(.*)\]$/, "$1");
+        let score = 0;
+        if (host === "0.0.0.0" || host === "::" || host === ":::" || host === "") {
+            host = "localhost";
+        } else {
+            score = 1;
+        }
+
+        if (!best || score > best.score) {
+            best = {host, port, score};
+        }
+    }
+
+    if (!best) {
+        throw new Error("Could not parse Docker port mapping: " + portInfo);
+    }
+    return best;
+}
+
 function guessDockerIPs() {
     if (process.env.DOCKER_MACHINE_NAME) {
         const machine = process.env.DOCKER_MACHINE_NAME;
@@ -147,16 +195,16 @@ function guessDockerIPs() {
     } catch (e) {
         // Apparently no boot2docker, continue
     }
-    if (!process.env.DOCKER_HOST && os.type() === "Darwin") {
-        // Docker for Mac
+    if (!process.env.DOCKER_HOST && isDockerDesktop()) {
+        // Docker Desktop on macOS/Windows
         seleniumIP = seleniumIP || "localhost";
-        katexIP = katexIP || "*any*"; // see findHostIP
+        katexIP = katexIP || "host.docker.internal";
         return;
     }
     // Native Docker on Linux or remote Docker daemon or similar
     // https://docs.docker.com/engine/tutorials/networkingcontainers/
     const gatewayIP = cmd("docker", "inspect", // using default bridge network
-        "-f", "{{.NetworkSettings.Gateway}}", opts.container)
+        "-f", "{{.NetworkSettings.Networks.bridge.Gateway}}", opts.container)
       || cmd("docker", "inspect", // using own network
         "-f", "{{range .NetworkSettings.Networks}}{{.Gateway}}{{end}}",
         opts.container);
@@ -165,12 +213,15 @@ function guessDockerIPs() {
 }
 
 if (!seleniumURL && opts.container) {
-    if (!seleniumIP || !katexIP) {
+    if (!katexIP) {
         guessDockerIPs();
     }
-    seleniumPort = cmd("docker", "port", opts.container, seleniumPort);
-    // Docker can output two lines, such as "0.0.0.0:49156\n:::49156"
-    seleniumPort = seleniumPort.replace(/[^]*:([0-9]+)[^]*/, "$1");
+    const seleniumPortInfo = cmd("docker", "port", opts.container, seleniumPort);
+    const seleniumEndpoint = parseDockerPort(seleniumPortInfo);
+    seleniumPort = seleniumEndpoint.port;
+    if (!seleniumIP) {
+        seleniumIP = seleniumEndpoint.host;
+    }
 }
 if (!seleniumURL && seleniumIP) {
     seleniumURL = "http://" + seleniumIP + ":" + seleniumPort + "/wd/hub";
@@ -192,7 +243,12 @@ if (seleniumURL) {
             await startBrowserstackLocal();
         }
         if (seleniumIP) {
-            await pRetry(tryConnect, {retries: 50, minTimeout: 100});
+            await pRetry(tryConnect, {
+                retries: 50,
+                minTimeout: 100,
+                // Keep retry intervals short (else can appear to hang).
+                factor: 1,
+            });
         }
         driver = buildDriver();
     }
