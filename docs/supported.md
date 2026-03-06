@@ -31,11 +31,11 @@ table td {
 |$\check{a}$ `\check{a}`|$\overleftharpoon{ac}$ `\overleftharpoon{ac}`  |$\overrightharpoon{ac}$ `\overrightharpoon{ac}`
 |$\dot{a}$ `\dot{a}` |$\overleftrightarrow{AB}$ `\overleftrightarrow{AB}`  |$\overbrace{AB}$ `\overbrace{AB}`
 |$\ddot{a}$ `\ddot{a}`  |$\underleftrightarrow{AB}$ `\underleftrightarrow{AB}`|$\underbrace{AB}$ `\underbrace{AB}`
-|$\dddot{a}$ `\dddot{a}`|$\overline{AB}$ `\overline{AB}` |$\overlinesegment{AB}$ `\overlinesegment{AB}`
-|$\ddddot{a}$ `\ddddot{a}`|$\underline{AB}$ `\underline{AB}`  |$\underlinesegment{AB}$ `\underlinesegment{AB}`
-|$\grave{a}$ `\grave{a}`|$\widecheck{ac}$ `\widecheck{ac}`  |$\underbar{X}$ `\underbar{X}`
-|$\hat{\theta}$ `\hat{\theta}`|$\widehat{ac}$ `\widehat{ac}`|$\overbracket{AB}$ `\overbracket{AB}`
-|||$\underbracket{AB}$ `\underbracket{AB}`
+|$\dddot{a}$ `\dddot{a}`|$\overline{AB}$ `\overline{AB}` |$\overbracket{AB}$ `\overbracket{AB}`
+|$\ddddot{a}$ `\ddddot{a}`|$\underline{AB}$ `\underline{AB}`  |$\underbracket{AB}$ `\underbracket{AB}`
+|$\grave{a}$ `\grave{a}`|$\underbar{X}$ `\underbar{X}`|$\overlinesegment{AB}$ `\overlinesegment{AB}`
+|$\hat{\theta}$ `\hat{\theta}`|$\widecheck{ac}$ `\widecheck{ac}`  |$\underlinesegment{AB}$ `\underlinesegment{AB}`
+||$\widehat{ac}$ `\widehat{ac}`|
 
 ***Accent functions inside \\text{…}***
 
@@ -237,11 +237,11 @@ Any character can be written with the `\char` function and the Unicode code in h
 |:------------------------------|:-----
 |$\cancel{5}$ `\cancel{5}`|$\overbrace{a+b+c}^{\text{note}}$ `\overbrace{a+b+c}^{\text{note}}`
 |$\bcancel{5}$ `\bcancel{5}` |$\underbrace{a+b+c}_{\text{note}}$ `\underbrace{a+b+c}_{\text{note}}`
-|$\xcancel{ABC}$ `\xcancel{ABC}`|$\not =$ `\not =`
-|$\sout{abc}$ `\sout{abc}`|$\boxed{\pi=\frac c d}$ `\boxed{\pi=\frac c d}`
-|$a_{\angl n}$ `$a_{\angl n}`|$a_\angln$ `a_\angln`
-|$\phase{-78^\circ}$`\phase{-78^\circ}` |$\overbracket{a+b+c}^{\text{note}}$ `\overbracket{a+b+c}^{\text{note}}`
-||$\underbracket{a+b+c}_{\text{note}}$ `\underbracket{a+b+c}_{\text{note}}`
+|$\xcancel{ABC}$ `\xcancel{ABC}`|$\overbracket{a+b+c}^{\text{note}}$ `\overbracket{a+b+c}^{\text{note}}`
+|$\sout{abc}$ `\sout{abc}`|$\underbracket{a+b+c}_{\text{note}}$ `\underbracket{a+b+c}_{\text{note}}`
+|$\not =$ `\not =`|$\boxed{\pi=\frac c d}$ `\boxed{\pi=\frac c d}`
+|$a_{\angl n}$ `$a_{\angl n}$`|$\phase{-78^\circ}$`\phase{-78^\circ}`
+|$a_\angln$ `$a_\angln$`||
 
 `\tag{hi} x+y^{2x}`
 $$\tag{hi} x+y^{2x}$$
