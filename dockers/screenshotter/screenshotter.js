@@ -143,34 +143,33 @@ function parseDockerPort(portInfo) {
         throw new Error("No published Docker port found.");
     }
 
-    let best;
-    for (const line of lines) {
+    const localhostSignatures = new Set(["0.0.0.0", "::", ":::", ""]);
+    const digitsOnly = /^\d+$/;
+    const ipv6Brackets = /^\[(.*)\]$/;
+    const options = lines.map(line => {
         const idx = line.lastIndexOf(":");
         if (idx < 0) {
-            continue;
+            return;
         }
         const port = line.slice(idx + 1);
-        if (!/^\d+$/.test(port)) {
-            continue;
+        if (!digitsOnly.test(port)) {
+            return;
         }
-
-        let host = line.slice(0, idx).replace(/^\[(.*)\]$/, "$1");
-        let score = 0;
-        if (host === "0.0.0.0" || host === "::" || host === ":::" || host === "") {
-            host = "localhost";
-        } else {
-            score = 1;
-        }
-
-        if (!best || score > best.score) {
-            best = {host, port, score};
-        }
+        const rawHost = line.slice(0, idx).replace(ipv6Brackets, "$1");
+        const wildcard = localhostSignatures.has(rawHost);
+        return {
+            host: wildcard ? "localhost" : rawHost,
+            port,
+            score: wildcard ? 0 : 1,
+        };
+    }).filter(Boolean);
+    if (!options.length) {
+        throw new Error(
+            `Could not parse Docker port mapping:\n${portInfo}`);
     }
 
-    if (!best) {
-        throw new Error("Could not parse Docker port mapping: " + portInfo);
-    }
-    return best;
+    return options.reduce((bestMatch, option) =>
+        option.score > bestMatch.score ? option : bestMatch);
 }
 
 function guessDockerIPs() {
