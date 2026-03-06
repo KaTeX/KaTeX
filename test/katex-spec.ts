@@ -2335,6 +2335,23 @@ describe("A \\phantom builder and \\smash builder", function() {
         expect(getBuilt`\smash{=}`[0].classes).toContain("mord");
         expect(getBuilt`a\smash{+}b`[2].classes).toContain("mord");
     });
+
+    it("should use smash class for hphantom", function() {
+        const node = getBuilt`x\,\hphantom{\!}x`[2];
+        expect(node.classes).toContain("smash");
+        expect(node.children[0].classes).not.toContain("vlist-t");
+    });
+
+    it("should avoid vlist for symmetric smash", function() {
+        const node = getBuilt`x\smash{x}x`[1];
+        expect(node.classes).toContain("smash");
+        expect(node.children[0].classes).not.toContain("vlist-t");
+    });
+
+    it("should keep vlist for asymmetric smash", function() {
+        const node = getBuilt`x\smash[t]{x}x`[1];
+        expect(node.children[0].classes).toContain("vlist-t");
+    });
 });
 
 describe("A markup generator", function() {

@@ -61,18 +61,25 @@ defineFunction({
 
         if (group.smashHeight) {
             node.height = 0;
-            // In order to influence makeVList, we have to reset the children.
-            if (node.children) {
-                for (let i = 0; i < node.children.length; i++) {
-                    node.children[i].height = 0;
-                }
-            }
         }
 
         if (group.smashDepth) {
             node.depth = 0;
-            if (node.children) {
-                for (let i = 0; i < node.children.length; i++) {
+        }
+
+        if (group.smashHeight && group.smashDepth) {
+            // Symmetric \smash can stay in inline layout.
+            return makeSpan(["mord", "smash"], [node], options);
+        }
+
+        // In order to influence makeVList for asymmetric smashing, we have to
+        // reset the children.
+        if (node.children) {
+            for (let i = 0; i < node.children.length; i++) {
+                if (group.smashHeight) {
+                    node.children[i].height = 0;
+                }
+                if (group.smashDepth) {
                     node.children[i].depth = 0;
                 }
             }
@@ -88,7 +95,7 @@ defineFunction({
             children: [{type: "elem", elem: node}],
         }, options);
 
-        // For spacing, TeX treats \hphantom as a math group (same spacing as ord).
+        // For spacing, TeX treats \smash as a math group (same spacing as ord).
         return makeSpan(["mord"], [smashedNode], options);
     },
     mathmlBuilder: (group, options) => {

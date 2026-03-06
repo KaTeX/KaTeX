@@ -290,6 +290,11 @@ $display-margin: 1em 0 !default;
         display: inline-block;
     }
 
+    .smash {
+        display: inline;
+        line-height: 0;
+    }
+
     .llap,
     .rlap,
     .clap {
