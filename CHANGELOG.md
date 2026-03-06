@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.36](https://github.com/KaTeX/KaTeX/compare/v0.16.35...v0.16.36) (2026-03-06)
+
+
+### Bug Fixes
+
+* contrib esm bloat ([#4157](https://github.com/KaTeX/KaTeX/issues/4157)) ([2bde1ad](https://github.com/KaTeX/KaTeX/commit/2bde1adab2a23f61519145923329c915b04d4778))
+
 ## [0.16.35](https://github.com/KaTeX/KaTeX/compare/v0.16.34...v0.16.35) (2026-03-05)
 
 
