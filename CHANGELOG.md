@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.37](https://github.com/KaTeX/KaTeX/compare/v0.16.36...v0.16.37) (2026-03-06)
+
+
+### Bug Fixes
+
+* negative-width `\hphantom` and symmetric `\smash` ([#4153](https://github.com/KaTeX/KaTeX/issues/4153)) ([d4799ca](https://github.com/KaTeX/KaTeX/commit/d4799cae585d909e2a4e3dedbebdc2f142998ca9))
+
 ## [0.16.36](https://github.com/KaTeX/KaTeX/compare/v0.16.35...v0.16.36) (2026-03-06)
 
 
