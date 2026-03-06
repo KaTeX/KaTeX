@@ -1,5 +1,4 @@
 import babel from '@rollup/plugin-babel';
-import alias from '@rollup/plugin-alias';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import fs from 'fs';
@@ -20,6 +19,9 @@ export default targets
         output: {
             file: outputFile,
             format: 'es',
+            paths: {
+                katex: '../katex.mjs',
+            },
         },
         plugins: [
             typescript({
@@ -33,12 +35,7 @@ export default targets
                 babelHelpers: 'runtime',
                 extensions: ['.js', '.mjs', '.cjs', '.ts'],
             }),
-            alias({
-                entries: [
-                    {find: 'katex', replacement: '../katex.mjs'},
-                ],
-            }),
         ],
-        external: '../katex.mjs',
+        external: 'katex',
     };
 });

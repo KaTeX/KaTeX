@@ -3091,17 +3091,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/plugin-alias@npm:^3.1.9":
-  version: 3.1.9
-  resolution: "@rollup/plugin-alias@npm:3.1.9"
-  dependencies:
-    slash: "npm:^3.0.0"
-  peerDependencies:
-    rollup: ^1.20.0||^2.0.0
-  checksum: 10/9885ceae4cc3a4685f219d166729265fc715f6c2155f311efc83005b262c5b958cec7dfc2725b109543935118e93977880de791ad086e1738ea3f2174665fb75
-  languageName: node
-  linkType: hard
-
 "@rollup/plugin-babel@npm:^5.3.1":
   version: 5.3.1
   resolution: "@rollup/plugin-babel@npm:5.3.1"
@@ -9932,7 +9921,6 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.28.5"
     "@babel/register": "npm:^7.28.6"
     "@babel/runtime": "npm:^7.28.6"
-    "@rollup/plugin-alias": "npm:^3.1.9"
     "@rollup/plugin-babel": "npm:^5.3.1"
     "@rollup/plugin-commonjs": "npm:^28.0.9"
     "@rollup/plugin-typescript": "npm:^12.3.0"
