@@ -1,6 +1,27 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.36](https://github.com/KaTeX/KaTeX/compare/v0.16.35...v0.16.36) (2026-03-06)
+
+
+### Bug Fixes
+
+* contrib esm bloat ([#4157](https://github.com/KaTeX/KaTeX/issues/4157)) ([2bde1ad](https://github.com/KaTeX/KaTeX/commit/2bde1adab2a23f61519145923329c915b04d4778))
+
+## [0.16.35](https://github.com/KaTeX/KaTeX/compare/v0.16.34...v0.16.35) (2026-03-05)
+
+
+### Bug Fixes
+
+* version number regression ([#4155](https://github.com/KaTeX/KaTeX/issues/4155)) ([db26b73](https://github.com/KaTeX/KaTeX/commit/db26b733805f2d0d71e82596475b313c8706557e))
+
+## [0.16.34](https://github.com/KaTeX/KaTeX/compare/v0.16.33...v0.16.34) (2026-03-05)
+
+
+### Bug Fixes
+
+* emoji with variation selector ([#4151](https://github.com/KaTeX/KaTeX/issues/4151)) ([c2606e5](https://github.com/KaTeX/KaTeX/commit/c2606e5db91ae199ee1ff0c8c2f7f9f70fcf589b))
+
 ## [0.16.33](https://github.com/KaTeX/KaTeX/compare/v0.16.32...v0.16.33) (2026-02-23)
 
 

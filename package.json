@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.16.33",
+  "version": "0.16.36",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "types": "types/katex.d.ts",
@@ -67,7 +67,6 @@
     "@babel/preset-typescript": "^7.28.5",
     "@babel/register": "^7.28.6",
     "@babel/runtime": "^7.28.6",
-    "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-babel": "^5.3.1",
     "@rollup/plugin-commonjs": "^28.0.9",
     "@rollup/plugin-typescript": "^12.3.0",
@@ -149,6 +148,7 @@
     "test:screenshots:update": "dockers/screenshotter/screenshotter.sh",
     "test:perf": "NODE_ENV=test node -e \"require('@babel/register')({extensions:['.js','.ts']}); require('./test/perf-test.ts')\"",
     "test:ts": "tsc --noEmit",
+    "test:build": "node test/verify-build.js",
     "clean": "rm -rf dist/ node_modules/",
     "clean-install": "yarn clean && yarn",
     "start": "webpack serve --config webpack.dev.js",
