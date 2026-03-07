@@ -621,3 +621,19 @@ export function assertSpan(
         throw new Error(`Expected span<HtmlDomNode> but got ${String(group)}.`);
     }
 }
+
+/**
+ * Get HtmlDomNode children of an HtmlDomNode, if any; undefined otherwise.
+ * HtmlDomNode is a base type representing a union of SymbolNode, SvgSpan,
+ * DomSpan, Anchor, and documentFragment. In the last three cases,
+ * the children should be HtmlDomNode[], but because HtmlDomNode
+ * is a base type, we need to type cast.
+ */
+export const htmlDomChildren = (
+    node: HtmlDomNode,
+): HtmlDomNode[] | undefined => {
+    if (node instanceof Span || node instanceof Anchor
+        || node instanceof DocumentFragment) {
+        return node.children as HtmlDomNode[];
+    }
+};

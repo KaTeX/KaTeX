@@ -1,10 +1,10 @@
 import defineFunction, {normalizeArgument} from "../defineFunction";
 import {makeOrd, makeSpan, makeVList, staticSvg, svgData} from "../buildCommon";
-import {getBaseElem, isCharacterBox} from "../utils";
+import {isCharacterBox} from "../utils";
 import {MathNode} from "../mathMLTree";
 import {stretchyMathML, stretchySvg} from "../stretchy";
 import {assertNodeType} from "../parseNode";
-import {assertSpan, assertSymbolDomNode} from "../domTree";
+import {assertSpan, assertSymbolDomNode, htmlDomChildren, SymbolNode} from "../domTree";
 import {makeEm} from "../units";
 
 import * as html from "../buildHTML";
@@ -12,6 +12,17 @@ import * as mml from "../buildMathML";
 
 import type {ParseNode, AnyParseNode} from "../parseNode";
 import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
+import type {HtmlDomNode} from "../domTree";
+
+const getBaseSymbol = (group: HtmlDomNode): SymbolNode | undefined => {
+    if (group instanceof SymbolNode) {
+        return group;
+    }
+    const children = htmlDomChildren(group);
+    if (children && children.length === 1) {
+        return getBaseSymbol(children[0]);
+    }
+};
 
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "accent", but
 // also "supsub" since an accent can affect super/subscripting.
@@ -61,17 +72,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
     // and the skewchar.
     let skew = 0;
     if (mustShift) {
-        // If the base is a character box, then we want the skew of the
-        // innermost character. To do that, we find the innermost character:
-        const baseChar = getBaseElem(base);
-        // Then, we render its group to get the symbol inside it
-        const baseGroup = html.buildGroup(baseChar, options.havingCrampedStyle());
-        // Finally, we pull the skew off of the symbol.
-        skew = assertSymbolDomNode(baseGroup).skew;
-        // Note that we now throw away baseGroup, because the layers we
-        // removed with getBaseElem might contain things like \color which
-        // we can't get rid of.
-        // TODO(emily): Find a better way to get the skew
+        // Read the skew from the rendered base symbol.
+        // This preserves font metrics from font wrappers like \mathbb.
+        skew = getBaseSymbol(body)?.skew ?? 0;
     }
 
     const accentBelow = group.label === "\\c";
