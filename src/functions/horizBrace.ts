@@ -33,7 +33,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
         group = assertNodeType(grp, "horizBrace");
     }
 
-    const atomClass = new Set(functionNames).has(group.label) ? "minner" : "mord";
+    const atomClass = functionNames.includes(group.label) ? "minner" : "mord";
 
     // Build the base group
     const body = html.buildGroup(
