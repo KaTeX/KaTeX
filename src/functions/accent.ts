@@ -4,8 +4,7 @@ import {isCharacterBox} from "../utils";
 import {MathNode} from "../mathMLTree";
 import {stretchyMathML, stretchySvg} from "../stretchy";
 import {assertNodeType} from "../parseNode";
-import {Anchor, assertSpan, assertSymbolDomNode, Span, SymbolNode} from "../domTree";
-import {DocumentFragment} from "../tree";
+import {assertSpan, assertSymbolDomNode, htmlDomChildren, SymbolNode} from "../domTree";
 import {makeEm} from "../units";
 
 import * as html from "../buildHTML";
@@ -19,9 +18,9 @@ const getBaseSymbol = (group: HtmlDomNode): SymbolNode | undefined => {
     if (group instanceof SymbolNode) {
         return group;
     }
-    if ((group instanceof Span || group instanceof Anchor ||
-         group instanceof DocumentFragment) && group.children.length === 1) {
-        return getBaseSymbol(group.children[0] as HtmlDomNode);
+    const children = htmlDomChildren(group);
+    if (children && children.length === 1) {
+        return getBaseSymbol(children[0]);
     }
 };
 
@@ -75,7 +74,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
     if (mustShift) {
         // Read the skew from the rendered base symbol.
         // This preserves font metrics from font wrappers like \mathbb.
-        skew = getBaseSymbol(body)?.skew || 0;
+        skew = getBaseSymbol(body)?.skew ?? 0;
     }
 
     const accentBelow = group.label === "\\c";
