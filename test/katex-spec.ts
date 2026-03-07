@@ -2455,6 +2455,20 @@ describe("An accent builder", function() {
         expect(getBuilt`\vec )^2`[0].classes).toContain("mord");
         expect(getBuilt`\vec )^2`[0].classes).not.toContain("mclose");
     });
+
+    it("should keep accent shifts consistent across font wrappers", function() {
+        const getAccentOffset = (tex: string) => {
+            const markup = katex.renderToString(tex);
+            const match = markup.match(/accent-body" style="left:([^;]+);/);
+            expect(match).not.toBeNull();
+            return match![1];
+        };
+
+        expect(getAccentOffset(r`\hat{\mathbb{I}}`))
+            .toEqual(getAccentOffset(r`\mathbb{\hat{I}}`));
+        expect(getAccentOffset(r`\hat{\mathrm{I}}`))
+            .toEqual(getAccentOffset(r`\mathrm{\hat{I}}`));
+    });
 });
 
 describe("A stretchy and shifty accent builder", function() {
