@@ -11,8 +11,6 @@ import * as mml from "../buildMathML";
 import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
 import type {ParseNode} from "../parseNode";
 
-const functionNames = ["\\overbrace", "\\underbrace", "\\overbracket", "\\underbracket"];
-
 // NOTE: Unlike most `htmlBuilder`s, this one handles not only "horizBrace", but
 // also "supsub" since an over/underbrace can affect super/subscripting.
 export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
@@ -32,8 +30,6 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
     } else {
         group = assertNodeType(grp, "horizBrace");
     }
-
-    const atomClass = functionNames.includes(group.label) ? "minner" : "mord";
 
     // Build the base group
     const body = html.buildGroup(
@@ -81,7 +77,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
         //    equation           eqn                 eqn
 
         const vSpan = makeSpan(
-            [atomClass, (group.isOver ? "mover" : "munder")],
+            ["minner", (group.isOver ? "mover" : "munder")],
             [vlist], options);
 
         if (group.isOver) {
@@ -108,7 +104,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
     }
 
     return makeSpan(
-        [atomClass, (group.isOver ? "mover" : "munder")], [vlist], options);
+        ["minner", (group.isOver ? "mover" : "munder")], [vlist], options);
 };
 
 const mathmlBuilder: MathMLBuilder<"horizBrace"> = (group, options) => {
@@ -122,7 +118,7 @@ const mathmlBuilder: MathMLBuilder<"horizBrace"> = (group, options) => {
 // Horizontal stretchy braces
 defineFunction({
     type: "horizBrace",
-    names: functionNames,
+    names: ["\\overbrace", "\\underbrace", "\\overbracket", "\\underbracket"],
     props: {
         numArgs: 1,
     },
