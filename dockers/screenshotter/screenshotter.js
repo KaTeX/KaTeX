@@ -582,7 +582,10 @@ async function takeScreenshot(key) {
             pako: pako,
         });
         buf = opt.bufferSync(img.buf);
-        if (expected) {
+        if (opts.verify && !expected) {
+            console.log("error " + key + " (missing screenshot)");
+            break;
+        } else if (expected) {
             if (buf.equals(expected)) {
                 console.log("* ok  " + key);
                 return;
@@ -602,7 +605,7 @@ async function takeScreenshot(key) {
     console.error("FAIL! " + key);
     listOfFailed.push(key);
     exitStatus = 3;
-    if (opts.diff || opts.new) {
+    if (opts.new || (opts.diff && expected)) {
         const filenamePrefix = key + "-" + opts.browser;
         const outputDir = opts.new ? newDir : diffDir;
         const baseFile = path.join(dstDir, filenamePrefix + ".png");
@@ -612,7 +615,7 @@ async function takeScreenshot(key) {
         await fs.ensureDir(outputDir);
         await fs.writeFile(bufFile, buf);
 
-        if (opts.diff) {
+        if (opts.diff && expected) {
             await fs.ensureDir(diffDir);
             await execFile("convert", [
                 "-fill", "white",
