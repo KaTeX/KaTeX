@@ -605,7 +605,7 @@ async function takeScreenshot(key) {
     console.error("FAIL! " + key);
     listOfFailed.push(key);
     exitStatus = 3;
-    if (opts.diff || opts.new) {
+    if (opts.new || (opts.diff && expected)) {
         const filenamePrefix = key + "-" + opts.browser;
         const outputDir = opts.new ? newDir : diffDir;
         const baseFile = path.join(dstDir, filenamePrefix + ".png");
