@@ -296,6 +296,9 @@ defineSymbol(math, ams, textord, "\u2571", "\\diagup");
 defineSymbol(math, ams, textord, "\u2572", "\\diagdown");
 defineSymbol(math, ams, textord, "\u25a1", "\\square");
 defineSymbol(math, ams, textord, "\u25a1", "\\Box");
+// amsthm defines \openbox via box drawing; we approximate it with \square.
+defineSymbol(math, ams, textord, "\u25a1", "\\openbox");
+defineSymbol(text, ams, textord, "\u25a1", "\\openbox");
 defineSymbol(math, ams, textord, "\u25ca", "\\Diamond");
 // unicode-math maps U+A5 to \mathyen. We map to AMS function \yen
 defineSymbol(math, ams, textord, "\u00a5", "\\yen", true);

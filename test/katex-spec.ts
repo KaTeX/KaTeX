@@ -3559,6 +3559,18 @@ describe("A macro expander", function() {
         expect`X \impliedby Y`.toBuild();
     });
 
+    it("should expand \\openbox like amsthm", function() {
+        expect`\openbox`.toBuildLike`\square`;
+        expect`\openbox`.toBuild();
+        expect`\text{\openbox}`.toBuild();
+    });
+
+    it("should expand \\qedsymbol like amsthm", function() {
+        expect`\qedsymbol`.toParseLike`\openbox`;
+        expect`\qedsymbol`.toBuild();
+        expect`\text{\qedsymbol}`.toBuild();
+    });
+
     it("should allow aliasing characters", function() {
         expect`x’=c`.toParseLike("x'=c", new Settings({macros: {
             "’": "'",

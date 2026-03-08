@@ -775,6 +775,10 @@ defineMacro("\\varinjlim", "\\DOTSB\\operatorname*{\\underrightarrow{lim}}");
 defineMacro("\\varprojlim", "\\DOTSB\\operatorname*{\\underleftarrow{lim}}");
 
 //////////////////////////////////////////////////////////////////////
+// amsthm.sty
+defineMacro("\\qedsymbol", "\\openbox");
+
+//////////////////////////////////////////////////////////////////////
 // MathML alternates for KaTeX glyphs in the Unicode private area
 defineMacro("\\gvertneqq", "\\html@mathml{\\@gvertneqq}{\u2269}");
 defineMacro("\\lvertneqq", "\\html@mathml{\\@lvertneqq}{\u2268}");
