@@ -623,17 +623,14 @@ export function assertSpan(
 }
 
 /**
- * Get HtmlDomNode children of an HtmlDomNode, if any; undefined otherwise.
- * HtmlDomNode is a base type representing a union of SymbolNode, SvgSpan,
- * DomSpan, Anchor, and documentFragment. In the last three cases,
- * the children should be HtmlDomNode[], but because HtmlDomNode
- * is a base type, we need to type cast.
+ * Whether an HtmlDomNode has HtmlDomNode children.
+ * HtmlDomNode is a base type representing a union of
+ * SymbolNode, SvgSpan, DomSpan, Anchor, and documentFragment.
+ * In the last three cases, the children are HtmlDomNode[].
  */
-export const htmlDomChildren = (
+export const hasHtmlDomChildren = (
     node: HtmlDomNode,
-): HtmlDomNode[] | undefined => {
-    if (node instanceof Span || node instanceof Anchor
-        || node instanceof DocumentFragment) {
-        return node.children as HtmlDomNode[];
-    }
-};
+): node is DomSpan | Anchor | documentFragment =>
+    node instanceof Span ||
+    node instanceof Anchor ||
+    node instanceof DocumentFragment;

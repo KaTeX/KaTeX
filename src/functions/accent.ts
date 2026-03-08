@@ -4,7 +4,7 @@ import {isCharacterBox} from "../utils";
 import {MathNode} from "../mathMLTree";
 import {stretchyMathML, stretchySvg} from "../stretchy";
 import {assertNodeType} from "../parseNode";
-import {assertSpan, assertSymbolDomNode, htmlDomChildren, SymbolNode} from "../domTree";
+import {assertSpan, assertSymbolDomNode, hasHtmlDomChildren, SymbolNode} from "../domTree";
 import {makeEm} from "../units";
 
 import * as html from "../buildHTML";
@@ -18,9 +18,8 @@ const getBaseSymbol = (group: HtmlDomNode): SymbolNode | undefined => {
     if (group instanceof SymbolNode) {
         return group;
     }
-    const children = htmlDomChildren(group);
-    if (children && children.length === 1) {
-        return getBaseSymbol(children[0]);
+    if (hasHtmlDomChildren(group) && group.children.length === 1) {
+        return getBaseSymbol(group.children[0]);
     }
 };
 
