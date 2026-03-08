@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.38](https://github.com/KaTeX/KaTeX/compare/v0.16.37...v0.16.38) (2026-03-08)
+
+
+### Bug Fixes
+
+* accent skew mixed with font specifiers ([#4159](https://github.com/KaTeX/KaTeX/issues/4159)) ([aea3375](https://github.com/KaTeX/KaTeX/commit/aea33758d6c98896017007d0244885301773856a)), closes [#4121](https://github.com/KaTeX/KaTeX/issues/4121)
+
 ## [0.16.37](https://github.com/KaTeX/KaTeX/compare/v0.16.36...v0.16.37) (2026-03-06)
 
 
