@@ -803,6 +803,7 @@ use `\ce` instead|
 |\Omicron|$\Omicron$||
 |\omicron|$\omicron$||
 |\ominus|$\ominus$||
+|\openbox|$\openbox$||
 |\operatorname|$\operatorname{asin} x$|`\operatorname{asin} x`|
 |\operatorname\*|$\operatorname*{asin}\limits_y x$|`\operatorname*{asin}\limits_y x`|
 |\operatornamewithlimits|$\operatornamewithlimits{asin}\limits_y x$|`\operatornamewithlimits{asin}\limits_y x`|
@@ -879,6 +880,7 @@ use `\ce` instead|
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\Q|<span style="color:firebrick;">Not supported</span>|See `\Bbb{Q}`|
+|\qedsymbol|$\qedsymbol$||
 |\qquad|$a\qquad\qquad{b}$|`a\qquad\qquad{b}`|
 |\quad|$a\quad\quad{b}$|`a\quad\quad{b}`|
 |\R|$\R$||

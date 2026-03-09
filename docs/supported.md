@@ -656,30 +656,31 @@ In cases where KaTeX fonts do not have a bold glyph, `\pmb` can simulate one. Fo
 |$\text{\textasciicircum}$ `\text{\textasciicircum}`|$\mathellipsis$ `\mathellipsis`|$\ddagger$ `\ddagger`
 |$`$ <code>`</code>|$\text{\textellipsis}$ `\text{\textellipsis}`|$\text{\textdaggerdbl}$ `\text{\textdaggerdbl}`
 |$\text{\textquoteleft}$ `\text{\textquoteleft}`|$\Box$ `\Box`|$\Dagger$ `\Dagger`
-|$\lq$ `\lq`|$\square$ `\square`|$\angle$ `\angle`
-|$\text{\textquoteright}$ `\text{\textquoteright}`|$\blacksquare$ `\blacksquare`|$\measuredangle$ `\measuredangle`
-|$\rq$ `\rq`|$\triangle$ `\triangle`|$\sphericalangle$ `\sphericalangle`
-|$\text{\textquotedblleft}$ `\text{\textquotedblleft}`|$\triangledown$ `\triangledown`|$\top$ `\top`
-|$"$ `"`|$\triangleleft$ `\triangleleft`|$\bot$ `\bot`
-|$\text{\textquotedblright}$ `\text{\textquotedblright}`|$\triangleright$ `\triangleright`|$\$$ `\$`
-|$\colon$ `\colon`|$\bigtriangledown$ `\bigtriangledown`|$\text{\textdollar}$ `\text{\textdollar}`
-|$\backprime$ `\backprime`|$\bigtriangleup$ `\bigtriangleup`|$\pounds$ `\pounds`
-|$\prime$ `\prime`|$\blacktriangle$ `\blacktriangle`|$\mathsterling$ `\mathsterling`
-|$\text{\textless}$ `\text{\textless}`|$\blacktriangledown$ `\blacktriangledown`|$\text{\textsterling}$ `\text{\textsterling}`
-|$\text{\textgreater}$ `\text{\textgreater}`|$\blacktriangleleft$ `\blacktriangleleft`|$\yen$ `\yen`
-|$\text{\textbar}$ `\text{\textbar}`|$\blacktriangleright$ `\blacktriangleright`|$\surd$ `\surd`
-|$\text{\textbardbl}$ `\text{\textbardbl}`|$\diamond$ `\diamond`|$\degree$ `\degree`
-|$\text{\textbraceleft}$ `\text{\textbraceleft}`|$\Diamond$ `\Diamond`|$\text{\textdegree}$ `\text{\textdegree}`
-|$\text{\textbraceright}$ `\text{\textbraceright}`|$\lozenge$ `\lozenge`|$\mho$ `\mho`
-|$\text{\textbackslash}$ `\text{\textbackslash}`|$\blacklozenge$ `\blacklozenge`|$\diagdown$ `\diagdown`
-|$\text{\P}$ `\text{\P}` or `\P`|$\star$ `\star`|$\diagup$ `\diagup`
-|$\text{\S}$ `\text{\S}` or `\S`|$\bigstar$ `\bigstar`|$\flat$ `\flat`
-|$\text{\sect}$ `\text{\sect}`|$\clubsuit$ `\clubsuit`|$\natural$ `\natural`
-|$\copyright$ `\copyright`|$\clubs$ `\clubs`|$\sharp$ `\sharp`
-|$\circledR$ `\circledR`|$\diamondsuit$ `\diamondsuit`|$\heartsuit$ `\heartsuit`
-|$\text{\textregistered}$ `\text{\textregistered}`|$\diamonds$ `\diamonds`|$\hearts$ `\hearts`
-|$\circledS$ `\circledS`|$\spadesuit$ `\spadesuit`|$\spades$ `\spades`
-|$\text{\textcircled a}$ `\text{\textcircled a}`|$\maltese$ `\maltese`|$\minuso$ `\minuso`|
+|$\lq$ `\lq`|$\openbox$ `\openbox`|$\angle$ `\angle`
+|$\text{\textquoteright}$ `\text{\textquoteright}`|$\qedsymbol$ `\qedsymbol`|$\measuredangle$ `\measuredangle`
+|$\rq$ `\rq`|$\square$ `\square`|$\sphericalangle$ `\sphericalangle`
+|$\text{\textquotedblleft}$ `\text{\textquotedblleft}`|$\blacksquare$ `\blacksquare`|$\top$ `\top`
+|$"$ `"`|$\triangle$ `\triangle`|$\bot$ `\bot`
+|$\text{\textquotedblright}$ `\text{\textquotedblright}`|$\triangledown$ `\triangledown`|$\$$ `\$`
+|$\colon$ `\colon`|$\triangleleft$ `\triangleleft`|$\text{\textdollar}$ `\text{\textdollar}`
+|$\backprime$ `\backprime`|$\triangleright$ `\triangleright`|$\pounds$ `\pounds`
+|$\prime$ `\prime`|$\bigtriangledown$ `\bigtriangledown`|$\mathsterling$ `\mathsterling`
+|$\text{\textless}$ `\text{\textless}`|$\bigtriangleup$ `\bigtriangleup`|$\text{\textsterling}$ `\text{\textsterling}`
+|$\text{\textgreater}$ `\text{\textgreater}`|$\blacktriangle$ `\blacktriangle`|$\yen$ `\yen`
+|$\text{\textbar}$ `\text{\textbar}`|$\blacktriangledown$ `\blacktriangledown`|$\surd$ `\surd`
+|$\text{\textbardbl}$ `\text{\textbardbl}`|$\blacktriangleleft$ `\blacktriangleleft`|$\degree$ `\degree`
+|$\text{\textbraceleft}$ `\text{\textbraceleft}`|$\blacktriangleright$ `\blacktriangleright`|$\text{\textdegree}$ `\text{\textdegree}`
+|$\text{\textbraceright}$ `\text{\textbraceright}`|$\diamond$ `\diamond`|$\mho$ `\mho`
+|$\text{\textbackslash}$ `\text{\textbackslash}`|$\Diamond$ `\Diamond`|$\diagdown$ `\diagdown`
+|$\text{\P}$ `\text{\P}` or `\P`|$\lozenge$ `\lozenge`|$\diagup$ `\diagup`
+|$\text{\S}$ `\text{\S}` or `\S`|$\blacklozenge$ `\blacklozenge`|$\flat$ `\flat`
+|$\text{\sect}$ `\text{\sect}`|$\star$ `\star`|$\natural$ `\natural`
+|$\copyright$ `\copyright`|$\bigstar$ `\bigstar`|$\sharp$ `\sharp`
+|$\circledR$ `\circledR`|$\clubsuit$ `\clubsuit`|$\heartsuit$ `\heartsuit`
+|$\text{\textregistered}$ `\text{\textregistered}`|$\clubs$ `\clubs`|$\hearts$ `\hearts`
+|$\circledS$ `\circledS`|$\diamondsuit$ `\diamondsuit`|$\spadesuit$ `\spadesuit`
+|$\text{\textcircled a}$ `\text{\textcircled a}`|$\diamonds$ `\diamonds`|$\spades$ `\spades`|
+|$\maltese$ `\maltese`|$\minuso$ `\minuso`||
 
 Direct Input: § ¶ $ £ ¥ ∇ ∞ · ∠ ∡ ∢ ♠ ♡ ♢ ♣ ♭ ♮ ♯ ✓ …  ⋮  ⋯  ⋱  !$ ‼ ⦵
 
