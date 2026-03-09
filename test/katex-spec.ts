@@ -3560,15 +3560,18 @@ describe("A macro expander", function() {
     });
 
     it("should expand \\openbox like amsthm", function() {
-        expect`\openbox`.toBuildLike`\square`;
         expect`\openbox`.toBuild();
         expect`\text{\openbox}`.toBuild();
+        expect(katex.renderToString("\\openbox")).toContain("rule");
+        expect(katex.renderToString("\\openbox")).toContain("□");
     });
 
     it("should expand \\qedsymbol like amsthm", function() {
         expect`\qedsymbol`.toParseLike`\openbox`;
         expect`\qedsymbol`.toBuild();
         expect`\text{\qedsymbol}`.toBuild();
+        expect(katex.renderToString("\\qedsymbol")).toContain("rule");
+        expect(katex.renderToString("\\qedsymbol")).toContain("□");
     });
 
     it("should allow aliasing characters", function() {

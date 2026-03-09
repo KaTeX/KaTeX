@@ -776,6 +776,22 @@ defineMacro("\\varprojlim", "\\DOTSB\\operatorname*{\\underleftarrow{lim}}");
 
 //////////////////////////////////////////////////////////////////////
 // amsthm.sty
+
+// \newcommand{\openbox}{\leavevmode\hbox to.77778em{%
+//   \hfil\vrule\vbox to.675em{\hrule width.6em\vfil\hrule}\vrule\hfil}}
+// defines 0.77778em total width, 0.6em inner width, 0.675em total height.
+// 0.4pt (default) rule thickness.
+// Side padding (0.77778em - 0.6em - 2 * 0.4pt) / 2 = 0.04889em.
+// The top rule is raised by 0.675em - 0.4pt = 0.635em at 10pt.
+// For MathML, use a simple white square instead of exposing the rule stack.
+defineMacro("\\openbox", "\\html@mathml{" +
+    "\\kern0.04889em" +
+    "\\rule{0.4pt}{0.675em}" +
+    "\\rlap{\\raisebox{0.635em}{\\rule{0.6em}{0.4pt}}}" +
+    "\\rule{0.6em}{0.4pt}" +
+    "\\rule{0.4pt}{0.675em}" +
+    "\\kern0.04889em" +
+    "}{\\char`□}");
 defineMacro("\\qedsymbol", "\\openbox");
 
 //////////////////////////////////////////////////////////////////////
