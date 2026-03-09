@@ -49,12 +49,6 @@ let render: (
     baseNode.textContent = "";
     const node = renderToDomTree(expression, options).toNode();
     baseNode.appendChild(node);
-
-    // If the rendered element is scrollable, make it keyboard-focusable
-    // per WCAG 2.1 SC 2.1.1 / axe scrollable-region-focusable rule.
-    if (node instanceof HTMLElement && node.scrollWidth > node.clientWidth) {
-        node.setAttribute("tabindex", "0");
-    }
 };
 
 // KaTeX's styles don't work properly in quirks mode. Print out an error, and
