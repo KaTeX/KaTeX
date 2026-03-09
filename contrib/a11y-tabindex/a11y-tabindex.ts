@@ -8,7 +8,7 @@
 
 function updateTabIndex(el: Element): void {
     if (el instanceof HTMLElement) {
-        if (el.scrollWidth > el.clientWidth) {
+        if (el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight) {
             el.setAttribute("tabindex", "0");
         } else {
             el.removeAttribute("tabindex");
@@ -41,9 +41,10 @@ function init(): void {
                 if (node instanceof Element) {
                     if (node.classList.contains("katex")) {
                         observeKatex(node, resizeObserver);
+                    } else {
+                        node.querySelectorAll(".katex").forEach(
+                            (el) => observeKatex(el, resizeObserver));
                     }
-                    node.querySelectorAll(".katex").forEach(
-                        (el) => observeKatex(el, resizeObserver));
                 }
             }
         }
