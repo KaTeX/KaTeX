@@ -16,15 +16,6 @@ const optionsFromSettings = function(settings: Settings) {
     });
 };
 
-// Add accessibility attributes so that when the .katex element becomes
-// scrollable (e.g. via CSS overflow), it is keyboard-focusable and has
-// an appropriate ARIA role per WCAG 2.1 SC 2.1.1 and the axe
-// scrollable-region-focusable rule.
-const setAccessibilityAttrs = function(node: DomSpan) {
-    node.setAttribute("tabindex", "0");
-    node.setAttribute("role", "math");
-};
-
 const displayWrap = function(node: DomSpan, settings: Settings): DomSpan {
     if (settings.displayMode) {
         const classes = ["katex-display"];
@@ -51,14 +42,16 @@ export const buildTree = function(
     } else if (settings.output === "html") {
         const htmlNode = buildHTML(tree, options);
         katexNode = makeSpan(["katex"], [htmlNode]);
+        // HTML-only output has no <math> element providing native semantics,
+        // so we add role="math" and aria-label with the TeX source.
+        katexNode.setAttribute("role", "math");
+        katexNode.setAttribute("aria-label", expression);
     } else {
         const mathMLNode = buildMathML(tree, expression, options,
             settings.displayMode, false);
         const htmlNode = buildHTML(tree, options);
         katexNode = makeSpan(["katex"], [mathMLNode, htmlNode]);
     }
-
-    setAccessibilityAttrs(katexNode);
 
     return displayWrap(katexNode, settings);
 };
@@ -71,7 +64,10 @@ export const buildHTMLTree = function(
     const options = optionsFromSettings(settings);
     const htmlNode = buildHTML(tree, options);
     const katexNode = makeSpan(["katex"], [htmlNode]);
-    setAccessibilityAttrs(katexNode);
+    // HTML-only output has no <math> element providing native semantics,
+    // so we add role="math" and aria-label with the TeX source.
+    katexNode.setAttribute("role", "math");
+    katexNode.setAttribute("aria-label", expression);
     return displayWrap(katexNode, settings);
 };
 
