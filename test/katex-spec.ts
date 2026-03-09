@@ -4530,3 +4530,36 @@ describe("\\emph", () => {
         expect`\textit{\emph{foo \emph{bar}}}`.toBuildLike`\textit{\textup{foo \textit{bar}}}`;
     });
 });
+
+describe("Accessibility attributes", function() {
+    it("should add tabindex and role to inline math", function() {
+        const markup = katex.renderToString("x^2");
+        expect(markup).toContain('tabindex="0"');
+        expect(markup).toContain('role="math"');
+    });
+
+    it("should add tabindex and role to display math", function() {
+        const markup = katex.renderToString("x^2", {displayMode: true});
+        expect(markup).toContain('tabindex="0"');
+        expect(markup).toContain('role="math"');
+    });
+
+    it("should add attributes to the .katex element", function() {
+        const markup = katex.renderToString("x^2");
+        // Verify the attributes are on the katex span, not elsewhere
+        expect(markup).toMatch(/<span class="katex"[^>]*tabindex="0"/);
+        expect(markup).toMatch(/<span class="katex"[^>]*role="math"/);
+    });
+
+    it("should add tabindex and role in html output mode", function() {
+        const markup = katex.renderToString("x^2", {output: "html"});
+        expect(markup).toContain('tabindex="0"');
+        expect(markup).toContain('role="math"');
+    });
+
+    it("should not add tabindex or role in mathml-only output mode", function() {
+        const markup = katex.renderToString("x^2", {output: "mathml"});
+        expect(markup).not.toContain('tabindex');
+        expect(markup).not.toContain('role="math"');
+    });
+});
