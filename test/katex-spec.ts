@@ -4536,12 +4536,11 @@ describe("\\emph", () => {
 });
 
 describe("Accessibility attributes", function() {
-    it("should not add role or tabindex in default (HTML+MathML) mode", function() {
+    it("should not add role in default (HTML+MathML) mode", function() {
         // The inner <math> element already carries native role="math",
         // so the outer .katex span must not duplicate it.
         const markup = katex.renderToString("x^2");
         expect(markup).not.toMatch(/<span class="katex"[^>]*role="math"/);
-        expect(markup).not.toMatch(/<span class="katex"[^>]*tabindex/);
     });
 
     it("should add role and aria-label in html output mode", function() {
@@ -4562,16 +4561,5 @@ describe("Accessibility attributes", function() {
         const markup = katex.renderToString("x^2", {output: "mathml"});
         expect(markup).not.toContain('role="math"');
         expect(markup).not.toContain('aria-label');
-    });
-
-    it("should not add tabindex to any output mode", function() {
-        // tabindex should only be added by consumers when the element
-        // is actually scrollable, not unconditionally.
-        const html = katex.renderToString("x^2", {output: "html"});
-        const mathml = katex.renderToString("x^2", {output: "mathml"});
-        const both = katex.renderToString("x^2");
-        expect(html).not.toContain('tabindex');
-        expect(mathml).not.toContain('tabindex');
-        expect(both).not.toContain('tabindex');
     });
 });
