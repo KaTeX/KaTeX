@@ -16,6 +16,15 @@ const optionsFromSettings = function(settings: Settings) {
     });
 };
 
+// Add accessibility attributes so that when the .katex element becomes
+// scrollable (e.g. via CSS overflow), it is keyboard-focusable and has
+// an appropriate ARIA role per WCAG 2.1 SC 2.1.1 and the axe
+// scrollable-region-focusable rule.
+const setAccessibilityAttrs = function(node: DomSpan) {
+    node.setAttribute("tabindex", "0");
+    node.setAttribute("role", "math");
+};
+
 const displayWrap = function(node: DomSpan, settings: Settings): DomSpan {
     if (settings.displayMode) {
         const classes = ["katex-display"];
@@ -49,12 +58,7 @@ export const buildTree = function(
         katexNode = makeSpan(["katex"], [mathMLNode, htmlNode]);
     }
 
-    // Add accessibility attributes so that when the .katex element becomes
-    // scrollable (e.g. via CSS overflow), it is keyboard-focusable and has
-    // an appropriate ARIA role per WCAG 2.1 SC 2.1.1 and the axe
-    // scrollable-region-focusable rule.
-    katexNode.setAttribute("tabindex", "0");
-    katexNode.setAttribute("role", "math");
+    setAccessibilityAttrs(katexNode);
 
     return displayWrap(katexNode, settings);
 };
@@ -67,8 +71,7 @@ export const buildHTMLTree = function(
     const options = optionsFromSettings(settings);
     const htmlNode = buildHTML(tree, options);
     const katexNode = makeSpan(["katex"], [htmlNode]);
-    katexNode.setAttribute("tabindex", "0");
-    katexNode.setAttribute("role", "math");
+    setAccessibilityAttrs(katexNode);
     return displayWrap(katexNode, settings);
 };
 
