@@ -4443,10 +4443,14 @@ describe("Internal __* interface", function() {
         expect(tree.toMarkup()).toEqual(rendered);
     });
 
-    it("__renderToHTMLTree renders same as renderToString sans MathML", () => {
+    it("__renderToHTMLTree renders same as renderToString sans MathML, plus a11y attrs", () => {
         const tree = katex.__renderToHTMLTree(latex);
-        const renderedSansMathML = rendered.replace(
-            /<span class="katex-mathml">.*?<\/span>/, '');
+        // The HTML-only tree adds role="math" and aria-label that the
+        // default HTML+MathML tree does not have, so strip MathML and
+        // insert the expected accessibility attributes for comparison.
+        const renderedSansMathML = rendered
+            .replace(/<span class="katex-mathml">.*?<\/span>/, '')
+            .replace('<span class="katex">', `<span class="katex" role="math" aria-label="${latex}">`);
         expect(tree.toMarkup()).toEqual(renderedSansMathML);
     });
 });
@@ -4532,34 +4536,30 @@ describe("\\emph", () => {
 });
 
 describe("Accessibility attributes", function() {
-    it("should add tabindex and role to inline math", function() {
+    it("should not add role in default (HTML+MathML) mode", function() {
+        // The inner <math> element already carries native role="math",
+        // so the outer .katex span must not duplicate it.
         const markup = katex.renderToString("x^2");
-        expect(markup).toContain('tabindex="0"');
-        expect(markup).toContain('role="math"');
+        expect(markup).not.toMatch(/<span class="katex"[^>]*role="math"/);
     });
 
-    it("should add tabindex and role to display math", function() {
-        const markup = katex.renderToString("x^2", {displayMode: true});
-        expect(markup).toContain('tabindex="0"');
-        expect(markup).toContain('role="math"');
-    });
-
-    it("should add attributes to the .katex element", function() {
-        const markup = katex.renderToString("x^2");
-        // Verify the attributes are on the katex span, not elsewhere
-        expect(markup).toMatch(/<span class="katex"[^>]*tabindex="0"/);
-        expect(markup).toMatch(/<span class="katex"[^>]*role="math"/);
-    });
-
-    it("should add tabindex and role in html output mode", function() {
+    it("should add role and aria-label in html output mode", function() {
         const markup = katex.renderToString("x^2", {output: "html"});
-        expect(markup).toContain('tabindex="0"');
-        expect(markup).toContain('role="math"');
+        expect(markup).toMatch(/<span class="katex"[^>]*role="math"/);
+        expect(markup).toMatch(/<span class="katex"[^>]*aria-label="x\^2"/);
     });
 
-    it("should not add tabindex or role in mathml-only output mode", function() {
+    it("should add role and aria-label in html display mode", function() {
+        const markup = katex.renderToString("x^2", {
+            output: "html", displayMode: true,
+        });
+        expect(markup).toContain('role="math"');
+        expect(markup).toContain('aria-label="x^2"');
+    });
+
+    it("should not add role or aria-label in mathml-only output mode", function() {
         const markup = katex.renderToString("x^2", {output: "mathml"});
-        expect(markup).not.toContain('tabindex');
         expect(markup).not.toContain('role="math"');
+        expect(markup).not.toContain('aria-label');
     });
 });
