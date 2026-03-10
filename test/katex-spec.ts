@@ -2626,13 +2626,52 @@ describe("A horizontal brace builder", function() {
         expect`\underbrace{x}_2^2`.toBuild();
     });
 
-    it("should produce mords", function() {
-        expect(getBuilt`\overbrace x`[0].classes).toContain("mord");
-        expect(getBuilt`\overbrace{x}^2`[0].classes).toContain("mord");
-        expect(getBuilt`\overbrace +`[0].classes).toContain("mord");
-        expect(getBuilt`\overbrace +`[0].classes).not.toContain("mbin");
-        expect(getBuilt`\overbrace )^2`[0].classes).toContain("mord");
+    it("should produce minners", function() {
+        expect(getBuilt`\overbrace x`[0].classes).toContain("minner");
+        expect(getBuilt`\overbrace{x}^2`[0].classes).toContain("minner");
+        expect(getBuilt`\overbrace +`[0].classes).toContain("minner");
+        expect(getBuilt`\overbrace +`[0].classes).not.toContain("mord");
+        expect(getBuilt`\overbrace )^2`[0].classes).toContain("minner");
         expect(getBuilt`\overbrace )^2`[0].classes).not.toContain("mclose");
+    });
+});
+
+describe("A horizontal bracket parser", function() {
+    it("should not fail", function() {
+        expect`\overbracket{x}`.toParse();
+        expect`\underbracket{x}_2`.toParse();
+    });
+
+    it("should produce horizBrace", function() {
+        const parse = getParsed`\overbracket x`[0];
+
+        expect(parse.type).toEqual("horizBrace");
+    });
+
+    it("should set isOver correctly", function() {
+        const overParse = getParsed`\overbracket x`[0];
+        expect(overParse.isOver).toBe(true);
+
+        const underParse = getParsed`\underbracket x`[0];
+        expect(underParse.isOver).toBe(false);
+    });
+
+    it("should be grouped more tightly than supsubs", function() {
+        const parse = getParsed`\overbracket x^2`[0];
+
+        expect(parse.type).toEqual("supsub");
+    });
+});
+
+describe("A horizontal bracket builder", function() {
+    it("should not fail", function() {
+        expect`\overbracket{x}`.toBuild();
+        expect`\underbracket{x}_2`.toBuild();
+    });
+
+    it("should produce minners", function() {
+        expect(getBuilt`\overbracket x`[0].classes).toContain("minner");
+        expect(getBuilt`\underbracket x`[0].classes).toContain("minner");
     });
 });
 
