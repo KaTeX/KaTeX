@@ -189,7 +189,7 @@ export type CssStyle = Partial<{
 // from the final DOM output to reduce DOM size. See #2194, #3344.
 export const unstyledClasses = new Set([
     "mord", "mbin", "mrel", "mop", "mopen", "mclose", "mpunct", "minner",
-    "mtight", "nobreak", "allowbreak", "delimsizinginner",
+    "mtight", "delimsizinginner",
 ]);
 
 export interface HtmlDomNode extends VirtualNode {
@@ -251,36 +251,19 @@ export class Span<ChildType extends VirtualNode> implements HtmlDomNode {
         return this.classes.includes(className);
     }
 
-    toNode(): Node {
-        // If this span has no visible attributes after filtering out
-        // build-time-only classes, unwrap it and return a DocumentFragment
-        // containing its children directly. This is consistent with
-        // toMarkup() which also unwraps such spans.
-        const filteredClassName = createClass(filterClasses(this.classes));
-        if (!filteredClassName &&
-            Object.keys(this.style).length === 0 &&
-            Object.keys(this.attributes).length === 0 &&
-            this.children.length > 0) {
-            const frag = document.createDocumentFragment();
-            for (let i = 0; i < this.children.length; i++) {
-                frag.appendChild(this.children[i].toNode());
-            }
-            return frag;
-        }
+    toNode(): HTMLElement {
         return toNode.call(this, "span");
     }
 
     toMarkup(): string {
-        // If this span has no visible attributes after filtering out
-        // build-time-only classes, unwrap it and emit children directly.
+        // Check if this span can be unwrapped — it has children but no
+        // visible attributes after filtering out build-time-only classes.
         // This avoids producing wrapper <span>s that only carried atom
-        // type classes like "mord". Skip unwrapping if the span has no
-        // children (empty spans may serve as spacers).
-        const filteredClassName = createClass(filterClasses(this.classes));
-        if (!filteredClassName &&
+        // type classes like "mord".
+        if (this.children.length > 0 &&
             Object.keys(this.style).length === 0 &&
             Object.keys(this.attributes).length === 0 &&
-            this.children.length > 0) {
+            !filterClasses(this.classes).length) {
             let childMarkup = "";
             for (let i = 0; i < this.children.length; i++) {
                 childMarkup += this.children[i].toMarkup();
