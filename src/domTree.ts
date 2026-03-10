@@ -252,10 +252,14 @@ export class Span<ChildType extends VirtualNode> implements HtmlDomNode {
     }
 
     /**
-     * Check if this span can be unwrapped — it has children but no
+     * Check if this span can be unwrapped in markup — it has children but no
      * visible attributes after filtering out build-time-only classes.
      * This avoids producing wrapper <span>s that only carried atom
      * type classes like "mord".
+     *
+     * Note: unwrapping is only safe in toMarkup(). In toNode(), removing
+     * wrapper spans changes the DOM tree depth, which can break CSS
+     * selectors that use direct child combinators (e.g. .mfrac > span > span).
      */
     private canUnwrap(): boolean {
         return this.children.length > 0 &&
@@ -264,14 +268,7 @@ export class Span<ChildType extends VirtualNode> implements HtmlDomNode {
             !filterClasses(this.classes).length;
     }
 
-    toNode(): HTMLElement | globalThis.DocumentFragment {
-        if (this.canUnwrap()) {
-            const frag = document.createDocumentFragment();
-            for (let i = 0; i < this.children.length; i++) {
-                frag.appendChild(this.children[i].toNode());
-            }
-            return frag;
-        }
+    toNode(): HTMLElement {
         return toNode.call(this, "span");
     }
 
