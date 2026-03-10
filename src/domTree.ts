@@ -64,12 +64,13 @@ const initNode = function(
     }
 };
 
-// Atom type classes that are used only during build-time for spacing
-// calculations and are not referenced by any CSS rules. These are stripped
-// from the final DOM output to reduce DOM size. See #2194, #3344.
+// Classes used only at build-time (spacing, line-breaking) that have no CSS
+// rules. These are stripped from toMarkup() output to reduce HTML size.
+// They are kept in toNode() output to preserve DOM structure for CSS child
+// selectors. See #2194, #3344.
 export const unstyledClasses = new Set([
     "mord", "mbin", "mrel", "mop", "mopen", "mclose", "mpunct", "minner",
-    "mtight", "delimsizinginner",
+    "mtight", "nobreak", "allowbreak", "delimsizinginner",
 ]);
 
 /**
