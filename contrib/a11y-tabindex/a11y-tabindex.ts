@@ -6,10 +6,27 @@
 // Usage:
 //   <script defer src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/a11y-tabindex.min.js"></script>
 
+function ensureAccessibleName(el: HTMLElement): void {
+    // In combined HTML+MathML mode, the .katex span has no role or
+    // aria-label.  When we make it focusable we must also give it an
+    // accessible name so it is not an unnamed focusable element (WCAG 4.1.2).
+    if (!el.hasAttribute("role")) {
+        el.setAttribute("role", "math");
+    }
+    if (!el.hasAttribute("aria-label")) {
+        const annotation =
+            el.querySelector("annotation[encoding='application/x-tex']");
+        if (annotation?.textContent) {
+            el.setAttribute("aria-label", annotation.textContent);
+        }
+    }
+}
+
 function updateTabIndex(el: Element): void {
     if (el instanceof HTMLElement) {
         if (el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight) {
             el.setAttribute("tabindex", "0");
+            ensureAccessibleName(el);
         } else {
             el.removeAttribute("tabindex");
         }

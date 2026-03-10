@@ -9,6 +9,7 @@ import ParseError from "../src/ParseError";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
 import type {MacroMap} from "../src/defineMacro";
+import {escape as escapeHTML} from "../src/utils";
 import {
     strictSettings, nonstrictSettings, trustSettings, r,
     getBuilt, getParsed, stripPositions,
@@ -4450,7 +4451,7 @@ describe("Internal __* interface", function() {
         // insert the expected accessibility attributes for comparison.
         const renderedSansMathML = rendered
             .replace(/<span class="katex-mathml">.*?<\/span>/, '')
-            .replace('<span class="katex">', `<span class="katex" role="math" aria-label="${latex}">`);
+            .replace('<span class="katex">', `<span class="katex" role="math" aria-label="${escapeHTML(latex)}">`);
         expect(tree.toMarkup()).toEqual(renderedSansMathML);
     });
 });
