@@ -2405,6 +2405,53 @@ describe("A markup generator", function() {
     });
 });
 
+describe("Build-time class filtering", function() {
+    it("toMarkup() strips atom type classes from output", function() {
+        const markup = katex.renderToString("x+y", {output: "html"});
+        // "mord", "mbin" are build-time-only and should not appear
+        expect(markup).not.toMatch(/class="[^"]*\bmord\b/);
+        expect(markup).not.toMatch(/class="[^"]*\bmbin\b/);
+    });
+
+    it("toMarkup() preserves styled classes in output", function() {
+        const markup = katex.renderToString("x+y", {output: "html"});
+        // "mathnormal" is a styled class and must survive filtering
+        expect(markup).toMatch(/class="[^"]*\bmathnormal\b/);
+    });
+
+    it("toNode() preserves atom type classes in DOM", function() {
+        const built = getBuilt("x+y");
+        // Build tree nodes should still carry "mord" and "mbin"
+        // (spacing nodes may be interleaved)
+        const classes = built.map((n: any) => n.classes);
+        expect(classes.some((c: string[]) => c.includes("mord"))).toBe(true);
+        expect(classes.some((c: string[]) => c.includes("mbin"))).toBe(true);
+    });
+
+    it("toMarkup() unwraps spans with only atom type classes", function() {
+        // \text{R} wraps R in a span.text > span.mord structure;
+        // the inner mord span should be unwrapped in markup
+        const markup = katex.renderToString(r`\text{R}`, {output: "html"});
+        // R should appear directly inside the "text" span, not in a
+        // nested mord wrapper
+        expect(markup).toContain("<span class=\"text\">R</span>");
+        expect(markup).not.toMatch(/<span[^>]*class="mord"[^>]*>R<\/span>/);
+    });
+
+    it("toMarkup() does not unwrap classless spans", function() {
+        // Classless spans (e.g. spacers or wrappers) should not be removed
+        const markup = katex.renderToString(r`\frac{1}{2}`, {output: "html"});
+        // The fraction structure should still contain wrapper spans
+        expect(markup).toContain("<span class=\"mfrac\">");
+    });
+
+    it("toMarkup() does not unwrap spans with styled classes", function() {
+        const markup = katex.renderToString(r`\mathfrak{R}`, {output: "html"});
+        // "mathfrak" is a styled class — its span must not be unwrapped
+        expect(markup).toContain("<span class=\"mathfrak\">R</span>");
+    });
+});
+
 describe("A parse tree generator", function() {
     it("generates a tree", function() {
         const tree = stripPositions(getParsed`\sigma^2`);
