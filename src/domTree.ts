@@ -64,6 +64,14 @@ const initNode = function(
     }
 };
 
+// Atom type classes that are used only during build-time for spacing
+// calculations and are not referenced by any CSS rules. These are stripped
+// from the final DOM output to reduce DOM size. See #2194, #3344.
+export const unstyledClasses = new Set([
+    "mord", "mbin", "mrel", "mop", "mopen", "mclose", "mpunct", "minner",
+    "mtight", "delimsizinginner",
+]);
+
 /**
  * Filter out unstyled classes that are only used at build-time for spacing.
  */
@@ -184,14 +192,6 @@ export type CssStyle = Partial<{
     verticalAlign: string;
 }> & {};
 
-// Atom type classes that are used only during build-time for spacing
-// calculations and are not referenced by any CSS rules. These are stripped
-// from the final DOM output to reduce DOM size. See #2194, #3344.
-export const unstyledClasses = new Set([
-    "mord", "mbin", "mrel", "mop", "mopen", "mclose", "mpunct", "minner",
-    "mtight", "delimsizinginner",
-]);
-
 export interface HtmlDomNode extends VirtualNode {
     classes: string[];
     height: number;
@@ -251,19 +251,32 @@ export class Span<ChildType extends VirtualNode> implements HtmlDomNode {
         return this.classes.includes(className);
     }
 
-    toNode(): HTMLElement {
+    /**
+     * Check if this span can be unwrapped — it has children but no
+     * visible attributes after filtering out build-time-only classes.
+     * This avoids producing wrapper <span>s that only carried atom
+     * type classes like "mord".
+     */
+    private canUnwrap(): boolean {
+        return this.children.length > 0 &&
+            Object.keys(this.style).length === 0 &&
+            Object.keys(this.attributes).length === 0 &&
+            !filterClasses(this.classes).length;
+    }
+
+    toNode(): HTMLElement | globalThis.DocumentFragment {
+        if (this.canUnwrap()) {
+            const frag = document.createDocumentFragment();
+            for (let i = 0; i < this.children.length; i++) {
+                frag.appendChild(this.children[i].toNode());
+            }
+            return frag;
+        }
         return toNode.call(this, "span");
     }
 
     toMarkup(): string {
-        // Check if this span can be unwrapped — it has children but no
-        // visible attributes after filtering out build-time-only classes.
-        // This avoids producing wrapper <span>s that only carried atom
-        // type classes like "mord".
-        if (this.children.length > 0 &&
-            Object.keys(this.style).length === 0 &&
-            Object.keys(this.attributes).length === 0 &&
-            !filterClasses(this.classes).length) {
+        if (this.canUnwrap()) {
             let childMarkup = "";
             for (let i = 0; i < this.children.length; i++) {
                 childMarkup += this.children[i].toMarkup();
@@ -334,6 +347,8 @@ export class Img implements VirtualNode {
     ) {
         this.alt = alt;
         this.src = src;
+        // "mord" is needed at build-time for spacing via getTypeOfDomTree()
+        // (which reads classes[0]), but is filtered from rendered output.
         this.classes = ["mord"];
         this.height = 0;
         this.depth = 0;

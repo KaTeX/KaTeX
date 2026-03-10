@@ -1874,8 +1874,8 @@ describe("An HTML font tree-builder", function() {
     it("should render \\text{R} with the correct font", function() {
         const markup = katex.renderToString(r`\text{R}`);
         // "mord" is a build-time-only class stripped from output;
-        // R renders as plain text without a span wrapper.
-        expect(markup).toContain(">R<");
+        // R renders as plain text inside the "text" span.
+        expect(markup).toContain("<span class=\"text\">R</span>");
     });
 
     it("should render \\textit{R} with the correct font", function() {
@@ -1899,9 +1899,10 @@ describe("An HTML font tree-builder", function() {
 
     it("should render \\text{R\\textit{S}T} with the correct fonts", function() {
         const markup = katex.renderToString(r`\text{R\textit{S}T}`);
-        expect(markup).toContain(">R<");
+        // R and T are bare text nodes (mord stripped); S is in textit span
+        expect(markup).toContain("\"text\">R<span");
         expect(markup).toContain("<span class=\"textit\">S</span>");
-        expect(markup).toContain(">T<");
+        expect(markup).toContain("</span>T</span>");
     });
 
     it("should render \\textbf{R } with the correct font", function() {
