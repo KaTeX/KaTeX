@@ -65,13 +65,20 @@ const initNode = function(
 };
 
 /**
+ * Filter out unstyled classes that are only used at build-time for spacing.
+ */
+const filterClasses = function(classes: string[]): string[] {
+    return classes.filter(cls => cls && !unstyledClasses.has(cls));
+};
+
+/**
  * Convert into an HTML node
  */
 const toNode = function(this: HtmlNodeData, tagName: string): HTMLElement {
     const node = document.createElement(tagName);
 
-    // Apply the class
-    node.className = createClass(this.classes);
+    // Apply the class, filtering out build-time-only classes
+    node.className = createClass(filterClasses(this.classes));
 
     // Apply inline styles
     for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
@@ -107,9 +114,10 @@ const invalidAttributeNameRegex = /[\s"'>/=\x00-\x1f]/;
 const toMarkup = function(this: HtmlNodeData, tagName: string): string {
     let markup = `<${tagName}`;
 
-    // Add the class
-    if (this.classes.length) {
-        markup += ` class="${escape(createClass(this.classes))}"`;
+    // Add the class, filtering out build-time-only classes
+    const filteredClassName = createClass(filterClasses(this.classes));
+    if (filteredClassName) {
+        markup += ` class="${escape(filteredClassName)}"`;
     }
 
     let styles = "";
@@ -176,6 +184,14 @@ export type CssStyle = Partial<{
     verticalAlign: string;
 }> & {};
 
+// Atom type classes that are used only during build-time for spacing
+// calculations and are not referenced by any CSS rules. These are stripped
+// from the final DOM output to reduce DOM size. See #2194, #3344.
+export const unstyledClasses = new Set([
+    "mord", "mbin", "mrel", "mop", "mopen", "mclose", "mpunct", "minner",
+    "mtight", "allowbreak", "delimsizinginner",
+]);
+
 export interface HtmlDomNode extends VirtualNode {
     classes: string[];
     height: number;
@@ -236,10 +252,31 @@ export class Span<ChildType extends VirtualNode> implements HtmlDomNode {
     }
 
     toNode(): HTMLElement {
+        // If this span has no visible attributes after filtering and has
+        // children, unwrap it to reduce DOM size. We use a DocumentFragment
+        // to hold the children. However, toNode() return type is HTMLElement,
+        // so we can only do this for markup. For toNode, we keep the span
+        // but with filtered classes.
         return toNode.call(this, "span");
     }
 
     toMarkup(): string {
+        // If this span has no visible attributes after filtering out
+        // build-time-only classes, unwrap it and emit children directly.
+        // This avoids producing wrapper <span>s that only carried atom
+        // type classes like "mord". Skip unwrapping if the span has no
+        // children (empty spans may serve as spacers).
+        const filteredClassName = createClass(filterClasses(this.classes));
+        if (!filteredClassName &&
+            Object.keys(this.style).length === 0 &&
+            Object.keys(this.attributes).length === 0 &&
+            this.children.length > 0) {
+            let childMarkup = "";
+            for (let i = 0; i < this.children.length; i++) {
+                childMarkup += this.children[i].toMarkup();
+            }
+            return childMarkup;
+        }
         return toMarkup.call(this, "span");
     }
 }
@@ -319,7 +356,6 @@ export class Img implements VirtualNode {
         const node = document.createElement("img");
         node.src = this.src;
         node.alt = this.alt;
-        node.className = "mord";
 
         // Apply inline styles
         for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
@@ -425,9 +461,11 @@ export class SymbolNode implements HtmlDomNode {
             span.style.marginRight = makeEm(this.italic);
         }
 
-        if (this.classes.length > 0) {
+        const filteredClassName = createClass(
+            filterClasses(this.classes));
+        if (filteredClassName) {
             span = span || document.createElement("span");
-            span.className = createClass(this.classes);
+            span.className = filteredClassName;
         }
 
         for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
@@ -453,10 +491,12 @@ export class SymbolNode implements HtmlDomNode {
 
         let markup = "<span";
 
-        if (this.classes.length) {
+        const filteredClassName = createClass(
+            filterClasses(this.classes));
+        if (filteredClassName) {
             needsSpan = true;
             markup += " class=\"";
-            markup += escape(createClass(this.classes));
+            markup += escape(filteredClassName);
             markup += "\"";
         }
 
