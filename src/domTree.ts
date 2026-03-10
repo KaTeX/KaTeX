@@ -189,7 +189,7 @@ export type CssStyle = Partial<{
 // from the final DOM output to reduce DOM size. See #2194, #3344.
 export const unstyledClasses = new Set([
     "mord", "mbin", "mrel", "mop", "mopen", "mclose", "mpunct", "minner",
-    "mtight", "allowbreak", "delimsizinginner",
+    "mtight", "nobreak", "allowbreak", "delimsizinginner",
 ]);
 
 export interface HtmlDomNode extends VirtualNode {
@@ -251,12 +251,22 @@ export class Span<ChildType extends VirtualNode> implements HtmlDomNode {
         return this.classes.includes(className);
     }
 
-    toNode(): HTMLElement {
-        // If this span has no visible attributes after filtering and has
-        // children, unwrap it to reduce DOM size. We use a DocumentFragment
-        // to hold the children. However, toNode() return type is HTMLElement,
-        // so we can only do this for markup. For toNode, we keep the span
-        // but with filtered classes.
+    toNode(): Node {
+        // If this span has no visible attributes after filtering out
+        // build-time-only classes, unwrap it and return a DocumentFragment
+        // containing its children directly. This is consistent with
+        // toMarkup() which also unwraps such spans.
+        const filteredClassName = createClass(filterClasses(this.classes));
+        if (!filteredClassName &&
+            Object.keys(this.style).length === 0 &&
+            Object.keys(this.attributes).length === 0 &&
+            this.children.length > 0) {
+            const frag = document.createDocumentFragment();
+            for (let i = 0; i < this.children.length; i++) {
+                frag.appendChild(this.children[i].toNode());
+            }
+            return frag;
+        }
         return toNode.call(this, "span");
     }
 
