@@ -6,19 +6,39 @@
 // Usage:
 //   <script defer src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/a11y-tabindex.min.js"></script>
 
+const A11Y_ADDED = "data-a11y-tabindex-added";
+
 function ensureAccessibleName(el: HTMLElement): void {
     // In combined HTML+MathML mode, the .katex span has no role or
     // aria-label.  When we make it focusable we must also give it an
     // accessible name so it is not an unnamed focusable element (WCAG 4.1.2).
+    // We track what we add so removeAccessibleName() can clean up without
+    // removing attributes that core KaTeX set.
+    const added: string[] = [];
     if (!el.hasAttribute("role")) {
         el.setAttribute("role", "math");
+        added.push("role");
     }
     if (!el.hasAttribute("aria-label")) {
         const annotation =
             el.querySelector("annotation[encoding='application/x-tex']");
         if (annotation?.textContent) {
             el.setAttribute("aria-label", annotation.textContent);
+            added.push("aria-label");
         }
+    }
+    if (added.length > 0) {
+        el.setAttribute(A11Y_ADDED, added.join(" "));
+    }
+}
+
+function removeAccessibleName(el: HTMLElement): void {
+    const added = el.getAttribute(A11Y_ADDED);
+    if (added) {
+        for (const attr of added.split(" ")) {
+            el.removeAttribute(attr);
+        }
+        el.removeAttribute(A11Y_ADDED);
     }
 }
 
@@ -29,6 +49,7 @@ function updateTabIndex(el: Element): void {
             ensureAccessibleName(el);
         } else {
             el.removeAttribute("tabindex");
+            removeAccessibleName(el);
         }
     }
 }
