@@ -85,8 +85,8 @@ const filterClasses = function(classes: string[]): string[] {
 const toNode = function(this: HtmlNodeData, tagName: string): HTMLElement {
     const node = document.createElement(tagName);
 
-    // Apply the class, filtering out build-time-only classes
-    node.className = createClass(filterClasses(this.classes));
+    // Apply the class
+    node.className = createClass(this.classes);
 
     // Apply inline styles
     for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
@@ -345,7 +345,8 @@ export class Img implements VirtualNode {
         this.alt = alt;
         this.src = src;
         // "mord" is needed at build-time for spacing via getTypeOfDomTree()
-        // (which reads classes[0]), but is filtered from rendered output.
+        // (which reads classes[0]). It is kept in toNode() output but
+        // filtered from toMarkup() output.
         this.classes = ["mord"];
         this.height = 0;
         this.depth = 0;
@@ -361,6 +362,7 @@ export class Img implements VirtualNode {
         const node = document.createElement("img");
         node.src = this.src;
         node.alt = this.alt;
+        node.className = "mord";
 
         // Apply inline styles
         for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
@@ -466,11 +468,9 @@ export class SymbolNode implements HtmlDomNode {
             span.style.marginRight = makeEm(this.italic);
         }
 
-        const filteredClassName = createClass(
-            filterClasses(this.classes));
-        if (filteredClassName) {
+        if (this.classes.length > 0) {
             span = span || document.createElement("span");
-            span.className = filteredClassName;
+            span.className = createClass(this.classes);
         }
 
         for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
