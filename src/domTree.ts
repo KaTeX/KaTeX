@@ -252,17 +252,21 @@ export class Span<ChildType extends VirtualNode> implements HtmlDomNode {
     }
 
     /**
-     * Check if this span can be unwrapped in markup — it has children but no
-     * visible attributes after filtering out build-time-only classes.
-     * This avoids producing wrapper <span>s that only carried atom
-     * type classes like "mord".
+     * Check if this span can be unwrapped in markup — it has children,
+     * originally had classes that were ALL build-time-only (e.g. "mord"),
+     * and no other visible attributes. This avoids producing wrapper
+     * <span>s that only carried atom type classes.
      *
-     * Note: unwrapping is only safe in toMarkup(). In toNode(), removing
-     * wrapper spans changes the DOM tree depth, which can break CSS
-     * selectors that use direct child combinators (e.g. .mfrac > span > span).
+     * Note: unwrapping is only applied in toMarkup(). In toNode(),
+     * wrapper spans are preserved because removing them changes the DOM
+     * tree depth, breaking CSS child selectors (e.g. .mfrac > span > span).
+     * KaTeX does not support SSR hydration (using renderToString() on the
+     * server and render() on the client for the same output), so the
+     * structural divergence between the two paths is intentional.
      */
     private canUnwrap(): boolean {
         return this.children.length > 0 &&
+            this.classes.length > 0 &&
             Object.keys(this.style).length === 0 &&
             Object.keys(this.attributes).length === 0 &&
             !filterClasses(this.classes).length;
