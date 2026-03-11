@@ -1,9 +1,3 @@
-
-/**
- * This file consists only of basic types used in multiple places.
- * For types with javascript, create separate files by themselves.
- */
-
 export type Mode = "math" | "text";
 
 // LaTeX argument type.
@@ -33,3 +27,35 @@ export type BreakToken = "]" | "}" | "\\endgroup" | "$" | "\\)" | "\\\\" | "\\en
 export type FontVariant = "bold" | "bold-italic" | "bold-sans-serif" |
     "double-struck" | "fraktur" | "italic" | "monospace" | "normal" | "sans-serif" |
     "sans-serif-bold-italic" | "sans-serif-italic" | "script";
+
+export const FontName = {
+    MainBold: "Main-Bold",
+    MathItalic: "Math-Italic",
+    MainBoldItalic: "Main-BoldItalic",
+    ScriptRegular: "Script-Regular",
+    FrakturRegular: "Fraktur-Regular",
+    AMSRegular: "AMS-Regular",
+    SansSerifRegular: "SansSerif-Regular",
+    SansSerifBold: "SansSerif-Bold",
+    SansSerifItalic: "SansSerif-Italic",
+    TypewriterRegular: "Typewriter-Regular",
+} as const;
+
+export type FontName = (typeof FontName)[keyof typeof FontName];
+
+export const FontClass = {
+    boldUpright: {math: "mathbf", text: "textbf"},
+    italic: {math: "mathnormal", text: "textit"},
+    boldItalic: {math: "boldsymbol", text: "boldsymbol"},
+    script: {math: "mathscr", text: "textscr"},
+    noFont: {math: "", text: ""},
+    fraktur: {math: "mathfrak", text: "textfrak"},
+    doubleStruck: {math: "mathbb", text: "textbb"},
+    boldFraktur: {math: "mathboldfrak", text: "textboldfrak"},
+    sansSerif: {math: "mathsf", text: "textsf"},
+    boldSansSerif: {math: "mathboldsf", text: "textboldsf"},
+    italicSansSerif: {math: "mathitsf", text: "textitsf"},
+    monospace: {math: "mathtt", text: "texttt"},
+} as const satisfies Record<string, Record<Mode, string>>;
+
+export type FontClass = (typeof FontClass)[keyof typeof FontClass][Mode];
