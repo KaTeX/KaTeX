@@ -17,7 +17,7 @@ type WideChar = {
 
 const boldUpright: WideChar = {class: FontClass.boldUpright, font: FontName.MainBold};
 const italic: WideChar = {class: FontClass.italic, font: FontName.MathItalic};
-const boldItalic: WideChar = {class: FontClass.boldItalic, font: FontName.MathItalic};
+const boldItalic: WideChar = {class: FontClass.boldItalic, font: FontName.MainBoldItalic};
 const script: WideChar = {class: FontClass.script, font: FontName.ScriptRegular};
 const noFont: WideChar = {class: FontClass.noFont, font: ""};
 const fraktur: WideChar = {class: FontClass.fraktur, font: FontName.FrakturRegular};
