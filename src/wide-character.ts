@@ -20,13 +20,13 @@ const italic: WideChar = {class: FontClass.italic, font: FontName.MathItalic};
 const boldItalic: WideChar = {class: FontClass.boldItalic, font: FontName.MathItalic};
 const script: WideChar = {class: FontClass.script, font: FontName.ScriptRegular};
 const noFont: WideChar = {class: FontClass.noFont, font: ""};
-const fraktur = {class: FontClass.fraktur, font: FontName.FrakturRegular};
-const doubleStruck = {class: FontClass.doubleStruck, font: FontName.AMSRegular};
-const boldFraktur = {class: FontClass.boldFraktur, font: FontName.FrakturRegular};
-const sansSerif = {class: FontClass.sansSerif, font: FontName.SansSerifRegular};
-const boldSansSerif = {class: FontClass.boldSansSerif, font: FontName.SansSerifBold};
-const italicSansSerif = {class: FontClass.italicSansSerif, font: FontName.SansSerifItalic};
-const monospace = {class: FontClass.monospace, font: FontName.TypewriterRegular};
+const fraktur: WideChar = {class: FontClass.fraktur, font: FontName.FrakturRegular};
+const doubleStruck: WideChar = {class: FontClass.doubleStruck, font: FontName.AMSRegular};
+const boldFraktur: WideChar = {class: FontClass.boldFraktur, font: FontName.FrakturRegular};
+const sansSerif: WideChar = {class: FontClass.sansSerif, font: FontName.SansSerifRegular};
+const boldSansSerif: WideChar = {class: FontClass.boldSansSerif, font: FontName.SansSerifBold};
+const italicSansSerif: WideChar = {class: FontClass.italicSansSerif, font: FontName.SansSerifItalic};
+const monospace: WideChar = {class: FontClass.monospace, font: FontName.TypewriterRegular};
 
 /**
  * Data below is from https://www.unicode.org/charts/PDF/U1D400.pdf
@@ -97,7 +97,7 @@ export const wideCharacterFont = (
 
     } else if (0x1D6A6 < codePoint && codePoint < 0x1D7CE) {
         // Greek letters. Not supported, yet.
-        return {font: "", cssClass: ""};
+        return {font: "", cssClass: FontClass.noFont[mode]};
 
     } else {
         // We don't support any wide characters outside 1D400–1D7FF.

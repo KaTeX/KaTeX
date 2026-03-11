@@ -174,12 +174,14 @@ export const makeOrd = function<NODETYPE extends "spacing" | "mathord" | "textor
     // Math mode or Old font (i.e. \rm)
     const isFont = mode === "math" || (mode === "text" && options.font);
     const fontOrFamily = isFont ? options.font : options.fontFamily;
+    let wideFontName = "";
+    let wideFontClass = "";
     if (text.charCodeAt(0) === 0xD835) {
+        ({font: wideFontName, cssClass: wideFontClass} = wideCharacterFont(text, mode));
+    }
+    if (wideFontName) {
         // surrogate pairs get special treatment
-        const {font, cssClass} = wideCharacterFont(text, mode);
-        if (font) {
-            return makeSymbol(text, font, mode, options, classes.concat(cssClass));
-        }
+        return makeSymbol(text, wideFontName, mode, options, classes.concat(wideFontClass));
     } else if (fontOrFamily) {
         let fontName;
         let fontClasses;
