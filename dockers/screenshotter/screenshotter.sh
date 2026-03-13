@@ -40,7 +40,7 @@ for browserTag in "firefox:4.27.0-20241204" "chromium:4.27.0-20241204"; do
             break
         fi
         if [ "$i" -eq 120 ]; then
-            echo "Selenium failed to start within 120s, skipping ${browser}"
+            echo "Selenium failed to start within 120s, failing ${browser}"
             status=1
             cleanup
             continue 2
