@@ -8,13 +8,13 @@
 
 const A11Y_ADDED = "data-a11y-tabindex-added";
 
-function ensureAccessibleName(el: HTMLElement): void {
+function ensureAccessibleName(el) {
     // In combined HTML+MathML mode, the .katex span has no role or
     // aria-label.  When we make it focusable we must also give it an
     // accessible name so it is not an unnamed focusable element (WCAG 4.1.2).
     // We track what we add so removeAccessibleName() can clean up without
     // removing attributes that core KaTeX set.
-    const added: string[] = [];
+    const added = [];
     if (!el.hasAttribute("role")) {
         el.setAttribute("role", "math");
         added.push("role");
@@ -32,7 +32,7 @@ function ensureAccessibleName(el: HTMLElement): void {
     }
 }
 
-function removeAccessibleName(el: HTMLElement): void {
+function removeAccessibleName(el) {
     const added = el.getAttribute(A11Y_ADDED);
     if (added) {
         for (const attr of added.split(" ")) {
@@ -42,7 +42,7 @@ function removeAccessibleName(el: HTMLElement): void {
     }
 }
 
-function updateTabIndex(el: Element): void {
+function updateTabIndex(el) {
     if (el instanceof HTMLElement) {
         if (el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight) {
             el.setAttribute("tabindex", "0");
@@ -54,12 +54,12 @@ function updateTabIndex(el: Element): void {
     }
 }
 
-function observeKatex(el: Element, resizeObserver: ResizeObserver): void {
+function observeKatex(el, resizeObserver) {
     updateTabIndex(el);
     resizeObserver.observe(el);
 }
 
-function init(): void {
+function init() {
     // Re-check on resize since overflow can change with viewport width.
     const resizeObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
