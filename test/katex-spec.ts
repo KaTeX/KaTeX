@@ -9,6 +9,7 @@ import ParseError from "../src/ParseError";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
 import type {MacroMap} from "../src/defineMacro";
+import {escape as escapeHTML} from "../src/utils";
 import {
     strictSettings, nonstrictSettings, trustSettings, r,
     getBuilt, getParsed, stripPositions,
@@ -4443,10 +4444,14 @@ describe("Internal __* interface", function() {
         expect(tree.toMarkup()).toEqual(rendered);
     });
 
-    it("__renderToHTMLTree renders same as renderToString sans MathML", () => {
+    it("__renderToHTMLTree renders same as renderToString sans MathML, plus a11y attrs", () => {
         const tree = katex.__renderToHTMLTree(latex);
-        const renderedSansMathML = rendered.replace(
-            /<span class="katex-mathml">.*?<\/span>/, '');
+        // The HTML-only tree adds role="math" and aria-label that the
+        // default HTML+MathML tree does not have, so strip MathML and
+        // insert the expected accessibility attributes for comparison.
+        const renderedSansMathML = rendered
+            .replace(/<span class="katex-mathml">.*?<\/span>/, '')
+            .replace('<span class="katex">', `<span class="katex" role="math" aria-label="${escapeHTML(latex)}">`);
         expect(tree.toMarkup()).toEqual(renderedSansMathML);
     });
 });
@@ -4528,5 +4533,34 @@ describe("\\emph", () => {
 
     it("should toggle italics within textit", () => {
         expect`\textit{\emph{foo \emph{bar}}}`.toBuildLike`\textit{\textup{foo \textit{bar}}}`;
+    });
+});
+
+describe("Accessibility attributes", function() {
+    it("should not add role in default (HTML+MathML) mode", function() {
+        // The inner <math> element already carries native role="math",
+        // so the outer .katex span must not duplicate it.
+        const markup = katex.renderToString("x^2");
+        expect(markup).not.toMatch(/<span class="katex"[^>]*role="math"/);
+    });
+
+    it("should add role and aria-label in html output mode", function() {
+        const markup = katex.renderToString("x^2", {output: "html"});
+        expect(markup).toMatch(/<span class="katex"[^>]*role="math"/);
+        expect(markup).toMatch(/<span class="katex"[^>]*aria-label="x\^2"/);
+    });
+
+    it("should add role and aria-label in html display mode", function() {
+        const markup = katex.renderToString("x^2", {
+            output: "html", displayMode: true,
+        });
+        expect(markup).toContain('role="math"');
+        expect(markup).toContain('aria-label="x^2"');
+    });
+
+    it("should not add role or aria-label in mathml-only output mode", function() {
+        const markup = katex.renderToString("x^2", {output: "mathml"});
+        expect(markup).not.toContain('role="math"');
+        expect(markup).not.toContain('aria-label');
     });
 });

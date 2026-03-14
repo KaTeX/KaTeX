@@ -8,6 +8,13 @@ import Style from "./Style";
 import type {AnyParseNode} from "./parseNode";
 import type {DomSpan} from "./domTree";
 
+const setA11yAttrs = function(katexNode: DomSpan, expression: string): void {
+    // HTML-only output has no <math> element providing native semantics,
+    // so we add role="math" and aria-label with the TeX source.
+    katexNode.setAttribute("role", "math");
+    katexNode.setAttribute("aria-label", expression);
+};
+
 const optionsFromSettings = function(settings: Settings) {
     return new Options({
         style: (settings.displayMode ? Style.DISPLAY : Style.TEXT),
@@ -42,6 +49,7 @@ export const buildTree = function(
     } else if (settings.output === "html") {
         const htmlNode = buildHTML(tree, options);
         katexNode = makeSpan(["katex"], [htmlNode]);
+        setA11yAttrs(katexNode, expression);
     } else {
         const mathMLNode = buildMathML(tree, expression, options,
             settings.displayMode, false);
@@ -60,6 +68,7 @@ export const buildHTMLTree = function(
     const options = optionsFromSettings(settings);
     const htmlNode = buildHTML(tree, options);
     const katexNode = makeSpan(["katex"], [htmlNode]);
+    setA11yAttrs(katexNode, expression);
     return displayWrap(katexNode, settings);
 };
 
