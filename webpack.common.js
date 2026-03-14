@@ -56,7 +56,7 @@ const targets = [
     },
     {
         name: 'contrib/a11y-tabindex',
-        entry: './contrib/a11y-tabindex/a11y-tabindex.ts',
+        entry: './contrib/a11y-tabindex/a11y-tabindex.js',
     },
 ];
 
