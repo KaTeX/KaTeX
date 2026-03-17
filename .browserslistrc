@@ -1,7 +1,4 @@
-# Last 2 versions of each browsers, excluding dead browsers (e.g., BlackBerry)
 last 2 versions
-
-# Browsers with more than 0.1% global usage, excluding old browsers
 > 0.1%
 not safari < 9
 not chrome < 60
