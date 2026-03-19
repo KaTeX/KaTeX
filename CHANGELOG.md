@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.39](https://github.com/KaTeX/KaTeX/compare/v0.16.38...v0.16.39) (2026-03-19)
+
+
+### Bug Fixes
+
+* middle dot in text mode ([#4169](https://github.com/KaTeX/KaTeX/issues/4169)) ([edb45b0](https://github.com/KaTeX/KaTeX/commit/edb45b0b17c7b33349ce5142fe39156da05cb4d8)), closes [#3641](https://github.com/KaTeX/KaTeX/issues/3641)
+
 ## [0.16.38](https://github.com/KaTeX/KaTeX/compare/v0.16.37...v0.16.38) (2026-03-08)
 
 
