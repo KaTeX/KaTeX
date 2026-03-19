@@ -26,35 +26,9 @@ for browserTag in "firefox:128.0-20260222" "chromium:145.0-20260222"; do
     [[ ${container} ]] || continue
     echo "Container ${container:0:12} started"
 
-    seleniumPort=$(docker port "${container}" 4444 | head -1 | sed 's/.*://')
-
-    # host.docker.internal for emulators, bridge gateway for native docker
-    if docker exec "${container}" getent hosts host.docker.internal >/dev/null 2>&1; then
-        katexIP="host.docker.internal"
-    else
-        katexIP=$(docker inspect -f '{{.NetworkSettings.Networks.bridge.Gateway}}' "${container}")
-    fi
-
-    echo "Waiting for Selenium to be ready on localhost:${seleniumPort}..."
-    for i in $(seq 1 120); do
-        if curl -sf "http://localhost:${seleniumPort}/wd/hub/status" >/dev/null 2>&1; then
-            echo "Selenium is ready (${i}s)"
-            break
-        fi
-        if [ "$i" -eq 120 ]; then
-            echo "Selenium failed to start within 120s, failing ${browser}"
-            status=1
-            cleanup
-            continue 2
-        fi
-        sleep 1
-    done
-
     echo "Creating screenshots for ${browser}..."
     yarn node "$(dirname "$0")"/screenshotter.js \
             --browser="${browser}" --container="${container}" \
-            --selenium-url "http://localhost:${seleniumPort}/wd/hub" \
-            --katex-ip "${katexIP}" \
             "$@"
     rc=$?
     if [ $rc -eq 0 ]; then
