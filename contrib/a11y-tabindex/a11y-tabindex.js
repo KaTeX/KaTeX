@@ -35,9 +35,9 @@ function ensureAccessibleName(el) {
 function removeAccessibleName(el) {
     const added = el.getAttribute(A11Y_ADDED);
     if (added) {
-        for (const attr of added.split(" ")) {
+        added.split(" ").forEach((attr) => {
             el.removeAttribute(attr);
-        }
+        });
         el.removeAttribute(A11Y_ADDED);
     }
 }
@@ -62,9 +62,9 @@ function observeKatex(el, resizeObserver) {
 function init() {
     // Re-check on resize since overflow can change with viewport width.
     const resizeObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
+        entries.forEach((entry) => {
             updateTabIndex(entry.target);
-        }
+        });
     });
 
     // Handle all existing .katex elements.
@@ -73,9 +73,8 @@ function init() {
 
     // Watch for new .katex elements added to the DOM.
     new MutationObserver((mutations) => {
-        for (const mutation of mutations) {
-            const nodes = Array.from(mutation.addedNodes);
-            for (const node of nodes) {
+        mutations.forEach((mutation) => {
+            Array.from(mutation.addedNodes).forEach((node) => {
                 if (node instanceof Element) {
                     if (node.classList.contains("katex")) {
                         observeKatex(node, resizeObserver);
@@ -84,8 +83,8 @@ function init() {
                             (el) => observeKatex(el, resizeObserver));
                     }
                 }
-            }
-        }
+            });
+        });
     }).observe(document.body, {childList: true, subtree: true});
 }
 
