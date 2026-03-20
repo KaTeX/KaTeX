@@ -83,8 +83,9 @@ type Schema = {
          */
         description?: string;
         /**
-         * The function to process the option.
-         * Currently only used for numeric settings (maxSize, maxExpand).
+         * The function to process the option.  Only defined for numeric
+         * settings (minRuleThickness, maxSize, maxExpand); if a processor
+         * is needed for a non-numeric setting, widen this type accordingly.
          */
         processor?: (value: number) => number;
         /**
@@ -277,8 +278,6 @@ export default class Settings {
             const schema = SETTINGS_SCHEMA[prop] as SchemaEntry;
             const optionValue = options[prop];
             // TODO: validate options
-            // processor is only defined for numeric settings, so the
-            // cast is safe; a future validation step would catch misuse.
             (this as Record<string, unknown>)[prop] = optionValue !== undefined
                 ? (schema.processor
                     ? schema.processor(optionValue as number)
