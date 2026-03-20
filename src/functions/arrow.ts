@@ -1,13 +1,11 @@
 import defineFunction from "../defineFunction";
-import {makeSpan, makeVList, wrapFragment} from "../buildCommon";
-import {Span} from "../domTree";
+import {makeSpan, makeVList, vlistChild, wrapFragment} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
 import {stretchyMathML, stretchySvg} from "../stretchy";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type {HtmlDomNode} from "../domTree";
 import type {ParseNode} from "../parseNode";
 import type {MathDomNode} from "../mathMLTree";
 
@@ -108,11 +106,8 @@ defineFunction({
             }, options);
         }
 
-        // Navigate the vlist DOM structure: vtable > vlist-r > vlist > wrapper[1]
-        // to add "svg-align" to the wrapper around the arrow SVG element.
-        const vlistRow = vlist.children[0] as Span<HtmlDomNode>;
-        const vlistInner = vlistRow.children[0] as Span<HtmlDomNode>;
-        vlistInner.children[1].classes.push("svg-align");
+        // Add "svg-align" to the wrapper around the arrow SVG element.
+        vlistChild(vlist, 1).classes.push("svg-align");
 
         return makeSpan(["mrel", "x-arrow"], [vlist], options);
     },

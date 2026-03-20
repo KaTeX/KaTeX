@@ -1,6 +1,5 @@
 import defineFunction from "../defineFunction";
-import {makeSpan, makeVList} from "../buildCommon";
-import {Span} from "../domTree";
+import {makeSpan, makeVList, vlistChild} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
 import {stretchyMathML, stretchySvg} from "../stretchy";
 import Style from "../Style";
@@ -9,7 +8,6 @@ import {assertNodeType} from "../parseNode";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type {HtmlDomNode} from "../domTree";
 import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
 import type {ParseNode} from "../parseNode";
 
@@ -52,10 +50,8 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
                 {type: "elem", elem: braceBody},
             ],
         }, options);
-        // Navigate vlist DOM: vtable > vlist-r > vlist > wrapper[1] (the braceBody wrapper)
-        const vlistRow1 = vlist.children[0] as Span<HtmlDomNode>;
-        const vlistInner1 = vlistRow1.children[0] as Span<HtmlDomNode>;
-        vlistInner1.children[1].classes.push("svg-align");
+        // Add "svg-align" to the braceBody wrapper.
+        vlistChild(vlist, 1).classes.push("svg-align");
     } else {
         vlist = makeVList({
             positionType: "bottom",
@@ -66,10 +62,8 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
                 {type: "elem", elem: body},
             ],
         }, options);
-        // Navigate vlist DOM: vtable > vlist-r > vlist > wrapper[0] (the braceBody wrapper)
-        const vlistRow2 = vlist.children[0] as Span<HtmlDomNode>;
-        const vlistInner2 = vlistRow2.children[0] as Span<HtmlDomNode>;
-        vlistInner2.children[0].classes.push("svg-align");
+        // Add "svg-align" to the braceBody wrapper.
+        vlistChild(vlist, 0).classes.push("svg-align");
     }
 
     if (supSubGroup) {

@@ -631,6 +631,31 @@ export const makeVList = function(params: VListParam, options: Options): DomSpan
     return vtable;
 };
 
+/**
+ * Returns the wrapper span for the `index`-th element child inside a vlist
+ * returned by `makeVList`.  The internal DOM structure is:
+ *   vtable (vlist-t) > vlist-r > vlist > wrapper[index]
+ * Throws if the structure doesn't match, so callers fail loudly rather than
+ * silently corrupting the DOM.
+ */
+export const vlistChild = function(
+    vtable: DomSpan, index: number,
+): DomSpan {
+    const vlistR = vtable.children[0];
+    if (!vlistR || !("children" in vlistR)) {
+        throw new Error("Expected vlist-r row inside vtable");
+    }
+    const vlist = (vlistR as DomSpan).children[0];
+    if (!vlist || !("children" in vlist)) {
+        throw new Error("Expected vlist inside vlist-r");
+    }
+    const wrapper = (vlist as DomSpan).children[index];
+    if (!wrapper) {
+        throw new Error(`Expected vlist child at index ${index}`);
+    }
+    return wrapper as DomSpan;
+};
+
 // Glue is a concept from TeX which is a flexible space between elements in
 // either a vertical or horizontal list. In KaTeX, at least for now, it's
 // static space between elements in a horizontal layout.

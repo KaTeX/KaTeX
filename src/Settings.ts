@@ -237,7 +237,9 @@ function getDefaultValue(schema: SchemaEntry): SettingsValue {
             return 0;
         case 'object':
             return {};
-        default:
+        case 'function':
+            // Function types (e.g. strict, trust) always specify an explicit
+            // default in the schema, so we never reach here in practice.
             return false;
     }
 }
