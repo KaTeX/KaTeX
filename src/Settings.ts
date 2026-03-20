@@ -84,6 +84,7 @@ type Schema = {
         description?: string;
         /**
          * The function to process the option.
+         * Currently only used for numeric settings (maxSize, maxExpand).
          */
         processor?: (value: number) => number;
         /**

@@ -51,7 +51,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     }
 
     let base;
-    let symbolItalic = 0;  // italic correction for symbol operators
+    // Italic correction from the symbol glyph, captured before the symbol
+    // may be wrapped in a vlist (for \oiint/\oiiint).  Stays 0 for non-symbol ops.
+    let symbolItalic = 0;
     if (group.symbol) {
         // If this is a symbol, create the symbol.
         const fontName = large ? "Size2-Regular" : "Size1-Regular";
@@ -83,6 +85,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             }, options);
             group.name = "\\" + stash;
             base.classes.unshift("mop");
+            // Carry the italic correction from the original symbol to the
+            // vlist wrapper so supsub can use it for subscript positioning.
+            base.italic = symbolItalic;
         }
     } else if (group.body) {
         // If this is a list, compose that list.
@@ -119,7 +124,8 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             options.fontMetrics().axisHeight;
 
         // The slant of the symbol is just its italic correction.
-        slant = base instanceof SymbolNode ? base.italic : symbolItalic;
+        // Both SymbolNode and Span (for \oiint/\oiiint) carry .italic.
+        slant = base.italic;
     }
 
     if (hasLimits) {

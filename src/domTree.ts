@@ -217,6 +217,12 @@ export class Span<ChildType extends VirtualNode> implements HtmlDomNode {
     width: number | null | undefined;
     maxFontSize!: number;
     style!: CssStyle;
+    /**
+     * Italic correction carried over from a SymbolNode when the symbol is
+     * wrapped in a vlist (e.g. \oiint / \oiiint).  Read by supsub to adjust
+     * subscript positioning.  Defaults to 0.
+     */
+    italic: number = 0;
 
     constructor(
         classes?: string[],

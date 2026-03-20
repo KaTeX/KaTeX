@@ -148,11 +148,16 @@
         "import/no-unresolved": "off",
         "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/no-unused-expressions": "off",
-        "@typescript-eslint/no-explicit-any": ["error", {
-          "ignoreRestArgs": true
-        }],
+        "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/no-require-imports": "off"
+      }
+    }, {
+      "files": ["src/**/*.ts", "contrib/**/*.ts"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": ["error", {
+          "ignoreRestArgs": true
+        }]
       }
     }],
     "root": true

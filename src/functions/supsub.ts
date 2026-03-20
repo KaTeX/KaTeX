@@ -1,6 +1,8 @@
 import {defineFunctionBuilders} from "../defineFunction";
 import {makeSpan, makeVList} from "../buildCommon";
-import {SymbolNode} from "../domTree";
+import {Span, SymbolNode} from "../domTree";
+
+import type {HtmlDomNode} from "../domTree";
 import {isCharacterBox} from "../utils";
 import {MathNode} from "../mathMLTree";
 import {makeEm} from "../units";
@@ -123,8 +125,9 @@ defineFunctionBuilders({
                 group.base && group.base.type === "op" && group.base.name &&
                 (group.base.name === "\\oiint" || group.base.name === "\\oiiint");
             if (base instanceof SymbolNode || isOiint) {
-                // @ts-ignore
-                marginLeft = makeEm(-base.italic);
+                // SymbolNode has .italic natively; for \oiint/\oiiint the
+                // op builder stores .italic on the wrapping Span.
+                marginLeft = makeEm(-(base as SymbolNode | Span<HtmlDomNode>).italic);
             }
         }
 
