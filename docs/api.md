@@ -63,3 +63,78 @@ Notice that you create the `macros` object outside the loop. If an author uses `
 ### Security of Persistent Macros
 
 Persistent macros can change the behavior of KaTeX (e.g. redefining standard commands), so for security, such a setup should be used only for multiple elements of common trust.  For example, you might enable persistent macros within a message posted by a single user (by creating a `macros` object for that message), but you probably should not enable persistent macros across multiple messages posted by multiple users.
+
+## Extension APIs
+
+KaTeX provides APIs for extending its functionality with custom macros, symbols, and functions.
+
+### `katex.defineMacro`
+
+Registers a macro that expands to a LaTeX string. This is the simplest way to extend KaTeX.
+
+```js
+// Simple string replacement
+katex.defineMacro("\\RR", "\\mathbb{R}");
+
+// Function-based macro with access to the token stream
+katex.defineMacro("\\bold", function(context) {
+    // consumeArgs returns Token[][]; [0] gets the first argument's tokens.
+    // Tokens are in reverse order (stack), so reverse before joining.
+    const arg = context.consumeArgs(1)[0];
+    return "\\mathbf{" + arg.reverse().map(t => t.text).join("") + "}";
+});
+```
+
+### `katex.defineSymbol`
+
+Registers a symbol that maps a LaTeX command to a unicode character with a specified atom type and font.
+
+```js
+// Register a custom relation symbol
+katex.defineSymbol(
+    "math",     // mode: "math" or "text"
+    "main",     // font: "main" or "ams"
+    "rel",      // group: atom type for spacing (e.g. "rel", "bin", "mathord")
+    "\u2A75",   // unicode replacement character (U+2A75: two consecutive equals signs)
+    "\\emark",  // LaTeX command name
+    true        // also accept the unicode character as input
+);
+```
+
+The `group` parameter determines spacing around the symbol. Common values:
+- `"rel"`: relation (like `=`), `"bin"`: binary operator (like `+`), `"mathord"`: ordinary symbol, `"open"`/`"close"`: delimiters, `"punct"`: punctuation
+
+> **Note:** The replacement character must have metrics in KaTeX's font files for
+> correct rendering. Characters not covered by KaTeX's fonts will render but may
+> produce warnings or incorrect sizing.
+
+### `katex.defineFunction`
+
+Registers a custom LaTeX command with full control over parsing and rendering. This is an advanced API — it requires returning internal DOM tree nodes from the builder functions.
+
+```js
+katex.defineFunction({
+    type: "myFunc",           // unique parse node type
+    names: ["\\myFunc"],      // LaTeX command name(s)
+    props: { numArgs: 1 },    // parsing properties
+    handler: ({parser}, args) => {
+        return {
+            type: "myFunc",
+            mode: parser.mode,
+            body: args[0],
+        };
+    },
+    // htmlBuilder and mathmlBuilder must return internal KaTeX DOM nodes
+    // (see katex.__domTree). If a builder is omitted, KaTeX will throw
+    // when rendering in the corresponding output mode.
+});
+```
+
+The `props` object supports:
+- `numArgs`: Number of required arguments
+- `numOptionalArgs`: Number of optional arguments (default `0`)
+- `argTypes`: Array of argument types (e.g. `"color"`, `"size"`, `"url"`)
+- `allowedInText`: Whether the function is allowed in text mode (default `false`)
+- `allowedInMath`: Whether the function is allowed in math mode (default `true`)
+
+For simple extensions, prefer `defineMacro`. Use `defineFunction` only when you need custom argument parsing or rendering with access to KaTeX's internal DOM tree builders (`__domTree`).
