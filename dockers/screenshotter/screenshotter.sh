@@ -15,7 +15,9 @@ trap cleanup EXIT
 status=0
 for browserTag in "firefox:128.0-20260222" "chromium:145.0-20260222"; do
     browser=${browserTag%:*}
-    #this is done so because old images were for chrome and selenium-webdriver expects "chrome" as browser name
+    # We use Chromium so it works on all architectures.
+    # We hack the name because old images were for chrome
+    # and selenium-webdriver expects "chrome" as browser name
     if [ "${browser}" = "chromium" ]; then
         browser="chrome"
     fi
