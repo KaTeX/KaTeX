@@ -196,7 +196,7 @@ function guessDockerIPs() {
     }
     if (!process.env.DOCKER_HOST &&
         (isDockerDesktop() || process.platform === 'darwin')) {
-        // Docker Desktop on macOS/Windows
+        // Docker Desktop on macOS/Windows, or any macOS Docker runtime
         seleniumIP = seleniumIP || "localhost";
         katexIP = katexIP || "host.docker.internal";
         return;
