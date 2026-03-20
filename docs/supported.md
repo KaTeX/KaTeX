@@ -237,7 +237,7 @@ Any character can be written with the `\char` function and the Unicode code in h
 |$\cancel{5}$ `\cancel{5}`|$\overbrace{a+b+c}^{\text{note}}$ `\overbrace{a+b+c}^{\text{note}}`
 |$\bcancel{5}$ `\bcancel{5}` |$\underbrace{a+b+c}_{\text{note}}$ `\underbrace{a+b+c}_{\text{note}}`
 |$\xcancel{ABC}$ `\xcancel{ABC}`|$\not =$ `\not =`
-|$\sout{abc}$ `\sout{abc}`|$\boxed{\pi=\frac c d}$ `\boxed{\pi=\frac c d}`
+|$\text{\sout{abc}}$ `\text{\sout{abc}}`|$\boxed{\pi=\frac c d}$ `\boxed{\pi=\frac c d}`
 |$a_{\angl n}$ `$a_{\angl n}`|$a_\angln$ `a_\angln`
 |$\phase{-78^\circ}$`\phase{-78^\circ}` |
 
