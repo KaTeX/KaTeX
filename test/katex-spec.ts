@@ -4552,8 +4552,8 @@ describe("Stable extension API exports", function() {
     });
 
     it("should support defining and rendering a macro", () => {
-        katex.defineMacro("\\testStableApi", "\\text{ok}");
         try {
+            katex.defineMacro("\\testStableApi", "\\text{ok}");
             const html = katex.renderToString("\\testStableApi");
             expect(html).toContain("ok");
         } finally {
@@ -4562,10 +4562,10 @@ describe("Stable extension API exports", function() {
     });
 
     it("should support defining and rendering a symbol", () => {
-        // Use a character that KaTeX has font metrics for (= is U+003D)
-        katex.defineSymbol(
-            "math", "main", "rel", "=", "\\testeqsym");
         try {
+            // Use a character that KaTeX has font metrics for (= is U+003D)
+            katex.defineSymbol(
+                "math", "main", "rel", "=", "\\testeqsym");
             const html = katex.renderToString("\\testeqsym");
             expect(html).toContain("=");
         } finally {
@@ -4574,23 +4574,23 @@ describe("Stable extension API exports", function() {
     });
 
     it("should support defining and rendering a function", () => {
-        katex.defineFunction({
-            type: "testStableFunc",
-            names: ["\\testStableFunc"],
-            props: {numArgs: 0},
-            handler: ({parser}: {parser: any}) => {
-                return {type: "testStableFunc", mode: parser.mode};
-            },
-            htmlBuilder: () => {
-                const {Span, SymbolNode} = katex.__domTree;
-                return new Span(["test-stable"], [new SymbolNode("ok")]);
-            },
-            mathmlBuilder: () => {
-                const text = new TextNode("ok");
-                return new MathNode("mi", [text]);
-            },
-        });
         try {
+            katex.defineFunction({
+                type: "testStableFunc",
+                names: ["\\testStableFunc"],
+                props: {numArgs: 0},
+                handler: ({parser}: {parser: any}) => {
+                    return {type: "testStableFunc", mode: parser.mode};
+                },
+                htmlBuilder: () => {
+                    const {Span, SymbolNode} = katex.__domTree;
+                    return new Span(["test-stable"], [new SymbolNode("ok")]);
+                },
+                mathmlBuilder: () => {
+                    const text = new TextNode("ok");
+                    return new MathNode("mi", [text]);
+                },
+            });
             const html = katex.renderToString("\\testStableFunc");
             expect(html).toContain("ok");
         } finally {

@@ -419,6 +419,12 @@ export interface MacroContext {
      */
     expandMacroAsText(name: string): string | undefined;
     /**
+     * Fully expand the given token stream and return the resulting list of
+     * tokens. Note that the input tokens are in reverse order, but the
+     * output tokens are in forward order.
+     */
+    expandTokens(tokens: Token[]): Token[];
+    /**
      * Consume an argument from the token stream, and return the resulting
      * tokens and start/end token.
      */
