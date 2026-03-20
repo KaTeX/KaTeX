@@ -30,7 +30,7 @@ defineFunction({
 
         // TODO: Refactor to avoid duplicating styleMap in multiple places (e.g.
         // here and in buildHTML and de-dupe the enumeration of all the styles).
-        // TODO(ts): The names above exactly match the styles.
+        // The function names (\displaystyle, etc.) match StyleStr values exactly.
         const style = funcName.slice(1, funcName.length - 5) as StyleStr;
         return {
             type: "styling",

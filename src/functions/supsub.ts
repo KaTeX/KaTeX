@@ -28,6 +28,7 @@ import type {MathNodeType} from "../mathMLTree";
 const htmlBuilderDelegate = function(
     group: ParseNode<"supsub">,
     options: Options,
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): HtmlBuilder<any> | null | undefined {
     const base = group.base;
     if (!base) {

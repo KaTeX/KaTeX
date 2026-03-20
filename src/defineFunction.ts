@@ -130,6 +130,7 @@ export type FunctionSpec<NODETYPE extends NodeType> = {
     // _functions is typed FunctionSpec<*> (it stores all TeX function specs).
 
     // Must be specified unless it's handled directly in the parser.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     handler: FunctionHandler<any> | null | undefined;
 };
 
@@ -138,18 +139,21 @@ export type FunctionSpec<NODETYPE extends NodeType> = {
  * `functions.js` just exports this same dictionary again and makes it public.
  * `Parser.js` requires this dictionary.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const _functions: Record<string, FunctionSpec<any>> = {};
 
 /**
  * All HTML builders. Should be only used in the `define*` and the `build*ML`
  * functions.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const _htmlGroupBuilders: Record<string, HtmlBuilder<any>> = {};
 
 /**
  * All MathML builders. Should be only used in the `define*` and the `build*ML`
  * functions.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const _mathmlGroupBuilders: Record<string, MathMLBuilder<any>> = {};
 
 export default function defineFunction<NODETYPE extends NodeType>({

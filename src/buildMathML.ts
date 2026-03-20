@@ -13,7 +13,7 @@ import {MathNode, TextNode} from "./mathMLTree";
 
 import type Options from "./Options";
 import type {AnyParseNode, SymbolParseNode} from "./parseNode";
-import type {DomSpan} from "./domTree";
+import type {DomSpan, HtmlDomNode} from "./domTree";
 import type {MathDomNode} from "./mathMLTree";
 import type {FontVariant, Mode} from "./types";
 
@@ -257,10 +257,10 @@ export const buildGroup = function(
     }
 
     if (groupBuilders[group.type]) {
-        // Call the groupBuilders function
-        // TODO(ts)
-        const result: MathDomNode = groupBuilders[group.type](group, options);
-        // TODO(ts)
+        // Call the groupBuilders function.
+        // groupBuilders is typed as Record<string, MathMLBuilder<any>> which
+        // returns MathDomNode, but all MathML builders return MathNode.
+        const result = groupBuilders[group.type](group, options);
         return result as MathNode;
     } else {
         throw new ParseError(
@@ -319,7 +319,8 @@ export default function buildMathML(
     // NOTE: The span class is not typed to have <math> nodes as children, and
     // we don't want to make the children type more generic since the children
     // of span are expected to have more fields in `buildHtml` contexts.
+    // The MathNode implements VirtualNode (toNode/toMarkup) which is all that
+    // Span needs from its children for rendering.
     const wrapperClass = forMathmlOnly ? "katex" : "katex-mathml";
-    // TODO(ts)
-    return makeSpan([wrapperClass], [math as any]);
+    return makeSpan([wrapperClass], [math as unknown as HtmlDomNode]);
 }

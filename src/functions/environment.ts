@@ -3,6 +3,8 @@ import ParseError from "../ParseError";
 import {assertNodeType} from "../parseNode";
 import environments from "../environments";
 
+import type {ParseNode} from "../parseNode";
+
 // Environment delimiters. HTML/MathML rendering is defined in the corresponding
 // defineEnvironment definitions.
 defineFunction({
@@ -47,8 +49,10 @@ defineFunction({
                     `Mismatch: \\begin{${envName}} matched by \\end{${end.name}}`,
                     endNameToken);
             }
-            // TODO(ts), "environment" handler returns an environment ParseNode
-            return result as any;
+            // The environment handler returns the parse node for the specific
+            // environment type (e.g. ParseNode<"array">), not ParseNode<"environment">.
+            // This is by design: \begin{array} produces an "array" node directly.
+            return result as unknown as ParseNode<"environment">;
         }
 
         return {

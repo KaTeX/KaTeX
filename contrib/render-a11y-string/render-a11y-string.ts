@@ -646,8 +646,8 @@ const handleObject = (
         case "mclass": {
             // \neq and \ne are macros so we let "htmlmathml" render the mathmal
             // side of things and extract the text from that.
+            // mclass values are prefixed with "m" (e.g. "mrel" -> "rel")
             const atomType = tree.mclass.slice(1);
-            // TODO(ts): drop the leading "m" from the values in mclass
             buildA11yStrings(tree.body, a11yStrings, atomType as Atom | "normal");
             break;
         }

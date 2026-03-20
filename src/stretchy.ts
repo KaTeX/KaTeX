@@ -186,9 +186,7 @@ export const stretchySvg = function(
         let viewBoxWidth = 400000;  // default
         const label = group.label.slice(1);
         if (wideAccentLabels.has(label)) {
-            // Each type in the `if` statement corresponds to one of the ParseNode
-            // types below. This narrowing is required to access `grp.base`.
-            // TODO(ts)
+            // Narrow to accent types that have a `base` property.
             const grp = group as ParseNode<"accent"> | ParseNode<"accentUnder">;
             // There are four SVG images available for each function.
             // Choose a taller image when there are more characters.
@@ -247,7 +245,7 @@ export const stretchySvg = function(
             let widthClasses;
             let aligns;
             if (numSvgChildren === 1) {
-                // TODO(ts): All these cases must be of the 4-tuple type.
+                // Single-path entries have a 4th element specifying alignment.
                 const align1: string =
                     (data as [[string], number, number, string])[3];
                 widthClasses = ["hide-tail"];

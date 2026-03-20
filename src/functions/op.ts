@@ -51,6 +51,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     }
 
     let base;
+    let symbolItalic = 0;  // italic correction for symbol operators
     if (group.symbol) {
         // If this is a symbol, create the symbol.
         const fontName = large ? "Size2-Regular" : "Size1-Regular";
@@ -66,11 +67,11 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
         base = makeSymbol(
             group.name, fontName, "math", options,
             ["mop", "op-symbol", large ? "large-op" : "small-op"]);
+        symbolItalic = base.italic;
 
         if (stash.length > 0) {
             // We're in \oiint or \oiiint. Overlay the oval.
             // TODO: When font glyphs are available, delete this code.
-            const italic = base.italic;
             const oval = staticSvg(stash + "Size"
                 + (large ? "2" : "1"), options);
             base = makeVList({
@@ -82,8 +83,6 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             }, options);
             group.name = "\\" + stash;
             base.classes.unshift("mop");
-            // TODO(ts)
-            (base as any).italic = italic;
         }
     } else if (group.body) {
         // If this is a list, compose that list.
@@ -120,8 +119,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             options.fontMetrics().axisHeight;
 
         // The slant of the symbol is just its italic correction.
-        // TODO(ts)
-        slant = (base as SymbolNode & {italic?: number}).italic || 0;
+        slant = base instanceof SymbolNode ? base.italic : symbolItalic;
     }
 
     if (hasLimits) {
