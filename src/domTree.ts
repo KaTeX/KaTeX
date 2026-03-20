@@ -119,7 +119,10 @@ const toMarkup = function(this: HtmlNodeData, tagName: string): string {
 
     // Add the styles, after hyphenation
     for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-        styles += `${hyphenate(key)}:${this.style[key]};`;
+        const value = this.style[key];
+        if (value !== undefined) {
+            styles += `${hyphenate(key)}:${value};`;
+        }
     }
 
     if (styles) {
@@ -342,7 +345,10 @@ export class Img implements VirtualNode {
         // Add the styles, after hyphenation
         let styles = "";
         for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-            styles += `${hyphenate(key)}:${this.style[key]};`;
+            const value = this.style[key];
+            if (value !== undefined) {
+                styles += `${hyphenate(key)}:${value};`;
+            }
         }
         if (styles) {
             markup += ` style="${escape(styles)}"`;
@@ -475,7 +481,10 @@ export class SymbolNode implements HtmlDomNode {
             styles += "margin-right:" + this.italic + "em;";
         }
         for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-            styles += hyphenate(key) + ":" + this.style[key] + ";";
+            const value = this.style[key];
+            if (value !== undefined) {
+                styles += hyphenate(key) + ":" + value + ";";
+            }
         }
 
         if (styles) {

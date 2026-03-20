@@ -58,12 +58,13 @@ type EnumType = {
 
 type Type = "boolean" | "string" | "number" | "object" | "function" | EnumType;
 /**
- * Union of all possible settings values. Narrower than `any` to prevent
- * accidental use of truly unrelated types in schema definitions.
+ * Union of all possible settings default values, used in the schema.
+ * Not as precise as Settings itself, but avoids `any` while covering
+ * all default/cliDefault shapes that actually appear.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type SettingsValue = boolean | string | number | Record<string, any>
-    | ((...args: never[]) => unknown) | string[];
+type SettingsValue = boolean | string | number
+    | MacroMap | StrictFunction | TrustFunction
+    | string[];
 type Schema = {
     [key in keyof SettingsOptions]?: {
         /**
@@ -102,7 +103,8 @@ type Schema = {
         cliDescription?: string;
         /**
          * The custom argument processor for the CLI. See Commander.js docs for
-         * more information.
+         * more information. Signature varies per setting (e.g. parseFloat,
+         * or (def, defs) => defs.push(def) for macros).
          */
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         cliProcessor?: (...args: any[]) => SettingsValue;
@@ -272,6 +274,8 @@ export default class Settings {
             const schema = SETTINGS_SCHEMA[prop] as SchemaEntry;
             const optionValue = options[prop];
             // TODO: validate options
+            // processor is only defined for numeric settings, so the
+            // cast is safe; a future validation step would catch misuse.
             (this as Record<string, unknown>)[prop] = optionValue !== undefined
                 ? (schema.processor
                     ? schema.processor(optionValue as number)
