@@ -312,6 +312,10 @@ defineFunction({
         allowedInText: true,
     },
     handler({parser, funcName}, args) {
+        if (parser.mode === "math" && parser.settings.strict) {
+            parser.settings.reportNonstrict("mathVsSout",
+                `LaTeX's \\sout works only in text mode`);
+        }
         const body = args[0];
         return {
             type: "enclose",
