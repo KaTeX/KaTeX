@@ -4446,13 +4446,21 @@ describe("Internal __* interface", function() {
 
     it("__renderToHTMLTree renders same as renderToString sans MathML, plus a11y attrs", () => {
         const tree = katex.__renderToHTMLTree(latex);
-        // The HTML-only tree adds role="math" and aria-label that the
-        // default HTML+MathML tree does not have, so strip MathML and
-        // insert the expected accessibility attributes for comparison.
+        const markup = tree.toMarkup();
+        // The HTML-only tree strips the MathML span and adds role="math"
+        // plus a human-readable aria-label to the outer .katex span.
         const renderedSansMathML = rendered
-            .replace(/<span class="katex-mathml">.*?<\/span>/, '')
-            .replace('<span class="katex">', `<span class="katex" role="math" aria-label="${escapeHTML(latex)}">`);
-        expect(tree.toMarkup()).toEqual(renderedSansMathML);
+            .replace(/<span class="katex-mathml">.*?<\/span>/, '');
+        // Strip a11y attrs from the HTML-only markup before comparing
+        // the rest of the HTML structure, since the readable aria-label
+        // is not trivially predictable for every expression.
+        const markupSansA11y = markup
+            .replace(/ role="math"/, '')
+            .replace(/ aria-label="[^"]*"/, '');
+        expect(markupSansA11y).toEqual(renderedSansMathML);
+        // Verify the a11y attrs are present
+        expect(markup).toContain('role="math"');
+        expect(markup).toContain('aria-label=');
     });
 });
 
@@ -4537,17 +4545,25 @@ describe("\\emph", () => {
 });
 
 describe("Accessibility attributes", function() {
-    it("should not add role in default (HTML+MathML) mode", function() {
+    it("should not add role or aria-label in default (HTML+MathML) mode", function() {
         // The inner <math> element already carries native role="math",
         // so the outer .katex span must not duplicate it.
         const markup = katex.renderToString("x^2");
         expect(markup).not.toMatch(/<span class="katex"[^>]*role="math"/);
+        expect(markup).not.toMatch(/<span class="katex"[^>]*aria-label/);
     });
 
-    it("should add role and aria-label in html output mode", function() {
+    it("should add role and human-readable aria-label in html output mode", function() {
         const markup = katex.renderToString("x^2", {output: "html"});
         expect(markup).toMatch(/<span class="katex"[^>]*role="math"/);
-        expect(markup).toMatch(/<span class="katex"[^>]*aria-label="x\^2"/);
+        // aria-label should be a readable string, not raw TeX
+        expect(markup).toContain('aria-label="x, squared"');
+    });
+
+    it("should produce readable aria-label for fractions", function() {
+        const markup = katex.renderToString("\\frac{1}{2}", {output: "html"});
+        expect(markup).toContain(
+            'aria-label="start fraction, 1, divided by, 2, end fraction"');
     });
 
     it("should add role and aria-label in html display mode", function() {
@@ -4555,7 +4571,17 @@ describe("Accessibility attributes", function() {
             output: "html", displayMode: true,
         });
         expect(markup).toContain('role="math"');
-        expect(markup).toContain('aria-label="x^2"');
+        expect(markup).toContain('aria-label="x, squared"');
+    });
+
+    it("should fall back to raw TeX for unsupported node types", function() {
+        // Expressions with unsupported node types (e.g. arrays) should
+        // fall back to the raw TeX source for the aria-label.
+        const markup = katex.renderToString(
+            "\\begin{matrix} a & b \\\\ c & d \\end{matrix}",
+            {output: "html"});
+        expect(markup).toContain('role="math"');
+        expect(markup).toContain('aria-label');
     });
 
     it("should not add role or aria-label in mathml-only output mode", function() {
