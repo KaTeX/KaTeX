@@ -64,6 +64,22 @@ const initNode = function(
     }
 };
 
+// Classes used only at build-time (spacing, line-breaking) that have no CSS
+// rules. These are stripped from toMarkup() output to reduce HTML size.
+// They are kept in toNode() output to preserve DOM structure for CSS child
+// selectors. See #2194, #3344.
+export const unstyledClasses = new Set([
+    "mord", "mbin", "mrel", "mop", "mopen", "mclose", "mpunct", "minner",
+    "mtight", "nobreak", "allowbreak", "delimsizinginner",
+]);
+
+/**
+ * Filter out unstyled classes that are only used at build-time for spacing.
+ */
+const filterClasses = function(classes: string[]): string[] {
+    return classes.filter(cls => cls && !unstyledClasses.has(cls));
+};
+
 /**
  * Convert into an HTML node
  */
@@ -107,9 +123,10 @@ const invalidAttributeNameRegex = /[\s"'>/=\x00-\x1f]/;
 const toMarkup = function(this: HtmlNodeData, tagName: string): string {
     let markup = `<${tagName}`;
 
-    // Add the class
-    if (this.classes.length) {
-        markup += ` class="${escape(createClass(this.classes))}"`;
+    // Add the class, filtering out build-time-only classes
+    const filteredClassName = createClass(filterClasses(this.classes));
+    if (filteredClassName) {
+        markup += ` class="${escape(filteredClassName)}"`;
     }
 
     let styles = "";
@@ -235,11 +252,39 @@ export class Span<ChildType extends VirtualNode> implements HtmlDomNode {
         return this.classes.includes(className);
     }
 
+    /**
+     * Check if this span can be unwrapped in markup — it has children,
+     * originally had classes that were ALL build-time-only (e.g. "mord"),
+     * and no other visible attributes. This avoids producing wrapper
+     * <span>s that only carried atom type classes.
+     *
+     * Note: unwrapping is only applied in toMarkup(). In toNode(),
+     * wrapper spans are preserved because removing them changes the DOM
+     * tree depth, breaking CSS child selectors (e.g. .mfrac > span > span).
+     * KaTeX does not support SSR hydration (using renderToString() on the
+     * server and render() on the client for the same output), so the
+     * structural divergence between the two paths is intentional.
+     */
+    private canUnwrap(): boolean {
+        return this.children.length > 0 &&
+            this.classes.length > 0 &&
+            Object.keys(this.style).length === 0 &&
+            Object.keys(this.attributes).length === 0 &&
+            !filterClasses(this.classes).length;
+    }
+
     toNode(): HTMLElement {
         return toNode.call(this, "span");
     }
 
     toMarkup(): string {
+        if (this.canUnwrap()) {
+            let childMarkup = "";
+            for (let i = 0; i < this.children.length; i++) {
+                childMarkup += this.children[i].toMarkup();
+            }
+            return childMarkup;
+        }
         return toMarkup.call(this, "span");
     }
 }
@@ -304,6 +349,9 @@ export class Img implements VirtualNode {
     ) {
         this.alt = alt;
         this.src = src;
+        // "mord" is needed at build-time for spacing via getTypeOfDomTree()
+        // (which reads classes[0]). It is kept in toNode() output but
+        // filtered from toMarkup() output.
         this.classes = ["mord"];
         this.height = 0;
         this.depth = 0;
@@ -453,10 +501,12 @@ export class SymbolNode implements HtmlDomNode {
 
         let markup = "<span";
 
-        if (this.classes.length) {
+        const filteredClassName = createClass(
+            filterClasses(this.classes));
+        if (filteredClassName) {
             needsSpan = true;
             markup += " class=\"";
-            markup += escape(createClass(this.classes));
+            markup += escape(filteredClassName);
             markup += "\"";
         }
 

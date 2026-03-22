@@ -1853,109 +1853,112 @@ describe("A comment parser", function() {
 describe("An HTML font tree-builder", function() {
     it("should render \\mathbb{R} with the correct font", function() {
         const markup = katex.renderToString(r`\mathbb{R}`);
-        expect(markup).toContain("<span class=\"mord mathbb\">R</span>");
+        expect(markup).toContain("<span class=\"mathbb\">R</span>");
     });
 
     it("should render \\mathrm{R} with the correct font", function() {
         const markup = katex.renderToString(r`\mathrm{R}`);
-        expect(markup).toContain("<span class=\"mord mathrm\">R</span>");
+        expect(markup).toContain("<span class=\"mathrm\">R</span>");
     });
 
     it("should render \\mathcal{R} with the correct font", function() {
         const markup = katex.renderToString(r`\mathcal{R}`);
-        expect(markup).toContain("<span class=\"mord mathcal\">R</span>");
+        expect(markup).toContain("<span class=\"mathcal\">R</span>");
     });
 
     it("should render \\mathfrak{R} with the correct font", function() {
         const markup = katex.renderToString(r`\mathfrak{R}`);
-        expect(markup).toContain("<span class=\"mord mathfrak\">R</span>");
+        expect(markup).toContain("<span class=\"mathfrak\">R</span>");
     });
 
     it("should render \\text{R} with the correct font", function() {
         const markup = katex.renderToString(r`\text{R}`);
-        expect(markup).toContain("<span class=\"mord\">R</span>");
+        // "mord" is a build-time-only class stripped from output;
+        // R renders as plain text inside the "text" span.
+        expect(markup).toContain("<span class=\"text\">R</span>");
     });
 
     it("should render \\textit{R} with the correct font", function() {
         const markup = katex.renderToString(r`\textit{R}`);
-        expect(markup).toContain("<span class=\"mord textit\">R</span>");
+        expect(markup).toContain("<span class=\"textit\">R</span>");
     });
 
     it("should render \\text{\\textit{R}} with the correct font", function() {
         const markup = katex.renderToString(r`\text{\textit{R}}`);
-        expect(markup).toContain("<span class=\"mord textit\">R</span>");
+        expect(markup).toContain("<span class=\"textit\">R</span>");
     });
 
     it("should render \\textup{R} with the correct font", function() {
         const markup1 = katex.renderToString(r`\textup{R}`);
-        expect(markup1).toContain("<span class=\"mord textup\">R</span>");
+        expect(markup1).toContain("<span class=\"textup\">R</span>");
         const markup2 = katex.renderToString(r`\textit{\textup{R}}`);
-        expect(markup2).toContain("<span class=\"mord textup\">R</span>");
+        expect(markup2).toContain("<span class=\"textup\">R</span>");
         const markup3 = katex.renderToString(r`\textup{\textit{R}}`);
-        expect(markup3).toContain("<span class=\"mord textit\">R</span>");
+        expect(markup3).toContain("<span class=\"textit\">R</span>");
     });
 
     it("should render \\text{R\\textit{S}T} with the correct fonts", function() {
         const markup = katex.renderToString(r`\text{R\textit{S}T}`);
-        expect(markup).toContain("<span class=\"mord\">R</span>");
-        expect(markup).toContain("<span class=\"mord textit\">S</span>");
-        expect(markup).toContain("<span class=\"mord\">T</span>");
+        // R and T are bare text nodes (mord stripped); S is in textit span
+        expect(markup).toContain("\"text\">R<span");
+        expect(markup).toContain("<span class=\"textit\">S</span>");
+        expect(markup).toContain("</span>T</span>");
     });
 
     it("should render \\textbf{R } with the correct font", function() {
         const markup = katex.renderToString(r`\textbf{R }`);
-        expect(markup).toContain("<span class=\"mord textbf\">R\u00a0</span>");
+        expect(markup).toContain("<span class=\"textbf\">R\u00a0</span>");
     });
 
     it("should render \\textmd{R} with the correct font", function() {
         const markup1 = katex.renderToString(r`\textmd{R}`);
-        expect(markup1).toContain("<span class=\"mord textmd\">R</span>");
+        expect(markup1).toContain("<span class=\"textmd\">R</span>");
         const markup2 = katex.renderToString(r`\textbf{\textmd{R}}`);
-        expect(markup2).toContain("<span class=\"mord textmd\">R</span>");
+        expect(markup2).toContain("<span class=\"textmd\">R</span>");
         const markup3 = katex.renderToString(r`\textmd{\textbf{R}}`);
-        expect(markup3).toContain("<span class=\"mord textbf\">R</span>");
+        expect(markup3).toContain("<span class=\"textbf\">R</span>");
     });
 
     it("should render \\textsf{R} with the correct font", function() {
         const markup = katex.renderToString(r`\textsf{R}`);
-        expect(markup).toContain("<span class=\"mord textsf\">R</span>");
+        expect(markup).toContain("<span class=\"textsf\">R</span>");
     });
 
     it("should render \\textsf{\\textit{R}G\\textbf{B}} with the correct font", function() {
         const markup = katex.renderToString(r`\textsf{\textit{R}G\textbf{B}}`);
-        expect(markup).toContain("<span class=\"mord textsf textit\">R</span>");
-        expect(markup).toContain("<span class=\"mord textsf\">G</span>");
-        expect(markup).toContain("<span class=\"mord textsf textbf\">B</span>");
+        expect(markup).toContain("<span class=\"textsf textit\">R</span>");
+        expect(markup).toContain("<span class=\"textsf\">G</span>");
+        expect(markup).toContain("<span class=\"textsf textbf\">B</span>");
     });
 
     it("should render \\textsf{\\textbf{$\\mathrm{A}$}} with the correct font", function() {
         const markup = katex.renderToString(r`\textsf{\textbf{$\mathrm{A}$}}`);
-        expect(markup).toContain("<span class=\"mord mathrm\">A</span>");
+        expect(markup).toContain("<span class=\"mathrm\">A</span>");
     });
 
     it("should render \\textsf{\\textbf{$\\mathrm{\\textsf{A}}$}} with the correct font", function() {
         const markup = katex.renderToString(r`\textsf{\textbf{$\mathrm{\textsf{A}}$}}`);
-        expect(markup).toContain("<span class=\"mord textsf textbf\">A</span>");
+        expect(markup).toContain("<span class=\"textsf textbf\">A</span>");
     });
 
     it("should render \\texttt{R} with the correct font", function() {
         const markup = katex.renderToString(r`\texttt{R}`);
-        expect(markup).toContain("<span class=\"mord texttt\">R</span>");
+        expect(markup).toContain("<span class=\"texttt\">R</span>");
     });
 
     it("should render a combination of font and color changes", function() {
         let markup = katex.renderToString(r`\textcolor{blue}{\mathbb R}`);
-        let span = "<span class=\"mord mathbb\" style=\"color:blue;\">R</span>";
+        let span = "<span class=\"mathbb\" style=\"color:blue;\">R</span>";
         expect(markup).toContain(span);
 
         markup = katex.renderToString(r`\mathbb{\textcolor{blue}{R}}`);
-        span = "<span class=\"mord mathbb\" style=\"color:blue;\">R</span>";
+        span = "<span class=\"mathbb\" style=\"color:blue;\">R</span>";
         expect(markup).toContain(span);
     });
 
     it("should render wide characters with mord and with the correct font", function() {
         const markup = katex.renderToString(String.fromCharCode(0xD835, 0xDC00));
-        expect(markup).toContain("<span class=\"mord mathbf\">A</span>");
+        expect(markup).toContain("<span class=\"mathbf\">A</span>");
 
         expect(String.fromCharCode(0xD835, 0xDC00) +
                 " = " + String.fromCharCode(0xD835, 0xDC1A))
@@ -2366,14 +2369,14 @@ describe("A markup generator", function() {
 
     it("doesn't combine mathnormal glyphs across italic correction", function() {
         const markup = katex.renderToString("jk", {output: "html"});
-        const mathnormalSpans = markup.match(/class="mord mathnormal"/g) || [];
+        const mathnormalSpans = markup.match(/class="mathnormal"/g) || [];
         expect(mathnormalSpans.length).toBe(2);
-        expect(markup).toContain(">j</span><span class=\"mord mathnormal\"");
+        expect(markup).toContain(">j</span><span class=\"mathnormal\"");
     });
 
     it("still combines mathnormal glyphs when italic correction is zero", function() {
         const markup = katex.renderToString("ab", {output: "html"});
-        const mathnormalSpans = markup.match(/class="mord mathnormal"/g) || [];
+        const mathnormalSpans = markup.match(/class="mathnormal"/g) || [];
         expect(mathnormalSpans.length).toBe(1);
         expect(markup).toContain(">ab</span>");
     });
@@ -2381,7 +2384,7 @@ describe("A markup generator", function() {
     it("still combines non-mathnormal glyphs with italic correction", function() {
         const markup = katex.renderToString(String.raw`\mathrm{fgh}`,
             {output: "html"});
-        const rmSpans = markup.match(/class="mord mathrm"/g) || [];
+        const rmSpans = markup.match(/class="mathrm"/g) || [];
         expect(rmSpans.length).toBe(1);
         expect(markup).toContain(">fgh</span>");
     });
@@ -2389,7 +2392,7 @@ describe("A markup generator", function() {
     it("still combines \\mathit glyphs with nonzero font italic correction", function() {
         const markup = katex.renderToString(String.raw`\mathit{fgvw}`,
             {output: "html"});
-        const mathitSpans = markup.match(/class="mord mathit"/g) || [];
+        const mathitSpans = markup.match(/class="mathit"/g) || [];
         expect(mathitSpans.length).toBe(1);
         expect(markup).toContain(">fgvw</span>");
     });
@@ -2399,6 +2402,53 @@ describe("A markup generator", function() {
 
         expect(markup).toContain("<span");
         expect(markup).toContain("<math");
+    });
+});
+
+describe("Build-time class filtering", function() {
+    it("toMarkup() strips atom type classes from output", function() {
+        const markup = katex.renderToString("x+y", {output: "html"});
+        // "mord", "mbin" are build-time-only and should not appear
+        expect(markup).not.toMatch(/class="[^"]*\bmord\b/);
+        expect(markup).not.toMatch(/class="[^"]*\bmbin\b/);
+    });
+
+    it("toMarkup() preserves styled classes in output", function() {
+        const markup = katex.renderToString("x+y", {output: "html"});
+        // "mathnormal" is a styled class and must survive filtering
+        expect(markup).toMatch(/class="[^"]*\bmathnormal\b/);
+    });
+
+    it("toNode() preserves atom type classes in DOM", function() {
+        const built = getBuilt("x+y");
+        // Build tree nodes should still carry "mord" and "mbin"
+        // (spacing nodes may be interleaved)
+        const classes = built.map((n: any) => n.classes);
+        expect(classes.some((c: string[]) => c.includes("mord"))).toBe(true);
+        expect(classes.some((c: string[]) => c.includes("mbin"))).toBe(true);
+    });
+
+    it("toMarkup() unwraps spans with only atom type classes", function() {
+        // \text{R} wraps R in a span.text > span.mord structure;
+        // the inner mord span should be unwrapped in markup
+        const markup = katex.renderToString(r`\text{R}`, {output: "html"});
+        // R should appear directly inside the "text" span, not in a
+        // nested mord wrapper
+        expect(markup).toContain("<span class=\"text\">R</span>");
+        expect(markup).not.toMatch(/<span[^>]*class="mord"[^>]*>R<\/span>/);
+    });
+
+    it("toMarkup() does not unwrap classless spans", function() {
+        // Classless spans (e.g. spacers or wrappers) should not be removed
+        const markup = katex.renderToString(r`\frac{1}{2}`, {output: "html"});
+        // The fraction structure should still contain wrapper spans
+        expect(markup).toContain("<span class=\"mfrac\">");
+    });
+
+    it("toMarkup() does not unwrap spans with styled classes", function() {
+        const markup = katex.renderToString(r`\mathfrak{R}`, {output: "html"});
+        // "mathfrak" is a styled class — its span must not be unwrapped
+        expect(markup).toContain("<span class=\"mathfrak\">R</span>");
     });
 });
 
