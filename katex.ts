@@ -12,6 +12,7 @@ import Settings, {SETTINGS_SCHEMA} from "./src/Settings";
 
 import {buildTree, buildHTMLTree} from "./src/buildTree";
 import parseTree from "./src/parseTree";
+import {buildA11yStrings, flatten} from "./src/buildA11yString";
 import {makeSpan} from "./src/buildCommon";
 import {
     Span,
@@ -167,6 +168,8 @@ export {
     defineFunction as __defineFunction,
     defineMacro as __defineMacro,
     __domTree,
+    buildA11yStrings as __buildA11yStrings,
+    flatten as __flattenA11yStrings,
 };
 
 // CJS exports and ESM default export
@@ -247,4 +250,6 @@ export default {
      * to change. Use at your own risk.
      */
     __domTree,
+    __buildA11yStrings: buildA11yStrings,
+    __flattenA11yStrings: flatten,
 };

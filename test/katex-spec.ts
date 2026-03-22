@@ -9,6 +9,7 @@ import ParseError from "../src/ParseError";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
 import type {MacroMap} from "../src/defineMacro";
+import {escape as escapeHTML} from "../src/utils";
 import {
     strictSettings, nonstrictSettings, trustSettings, r,
     getBuilt, getParsed, stripPositions,
@@ -4445,9 +4446,12 @@ describe("Internal __* interface", function() {
 
     it("__renderToHTMLTree renders same as renderToString sans MathML", () => {
         const tree = katex.__renderToHTMLTree(latex);
-        const renderedSansMathML = rendered.replace(
-            /<span class="katex-mathml">.*?<\/span>/, '');
-        expect(tree.toMarkup()).toEqual(renderedSansMathML);
+        const markup = tree.toMarkup();
+        // Both modes now have role="math" and aria-label, so we just
+        // need to strip the MathML span from the default rendering.
+        const renderedSansMathML = rendered
+            .replace(/<span class="katex-mathml">.*?<\/span>/, '');
+        expect(markup).toEqual(renderedSansMathML);
     });
 });
 
@@ -4528,5 +4532,50 @@ describe("\\emph", () => {
 
     it("should toggle italics within textit", () => {
         expect`\textit{\emph{foo \emph{bar}}}`.toBuildLike`\textit{\textup{foo \textit{bar}}}`;
+    });
+});
+
+describe("Accessibility attributes", function() {
+    it("should add role and aria-label in default (HTML+MathML) mode", function() {
+        const markup = katex.renderToString("x^2");
+        expect(markup).toMatch(/<span class="katex"[^>]*role="math"/);
+        expect(markup).toContain('aria-label="x, squared"');
+    });
+
+    it("should add role and human-readable aria-label in html output mode", function() {
+        const markup = katex.renderToString("x^2", {output: "html"});
+        expect(markup).toMatch(/<span class="katex"[^>]*role="math"/);
+        // aria-label should be a readable string, not raw TeX
+        expect(markup).toContain('aria-label="x, squared"');
+    });
+
+    it("should produce readable aria-label for fractions", function() {
+        const markup = katex.renderToString("\\frac{1}{2}", {output: "html"});
+        expect(markup).toContain(
+            'aria-label="start fraction, 1, divided by, 2, end fraction"');
+    });
+
+    it("should add role and aria-label in html display mode", function() {
+        const markup = katex.renderToString("x^2", {
+            output: "html", displayMode: true,
+        });
+        expect(markup).toContain('role="math"');
+        expect(markup).toContain('aria-label="x, squared"');
+    });
+
+    it("should fall back to raw TeX for unsupported node types", function() {
+        // Expressions with unsupported node types (e.g. arrays) should
+        // fall back to the raw TeX source for the aria-label.
+        const markup = katex.renderToString(
+            "\\begin{matrix} a & b \\\\ c & d \\end{matrix}",
+            {output: "html"});
+        expect(markup).toContain('role="math"');
+        expect(markup).toContain('aria-label');
+    });
+
+    it("should add role and aria-label in mathml-only output mode", function() {
+        const markup = katex.renderToString("x^2", {output: "mathml"});
+        expect(markup).toContain('role="math"');
+        expect(markup).toContain('aria-label="x, squared"');
     });
 });
