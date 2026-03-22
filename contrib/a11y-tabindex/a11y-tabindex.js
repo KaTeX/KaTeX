@@ -6,9 +6,9 @@
 // Usage:
 //   <script defer src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/a11y-tabindex.min.js"></script>
 
-const A11Y_ADDED = "data-a11y-tabindex-added";
+export const A11Y_ADDED = "data-a11y-tabindex-added";
 
-function ensureAccessibleName(el) {
+export function ensureAccessibleName(el) {
     // In combined HTML+MathML mode, the .katex span has no role or
     // aria-label.  When we make it focusable we must also give it an
     // accessible name so it is not an unnamed focusable element (WCAG 4.1.2).
@@ -32,7 +32,7 @@ function ensureAccessibleName(el) {
     }
 }
 
-function removeAccessibleName(el) {
+export function removeAccessibleName(el) {
     const added = el.getAttribute(A11Y_ADDED);
     if (added) {
         added.split(" ").forEach((attr) => {
@@ -42,7 +42,7 @@ function removeAccessibleName(el) {
     }
 }
 
-function updateTabIndex(el) {
+export function updateTabIndex(el) {
     if (el instanceof HTMLElement) {
         if (el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight) {
             el.setAttribute("tabindex", "0");

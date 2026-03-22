@@ -1,3 +1,12 @@
+// Stub ResizeObserver for jsdom (needed by contrib/a11y-tabindex).
+if (typeof globalThis.ResizeObserver === "undefined") {
+    (globalThis as any).ResizeObserver = class {
+        observe() { /* no-op */ }
+        unobserve() { /* no-op */ }
+        disconnect() { /* no-op */ }
+    };
+}
+
 import stringify from 'json-stable-stringify';
 import Lexer from "../src/Lexer";
 import ParseError from "../src/ParseError";
