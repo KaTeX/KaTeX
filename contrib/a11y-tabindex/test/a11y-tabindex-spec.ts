@@ -38,7 +38,7 @@ describe("a11y-tabindex", () => {
         it.each([
             [true, "0"],
             [false, null],
-        ])("overflows=%s → tabindex=%s", (overflows, expected) => {
+        ])("overflows=%s → tabindex=%s", (overflows: boolean, expected: string | null) => {
             const el = createKatexEl({tex: "x^2", overflows});
             updateTabIndex(el);
             expect(el.getAttribute("tabindex")).toBe(expected);
@@ -57,7 +57,7 @@ describe("a11y-tabindex", () => {
         it.each([
             ["role", "math"],
             ["aria-label", "x^2"],
-        ])("overflowing element gets %s=%s", (attr, value) => {
+        ])("overflowing element gets %s=%s", (attr: string, value: string) => {
             const el = createKatexEl({tex: "x^2", overflows: true});
             updateTabIndex(el);
             expect(el.getAttribute(attr)).toBe(value);
@@ -66,7 +66,7 @@ describe("a11y-tabindex", () => {
         it.each([
             ["role"],
             ["aria-label"],
-        ])("removes %s when element stops overflowing", (attr) => {
+        ])("removes %s when element stops overflowing", (attr: string) => {
             const el = createKatexEl({tex: "x^2", overflows: true});
             updateTabIndex(el);
 
@@ -88,7 +88,7 @@ describe("a11y-tabindex", () => {
         it.each([
             ["role", "math", "aria-label"],
             ["aria-label", "existing label", "role"],
-        ])("does not overwrite existing %s", (attr, value, expectedAdded) => {
+        ])("does not overwrite existing %s", (attr: string, value: string, expectedAdded: string) => {
             const el = createKatexEl({tex: "x"});
             el.setAttribute(attr, value);
             ensureAccessibleName(el);
