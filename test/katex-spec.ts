@@ -9,6 +9,10 @@ import ParseError from "../src/ParseError";
 import Settings from "../src/Settings";
 import Style from "../src/Style";
 import type {MacroMap} from "../src/defineMacro";
+import {_macros} from "../src/defineMacro";
+import {_functions, _htmlGroupBuilders, _mathmlGroupBuilders} from "../src/defineFunction";
+import symbols from "../src/symbols";
+import {MathNode, TextNode} from "../src/mathMLTree";
 import {
     strictSettings, nonstrictSettings, trustSettings, r,
     getBuilt, getParsed, stripPositions,
@@ -4528,5 +4532,71 @@ describe("\\emph", () => {
 
     it("should toggle italics within textit", () => {
         expect`\textit{\emph{foo \emph{bar}}}`.toBuildLike`\textit{\textup{foo \textit{bar}}}`;
+    });
+});
+
+describe("Stable extension API exports", function() {
+    it("should export defineFunction as a stable alias", () => {
+        expect(katex.defineFunction).toBe(katex.__defineFunction);
+        expect(typeof katex.defineFunction).toBe("function");
+    });
+
+    it("should export defineSymbol as a stable alias", () => {
+        expect(katex.defineSymbol).toBe(katex.__defineSymbol);
+        expect(typeof katex.defineSymbol).toBe("function");
+    });
+
+    it("should export defineMacro as a stable alias", () => {
+        expect(katex.defineMacro).toBe(katex.__defineMacro);
+        expect(typeof katex.defineMacro).toBe("function");
+    });
+
+    it("should support defining and rendering a macro", () => {
+        try {
+            katex.defineMacro("\\testStableApi", "\\text{ok}");
+            const html = katex.renderToString("\\testStableApi");
+            expect(html).toContain("ok");
+        } finally {
+            delete _macros["\\testStableApi"];
+        }
+    });
+
+    it("should support defining and rendering a symbol", () => {
+        try {
+            // Use a character that KaTeX has font metrics for (= is U+003D)
+            katex.defineSymbol(
+                "math", "main", "rel", "=", "\\testeqsym");
+            const html = katex.renderToString("\\testeqsym");
+            expect(html).toContain("=");
+        } finally {
+            delete symbols["math"]["\\testeqsym"];
+        }
+    });
+
+    it("should support defining and rendering a function", () => {
+        try {
+            katex.defineFunction({
+                type: "testStableFunc",
+                names: ["\\testStableFunc"],
+                props: {numArgs: 0},
+                handler: ({parser}: {parser: any}) => {
+                    return {type: "testStableFunc", mode: parser.mode};
+                },
+                htmlBuilder: () => {
+                    const {Span, SymbolNode} = katex.__domTree;
+                    return new Span(["test-stable"], [new SymbolNode("ok")]);
+                },
+                mathmlBuilder: () => {
+                    const text = new TextNode("ok");
+                    return new MathNode("mi", [text]);
+                },
+            });
+            const html = katex.renderToString("\\testStableFunc");
+            expect(html).toContain("ok");
+        } finally {
+            delete _functions["\\testStableFunc"];
+            delete _htmlGroupBuilders["testStableFunc"];
+            delete _mathmlGroupBuilders["testStableFunc"];
+        }
     });
 });

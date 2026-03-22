@@ -159,6 +159,11 @@ export {
     renderToString,
     ParseError,
     SETTINGS_SCHEMA,
+    // Stable extension APIs
+    defineFunction,
+    defineSymbol,
+    defineMacro,
+    // Unstable/internal APIs (kept for backward compatibility)
     generateParseTree as __parse,
     renderToDomTree as __renderToDomTree,
     renderToHTMLTree as __renderToHTMLTree,
@@ -194,6 +199,19 @@ export default {
      */
     SETTINGS_SCHEMA,
     /**
+     * Adds a new function to the function list, which directly produce
+     * parse tree elements and have their own html/mathml builders.
+     */
+    defineFunction,
+    /**
+     * Adds a new symbol to the symbols table.
+     */
+    defineSymbol,
+    /**
+     * Adds a new macro to the macro list.
+     */
+    defineMacro,
+    /**
      * Parses the given LaTeX into KaTeX's internal parse tree structure,
      * without rendering to HTML or MathML.
      *
@@ -226,17 +244,15 @@ export default {
     */
     __setFontMetrics: setFontMetrics,
     /**
-     * adds a new symbol to builtin symbols table
+     * @deprecated Use `defineSymbol` instead.
      */
     __defineSymbol: defineSymbol,
     /**
-     * adds a new function to builtin function list,
-     * which directly produce parse tree elements
-     * and have their own html/mathml builders
+     * @deprecated Use `defineFunction` instead.
      */
     __defineFunction: defineFunction,
     /**
-     * adds a new macro to builtin macro list
+     * @deprecated Use `defineMacro` instead.
      */
     __defineMacro: defineMacro,
     /**
