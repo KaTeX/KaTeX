@@ -1,5 +1,16 @@
 /* stylelint-disable font-family-no-missing-generic-family-keyword */
-@import "./fonts.scss";
+@use "sass:list";
+@use "sass:math";
+
+@forward "fonts.scss" with (
+    $font-folder: "../../fonts" !default,
+    $use-woff2: true !default,
+    $use-woff: true !default,
+    $use-ttf: true !default,
+    $font-display: block !default
+);
+
+@use "fonts.scss";
 
 // The mu unit is defined as 1/18 em
 $mu: calc(1em / 18);
@@ -13,6 +24,7 @@ $display-margin: 1em 0 !default;
 .katex {
     font: normal 1.21em KaTeX_Main, Times New Roman, serif;
     line-height: 1.2;
+    position: relative;
 
     // Protect elements inside .katex from inheriting text-indent.
     text-indent: 0;
@@ -279,6 +291,11 @@ $display-margin: 1em 0 !default;
         display: inline-block;
     }
 
+    .smash {
+        display: inline;
+        line-height: 0;
+    }
+
     .llap,
     .rlap,
     .clap {
@@ -341,11 +358,11 @@ $display-margin: 1em 0 !default;
     .fontsize-ensurer {
         $sizes: 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.2, 1.44, 1.728, 2.074, 2.488;
 
-        @for $from from 1 through length($sizes) {
-            @for $to from 1 through length($sizes) {
+        @for $from from 1 through list.length($sizes) {
+            @for $to from 1 through list.length($sizes) {
                 &.reset-size#{$from}.size#{$to} {
                     /* stylelint-disable-next-line */
-                    font-size: calc((nth($sizes, $to) / nth($sizes, $from)) * 1em);
+                    font-size: calc(math.div(list.nth($sizes, $to), list.nth($sizes, $from)) * 1em);
                 }
             }
         }

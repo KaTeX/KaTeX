@@ -114,9 +114,8 @@ with a new feature.
 
 #### Testing in other browsers
 
-KaTeX supports all major browsers, including IE 11 and newer. Unfortunately, it
-is hard to test new changes in many browsers. If you can, please test your
-changes in as many browsers as possible.
+KaTeX supports all major browsers. Unfortunately, it is hard to test new changes in many browsers.
+If you can, please test your changes in as many browsers as possible.
 
 ## Building
 
@@ -140,8 +139,8 @@ The code can be linted by running `yarn test:lint`, which lints JavaScript
 files using ESLint and stylesheets using stylelint. They must pass to commit
 the changes.
 
-Some files have flowtype annotations and can be checked for type errors using
-Flow by running `yarn test:flow`. See [Flow](https://flow.org/) for more details.
+TypeScript files can be checked for type errors by running
+`yarn test:ts`.
 
 ## Pull Requests
 

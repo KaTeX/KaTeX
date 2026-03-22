@@ -40,7 +40,8 @@ const newDir = path.normalize(path.join("test", "screenshotter", "new"));
 //////////////////////////////////////////////////////////////////////
 // Process command line arguments
 
-const opts = require("commander")
+const {program} = require("commander");
+const opts = program
     .option("-b, --browser <firefox|chrome|ie|edge|safari>",
         "Name of the browser to use", "firefox")
     .option("-c, --container <id>",
@@ -83,9 +84,9 @@ if (opts.include) {
     listOfCases = Object.keys(data);
 }
 if (opts.exclude) {
-    const exclude = opts.exclude.split(",");
+    const exclude = new Set(opts.exclude.split(","));
     listOfCases = listOfCases.filter(function(key) {
-        return exclude.indexOf(key) === -1;
+        return !exclude.has(key);
     });
 }
 
@@ -124,6 +125,53 @@ function cmd() {
         cmd, args, {encoding: "utf-8"}).replace(/\n$/, "");
 }
 
+function isDockerDesktop() {
+    try {
+        const operatingSystem = cmd("docker", "info", "-f", "{{.OperatingSystem}}");
+        return /Docker Desktop/i.test(operatingSystem);
+    } catch (e) {
+        return false;
+    }
+}
+
+function parseDockerPort(portInfo) {
+    const lines = portInfo
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(Boolean);
+    if (!lines.length) {
+        throw new Error("No published Docker port found.");
+    }
+
+    const localhostSignatures = new Set(["0.0.0.0", "::", ":::", ""]);
+    const digitsOnly = /^\d+$/;
+    const ipv6Brackets = /^\[(.*)\]$/;
+    const options = lines.map(line => {
+        const idx = line.lastIndexOf(":");
+        if (idx < 0) {
+            return;
+        }
+        const port = line.slice(idx + 1);
+        if (!digitsOnly.test(port)) {
+            return;
+        }
+        const rawHost = line.slice(0, idx).replace(ipv6Brackets, "$1");
+        const wildcard = localhostSignatures.has(rawHost);
+        return {
+            host: wildcard ? "localhost" : rawHost,
+            port,
+            score: wildcard ? 0 : 1,
+        };
+    }).filter(Boolean);
+    if (!options.length) {
+        throw new Error(
+            `Could not parse Docker port mapping:\n${portInfo}`);
+    }
+
+    return options.reduce((bestMatch, option) =>
+        option.score > bestMatch.score ? option : bestMatch);
+}
+
 function guessDockerIPs() {
     if (process.env.DOCKER_MACHINE_NAME) {
         const machine = process.env.DOCKER_MACHINE_NAME;
@@ -146,16 +194,17 @@ function guessDockerIPs() {
     } catch (e) {
         // Apparently no boot2docker, continue
     }
-    if (!process.env.DOCKER_HOST && os.type() === "Darwin") {
-        // Docker for Mac
+    if (!process.env.DOCKER_HOST &&
+        (isDockerDesktop() || process.platform === 'darwin')) {
+        // Docker Desktop on macOS/Windows, or any macOS Docker runtime
         seleniumIP = seleniumIP || "localhost";
-        katexIP = katexIP || "*any*"; // see findHostIP
+        katexIP = katexIP || "host.docker.internal";
         return;
     }
     // Native Docker on Linux or remote Docker daemon or similar
     // https://docs.docker.com/engine/tutorials/networkingcontainers/
     const gatewayIP = cmd("docker", "inspect", // using default bridge network
-        "-f", "{{.NetworkSettings.Gateway}}", opts.container)
+        "-f", "{{.NetworkSettings.Networks.bridge.Gateway}}", opts.container)
       || cmd("docker", "inspect", // using own network
         "-f", "{{range .NetworkSettings.Networks}}{{.Gateway}}{{end}}",
         opts.container);
@@ -164,12 +213,15 @@ function guessDockerIPs() {
 }
 
 if (!seleniumURL && opts.container) {
-    if (!seleniumIP || !katexIP) {
+    if (!katexIP) {
         guessDockerIPs();
     }
-    seleniumPort = cmd("docker", "port", opts.container, seleniumPort);
-    // Docker can output two lines, such as "0.0.0.0:49156\n:::49156"
-    seleniumPort = seleniumPort.replace(/[^]*:([0-9]+)[^]*/, "$1");
+    const seleniumPortInfo = cmd("docker", "port", opts.container, seleniumPort);
+    const seleniumEndpoint = parseDockerPort(seleniumPortInfo);
+    seleniumPort = seleniumEndpoint.port;
+    if (!seleniumIP) {
+        seleniumIP = seleniumEndpoint.host;
+    }
 }
 if (!seleniumURL && seleniumIP) {
     seleniumURL = "http://" + seleniumIP + ":" + seleniumPort + "/wd/hub";
@@ -191,7 +243,12 @@ if (seleniumURL) {
             await startBrowserstackLocal();
         }
         if (seleniumIP) {
-            await pRetry(tryConnect, {retries: 50, minTimeout: 100});
+            await pRetry(tryConnect, {
+                retries: 50,
+                minTimeout: 100,
+                // Keep retry intervals short (else can appear to hang).
+                factor: 1,
+            });
         }
         driver = buildDriver();
     }
@@ -526,7 +583,10 @@ async function takeScreenshot(key) {
             pako: pako,
         });
         buf = opt.bufferSync(img.buf);
-        if (expected) {
+        if (opts.verify && !expected) {
+            console.log("error " + key + " (missing screenshot)");
+            break;
+        } else if (expected) {
             if (buf.equals(expected)) {
                 console.log("* ok  " + key);
                 return;
@@ -546,7 +606,7 @@ async function takeScreenshot(key) {
     console.error("FAIL! " + key);
     listOfFailed.push(key);
     exitStatus = 3;
-    if (opts.diff || opts.new) {
+    if (opts.new || (opts.diff && expected)) {
         const filenamePrefix = key + "-" + opts.browser;
         const outputDir = opts.new ? newDir : diffDir;
         const baseFile = path.join(dstDir, filenamePrefix + ".png");
@@ -556,7 +616,7 @@ async function takeScreenshot(key) {
         await fs.ensureDir(outputDir);
         await fs.writeFile(bufFile, buf);
 
-        if (opts.diff) {
+        if (opts.diff && expected) {
             await fs.ensureDir(diffDir);
             await execFile("convert", [
                 "-fill", "white",

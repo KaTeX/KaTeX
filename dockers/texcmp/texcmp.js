@@ -73,9 +73,9 @@ function processTestCase(key) {
         tex = Object.keys(itm.macros).map(name => {
             const expansion = itm.macros[name];
             let numArgs = 0;
-            if (expansion.indexOf("#") !== -1) {
+            if (expansion.includes("#")) {
                 const stripped = expansion.replace(/##/g, "");
-                while (stripped.indexOf("#" + (numArgs + 1)) !== -1) {
+                while (stripped.includes("#" + (numArgs + 1))) {
                     ++numArgs;
                 }
             }

@@ -2,7 +2,8 @@
 // math mode (when they exist).
 // This exports a CommonJS module, allowing to be required in unicodeSymbols
 // without transpiling.
-module.exports = {
+/** @type {Record<string, {text: string, math?: string}>} */
+const unicodeAccents = {
     '\u0301': {text: "\\'", math: '\\acute'},
     '\u0300': {text: '\\`', math: '\\grave'},
     '\u0308': {text: '\\"', math: '\\ddot'},
@@ -16,3 +17,5 @@ module.exports = {
     '\u030b': {text: '\\H'},
     '\u0327': {text: '\\c'},
 };
+
+module.exports = unicodeAccents;
