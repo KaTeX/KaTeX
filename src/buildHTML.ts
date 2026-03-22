@@ -159,7 +159,6 @@ const traverseNonSpaceNodes = function(
         const partialGroup = checkPartialGroup(node);
 
         if (partialGroup) { // Recursive DFS
-            // TODO(ts): make nodes a $ReadOnlyArray by returning a new array
             traverseNonSpaceNodes(partialGroup.children as HtmlDomNode[],
                 callback, prev, null, isRoot);
             continue;
@@ -267,7 +266,6 @@ export const buildGroup = function(
 
     if (groupBuilders[group.type]) {
         // Call the groupBuilders function
-        // TODO(ts)
         let groupNode: HtmlDomNode = groupBuilders[group.type](group, options);
 
         // If the size changed between the parent and the current group, account

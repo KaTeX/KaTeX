@@ -64,9 +64,8 @@ export class DocumentFragment<ChildType extends VirtualNode>
      * MathDomNode's only.
      */
     toText(): string {
-        // To avoid this, we would subclass documentFragment separately for
-        // MathML, but polyfills for subclassing is expensive per PR 1469.
-        // TODO(ts): Only works for ChildType = MathDomNode.
+        // Only valid when ChildType = MathDomNode. We avoid subclassing
+        // DocumentFragment separately for MathML (expensive per PR 1469).
         const toText = (child: ChildType): string => (child as unknown as MathDomNode).toText();
         return this.children.map(toText).join("");
     }

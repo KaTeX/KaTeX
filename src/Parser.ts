@@ -521,6 +521,7 @@ export default class Parser {
      */
     parseArguments(
         func: string,   // Should look like "\name" or "\begin{name}".
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         funcData: FunctionSpec<any> | EnvSpec<any>,
     ): {
         args: AnyParseNode[];
@@ -975,7 +976,7 @@ export default class Parser {
             const loc = SourceLocation.range(nucleus);
             let s: SymbolParseNode;
             if (ATOMS.hasOwnProperty(group)) {
-                // TODO(ts)
+                // ATOMS membership confirms group is an Atom value
                 const family = group as Atom;
                 s = {
                     type: "atom",
@@ -985,7 +986,7 @@ export default class Parser {
                     text,
                 };
             } else {
-                // TODO(ts)
+                // group is not an Atom, so it's a non-atom symbol type
                 s = {
                     type: group as Exclude<SymbolParseNode["type"], "atom">,
                     mode: this.mode,
@@ -993,7 +994,6 @@ export default class Parser {
                     text,
                 };
             }
-            // TODO(ts)
             symbol = s;
         } else if (text.charCodeAt(0) >= 0x80) { // no symbol for e.g. ^
             if (this.settings.strict) {
@@ -1045,12 +1045,10 @@ export default class Parser {
                     label: command,
                     isStretchy: false,
                     isShifty: true,
-                    // TODO(ts)
                     base: symbol,
                 };
             }
         }
-        // TODO(ts)
         return symbol;
     }
 }

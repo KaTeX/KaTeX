@@ -1,5 +1,5 @@
 import defineFunction from "../defineFunction";
-import {makeSpan, makeVList} from "../buildCommon";
+import {makeSpan, makeVList, vlistChild} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
 import {stretchyMathML, stretchySvg} from "../stretchy";
 import Style from "../Style";
@@ -50,8 +50,8 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
                 {type: "elem", elem: braceBody},
             ],
         }, options);
-        // TODO(ts): Replace this with passing "svg-align" into makeVList.
-        (vlist as any).children[0].children[0].children[1].classes.push("svg-align");
+        // Add "svg-align" to the braceBody wrapper.
+        vlistChild(vlist, 1).classes.push("svg-align");
     } else {
         vlist = makeVList({
             positionType: "bottom",
@@ -62,8 +62,8 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
                 {type: "elem", elem: body},
             ],
         }, options);
-        // TODO(ts): Replace this with passing "svg-align" into makeVList.
-        (vlist as any).children[0].children[0].children[0].classes.push("svg-align");
+        // Add "svg-align" to the braceBody wrapper.
+        vlistChild(vlist, 0).classes.push("svg-align");
     }
 
     if (supSubGroup) {

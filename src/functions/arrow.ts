@@ -1,5 +1,5 @@
 import defineFunction from "../defineFunction";
-import {makeSpan, makeVList, wrapFragment} from "../buildCommon";
+import {makeSpan, makeVList, vlistChild, wrapFragment} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
 import {stretchyMathML, stretchySvg} from "../stretchy";
 
@@ -106,8 +106,8 @@ defineFunction({
             }, options);
         }
 
-        // TODO(ts): Replace this with passing "svg-align" into makeVList.
-        (vlist as any).children[0].children[0].children[1].classes.push("svg-align");
+        // Add "svg-align" to the wrapper around the arrow SVG element.
+        vlistChild(vlist, 1).classes.push("svg-align");
 
         return makeSpan(["mrel", "x-arrow"], [vlist], options);
     },
