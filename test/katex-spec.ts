@@ -2773,10 +2773,10 @@ describe("A strike-through builder", function() {
         expect`\cancel{x}^2`.toBuild();
         expect`\cancel{x}_2`.toBuild();
         expect`\cancel{x}_2^2`.toBuild();
-        expect`\sout{x}`.toBuild();
-        expect`\sout{x}^2`.toBuild();
-        expect`\sout{x}_2`.toBuild();
-        expect`\sout{x}_2^2`.toBuild();
+        expect`\sout{x}`.toBuild(nonstrictSettings);
+        expect`\sout{x}^2`.toBuild(nonstrictSettings);
+        expect`\sout{x}_2`.toBuild(nonstrictSettings);
+        expect`\sout{x}_2^2`.toBuild(nonstrictSettings);
     });
 
     it("should produce mords", function() {
@@ -2785,6 +2785,12 @@ describe("A strike-through builder", function() {
         expect(getBuilt`\cancel +`[0].classes).not.toContain("mbin");
         expect(getBuilt`\cancel )^2`[0].classes).toContain("mord");
         expect(getBuilt`\cancel )^2`[0].classes).not.toContain("mclose");
+    });
+});
+
+describe("A \\sout parser", function() {
+    it("should fail in math mode with strict settings", function() {
+        expect`\sout{x}`.not.toParse(strictSettings);
     });
 });
 

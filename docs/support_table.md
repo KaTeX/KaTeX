@@ -989,7 +989,7 @@ use `\ce` instead|
 |\smash|$\left(x^{\smash{2}}\right)$|`\left(x^{\smash{2}}\right)`|
 |\smile|$\smile$||
 |\smiley|<span style="color:firebrick;">Not supported</span>||
-|\sout|$\sout{abc}$|`\sout{abc}`|
+|\sout|$\text{\sout{abc}}$|`\text{\sout{abc}}`|
 |\Space|<span style="color:firebrick;">Not supported</span>|see `\space`
 |\space|$a\space b$|`a\space b`|
 |\spades|$\spades$||

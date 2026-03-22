@@ -143,9 +143,9 @@ describe("renderA11yString", () => {
         });
 
         test("\\sout", () => {
-            const result = renderA11yString("\\sout{a}");
+            const result = renderA11yString("\\text{\\sout{a}}");
             expect(result).toMatchInlineSnapshot(
-                `"start strikeout, a, end strikeout"`,
+                `"start text, start strikeout, a, end strikeout, end text"`,
             );
         });
     });
