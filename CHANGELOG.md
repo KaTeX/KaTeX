@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.40](https://github.com/KaTeX/KaTeX/compare/v0.16.39...v0.16.40) (2026-03-20)
+
+
+### Bug Fixes
+
+* **css:** specify position: relative for .katex ([#4170](https://github.com/KaTeX/KaTeX/issues/4170)) ([020f0d8](https://github.com/KaTeX/KaTeX/commit/020f0d89567d59229bac5fc8d8f5832a9508a85f))
+
 ## [0.16.39](https://github.com/KaTeX/KaTeX/compare/v0.16.38...v0.16.39) (2026-03-19)
 
 
