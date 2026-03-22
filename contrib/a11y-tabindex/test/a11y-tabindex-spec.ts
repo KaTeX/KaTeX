@@ -35,16 +35,13 @@ function setOverflow(el: HTMLElement, overflows: boolean) {
 
 describe("a11y-tabindex", () => {
     describe("updateTabIndex", () => {
-        it("adds tabindex='0' when element overflows", () => {
-            const el = createKatexEl({tex: "x^2", overflows: true});
+        it.each([
+            [true, "0"],
+            [false, null],
+        ])("overflows=%s → tabindex=%s", (overflows, expected) => {
+            const el = createKatexEl({tex: "x^2", overflows});
             updateTabIndex(el);
-            expect(el.getAttribute("tabindex")).toBe("0");
-        });
-
-        it("does not add tabindex when element does not overflow", () => {
-            const el = createKatexEl({tex: "x^2", overflows: false});
-            updateTabIndex(el);
-            expect(el.hasAttribute("tabindex")).toBe(false);
+            expect(el.getAttribute("tabindex")).toBe(expected);
         });
 
         it("removes tabindex when element stops overflowing", () => {
@@ -57,22 +54,25 @@ describe("a11y-tabindex", () => {
             expect(el.hasAttribute("tabindex")).toBe(false);
         });
 
-        it("adds accessible name when element overflows", () => {
+        it.each([
+            ["role", "math"],
+            ["aria-label", "x^2"],
+        ])("overflowing element gets %s=%s", (attr, value) => {
             const el = createKatexEl({tex: "x^2", overflows: true});
             updateTabIndex(el);
-            expect(el.getAttribute("role")).toBe("math");
-            expect(el.getAttribute("aria-label")).toBe("x^2");
+            expect(el.getAttribute(attr)).toBe(value);
         });
 
-        it("removes accessible name when element stops overflowing", () => {
+        it.each([
+            ["role"],
+            ["aria-label"],
+        ])("removes %s when element stops overflowing", (attr) => {
             const el = createKatexEl({tex: "x^2", overflows: true});
             updateTabIndex(el);
-            expect(el.getAttribute("role")).toBe("math");
 
             setOverflow(el, false);
             updateTabIndex(el);
-            expect(el.hasAttribute("role")).toBe(false);
-            expect(el.hasAttribute("aria-label")).toBe(false);
+            expect(el.hasAttribute(attr)).toBe(false);
         });
     });
 
@@ -85,19 +85,15 @@ describe("a11y-tabindex", () => {
             expect(el.getAttribute(A11Y_ADDED)).toBe("role aria-label");
         });
 
-        it("does not overwrite existing role", () => {
+        it.each([
+            ["role", "math", "aria-label"],
+            ["aria-label", "existing label", "role"],
+        ])("does not overwrite existing %s", (attr, value, expectedAdded) => {
             const el = createKatexEl({tex: "x"});
-            el.setAttribute("role", "math");
+            el.setAttribute(attr, value);
             ensureAccessibleName(el);
-            expect(el.getAttribute(A11Y_ADDED)).toBe("aria-label");
-        });
-
-        it("does not overwrite existing aria-label", () => {
-            const el = createKatexEl({tex: "x"});
-            el.setAttribute("aria-label", "existing label");
-            ensureAccessibleName(el);
-            expect(el.getAttribute("aria-label")).toBe("existing label");
-            expect(el.getAttribute(A11Y_ADDED)).toBe("role");
+            expect(el.getAttribute(attr)).toBe(value);
+            expect(el.getAttribute(A11Y_ADDED)).toBe(expectedAdded);
         });
 
         it("does not add aria-label without annotation", () => {
@@ -114,7 +110,6 @@ describe("a11y-tabindex", () => {
             const el = createKatexEl({tex: "x"});
             el.setAttribute("role", "math"); // pre-existing (core set)
             ensureAccessibleName(el);
-            expect(el.getAttribute(A11Y_ADDED)).toBe("aria-label");
 
             removeAccessibleName(el);
             expect(el.hasAttribute("aria-label")).toBe(false);
