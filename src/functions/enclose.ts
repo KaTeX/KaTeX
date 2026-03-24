@@ -286,11 +286,35 @@ defineFunction({
 
 defineFunction({
     type: "enclose",
-    names: ["\\cancel", "\\bcancel", "\\xcancel", "\\sout", "\\phase"],
+    names: ["\\cancel", "\\bcancel", "\\xcancel", "\\phase"],
     props: {
         numArgs: 1,
     },
     handler({parser, funcName}, args) {
+        const body = args[0];
+        return {
+            type: "enclose",
+            mode: parser.mode,
+            label: funcName,
+            body,
+        };
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+defineFunction({
+    type: "enclose",
+    names: ["\\sout"],
+    props: {
+        numArgs: 1,
+        allowedInText: true,
+    },
+    handler({parser, funcName}, args) {
+        if (parser.mode === "math") {
+            parser.settings.reportNonstrict("mathVsSout",
+                `LaTeX's \\sout works only in text mode`);
+        }
         const body = args[0];
         return {
             type: "enclose",
