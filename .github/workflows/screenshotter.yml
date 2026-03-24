@@ -15,9 +15,9 @@ jobs:
         browser: [chrome, firefox, safari]
         include:
         - browser: chrome
-          image: selenium/standalone-chrome:3.141.59-20210422
+          image: selenium/standalone-chromium:145.0-20260222
         - browser: firefox
-          image: selenium/standalone-firefox:3.141.59-20210929
+          image: selenium/standalone-firefox:128.0-20260222
         - browser: safari
           image: ylemkimon/selenium-proxy:latest
           browserstack:
@@ -29,13 +29,14 @@ jobs:
     services:
       selenium:
         image: ${{ matrix.image }}
+        options: --shm-size=2g
         env:
           # secrets are not supported in matrix, so put it here and limit to browserstack job
           BROWSERSTACK_USER: ${{ matrix.browserstack && secrets.BROWSERSTACK_USER }}
           BROWSERSTACK_ACCESS_KEY: ${{ matrix.browserstack && secrets.BROWSERSTACK_ACCESS_KEY }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         ref: ${{ github.event_name == 'pull_request_target' && format('refs/pull/{0}/merge', github.event.pull_request.number) || '' }}
         persist-credentials: false # do not persist credentials

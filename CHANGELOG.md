@@ -1,6 +1,27 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.40](https://github.com/KaTeX/KaTeX/compare/v0.16.39...v0.16.40) (2026-03-20)
+
+
+### Bug Fixes
+
+* **css:** specify position: relative for .katex ([#4170](https://github.com/KaTeX/KaTeX/issues/4170)) ([020f0d8](https://github.com/KaTeX/KaTeX/commit/020f0d89567d59229bac5fc8d8f5832a9508a85f))
+
+## [0.16.39](https://github.com/KaTeX/KaTeX/compare/v0.16.38...v0.16.39) (2026-03-19)
+
+
+### Bug Fixes
+
+* middle dot in text mode ([#4169](https://github.com/KaTeX/KaTeX/issues/4169)) ([edb45b0](https://github.com/KaTeX/KaTeX/commit/edb45b0b17c7b33349ce5142fe39156da05cb4d8)), closes [#3641](https://github.com/KaTeX/KaTeX/issues/3641)
+
+## [0.16.38](https://github.com/KaTeX/KaTeX/compare/v0.16.37...v0.16.38) (2026-03-08)
+
+
+### Bug Fixes
+
+* accent skew mixed with font specifiers ([#4159](https://github.com/KaTeX/KaTeX/issues/4159)) ([aea3375](https://github.com/KaTeX/KaTeX/commit/aea33758d6c98896017007d0244885301773856a)), closes [#4121](https://github.com/KaTeX/KaTeX/issues/4121)
+
 ## [0.16.37](https://github.com/KaTeX/KaTeX/compare/v0.16.36...v0.16.37) (2026-03-06)
 
 
