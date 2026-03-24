@@ -4447,11 +4447,15 @@ describe("Internal __* interface", function() {
     it("__renderToHTMLTree renders same as renderToString sans MathML", () => {
         const tree = katex.__renderToHTMLTree(latex);
         const markup = tree.toMarkup();
-        // Both modes now have role="math" and aria-label, so we just
-        // need to strip the MathML span from the default rendering.
+        // Strip the MathML span from the default rendering, and strip
+        // the aria attrs from the HTML-only rendering (which has them
+        // because there's no MathML to provide accessibility).
         const renderedSansMathML = rendered
             .replace(/<span class="katex-mathml">.*?<\/span>/, '');
-        expect(markup).toEqual(renderedSansMathML);
+        const markupSansA11y = markup
+            .replace(/ role="math"/, '')
+            .replace(/ aria-label="[^"]*"/, '');
+        expect(markupSansA11y).toEqual(renderedSansMathML);
     });
 });
 
@@ -4536,10 +4540,12 @@ describe("\\emph", () => {
 });
 
 describe("Accessibility attributes", function() {
-    it("should add role and aria-label in default (HTML+MathML) mode", function() {
+    it("should NOT add aria-label in default (HTML+MathML) mode", function() {
+        // MathML provides its own accessible semantics; aria-label would
+        // override it and prevent sub-expression navigation.
         const markup = katex.renderToString("x^2");
-        expect(markup).toMatch(/<span class="katex"[^>]*role="math"/);
-        expect(markup).toContain('aria-label="x, squared"');
+        expect(markup).not.toContain('role="math"');
+        expect(markup).not.toContain('aria-label');
     });
 
     it("should add role and human-readable aria-label in html output mode", function() {
@@ -4573,9 +4579,10 @@ describe("Accessibility attributes", function() {
         expect(markup).toContain('aria-label');
     });
 
-    it("should add role and aria-label in mathml-only output mode", function() {
+    it("should NOT add aria-label in mathml-only output mode", function() {
+        // MathML provides its own accessible semantics.
         const markup = katex.renderToString("x^2", {output: "mathml"});
-        expect(markup).toContain('role="math"');
-        expect(markup).toContain('aria-label="x, squared"');
+        expect(markup).not.toContain('role="math"');
+        expect(markup).not.toContain('aria-label');
     });
 });
