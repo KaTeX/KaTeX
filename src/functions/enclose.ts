@@ -311,7 +311,7 @@ defineFunction({
         allowedInText: true,
     },
     handler({parser, funcName}, args) {
-        if (parser.mode === "math" && parser.settings.strict) {
+        if (parser.mode === "math") {
             parser.settings.reportNonstrict("mathVsSout",
                 `LaTeX's \\sout works only in text mode`);
         }

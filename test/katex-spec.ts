@@ -2777,6 +2777,7 @@ describe("A strike-through builder", function() {
         expect`\sout{x}^2`.toBuild(nonstrictSettings);
         expect`\sout{x}_2`.toBuild(nonstrictSettings);
         expect`\sout{x}_2^2`.toBuild(nonstrictSettings);
+        expect`\text{\sout{abc}}`.toBuild();
     });
 
     it("should produce mords", function() {
@@ -2789,6 +2790,10 @@ describe("A strike-through builder", function() {
 });
 
 describe("A \\sout parser", function() {
+    it("should work in text mode", function() {
+        expect`\text{\sout{abc}}`.toParse();
+    });
+
     it("should fail in math mode with strict settings", function() {
         expect`\sout{x}`.not.toParse(strictSettings);
     });
