@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.42](https://github.com/KaTeX/KaTeX/compare/v0.16.41...v0.16.42) (2026-03-24)
+
+
+### Features
+
+* \underbracket and \overbracket ([#4147](https://github.com/KaTeX/KaTeX/issues/4147)) ([5be9abb](https://github.com/KaTeX/KaTeX/commit/5be9abb0b4d687a2a196b8adf9b5b9deeb60f7bc))
+
 ## [0.16.41](https://github.com/KaTeX/KaTeX/compare/v0.16.40...v0.16.41) (2026-03-24)
 
 
