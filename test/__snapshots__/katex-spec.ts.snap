@@ -1057,10 +1057,7 @@ exports[`An includegraphics builder should render with trust setting 1`] = `
 `;
 
 exports[`Extending katex by new fonts and symbols Add new font class to new extended symbols 1`] = `
-<span class="katex"
-      role="math"
-      aria-label="۹, ۹, start superscript, ۱, ۱, end superscript"
->
+<span class="katex">
   <span class="katex-mathml">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <semantics>
@@ -1133,10 +1130,7 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
 `;
 
 exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel and mop 1`] = `
-<span class="katex"
-      role="math"
-      aria-label="M = \\\\ a + \\\\ b \\\\ c"
->
+<span class="katex">
   <span class="katex-mathml">
     <math xmlns="http://www.w3.org/1998/Math/MathML">
       <semantics>

@@ -52,18 +52,22 @@ export const buildTree = function(
     if (settings.output === "mathml") {
         const katexNode = buildMathML(
             tree, expression, options, settings.displayMode, true);
-        setA11yAttrs(katexNode, tree, expression);
+        // MathML provides its own accessible semantics; adding aria-label
+        // would override it and prevent screen readers from navigating
+        // the expression structure.
         return katexNode;
     } else if (settings.output === "html") {
         const htmlNode = buildHTML(tree, options);
         katexNode = makeSpan(["katex"], [htmlNode]);
+        // HTML-only mode has no MathML, so aria-label is needed.
         setA11yAttrs(katexNode, tree, expression);
     } else {
         const mathMLNode = buildMathML(tree, expression, options,
             settings.displayMode, false);
         const htmlNode = buildHTML(tree, options);
         katexNode = makeSpan(["katex"], [mathMLNode, htmlNode]);
-        setA11yAttrs(katexNode, tree, expression);
+        // MathML is present; let it provide accessibility rather than
+        // overriding with a flat aria-label string.
     }
 
     return displayWrap(katexNode, settings);
