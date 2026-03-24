@@ -233,15 +233,16 @@ Any character can be written with the `\char` function and the Unicode code in h
 
 ### Annotation
 
-|||
-|:------------------------------|:-----
-|$\cancel{5}$ `\cancel{5}`|$\overbrace{a+b+c}^{\text{note}}$ `\overbrace{a+b+c}^{\text{note}}`
-|$\bcancel{5}$ `\bcancel{5}` |$\underbrace{a+b+c}_{\text{note}}$ `\underbrace{a+b+c}_{\text{note}}`
-|$\xcancel{ABC}$ `\xcancel{ABC}`|$\overbracket{a+b+c}^{\text{note}}$ `\overbracket{a+b+c}^{\text{note}}`
-|$\sout{abc}$ `\sout{abc}`|$\underbracket{a+b+c}_{\text{note}}$ `\underbracket{a+b+c}_{\text{note}}`
-|$\not =$ `\not =`|$\boxed{\pi=\frac c d}$ `\boxed{\pi=\frac c d}`
-|$a_{\angl n}$ `$a_{\angl n}$`|$\phase{-78^\circ}$`\phase{-78^\circ}`
-|$a_\angln$ `$a_\angln$`||
+|                                                                         |                                                                           |
+|:------------------------------------------------------------------------|:--------------------------------------------------------------------------|
+| $\cancel{5}$ `\cancel{5}`                                               | $\overbrace{a+b+c}^{\text{note}}$ `\overbrace{a+b+c}^{\text{note}}`       |
+| $\bcancel{5}$ `\bcancel{5}`                                             | $\underbrace{a+b+c}_{\text{note}}$ `\underbrace{a+b+c}_{\text{note}}`     |
+| $\xcancel{ABC}$ `\xcancel{ABC}`                                         | $\not =$ `\not =`                                                         |
+| $\text{\sout{abc}}$ `\text{\sout{abc}}`                                 | $\boxed{\pi=\frac c d}$ `\boxed{\pi=\frac c d}`                           |
+| $a_{\angl n}$ `$a_{\angl n}`                                            | $a_\angln$ `a_\angln`                                                     |
+| $\overbracket{a+b+c}^{\text{note}}$ `\overbracket{a+b+c}^{\text{note}}` | $\underbracket{a+b+c}_{\text{note}}$ `\underbracket{a+b+c}_{\text{note}}` |
+| $\phase{-78^\circ}$`\phase{-78^\circ}`                                  |                                                                           |
+
 
 `\tag{hi} x+y^{2x}`
 $$\tag{hi} x+y^{2x}$$
