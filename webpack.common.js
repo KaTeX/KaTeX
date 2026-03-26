@@ -54,6 +54,10 @@ const targets = [
         name: 'contrib/render-a11y-string',
         entry: './contrib/render-a11y-string/render-a11y-string.ts',
     },
+    {
+        name: 'contrib/a11y-tabindex',
+        entry: './contrib/a11y-tabindex/a11y-tabindex.js',
+    },
 ];
 
 /**
