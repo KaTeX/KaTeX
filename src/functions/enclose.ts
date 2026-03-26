@@ -204,8 +204,7 @@ const mathmlBuilder: MathMLBuilder<"enclose"> = (group, options) => {
                     options.fontMetrics().fboxrule, // default
                     options.minRuleThickness, // user override
                 );
-                node.setAttribute("style", "border: " + makeEm(thk) + " solid " +
-                    String(group.borderColor));
+                node.setAttribute("style", `border: ${makeEm(thk)} solid ${group.borderColor}`);
             }
             break;
         case "\\xcancel":
