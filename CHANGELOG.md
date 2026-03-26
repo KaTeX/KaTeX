@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.43](https://github.com/KaTeX/KaTeX/compare/v0.16.42...v0.16.43) (2026-03-26)
+
+
+### Bug Fixes
+
+* use makeEm() consistently to truncate long CSS decimals ([#4181](https://github.com/KaTeX/KaTeX/issues/4181)) ([0967dcc](https://github.com/KaTeX/KaTeX/commit/0967dcc0278f20d4501a93f01c7343c70abb3fcd))
+
 ## [0.16.42](https://github.com/KaTeX/KaTeX/compare/v0.16.41...v0.16.42) (2026-03-24)
 
 
