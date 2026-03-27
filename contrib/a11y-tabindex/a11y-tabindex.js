@@ -13,7 +13,13 @@ export function ensureAccessibleRole(el) {
     // so it is not an unnamed focusable element (WCAG 4.1.2).
     // We track what we add so removeAccessibleRole() can clean up without
     // removing attributes that core KaTeX set.
-    if (!el.hasAttribute("role")) {
+    //
+    // In combined HTML+MathML mode the inner <math> element already
+    // provides role="math" semantics.  Adding it to the .katex wrapper
+    // would cause double announcements in some screen readers (see
+    // buildTree.ts).  Detect combined mode by the presence of the
+    // .katex-mathml child.
+    if (!el.hasAttribute("role") && !el.querySelector(".katex-mathml")) {
         el.setAttribute("role", "math");
         el.setAttribute(A11Y_ADDED, "role");
     }
@@ -41,6 +47,12 @@ export function updateTabIndex(el) {
     }
 }
 
+function unobserveKatex(el, resizeObserver) {
+    resizeObserver.unobserve(el);
+    el.removeAttribute("tabindex");
+    removeAccessibleRole(el);
+}
+
 function observeKatex(el, resizeObserver) {
     updateTabIndex(el);
     resizeObserver.observe(el);
@@ -58,7 +70,7 @@ function init() {
     document.querySelectorAll(".katex").forEach(
         (el) => observeKatex(el, resizeObserver));
 
-    // Watch for new .katex elements added to the DOM.
+    // Watch for .katex elements added to / removed from the DOM.
     new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             Array.from(mutation.addedNodes).forEach((node) => {
@@ -68,6 +80,16 @@ function init() {
                     } else {
                         node.querySelectorAll(".katex").forEach(
                             (el) => observeKatex(el, resizeObserver));
+                    }
+                }
+            });
+            Array.from(mutation.removedNodes).forEach((node) => {
+                if (node instanceof Element) {
+                    if (node.classList.contains("katex")) {
+                        unobserveKatex(node, resizeObserver);
+                    } else {
+                        node.querySelectorAll(".katex").forEach(
+                            (el) => unobserveKatex(el, resizeObserver));
                     }
                 }
             });

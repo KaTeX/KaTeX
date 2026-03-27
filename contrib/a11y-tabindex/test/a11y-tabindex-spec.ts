@@ -78,6 +78,16 @@ describe("a11y-tabindex", () => {
             expect(el.getAttribute("role")).toBe("math");
             expect(el.hasAttribute(A11Y_ADDED)).toBe(false);
         });
+
+        it("does not add role when .katex-mathml child is present (combined mode)", () => {
+            const el = createKatexEl();
+            const mathml = document.createElement("span");
+            mathml.classList.add("katex-mathml");
+            el.appendChild(mathml);
+            ensureAccessibleRole(el);
+            expect(el.hasAttribute("role")).toBe(false);
+            expect(el.hasAttribute(A11Y_ADDED)).toBe(false);
+        });
     });
 
     describe("removeAccessibleRole", () => {
