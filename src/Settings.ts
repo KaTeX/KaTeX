@@ -266,6 +266,12 @@ export default class Settings {
                 (schema.processor ? schema.processor(optionValue) : optionValue)
                 : getDefaultValue(schema);
         }
+        if (this.output === "html") {
+            this.reportNonstrict("htmlOutput",
+                "output \"html\" has no MathML, so screen readers cannot " +
+                "read the math. Use \"htmlAndMathml\" (the default) for " +
+                "accessible output.");
+        }
     }
 
     /**
