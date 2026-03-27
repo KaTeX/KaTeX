@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.44](https://github.com/KaTeX/KaTeX/compare/v0.16.43...v0.16.44) (2026-03-27)
+
+
+### Bug Fixes
+
+* remove extra \jot space at bottom of align/gather/etc. ([#4184](https://github.com/KaTeX/KaTeX/issues/4184)) ([3870ee9](https://github.com/KaTeX/KaTeX/commit/3870ee913e27fdde7bce244e4c6c5d63e2b28a62))
+
 ## [0.16.43](https://github.com/KaTeX/KaTeX/compare/v0.16.42...v0.16.43) (2026-03-26)
 
 
