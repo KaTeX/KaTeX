@@ -6,7 +6,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 
 If you know the shape of a character, but not its name, [Detexify](https://detexify.kirelabs.org/classify.html) can help.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.38/dist/katex.min.css" integrity="sha384-/L6i+LN3dyoaK2jYG5ZLh5u13cjdsPDcFOSNJeFBFa/KgVXR5kOfTdiN3ft1uMAq" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.44/dist/katex.min.css" integrity="sha384-irXK0JiCGinqGL+slwVklbhJetrjczNwaP2lANewD8lKAs9n61SbQ3As28iSqXUE" crossorigin="anonymous">
 <style>
 table tr,
 table td {
@@ -813,7 +813,7 @@ use `\ce` instead|
 |\otimes|$\otimes$||
 |\over|${a+1 \over b+2}+c$|`{a+1 \over b+2}+c`|
 |\overbrace|$\overbrace{x+⋯+x}^{n\text{ times}}$|`\overbrace{x+⋯+x}^{n\text{ times}}`|
-|\overbracket|<span style="color:firebrick;">Not supported</span>||
+|\overbracket|$\overbracket{x+⋯+x}^{n\text{ times}}$|`\overbracket{x+⋯+x}^{n\text{ times}}`|
 |\overgroup|$\overgroup{AB}$|`\overgroup{AB}`|
 |\overleftarrow|$\overleftarrow{AB}$|`\overleftarrow{AB}`|
 |\overleftharpoon|$\overleftharpoon{AB}$|`\overleftharpoon{AB}`|
@@ -989,7 +989,7 @@ use `\ce` instead|
 |\smash|$\left(x^{\smash{2}}\right)$|`\left(x^{\smash{2}}\right)`|
 |\smile|$\smile$||
 |\smiley|<span style="color:firebrick;">Not supported</span>||
-|\sout|$\sout{abc}$|`\sout{abc}`|
+|\sout|$\text{\sout{abc}}$|`\text{\sout{abc}}`|
 |\Space|<span style="color:firebrick;">Not supported</span>|see `\space`
 |\space|$a\space b$|`a\space b`|
 |\spades|$\spades$||
@@ -1132,7 +1132,7 @@ use `\ce` instead|
 |\ulcorner|$\ulcorner$||
 |\underbar|$\underbar{X}$|`\underbar{X}`|
 |\underbrace|$\underbrace{x+⋯+x}_{n\text{ times}}$|`\underbrace{x+⋯+x}_{n\text{ times}}`|
-|\underbracket|<span style="color:firebrick;">Not supported</span>||
+|\underbracket|$\underbracket{x+⋯+x}_{n\text{ times}}$|`\underbracket{x+⋯+x}_{n\text{ times}}`|
 |\undergroup|$\undergroup{AB}$|`\undergroup{AB}`|
 |\underleftarrow|$\underleftarrow{AB}$|`\underleftarrow{AB}`|
 |\underleftrightarrow|$\underleftrightarrow{AB}$|`\underleftrightarrow{AB}`|

@@ -16,7 +16,7 @@ jobs:
       pull-requests: write # to remove label
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         ref: ${{ format('refs/pull/{0}/merge', github.event.pull_request.number) }}
         persist-credentials: false # minimize exposure and prevent accidental pushes
@@ -63,7 +63,7 @@ jobs:
 
     - name: Login to GitHub Container Registry
       if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
-      uses: docker/login-action@v3
+      uses: docker/login-action@v4
       with:
         registry: ghcr.io
         username: KaTeX-bot
@@ -72,7 +72,7 @@ jobs:
 
     - name: Build and push
       if: ${{ !fromJSON(steps.check-image.outputs.exists) }}
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@v7
       with:
         context: dockers/fonts
         tags: ${{ steps.check-image.outputs.result }}
@@ -89,7 +89,7 @@ jobs:
         password: ${{ secrets.GH_PACKAGES_TOKEN }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         ref: ${{ format('refs/pull/{0}/merge', github.event.pull_request.number) }}
         persist-credentials: false

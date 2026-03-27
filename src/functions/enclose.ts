@@ -204,8 +204,7 @@ const mathmlBuilder: MathMLBuilder<"enclose"> = (group, options) => {
                     options.fontMetrics().fboxrule, // default
                     options.minRuleThickness, // user override
                 );
-                node.setAttribute("style", "border: " + thk + "em solid " +
-                    String(group.borderColor));
+                node.setAttribute("style", `border: ${makeEm(thk)} solid ${group.borderColor}`);
             }
             break;
         case "\\xcancel":
@@ -286,11 +285,35 @@ defineFunction({
 
 defineFunction({
     type: "enclose",
-    names: ["\\cancel", "\\bcancel", "\\xcancel", "\\sout", "\\phase"],
+    names: ["\\cancel", "\\bcancel", "\\xcancel", "\\phase"],
     props: {
         numArgs: 1,
     },
     handler({parser, funcName}, args) {
+        const body = args[0];
+        return {
+            type: "enclose",
+            mode: parser.mode,
+            label: funcName,
+            body,
+        };
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+defineFunction({
+    type: "enclose",
+    names: ["\\sout"],
+    props: {
+        numArgs: 1,
+        allowedInText: true,
+    },
+    handler({parser, funcName}, args) {
+        if (parser.mode === "math") {
+            parser.settings.reportNonstrict("mathVsSout",
+                `LaTeX's \\sout works only in text mode`);
+        }
         const body = args[0];
         return {
             type: "enclose",

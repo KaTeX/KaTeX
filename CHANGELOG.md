@@ -1,6 +1,48 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.44](https://github.com/KaTeX/KaTeX/compare/v0.16.43...v0.16.44) (2026-03-27)
+
+
+### Bug Fixes
+
+* remove extra \jot space at bottom of align/gather/etc. ([#4184](https://github.com/KaTeX/KaTeX/issues/4184)) ([3870ee9](https://github.com/KaTeX/KaTeX/commit/3870ee913e27fdde7bce244e4c6c5d63e2b28a62))
+
+## [0.16.43](https://github.com/KaTeX/KaTeX/compare/v0.16.42...v0.16.43) (2026-03-26)
+
+
+### Bug Fixes
+
+* use makeEm() consistently to truncate long CSS decimals ([#4181](https://github.com/KaTeX/KaTeX/issues/4181)) ([0967dcc](https://github.com/KaTeX/KaTeX/commit/0967dcc0278f20d4501a93f01c7343c70abb3fcd))
+
+## [0.16.42](https://github.com/KaTeX/KaTeX/compare/v0.16.41...v0.16.42) (2026-03-24)
+
+
+### Features
+
+* \underbracket and \overbracket ([#4147](https://github.com/KaTeX/KaTeX/issues/4147)) ([5be9abb](https://github.com/KaTeX/KaTeX/commit/5be9abb0b4d687a2a196b8adf9b5b9deeb60f7bc))
+
+## [0.16.41](https://github.com/KaTeX/KaTeX/compare/v0.16.40...v0.16.41) (2026-03-24)
+
+
+### Bug Fixes
+
+* \sout in text mode ([#4173](https://github.com/KaTeX/KaTeX/issues/4173)) ([e748578](https://github.com/KaTeX/KaTeX/commit/e748578b63e07ad30d5e404e60b04e5e794c0a5a))
+
+## [0.16.40](https://github.com/KaTeX/KaTeX/compare/v0.16.39...v0.16.40) (2026-03-20)
+
+
+### Bug Fixes
+
+* **css:** specify position: relative for .katex ([#4170](https://github.com/KaTeX/KaTeX/issues/4170)) ([020f0d8](https://github.com/KaTeX/KaTeX/commit/020f0d89567d59229bac5fc8d8f5832a9508a85f))
+
+## [0.16.39](https://github.com/KaTeX/KaTeX/compare/v0.16.38...v0.16.39) (2026-03-19)
+
+
+### Bug Fixes
+
+* middle dot in text mode ([#4169](https://github.com/KaTeX/KaTeX/issues/4169)) ([edb45b0](https://github.com/KaTeX/KaTeX/commit/edb45b0b17c7b33349ce5142fe39156da05cb4d8)), closes [#3641](https://github.com/KaTeX/KaTeX/issues/3641)
+
 ## [0.16.38](https://github.com/KaTeX/KaTeX/compare/v0.16.37...v0.16.38) (2026-03-08)
 
 
