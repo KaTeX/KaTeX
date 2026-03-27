@@ -3109,6 +3109,8 @@ describe("An aligned environment", function() {
     it("should not add \\jot below the final row", function() {
         const aligned = getBuilt`\begin{aligned}a&=b\\c&=d\end{aligned}`[0];
         const matrix = getBuilt`\begin{matrix*}[r]\displaystyle a&\displaystyle =b\\[3pt]\displaystyle c&\displaystyle =d\end{matrix*}`[0];
+        // [3pt] equals \jot, and for simple content depth == arstrutDepth,
+        // so the two gap computations coincide.
 
         expect(aligned.height).toBeCloseTo(matrix.height, 5);
         expect(aligned.depth).toBeCloseTo(matrix.depth, 5);
