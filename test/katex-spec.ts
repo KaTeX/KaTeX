@@ -4535,7 +4535,17 @@ describe("\\emph", () => {
 
 describe("Accessibility warnings", function() {
     it("should warn when output is 'html'", function() {
-        expect(() => katex.renderToString("x", {output: "html"}))
+        const warnSpy = jest.spyOn(console, "warn")
+            .mockImplementation(() => {});
+        katex.renderToString("x", {output: "html"});
+        expect(warnSpy).toHaveBeenCalledWith(
+            expect.stringContaining("htmlOutput"));
+        warnSpy.mockRestore();
+    });
+
+    it("should throw when output is 'html' and strict is 'error'", function() {
+        expect(() => katex.renderToString("x",
+            {output: "html", strict: "error"}))
             .toThrow("output \"html\" has no MathML");
     });
 
