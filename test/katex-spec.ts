@@ -3094,6 +3094,27 @@ describe("An aligned environment", function() {
         const ae = getParsed`\begin{aligned}&E_1 & (1)\\&E_2 & (2)\\&E_3 & (3)\end{aligned}`[0];
         expect(ae.body).toHaveLength(3);
     });
+
+    it("should not add \\jot below a single row", function() {
+        const aligned = getBuilt`\begin{aligned}(M)\end{aligned}`[0];
+        const alignedExtra = getBuilt`\begin{aligned}(M)\\\end{aligned}`[0];
+        const matrix = getBuilt`\begin{matrix*}[r]\displaystyle(M)\end{matrix*}`[0];
+
+        expect(aligned.height).toBeCloseTo(matrix.height, 5);
+        expect(aligned.depth).toBeCloseTo(matrix.depth, 5);
+        expect(alignedExtra.height).toBeCloseTo(matrix.height, 5);
+        expect(alignedExtra.depth).toBeCloseTo(matrix.depth, 5);
+    });
+
+    it("should not add \\jot below the final row", function() {
+        const aligned = getBuilt`\begin{aligned}a&=b\\c&=d\end{aligned}`[0];
+        const matrix = getBuilt`\begin{matrix*}[r]\displaystyle a&\displaystyle =b\\[3pt]\displaystyle c&\displaystyle =d\end{matrix*}`[0];
+        // [3pt] equals \jot, and for simple content depth == arstrutDepth,
+        // so the two gap computations coincide.
+
+        expect(aligned.height).toBeCloseTo(matrix.height, 5);
+        expect(aligned.depth).toBeCloseTo(matrix.depth, 5);
+    });
 });
 
 describe("AMS environments", function() {
