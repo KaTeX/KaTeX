@@ -204,6 +204,67 @@ describe("a11y-tabindex", () => {
             expect(observed.has(el2)).toBe(false);
         });
 
+        it("ignores text-node mutations (non-Element nodes)", async() => {
+            const text = document.createTextNode("hello");
+            document.body.appendChild(text);
+            await flushMutations();
+            // No error and no observed entries for text nodes
+            expect(observed.size).toBe(0);
+            document.body.removeChild(text);
+            await flushMutations();
+        });
+
+        it("observes pre-existing .katex elements at init time", async() => {
+            // Place a .katex element in the DOM before re-requiring the module
+            const el = createKatexEl({overflows: true});
+            document.body.appendChild(el);
+
+            observed.clear();
+            jest.isolateModules(() => {
+                require("../a11y-tabindex");
+            });
+            await flushMutations();
+
+            expect(observed.has(el)).toBe(true);
+            expect(el.getAttribute("tabindex")).toBe("0");
+
+            document.body.removeChild(el);
+            await flushMutations();
+        });
+
+        it("ResizeObserver callback updates tabindex on observed elements",
+            async() => {
+                // Capture the ResizeObserver callback
+                let resizeCallback:
+                    ((entries: {target: Element}[]) => void) | null = null;
+                const origObserve = global.ResizeObserver;
+                global.ResizeObserver = class {
+                    constructor(cb: (entries: {target: Element}[]) => void) {
+                        resizeCallback = cb;
+                    }
+                    observe(el: Element) { observed.add(el); }
+                    unobserve(el: Element) { observed.delete(el); }
+                    disconnect() { observed.clear(); }
+                } as unknown as typeof ResizeObserver;
+
+                jest.isolateModules(() => {
+                    require("../a11y-tabindex");
+                });
+
+                const el = createKatexEl({overflows: true});
+                document.body.appendChild(el);
+                await flushMutations();
+
+                // Simulate a resize that makes the element no longer overflow
+                setOverflow(el, false);
+                resizeCallback!([{target: el}]);
+                expect(el.hasAttribute("tabindex")).toBe(false);
+
+                document.body.removeChild(el);
+                await flushMutations();
+                global.ResizeObserver = origObserve;
+            });
+
         it("repeated add/remove cycles don't accumulate entries", async() => {
             for (let i = 0; i < 20; i++) {
                 const el = createKatexEl({overflows: true});

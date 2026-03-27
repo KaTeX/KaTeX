@@ -41,23 +41,14 @@ export const buildTree = function(
         return buildMathML(tree, expression, options, settings.displayMode, true);
     } else if (settings.output === "html") {
         const htmlNode = buildHTML(tree, options);
-        // buildHTML sets aria-hidden="true" because in combined mode the
-        // visual HTML is a duplicate of the MathML.  In HTML-only mode
-        // there is no MathML, so the HTML must remain visible to screen
-        // readers.
-        delete htmlNode.attributes["aria-hidden"];
         katexNode = makeSpan(["katex"], [htmlNode]);
-        // HTML-only mode has no MathML <math> element to convey semantics,
-        // so we add role="math" explicitly.
         katexNode.setAttribute("role", "math");
     } else {
         const mathMLNode = buildMathML(tree, expression, options,
             settings.displayMode, false);
         const htmlNode = buildHTML(tree, options);
+        htmlNode.setAttribute("aria-hidden", "true");
         katexNode = makeSpan(["katex"], [mathMLNode, htmlNode]);
-        // In combined mode, the MathML <math> element already provides
-        // role="math" semantics; adding it here would cause double
-        // announcements in some screen readers.
     }
 
     return displayWrap(katexNode, settings);
@@ -70,9 +61,6 @@ export const buildHTMLTree = function(
 ): DomSpan {
     const options = optionsFromSettings(settings);
     const htmlNode = buildHTML(tree, options);
-    // buildHTMLTree is always HTML-only — remove aria-hidden so screen
-    // readers can access the content (see buildTree "html" branch).
-    delete htmlNode.attributes["aria-hidden"];
     const katexNode = makeSpan(["katex"], [htmlNode]);
     katexNode.setAttribute("role", "math");
     return displayWrap(katexNode, settings);
