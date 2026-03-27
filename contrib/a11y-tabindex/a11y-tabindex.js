@@ -70,29 +70,27 @@ function init() {
     document.querySelectorAll(".katex").forEach(
         (el) => observeKatex(el, resizeObserver));
 
+    // Apply fn to every .katex element in a NodeList.
+    function forEachKatex(nodes, fn) {
+        Array.from(nodes).forEach((node) => {
+            if (!(node instanceof Element)) {
+                return;
+            }
+            if (node.classList.contains("katex")) {
+                fn(node);
+            } else {
+                node.querySelectorAll(".katex").forEach(fn);
+            }
+        });
+    }
+
     // Watch for .katex elements added to / removed from the DOM.
     new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
-            Array.from(mutation.addedNodes).forEach((node) => {
-                if (node instanceof Element) {
-                    if (node.classList.contains("katex")) {
-                        observeKatex(node, resizeObserver);
-                    } else {
-                        node.querySelectorAll(".katex").forEach(
-                            (el) => observeKatex(el, resizeObserver));
-                    }
-                }
-            });
-            Array.from(mutation.removedNodes).forEach((node) => {
-                if (node instanceof Element) {
-                    if (node.classList.contains("katex")) {
-                        unobserveKatex(node, resizeObserver);
-                    } else {
-                        node.querySelectorAll(".katex").forEach(
-                            (el) => unobserveKatex(el, resizeObserver));
-                    }
-                }
-            });
+            forEachKatex(mutation.addedNodes,
+                (el) => observeKatex(el, resizeObserver));
+            forEachKatex(mutation.removedNodes,
+                (el) => unobserveKatex(el, resizeObserver));
         });
     }).observe(document.body, {childList: true, subtree: true});
 }
