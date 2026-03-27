@@ -42,7 +42,6 @@ export const buildTree = function(
     } else if (settings.output === "html") {
         const htmlNode = buildHTML(tree, options);
         katexNode = makeSpan(["katex"], [htmlNode]);
-        katexNode.setAttribute("role", "math");
     } else {
         const mathMLNode = buildMathML(tree, expression, options,
             settings.displayMode, false);
@@ -62,7 +61,6 @@ export const buildHTMLTree = function(
     const options = optionsFromSettings(settings);
     const htmlNode = buildHTML(tree, options);
     const katexNode = makeSpan(["katex"], [htmlNode]);
-    katexNode.setAttribute("role", "math");
     return displayWrap(katexNode, settings);
 };
 

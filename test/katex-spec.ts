@@ -4446,15 +4446,12 @@ describe("Internal __* interface", function() {
     it("__renderToHTMLTree renders same as renderToString sans MathML", () => {
         const tree = katex.__renderToHTMLTree(latex);
         const markup = tree.toMarkup();
-        // Strip the MathML span and aria-hidden from the default rendering.
-        // Strip role="math" from the HTML-only rendering so the two are
-        // comparable.
+        // Strip the MathML span and aria-hidden from the default rendering
+        // so the two are comparable.
         const renderedSansMathML = rendered
             .replace(/<span class="katex-mathml">.*?<\/span>/, '')
             .replace(/ aria-hidden="true"/, '');
-        const markupSansA11y = markup
-            .replace(/ role="math"/, '');
-        expect(markupSansA11y).toEqual(renderedSansMathML);
+        expect(markup).toEqual(renderedSansMathML);
     });
 });
 
@@ -4539,22 +4536,13 @@ describe("\\emph", () => {
 });
 
 describe("Accessibility attributes", function() {
-    it("html output mode adds role='math' and omits aria-hidden", function() {
+    it("html output mode omits aria-hidden", function() {
         const markup = katex.renderToString("x^2", {output: "html"});
-        expect(markup).toMatch(/<span class="katex"[^>]*role="math"/);
         expect(markup).not.toContain('aria-hidden');
     });
 
-    it("default mode has aria-hidden but no role='math'", function() {
-        // MathML <math> already provides role="math"; aria-hidden hides the
-        // visual HTML so screen readers navigate the MathML instead.
+    it("default mode has aria-hidden on katex-html", function() {
         const markup = katex.renderToString("x^2");
-        expect(markup).not.toContain('role="math"');
         expect(markup).toContain('aria-hidden="true"');
-    });
-
-    it("mathml-only output mode does not add role='math'", function() {
-        const markup = katex.renderToString("x^2", {output: "mathml"});
-        expect(markup).not.toContain('role="math"');
     });
 });

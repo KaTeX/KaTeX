@@ -12,12 +12,7 @@ global.ResizeObserver = class {
     disconnect() { observed.clear(); }
 } as unknown as typeof ResizeObserver;
 
-import {
-    updateTabIndex,
-    ensureAccessibleRole,
-    removeAccessibleRole,
-    A11Y_ADDED,
-} from "../a11y-tabindex";
+import {updateTabIndex} from "../a11y-tabindex";
 
 /** Create a mock .katex element with optional overflow. */
 function createKatexEl(
@@ -39,116 +34,25 @@ function setOverflow(el: HTMLElement, overflows: boolean) {
 
 describe("a11y-tabindex", () => {
     describe("updateTabIndex", () => {
-        it("adds tabindex and role when overflowing", () => {
+        it("adds tabindex when overflowing", () => {
             const el = createKatexEl({overflows: true});
             updateTabIndex(el);
             expect(el.getAttribute("tabindex")).toBe("0");
-            expect(el.getAttribute("role")).toBe("math");
         });
 
-        it("skips tabindex and role when not overflowing", () => {
+        it("skips tabindex when not overflowing", () => {
             const el = createKatexEl({overflows: false});
             updateTabIndex(el);
             expect(el.getAttribute("tabindex")).toBe(null);
-            expect(el.getAttribute("role")).toBe(null);
         });
 
-        it("removes tabindex and role when element stops overflowing", () => {
+        it("removes tabindex when element stops overflowing", () => {
             const el = createKatexEl({overflows: true});
             updateTabIndex(el);
 
             setOverflow(el, false);
             updateTabIndex(el);
             expect(el.hasAttribute("tabindex")).toBe(false);
-            expect(el.hasAttribute("role")).toBe(false);
-        });
-    });
-
-    describe("ensureAccessibleRole", () => {
-        it("adds role=math", () => {
-            const el = createKatexEl();
-            ensureAccessibleRole(el);
-            expect(el.getAttribute("role")).toBe("math");
-            expect(el.getAttribute(A11Y_ADDED)).toBe("role");
-        });
-
-        it("does not overwrite existing role", () => {
-            const el = createKatexEl();
-            el.setAttribute("role", "math");
-            ensureAccessibleRole(el);
-            expect(el.getAttribute("role")).toBe("math");
-            expect(el.hasAttribute(A11Y_ADDED)).toBe(false);
-        });
-
-        it("does not add role when .katex-mathml child is present (combined mode)", () => {
-            const el = createKatexEl();
-            const mathml = document.createElement("span");
-            mathml.classList.add("katex-mathml");
-            el.appendChild(mathml);
-            ensureAccessibleRole(el);
-            expect(el.hasAttribute("role")).toBe(false);
-            expect(el.hasAttribute(A11Y_ADDED)).toBe(false);
-        });
-    });
-
-    describe("combined vs HTML-only mode (double-role prevention)", () => {
-        /** Build a .katex span that mimics combined HTML+MathML output. */
-        function createCombinedKatex(overflows: boolean): HTMLElement {
-            const el = createKatexEl({overflows});
-            const mathml = document.createElement("span");
-            mathml.classList.add("katex-mathml");
-            el.appendChild(mathml);
-            return el;
-        }
-
-        it("does NOT add role to overflowing .katex in combined mode", () => {
-            const el = createCombinedKatex(true);
-            updateTabIndex(el);
-
-            // tabindex is still added so the scrollable region is focusable
-            expect(el.getAttribute("tabindex")).toBe("0");
-            // but role="math" is NOT added — the inner <math> provides it
-            expect(el.hasAttribute("role")).toBe(false);
-        });
-
-        it("adds neither tabindex nor role to non-overflowing combined-mode math", () => {
-            const el = createCombinedKatex(false);
-            updateTabIndex(el);
-
-            expect(el.hasAttribute("tabindex")).toBe(false);
-            expect(el.hasAttribute("role")).toBe(false);
-        });
-
-        it("DOES add role to overflowing .katex in HTML-only mode", () => {
-            const el = createKatexEl({overflows: true});
-            updateTabIndex(el);
-
-            expect(el.getAttribute("tabindex")).toBe("0");
-            expect(el.getAttribute("role")).toBe("math");
-        });
-    });
-
-    describe("removeAccessibleRole", () => {
-        it("removes only attributes added by ensureAccessibleRole", () => {
-            const el = createKatexEl();
-            ensureAccessibleRole(el);
-
-            removeAccessibleRole(el);
-            expect(el.hasAttribute("role")).toBe(false);
-            expect(el.hasAttribute(A11Y_ADDED)).toBe(false);
-        });
-
-        it.each([
-            ["after ensureAccessibleRole", true],
-            ["without ensureAccessibleRole", false],
-        ])("preserves pre-existing role (%s)", (_label: string, callEnsure: boolean) => {
-            const el = createKatexEl();
-            el.setAttribute("role", "math");
-            if (callEnsure) {
-                ensureAccessibleRole(el);
-            }
-            removeAccessibleRole(el);
-            expect(el.getAttribute("role")).toBe("math");
         });
     });
 
