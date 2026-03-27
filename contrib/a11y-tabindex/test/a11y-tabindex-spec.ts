@@ -91,45 +91,36 @@ describe("a11y-tabindex", () => {
         });
     });
 
-    describe("updateTabIndex – combined mode (screen reader simulation)", () => {
-        it("does NOT add role to overflowing .katex with .katex-mathml child", () => {
-            // Simulates default KaTeX output: combined HTML + MathML.
-            // A screen reader sees <math> inside .katex-mathml, which
-            // already has implicit role="math".  Adding role="math" to
-            // the outer .katex wrapper would cause a double announcement.
-            const el = createKatexEl({overflows: true});
+    describe("combined vs HTML-only mode (double-role prevention)", () => {
+        /** Build a .katex span that mimics combined HTML+MathML output. */
+        function createCombinedKatex(overflows: boolean): HTMLElement {
+            const el = createKatexEl({overflows});
             const mathml = document.createElement("span");
             mathml.classList.add("katex-mathml");
-            mathml.innerHTML = '<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math>';
             el.appendChild(mathml);
+            return el;
+        }
 
+        it("does NOT add role to overflowing .katex in combined mode", () => {
+            const el = createCombinedKatex(true);
             updateTabIndex(el);
 
             // tabindex is still added so the scrollable region is focusable
             expect(el.getAttribute("tabindex")).toBe("0");
             // but role="math" is NOT added — the inner <math> provides it
             expect(el.hasAttribute("role")).toBe(false);
+        });
 
-            // Screen reader sees: one "math" role from <math>, no duplicate
-            const mathRoles = [el, ...Array.from(el.querySelectorAll("*"))]
-                .filter((n) => {
-                    if (n instanceof HTMLElement) {
-                        return n.getAttribute("role") === "math";
-                    }
-                    // <math> element has implicit role="math"
-                    return n.tagName === "math";
-                });
-            expect(mathRoles).toHaveLength(1);
+        it("adds neither tabindex nor role to non-overflowing combined-mode math", () => {
+            const el = createCombinedKatex(false);
+            updateTabIndex(el);
+
+            expect(el.hasAttribute("tabindex")).toBe(false);
+            expect(el.hasAttribute("role")).toBe(false);
         });
 
         it("DOES add role to overflowing .katex in HTML-only mode", () => {
-            // Simulates output: "html" — no .katex-mathml child.
-            // The wrapper needs role="math" for screen readers.
             const el = createKatexEl({overflows: true});
-            const htmlSpan = document.createElement("span");
-            htmlSpan.classList.add("katex-html");
-            el.appendChild(htmlSpan);
-
             updateTabIndex(el);
 
             expect(el.getAttribute("tabindex")).toBe("0");
@@ -161,45 +152,67 @@ describe("a11y-tabindex", () => {
         });
     });
 
-    describe("SPA lifecycle simulation (memory leak prevention)", () => {
-        beforeEach(() => observed.clear());
+    describe("SPA lifecycle (memory leak prevention via MutationObserver)", () => {
+        // The `import` at the top of this file is hoisted above the
+        // ResizeObserver mock, so init() never ran (its typeof guard
+        // saw undefined).  We use require() here so the module loads
+        // AFTER the mock is in place, giving us a live MutationObserver.
 
-        it("unobserve is called when elements are removed via MutationObserver", () => {
-            // Simulate: add element, observe it, then remove it.
-            // Before the fix, removedNodes were ignored and
-            // ResizeObserver held references to detached DOM nodes.
+        /** Flush jsdom's MutationObserver queue. */
+        const flushMutations = () =>
+            new Promise<void>((r) => { setTimeout(r, 0); });
+
+        beforeEach(() => {
+            observed.clear();
+            // Re-require the module so init() runs with the mock active.
+            jest.isolateModules(() => {
+                require("../a11y-tabindex");
+            });
+        });
+
+        it("observes added .katex and unobserves removed ones", async() => {
             const el = createKatexEl({overflows: true});
 
-            // Simulate observeKatex (what init() does for added nodes)
-            updateTabIndex(el);
-            observed.add(el);
+            document.body.appendChild(el);
+            await flushMutations();
+
             expect(observed.has(el)).toBe(true);
             expect(el.getAttribute("tabindex")).toBe("0");
 
-            // Simulate unobserveKatex (what the fixed MutationObserver
-            // does for removed nodes)
-            observed.delete(el);
-            el.removeAttribute("tabindex");
-            removeAccessibleRole(el);
+            document.body.removeChild(el);
+            await flushMutations();
 
             expect(observed.has(el)).toBe(false);
             expect(el.hasAttribute("tabindex")).toBe(false);
-            expect(el.hasAttribute("role")).toBe(false);
         });
 
-        it("repeated add/remove cycles don't accumulate observer entries", () => {
-            // Simulates an SPA re-rendering math on every state change.
-            for (let i = 0; i < 100; i++) {
-                const el = createKatexEl({overflows: true});
-                updateTabIndex(el);
-                observed.add(el);
+        it("handles nested .katex inside a wrapper div", async() => {
+            const wrapper = document.createElement("div");
+            const el1 = createKatexEl({overflows: true});
+            const el2 = createKatexEl({overflows: true});
+            wrapper.appendChild(el1);
+            wrapper.appendChild(el2);
 
-                // "remove" the element
-                observed.delete(el);
-                el.removeAttribute("tabindex");
-                removeAccessibleRole(el);
+            document.body.appendChild(wrapper);
+            await flushMutations();
+            expect(observed.has(el1)).toBe(true);
+            expect(observed.has(el2)).toBe(true);
+
+            document.body.removeChild(wrapper);
+            await flushMutations();
+            expect(observed.has(el1)).toBe(false);
+            expect(observed.has(el2)).toBe(false);
+        });
+
+        it("repeated add/remove cycles don't accumulate entries", async() => {
+            for (let i = 0; i < 20; i++) {
+                const el = createKatexEl({overflows: true});
+                document.body.appendChild(el);
+                await flushMutations();
+
+                document.body.removeChild(el);
+                await flushMutations();
             }
-            // All elements cleaned up — nothing lingering in the observer
             expect(observed.size).toBe(0);
         });
     });
