@@ -45,7 +45,7 @@ const htmlBuilder: HtmlBuilder<"genfrac"> = (group, options) => {
             rule = makeLineSpan("frac-line", options);
         }
         ruleWidth = rule.height;
-        ruleSpacing = rule.height;
+        ruleSpacing = ruleWidth;
     } else {
         rule = null;
         ruleWidth = 0;
