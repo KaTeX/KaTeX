@@ -2626,13 +2626,52 @@ describe("A horizontal brace builder", function() {
         expect`\underbrace{x}_2^2`.toBuild();
     });
 
-    it("should produce mords", function() {
-        expect(getBuilt`\overbrace x`[0].classes).toContain("mord");
-        expect(getBuilt`\overbrace{x}^2`[0].classes).toContain("mord");
-        expect(getBuilt`\overbrace +`[0].classes).toContain("mord");
-        expect(getBuilt`\overbrace +`[0].classes).not.toContain("mbin");
-        expect(getBuilt`\overbrace )^2`[0].classes).toContain("mord");
+    it("should produce minners", function() {
+        expect(getBuilt`\overbrace x`[0].classes).toContain("minner");
+        expect(getBuilt`\overbrace{x}^2`[0].classes).toContain("minner");
+        expect(getBuilt`\overbrace +`[0].classes).toContain("minner");
+        expect(getBuilt`\overbrace +`[0].classes).not.toContain("mord");
+        expect(getBuilt`\overbrace )^2`[0].classes).toContain("minner");
         expect(getBuilt`\overbrace )^2`[0].classes).not.toContain("mclose");
+    });
+});
+
+describe("A horizontal bracket parser", function() {
+    it("should not fail", function() {
+        expect`\overbracket{x}`.toParse();
+        expect`\underbracket{x}_2`.toParse();
+    });
+
+    it("should produce horizBrace", function() {
+        const parse = getParsed`\overbracket x`[0];
+
+        expect(parse.type).toEqual("horizBrace");
+    });
+
+    it("should set isOver correctly", function() {
+        const overParse = getParsed`\overbracket x`[0];
+        expect(overParse.isOver).toBe(true);
+
+        const underParse = getParsed`\underbracket x`[0];
+        expect(underParse.isOver).toBe(false);
+    });
+
+    it("should be grouped more tightly than supsubs", function() {
+        const parse = getParsed`\overbracket x^2`[0];
+
+        expect(parse.type).toEqual("supsub");
+    });
+});
+
+describe("A horizontal bracket builder", function() {
+    it("should not fail", function() {
+        expect`\overbracket{x}`.toBuild();
+        expect`\underbracket{x}_2`.toBuild();
+    });
+
+    it("should produce minners", function() {
+        expect(getBuilt`\overbracket x`[0].classes).toContain("minner");
+        expect(getBuilt`\underbracket x`[0].classes).toContain("minner");
     });
 });
 
@@ -2773,10 +2812,11 @@ describe("A strike-through builder", function() {
         expect`\cancel{x}^2`.toBuild();
         expect`\cancel{x}_2`.toBuild();
         expect`\cancel{x}_2^2`.toBuild();
-        expect`\sout{x}`.toBuild();
-        expect`\sout{x}^2`.toBuild();
-        expect`\sout{x}_2`.toBuild();
-        expect`\sout{x}_2^2`.toBuild();
+        expect`\sout{x}`.toBuild(nonstrictSettings);
+        expect`\sout{x}^2`.toBuild(nonstrictSettings);
+        expect`\sout{x}_2`.toBuild(nonstrictSettings);
+        expect`\sout{x}_2^2`.toBuild(nonstrictSettings);
+        expect`\text{\sout{abc}}`.toBuild();
     });
 
     it("should produce mords", function() {
@@ -2785,6 +2825,16 @@ describe("A strike-through builder", function() {
         expect(getBuilt`\cancel +`[0].classes).not.toContain("mbin");
         expect(getBuilt`\cancel )^2`[0].classes).toContain("mord");
         expect(getBuilt`\cancel )^2`[0].classes).not.toContain("mclose");
+    });
+});
+
+describe("A \\sout parser", function() {
+    it("should work in text mode", function() {
+        expect`\text{\sout{abc}}`.toParse();
+    });
+
+    it("should fail in math mode with strict settings", function() {
+        expect`\sout{x}`.not.toParse(strictSettings);
     });
 });
 
@@ -3043,6 +3093,27 @@ describe("An aligned environment", function() {
     it("should not eat the last row when its first cell is empty", function() {
         const ae = getParsed`\begin{aligned}&E_1 & (1)\\&E_2 & (2)\\&E_3 & (3)\end{aligned}`[0];
         expect(ae.body).toHaveLength(3);
+    });
+
+    it("should not add \\jot below a single row", function() {
+        const aligned = getBuilt`\begin{aligned}(M)\end{aligned}`[0];
+        const alignedExtra = getBuilt`\begin{aligned}(M)\\\end{aligned}`[0];
+        const matrix = getBuilt`\begin{matrix*}[r]\displaystyle(M)\end{matrix*}`[0];
+
+        expect(aligned.height).toBeCloseTo(matrix.height, 5);
+        expect(aligned.depth).toBeCloseTo(matrix.depth, 5);
+        expect(alignedExtra.height).toBeCloseTo(matrix.height, 5);
+        expect(alignedExtra.depth).toBeCloseTo(matrix.depth, 5);
+    });
+
+    it("should not add \\jot below the final row", function() {
+        const aligned = getBuilt`\begin{aligned}a&=b\\c&=d\end{aligned}`[0];
+        const matrix = getBuilt`\begin{matrix*}[r]\displaystyle a&\displaystyle =b\\[3pt]\displaystyle c&\displaystyle =d\end{matrix*}`[0];
+        // [3pt] equals \jot, and for simple content depth == arstrutDepth,
+        // so the two gap computations coincide.
+
+        expect(aligned.height).toBeCloseTo(matrix.height, 5);
+        expect(aligned.depth).toBeCloseTo(matrix.depth, 5);
     });
 });
 
