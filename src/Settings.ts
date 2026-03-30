@@ -57,6 +57,14 @@ type EnumType = {
 };
 
 type Type = "boolean" | "string" | "number" | "object" | "function" | EnumType;
+/**
+ * Union of all possible settings default values, used in the schema.
+ * Not as precise as Settings itself, but avoids `any` while covering
+ * all default/cliDefault shapes that actually appear.
+ */
+type SettingsValue = boolean | string | number
+    | MacroMap | StrictFunction | TrustFunction
+    | string[];
 type Schema = {
     [key in keyof SettingsOptions]?: {
         /**
@@ -69,15 +77,17 @@ type Schema = {
          * for enum will be used. If multiple types are allowed, the first allowed
          * type will be used for determining the default value.
          */
-        default?: any;
+        default?: SettingsValue;
         /**
          * The description.
          */
         description?: string;
         /**
-         * The function to process the option.
+         * The function to process the option.  Only defined for numeric
+         * settings (minRuleThickness, maxSize, maxExpand); if a processor
+         * is needed for a non-numeric setting, widen this type accordingly.
          */
-        processor?: (arg0: any) => any;
+        processor?: (value: number) => number;
         /**
          * The command line argument. See Commander.js docs for more information.
          * If not specified, the name prefixed with -- will be used. Set false not
@@ -87,7 +97,7 @@ type Schema = {
         /**
          * The default value for the CLI.
          */
-        cliDefault?: any;
+        cliDefault?: SettingsValue;
         /**
          * The description for the CLI. If not specified, the description for the
          * option will be used.
@@ -95,9 +105,11 @@ type Schema = {
         cliDescription?: string;
         /**
          * The custom argument processor for the CLI. See Commander.js docs for
-         * more information.
+         * more information. Signature varies per setting (e.g. parseFloat,
+         * or (def, defs) => defs.push(def) for macros).
          */
-        cliProcessor?: (arg0: any, arg1: any) => any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        cliProcessor?: (...args: any[]) => SettingsValue;
     };
 };
 
@@ -208,8 +220,8 @@ export const SETTINGS_SCHEMA: Schema = {
     },
 };
 
-function getDefaultValue(schema: SchemaEntry): any {
-    if ("default" in schema) {
+function getDefaultValue(schema: SchemaEntry): SettingsValue {
+    if ("default" in schema && schema.default !== undefined) {
         return schema.default;
     }
     const type = schema.type;
@@ -226,6 +238,11 @@ function getDefaultValue(schema: SchemaEntry): any {
             return 0;
         case 'object':
             return {};
+        case 'function':
+            // Function types (e.g. strict, trust) always specify an explicit
+            // default in the schema, so this should never be reached.
+            throw new Error(
+                "Function-type settings must declare an explicit default.");
     }
 }
 
@@ -262,8 +279,10 @@ export default class Settings {
             const schema = SETTINGS_SCHEMA[prop] as SchemaEntry;
             const optionValue = options[prop];
             // TODO: validate options
-            (this as Record<string, unknown>)[prop] = optionValue !== undefined ?
-                (schema.processor ? schema.processor(optionValue) : optionValue)
+            (this as Record<string, unknown>)[prop] = optionValue !== undefined
+                ? (schema.processor
+                    ? schema.processor(optionValue as number)
+                    : optionValue)
                 : getDefaultValue(schema);
         }
     }

@@ -115,9 +115,15 @@ export const stretchyMathML = function(label: string): MathNode {
 // That is, inside the font, that arrowhead is 522 units tall, which
 // corresponds to 0.522 em inside the document.
 
-const katexImagesData: {
-    [key: string]: ([string[], number, number] | [[string], number, number, string])
-} = {
+type SvgData3 = [string[], number, number];
+type SvgData4 = [[string], number, number, string];
+type SvgData = SvgData3 | SvgData4;
+
+function isSvgData4(data: SvgData): data is SvgData4 {
+    return data.length === 4;
+}
+
+const katexImagesData: {[key: string]: SvgData} = {
                    //   path(s), minWidth, height, align
     overrightarrow: [["rightarrow"], 0.888, 522, "xMaxYMin"],
     overleftarrow: [["leftarrow"], 0.888, 522, "xMinYMin"],
@@ -189,10 +195,7 @@ export const stretchySvg = function(
     } {
         let viewBoxWidth = 400000;  // default
         const label = group.label.slice(1);
-        if (wideAccentLabels.has(label)) {
-            // Each type in the `if` statement corresponds to one of the ParseNode
-            // types below. This narrowing is required to access `grp.base`.
-            // TODO(ts)
+        if (wideAccentLabels.has(label) && 'base' in group) {
             const grp = group as ParseNode<"accent"> | ParseNode<"accentUnder">;
             // There are four SVG images available for each function.
             // Choose a taller image when there are more characters.
@@ -244,6 +247,9 @@ export const stretchySvg = function(
             const spans = [];
 
             const data = katexImagesData[label];
+            if (!data) {
+                throw new Error(`No SVG data for "${label}".`);
+            }
             const [paths, minWidth, viewBoxHeight] = data;
             const height = viewBoxHeight / 1000;
 
@@ -251,9 +257,11 @@ export const stretchySvg = function(
             let widthClasses;
             let aligns;
             if (numSvgChildren === 1) {
-                // TODO(ts): All these cases must be of the 4-tuple type.
-                const align1: string =
-                    (data as [[string], number, number, string])[3];
+                if (!isSvgData4(data)) {
+                    throw new Error(
+                        `Expected 4-tuple for single-path SVG data "${label}".`);
+                }
+                const align1: string = data[3];
                 widthClasses = ["hide-tail"];
                 aligns = [align1];
             } else if (numSvgChildren === 2) {
