@@ -30,20 +30,17 @@ export type FontVariant = "bold" | "bold-italic" | "bold-sans-serif" |
     "double-struck" | "fraktur" | "italic" | "monospace" | "normal" | "sans-serif" |
     "sans-serif-bold-italic" | "sans-serif-italic" | "script";
 
-export const WideCharFontName = {
-    MainBold: "Main-Bold",
-    MathItalic: "Math-Italic",
-    MainBoldItalic: "Main-BoldItalic",
-    ScriptRegular: "Script-Regular",
-    FrakturRegular: "Fraktur-Regular",
-    AMSRegular: "AMS-Regular",
-    SansSerifRegular: "SansSerif-Regular",
-    SansSerifBold: "SansSerif-Bold",
-    SansSerifItalic: "SansSerif-Italic",
-    TypewriterRegular: "Typewriter-Regular",
-} as const;
-
-export type WideCharFontName = ValueOf<typeof WideCharFontName>;
+export type WideCharFontName =
+    | "Main-Bold"
+    | "Math-Italic"
+    | "Main-BoldItalic"
+    | "Script-Regular"
+    | "Fraktur-Regular"
+    | "AMS-Regular"
+    | "SansSerif-Regular"
+    | "SansSerif-Bold"
+    | "SansSerif-Italic"
+    | "Typewriter-Regular";
 
 export const FontClass = {
     boldUpright: {math: "mathbf", text: "textbf"},

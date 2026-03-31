@@ -6,8 +6,8 @@
  * the font information necessary to render it properly.
  */
 
-import type {Mode, ValueOf} from "./types";
-import {WideCharFontName, FontClass} from "./types";
+import type {Mode, ValueOf, WideCharFontName} from "./types";
+import {FontClass} from "./types";
 import ParseError from "./ParseError";
 
 type WideChar = {
@@ -15,18 +15,18 @@ type WideChar = {
     readonly font: WideCharFontName | "";
 };
 
-const boldUpright: WideChar = {class: FontClass.boldUpright, font: WideCharFontName.MainBold};
-const italic: WideChar = {class: FontClass.italic, font: WideCharFontName.MathItalic};
-const boldItalic: WideChar = {class: FontClass.boldItalic, font: WideCharFontName.MainBoldItalic};
-const script: WideChar = {class: FontClass.script, font: WideCharFontName.ScriptRegular};
+const boldUpright: WideChar = {class: FontClass.boldUpright, font: "Main-Bold"};
+const italic: WideChar = {class: FontClass.italic, font: "Math-Italic"};
+const boldItalic: WideChar = {class: FontClass.boldItalic, font: "Main-BoldItalic"};
+const script: WideChar = {class: FontClass.script, font: "Script-Regular"};
 const noFont: WideChar = {class: FontClass.noFont, font: ""};
-const fraktur: WideChar = {class: FontClass.fraktur, font: WideCharFontName.FrakturRegular};
-const doubleStruck: WideChar = {class: FontClass.doubleStruck, font: WideCharFontName.AMSRegular};
-const boldFraktur: WideChar = {class: FontClass.boldFraktur, font: WideCharFontName.FrakturRegular};
-const sansSerif: WideChar = {class: FontClass.sansSerif, font: WideCharFontName.SansSerifRegular};
-const boldSansSerif: WideChar = {class: FontClass.boldSansSerif, font: WideCharFontName.SansSerifBold};
-const italicSansSerif: WideChar = {class: FontClass.italicSansSerif, font: WideCharFontName.SansSerifItalic};
-const monospace: WideChar = {class: FontClass.monospace, font: WideCharFontName.TypewriterRegular};
+const fraktur: WideChar = {class: FontClass.fraktur, font: "Fraktur-Regular"};
+const doubleStruck: WideChar = {class: FontClass.doubleStruck, font: "AMS-Regular"};
+const boldFraktur: WideChar = {class: FontClass.boldFraktur, font: "Fraktur-Regular"};
+const sansSerif: WideChar = {class: FontClass.sansSerif, font: "SansSerif-Regular"};
+const boldSansSerif: WideChar = {class: FontClass.boldSansSerif, font: "SansSerif-Bold"};
+const italicSansSerif: WideChar = {class: FontClass.italicSansSerif, font: "SansSerif-Italic"};
+const monospace: WideChar = {class: FontClass.monospace, font: "Typewriter-Regular"};
 
 /**
  * Data below is from https://www.unicode.org/charts/PDF/U1D400.pdf
