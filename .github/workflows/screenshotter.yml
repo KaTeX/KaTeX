@@ -44,10 +44,10 @@ jobs:
     - name: Enable Corepack
       run: corepack enable
 
-    - name: Use Node.js 20
+    - name: Use Node.js 24
       uses: actions/setup-node@v6
       with:
-        node-version: '20'
+        node-version: '24'
         cache: yarn
 
     - name: Install dependencies
@@ -70,7 +70,7 @@ jobs:
           -v "$PWD/.git:/code/.git:ro" \
           -w /code \
           -e CI=true \
-          node:20 \
+          node:24 \
           /bin/bash -c 'corepack enable && yarn node dockers/screenshotter/screenshotter.js -b ${{ matrix.browser }} --verify --diff --new --katex-ip $HOSTNAME ${{ matrix.browserstack && format('--selenium-proxy http://selenium:4445/build --browserstack --selenium-capabilities ''\''''{0}''\', toJson(matrix.browserstack)) || '--selenium-ip selenium' }}'
         echo "::$TOKEN::"
       timeout-minutes: 10

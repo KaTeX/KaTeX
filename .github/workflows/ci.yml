@@ -18,10 +18,10 @@ jobs:
     - name: Enable Corepack
       run: corepack enable
 
-    - name: Use Node.js 20
+    - name: Use Node.js 24
       uses: actions/setup-node@v6
       with:
-        node-version: '20'
+        node-version: '24'
         cache: yarn
 
     - name: Install dependencies
@@ -66,10 +66,10 @@ jobs:
     - name: Enable Corepack
       run: corepack enable
 
-    - name: Use Node.js 20
+    - name: Use Node.js 24
       uses: actions/setup-node@v6
       with:
-        node-version: '20'
+        node-version: '24'
 
     - name: Install dependencies
       run: yarn --immutable
