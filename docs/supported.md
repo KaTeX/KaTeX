@@ -192,7 +192,7 @@ $\allowbreak α β γ δ ϵ ζ η θ ι κ λ μ ν ξ o π \allowbreak ρ σ τ
 |$\eth$ `\eth`|$\hslash$ `\hslash`|$\reals$ `\reals`|$\text{\oe}$ `\text{\oe}`
 
 **Persian/Arabic Numerals**
-KaTeX doesn't support Persian/Arabic numerals, but you can use [third party plugin](https://github.com/HosseinAgha/persian-katex-plugin), extend KaTeX with `__defineSymbol` or use direct input.
+KaTeX has no dedicated commands for Persian/Arabic numerals, but direct Unicode input works. You can also use a [third-party plugin](https://github.com/HosseinAgha/persian-katex-plugin) or extend KaTeX with `__defineSymbol`.
 
 Direct Input: $∂ ∇ ℑ Ⅎ ℵ ℶ ℷ ℸ ⅁ ℏ ð − ∗$
 ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖÙÚÛÜÝÞßàáâãäåçèéêëìíîïðñòóôöùúûüýþÿ
