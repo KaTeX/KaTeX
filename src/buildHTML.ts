@@ -395,7 +395,6 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
     }
 
     const htmlNode = makeSpan(["katex-html"], children);
-    htmlNode.setAttribute("aria-hidden", "true");
 
     // Adjust the strut of the tag to be the maximum height of all children
     // (the height of the enclosing htmlNode) for proper vertical alignment.
