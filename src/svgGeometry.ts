@@ -5,6 +5,19 @@
 
 // In all paths below, the viewBox-to-em scale is 1000:1.
 
+// Second Brush Stroke
+//    Low resolution monitors struggle to display images in fine detail.
+//    So browsers apply anti-aliasing. A long straight arrow shaft therefore
+//    will sometimes appear as if it has a blurred edge.
+
+//    To mitigate this, these SVG files contain a second "brush-stroke" on the
+//    arrow shafts. That is, a second long thin rectangular SVG path has been
+//    written directly on top of each arrow shaft. This reinforcement causes
+//    some of the screen pixels to display as black instead of the anti-aliased
+//    gray pixel that a  single path would generate. So we get arrow shafts
+//    whose edges appear to be sharper.
+const doubleBrushStroke = (svgPath: string): string => `${svgPath} ${svgPath}`;
+
 const hLinePad = 80;  // padding above a sqrt vinculum. Prevents image cropping.
 
 // The vinculum of a \sqrt can be made thicker by a KaTeX rendering option.
@@ -154,25 +167,25 @@ export const innerPath = function(name: string, height: number): string {
     // The inner part of stretchy tall delimiters
     switch (name) {
         case "\u239c":
-            return `M291 0 H417 V${height} H291z M291 0 H417 V${height} H291z`;
+            return doubleBrushStroke(`M291 0 H417 V${height} H291z`);
         case "\u2223":
-            return `M145 0 H188 V${height} H145z M145 0 H188 V${height} H145z`;
+            return doubleBrushStroke(`M145 0 H188 V${height} H145z`);
         case "\u2225":
-            return `M145 0 H188 V${height} H145z M145 0 H188 V${height} H145z` +
-                `M367 0 H410 V${height} H367z M367 0 H410 V${height} H367z`;
+            return doubleBrushStroke(`M145 0 H188 V${height} H145z`) +
+                doubleBrushStroke(`M367 0 H410 V${height} H367z`);
         case "\u239f":
-            return `M457 0 H583 V${height} H457z M457 0 H583 V${height} H457z`;
+            return doubleBrushStroke(`M457 0 H583 V${height} H457z`);
         case "\u23a2":
-            return `M319 0 H403 V${height} H319z M319 0 H403 V${height} H319z`;
+            return doubleBrushStroke(`M319 0 H403 V${height} H319z`);
         case "\u23a5":
-            return `M263 0 H347 V${height} H263z M263 0 H347 V${height} H263z`;
+            return doubleBrushStroke(`M263 0 H347 V${height} H263z`);
         case "\u23aa":
-            return `M384 0 H504 V${height} H384z M384 0 H504 V${height} H384z`;
+            return doubleBrushStroke(`M384 0 H504 V${height} H384z`);
         case "\u23d0":
-            return `M312 0 H355 V${height} H312z M312 0 H355 V${height} H312z`;
+            return doubleBrushStroke(`M312 0 H355 V${height} H312z`);
         case "\u2016":
-            return `M257 0 H300 V${height} H257z M257 0 H300 V${height} H257z` +
-            `M478 0 H521 V${height} H478z M478 0 H521 V${height} H478z`;
+            return doubleBrushStroke(`M257 0 H300 V${height} H257z`) +
+                doubleBrushStroke(`M478 0 H521 V${height} H478z`);
         default:
             return "";
     }
@@ -256,17 +269,13 @@ v40h399900v-40zM0 241v40h399900v-40zm0 0v40h399900v-40z`,
 -68.7 15.7-86 37-10 12-15 25.3-15 40 0 22.7 9.8 40.7 29.5 54 19.7 13.3 43.5 21
  71.5 23h399859zM103 281v-40h399897v40z`,
 
-    leftlinesegment: `M40 281 V428 H0 V94 H40 V241 H400000 v40z
-M40 281 V428 H0 V94 H40 V241 H400000 v40z`,
+    leftlinesegment: doubleBrushStroke(`M40 281 V428 H0 V94 H40 V241 H400000 v40z`),
 
-    leftbracketunder: `M0 0 h120 V290 H399995 v120 H0z
-M0 0 h120 V290 H399995 v120 H0z`,
+    leftbracketunder: doubleBrushStroke(`M0 0 h120 V290 H399995 v120 H0z`),
 
-    leftbracketover: `M0 440 h120 V150 H399995 v-120 H0z
-M0 440 h120 V150 H399995 v-120 H0z`,
+    leftbracketover: doubleBrushStroke(`M0 440 h120 V150 H399995 v-120 H0z`),
 
-    leftmapsto: `M40 281 V448H0V74H40V241H400000v40z
-M40 281 V448H0V74H40V241H400000v40z`,
+    leftmapsto: doubleBrushStroke(`M40 281 V448H0V74H40V241H400000v40z`),
 
     // tofrom is from glyph U+21C4 in font KaTeX AMS Regular
     leftToFrom: `M0 147h400000v40H0zm0 214c68 40 115.7 95.7 143 167h22c15.3 0 23
@@ -274,8 +283,7 @@ M40 281 V448H0V74H40V241H400000v40z`,
 c28.7-32 52-65.7 70-101 10.7-23.3 16-35.7 16-37 0-.7-7.7-1-23-1h-22C115.7 265.3
  68 321 0 361zm0-174v-40h399900v40zm100 154v40h399900v-40z`,
 
-    longequal: `M0 50 h400000 v40H0z m0 194h40000v40H0z
-M0 50 h400000 v40H0z m0 194h40000v40H0z`,
+    longequal: doubleBrushStroke(`M0 50 h400000 v40H0z m0 194h40000v40H0z`),
 
     midbrace: `M200428 334
 c-100.7-8.3-195.3-44-280-108-55.3-42-101.7-93-139-153l-9-14c-2.7 4-5.7 8.7-9 14
@@ -358,14 +366,11 @@ m0-194v40h400000v-40zm0 0v40h400000v-40z`,
 -13.3 8.7-20 26-20 38 0 71 11.2 99 33.5 0 0 7 5.6 21 16.7 14 11.2 21 33.5 21
  66.8s-14 61.2-42 83.5c-28 22.3-61 33.5-99 33.5L0 241z M0 281v-40h399859v40z`,
 
-    rightlinesegment: `M399960 241 V94 h40 V428 h-40 V281 H0 v-40z
-M399960 241 V94 h40 V428 h-40 V281 H0 v-40z`,
+    rightlinesegment: doubleBrushStroke(`M399960 241 V94 h40 V428 h-40 V281 H0 v-40z`),
 
-    rightbracketunder: `M399995 0 h-120 V290 H0 v120 H400000z
-M399995 0 h-120 V290 H0 v120 H400000z`,
+    rightbracketunder: doubleBrushStroke(`M399995 0 h-120 V290 H0 v120 H400000z`),
 
-    rightbracketover: `M399995 440 h-120 V150 H0 v-120 H399995z
-M399995 440 h-120 V150 H0 v-120 H399995z`,
+    rightbracketover: doubleBrushStroke(`M399995 440 h-120 V150 H0 v-120 H399995z`),
 
     rightToFrom: `M400000 167c-70.7-42-118-97.7-142-167h-23c-15.3 0-23 .3-23
  1 0 1.3 5.3 13.7 16 37 18 35.3 41.3 69 70 101l7 8H0v40h399905l-7 8c-28.7 32
