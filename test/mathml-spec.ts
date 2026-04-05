@@ -76,6 +76,12 @@ describe("A MathML builder", function() {
         expect(getMathML("\\raisebox{0.25em}{b}")).toMatchSnapshot();
     });
 
+    it('should wrap \\vcenter in <mrow> inside relation operators', () => {
+        const mathml = getMathML("\\mathrel{\\vcenter{\\frac{a}{b}}}");
+        expect(mathml).toContain("<mo><mrow><mpadded");
+        expect(mathml).not.toContain("<mo><mpadded");
+    });
+
     it('should size delimiters correctly', () => {
         expect(getMathML("(M) \\big(M\\big) \\Big(M\\Big) \\bigg(M\\bigg)" +
         " \\Bigg(M\\Bigg)")).toMatchSnapshot();
