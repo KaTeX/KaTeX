@@ -36,7 +36,9 @@ defineFunction({
         // There is no way to do this in MathML.
         // Write a class as a breadcrumb in case some post-processor wants
         // to perform a vcenter adjustment.
-        return new MathNode(
+        // Wrap in mrow to ensure valid MathML when placed inside mo (e.g., \mathrel)
+        const mpadded = new MathNode(
             "mpadded", [mml.buildGroup(group.body, options)], ["vcenter"]);
+        return new MathNode("mrow", [mpadded]);
     },
 });
