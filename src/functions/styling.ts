@@ -6,12 +6,16 @@ import {sizingGroup} from "./sizing";
 import * as mml from "../buildMathML";
 import type {StyleStr} from "../types";
 
-const styleMap = {
+const styleMap: Record<StyleStr, typeof Style.DISPLAY> = {
     "display": Style.DISPLAY,
     "text": Style.TEXT,
     "script": Style.SCRIPT,
     "scriptscript": Style.SCRIPTSCRIPT,
 };
+
+function isStyleStr(s: string): s is StyleStr {
+    return s in styleMap;
+}
 
 defineFunction({
     type: "styling",
@@ -30,8 +34,10 @@ defineFunction({
 
         // TODO: Refactor to avoid duplicating styleMap in multiple places (e.g.
         // here and in buildHTML and de-dupe the enumeration of all the styles).
-        // TODO(ts): The names above exactly match the styles.
-        const style = funcName.slice(1, funcName.length - 5) as StyleStr;
+        const style = funcName.slice(1, funcName.length - 5);
+        if (!isStyleStr(style)) {
+            throw new Error(`Unknown style: ${style}`);
+        }
         return {
             type: "styling",
             mode: parser.mode,

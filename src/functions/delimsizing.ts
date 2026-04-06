@@ -12,6 +12,7 @@ import * as mml from "../buildMathML";
 import type Options from "../Options";
 import type {AnyParseNode, ParseNode, SymbolParseNode} from "../parseNode";
 import type {FunctionContext} from "../defineFunction";
+import type {HtmlDomNode} from "../domTree";
 
 // Extra data needed for the delimiter handler down below
 const delimiterSizes: Record<string, {
@@ -55,6 +56,16 @@ const delimiters = new Set([
 ]);
 
 type IsMiddle = {delim: string, options: Options};
+
+/**
+ * An HtmlDomNode that may carry an `isMiddle` property, used by the
+ * \middle command to communicate delimiter info to the \left/\right builder.
+ */
+type MiddleDelimNode = HtmlDomNode & {isMiddle?: IsMiddle};
+
+function isMiddleDelimNode(node: HtmlDomNode): node is MiddleDelimNode {
+    return 'isMiddle' in node;
+}
 
 // Delimiter functions
 function checkDelimiter(
@@ -209,10 +220,8 @@ defineFunction({
 
         // Calculate its height and depth
         for (let i = 0; i < inner.length; i++) {
-            // Property `isMiddle` not defined on `span`. See comment in
-            // "middle"'s htmlBuilder.
-            // TODO(ts)
-            if ((inner[i] as any).isMiddle) {
+            const node = inner[i];
+            if (isMiddleDelimNode(node) && node.isMiddle) {
                 hadMiddle = true;
             } else {
                 innerHeight = Math.max(inner[i].height, innerHeight);
@@ -244,11 +253,8 @@ defineFunction({
         if (hadMiddle) {
             for (let i = 1; i < inner.length; i++) {
                 const middleDelim = inner[i];
-                // Property `isMiddle` not defined on `span`. See comment in
-                // "middle"'s htmlBuilder.
-                // TODO(ts)
-                const isMiddle: IsMiddle = (middleDelim as any).isMiddle;
-                if (isMiddle) {
+                if (isMiddleDelimNode(middleDelim) && middleDelim.isMiddle) {
+                    const isMiddle = middleDelim.isMiddle;
                     // Apply the options that were active when \middle was called
                     inner[i] = makeLeftRightDelim(
                         isMiddle.delim, innerHeight, innerDepth,
@@ -331,13 +337,13 @@ defineFunction({
                 group.delim, 1, options,
                 group.mode, []);
 
-            const isMiddle: IsMiddle = {delim: group.delim, options};
-            // Property `isMiddle` not defined on `span`. It is only used in
-            // this file above.
-            // TODO: Fix this violation of the `span` type and possibly rename
-            // things since `isMiddle` sounds like a boolean, but is a struct.
-            // TODO(ts)
-            (middleDelim as any).isMiddle = isMiddle;
+            // Patch an ad-hoc property onto the node so the \left/\right
+            // builder can reconstruct appropriately sized middle delimiters.
+            // Cast required: isMiddle is not part of HtmlDomNode; read
+            // side uses isMiddleDelimNode() to check before accessing.
+            (middleDelim as MiddleDelimNode).isMiddle = {
+                delim: group.delim, options,
+            };
         }
         return middleDelim;
     },

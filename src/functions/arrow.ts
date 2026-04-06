@@ -92,7 +92,8 @@ defineFunction({
                 positionType: "individualShift",
                 children: [
                     {type: "elem", elem: upperGroup, shift: upperShift},
-                    {type: "elem", elem: arrowBody,  shift: arrowShift},
+                    {type: "elem", elem: arrowBody,  shift: arrowShift,
+                        wrapperClasses: ["svg-align"]},
                     {type: "elem", elem: lowerGroup, shift: lowerShift},
                 ],
             }, options);
@@ -101,13 +102,11 @@ defineFunction({
                 positionType: "individualShift",
                 children: [
                     {type: "elem", elem: upperGroup, shift: upperShift},
-                    {type: "elem", elem: arrowBody,  shift: arrowShift},
+                    {type: "elem", elem: arrowBody,  shift: arrowShift,
+                        wrapperClasses: ["svg-align"]},
                 ],
             }, options);
         }
-
-        // TODO(ts): Replace this with passing "svg-align" into makeVList.
-        (vlist as any).children[0].children[0].children[1].classes.push("svg-align");
 
         return makeSpan(["mrel", "x-arrow"], [vlist], options);
     },

@@ -22,6 +22,11 @@ import type {Mode, ArgType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
 import type {EnvSpec} from "./defineEnvironment";
 
+/** Runtime type guard: narrows Group to Atom via ATOMS membership check. */
+function isAtom(group: Group): group is Atom {
+    return Object.prototype.hasOwnProperty.call(ATOMS, group);
+}
+
 /**
  * This file contains the parser used to parse out a TeX expression from the
  * input. Since TeX isn't context-free, standard parsers don't work particularly
@@ -521,6 +526,7 @@ export default class Parser {
      */
     parseArguments(
         func: string,   // Should look like "\name" or "\begin{name}".
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         funcData: FunctionSpec<any> | EnvSpec<any>,
     ): {
         args: AnyParseNode[];
@@ -974,26 +980,22 @@ export default class Parser {
             const group: Group = symbols[this.mode][text].group;
             const loc = SourceLocation.range(nucleus);
             let s: SymbolParseNode;
-            if (ATOMS.hasOwnProperty(group)) {
-                // TODO(ts)
-                const family = group as Atom;
+            if (isAtom(group)) {
                 s = {
                     type: "atom",
                     mode: this.mode,
-                    family,
+                    family: group,
                     loc,
                     text,
                 };
             } else {
-                // TODO(ts)
                 s = {
-                    type: group as Exclude<SymbolParseNode["type"], "atom">,
+                    type: group,
                     mode: this.mode,
                     loc,
                     text,
                 };
             }
-            // TODO(ts)
             symbol = s;
         } else if (text.charCodeAt(0) >= 0x80) { // no symbol for e.g. ^
             if (this.settings.strict) {
@@ -1045,12 +1047,10 @@ export default class Parser {
                     label: command,
                     isStretchy: false,
                     isShifty: true,
-                    // TODO(ts)
                     base: symbol,
                 };
             }
         }
-        // TODO(ts)
         return symbol;
     }
 }

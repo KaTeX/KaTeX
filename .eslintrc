@@ -152,6 +152,13 @@
         "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/no-require-imports": "off"
       }
+    }, {
+      "files": ["src/**/*.ts", "contrib/**/*.ts"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": ["error", {
+          "ignoreRestArgs": true
+        }]
+      }
     }],
     "root": true
 }
