@@ -2365,14 +2365,16 @@ describe("A markup generator", function() {
     });
 
     it("doesn't combine mathnormal glyphs across italic correction", function() {
-        const markup = katex.renderToString("jk", {output: "html"});
+        const markup = katex.renderToString("jk",
+            {output: "html", strict: false});
         const mathnormalSpans = markup.match(/class="mord mathnormal"/g) || [];
         expect(mathnormalSpans.length).toBe(2);
         expect(markup).toContain(">j</span><span class=\"mord mathnormal\"");
     });
 
     it("still combines mathnormal glyphs when italic correction is zero", function() {
-        const markup = katex.renderToString("ab", {output: "html"});
+        const markup = katex.renderToString("ab",
+            {output: "html", strict: false});
         const mathnormalSpans = markup.match(/class="mord mathnormal"/g) || [];
         expect(mathnormalSpans.length).toBe(1);
         expect(markup).toContain(">ab</span>");
@@ -2380,7 +2382,7 @@ describe("A markup generator", function() {
 
     it("still combines non-mathnormal glyphs with italic correction", function() {
         const markup = katex.renderToString(String.raw`\mathrm{fgh}`,
-            {output: "html"});
+            {output: "html", strict: false});
         const rmSpans = markup.match(/class="mord mathrm"/g) || [];
         expect(rmSpans.length).toBe(1);
         expect(markup).toContain(">fgh</span>");
@@ -2388,7 +2390,7 @@ describe("A markup generator", function() {
 
     it("still combines \\mathit glyphs with nonzero font italic correction", function() {
         const markup = katex.renderToString(String.raw`\mathit{fgvw}`,
-            {output: "html"});
+            {output: "html", strict: false});
         const mathitSpans = markup.match(/class="mord mathit"/g) || [];
         expect(mathitSpans.length).toBe(1);
         expect(markup).toContain(">fgvw</span>");
@@ -4599,5 +4601,27 @@ describe("\\emph", () => {
 
     it("should toggle italics within textit", () => {
         expect`\textit{\emph{foo \emph{bar}}}`.toBuildLike`\textit{\textup{foo \textit{bar}}}`;
+    });
+});
+
+describe("Accessibility warnings", function() {
+    it("should warn when output is 'html'", function() {
+        const warnSpy = jest.spyOn(console, "warn")
+            .mockImplementation(() => {});
+        katex.renderToString("x", {output: "html"});
+        expect(warnSpy).toHaveBeenCalledWith(
+            expect.stringContaining("htmlOutput"));
+        warnSpy.mockRestore();
+    });
+
+    it("should throw when output is 'html' and strict is 'error'", function() {
+        expect(() => katex.renderToString("x",
+            {output: "html", strict: "error"}))
+            .toThrow("output \"html\" has no MathML");
+    });
+
+    it("should be silenced by strict: false", function() {
+        expect(() => katex.renderToString("x",
+            {output: "html", strict: false})).not.toThrow();
     });
 });
