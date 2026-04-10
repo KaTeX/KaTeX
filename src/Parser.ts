@@ -22,9 +22,8 @@ import type {Mode, ArgType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
 import type {EnvSpec} from "./defineEnvironment";
 
-/** Runtime type guard: narrows Group to Atom via ATOMS membership check. */
 function isAtom(group: Group): group is Atom {
-    return Object.prototype.hasOwnProperty.call(ATOMS, group);
+    return group in ATOMS;
 }
 
 /**

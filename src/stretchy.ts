@@ -196,11 +196,10 @@ export const stretchySvg = function(
         let viewBoxWidth = 400000;  // default
         const label = group.label.slice(1);
         if (wideAccentLabels.has(label) && 'base' in group) {
-            const grp = group as ParseNode<"accent"> | ParseNode<"accentUnder">;
             // There are four SVG images available for each function.
             // Choose a taller image when there are more characters.
-            const numChars = grp.base.type === "ordgroup" ?
-                grp.base.body.length : 1;
+            const numChars = group.base.type === "ordgroup" ?
+                group.base.body.length : 1;
             let viewBoxHeight;
             let pathName;
             let height;

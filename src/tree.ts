@@ -8,6 +8,10 @@ export interface VirtualNode {
     toMarkup(): string;
 }
 
+function isMathDomNode(node: VirtualNode): node is MathDomNode {
+    return 'toText' in node;
+}
+
 
 /**
  * This node represents a document fragment, which contains elements, but when
@@ -65,8 +69,8 @@ export class DocumentFragment<ChildType extends VirtualNode>
      */
     toText(): string {
         return this.children.map((child: ChildType): string => {
-            if ('toText' in child) {
-                return (child as unknown as MathDomNode).toText();
+            if (isMathDomNode(child)) {
+                return child.toText();
             }
             throw new Error(
                 `Expected MathDomNode with toText, got ${child.constructor.name}`);

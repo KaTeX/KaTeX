@@ -58,13 +58,11 @@ type EnumType = {
 
 type Type = "boolean" | "string" | "number" | "object" | "function" | EnumType;
 /**
- * Union of all possible settings default values, used in the schema.
- * Not as precise as Settings itself, but avoids `any` while covering
- * all default/cliDefault shapes that actually appear.
+ * Union of all values that appear as schema defaults, cliDefaults, or
+ * cliProcessor return values.  StrictFunction / TrustFunction are
+ * option-value types, not default/schema values, so they are excluded.
  */
-type SettingsValue = boolean | string | number
-    | MacroMap | StrictFunction | TrustFunction
-    | string[];
+type SettingsValue = boolean | string | number | MacroMap | string[];
 type Schema = {
     [key in keyof SettingsOptions]?: {
         /**
@@ -279,6 +277,8 @@ export default class Settings {
             const schema = SETTINGS_SCHEMA[prop] as SchemaEntry;
             const optionValue = options[prop];
             // TODO: validate options
+            // processor is only defined for numeric settings
+            // (minRuleThickness, maxSize, maxExpand), so the number cast is safe.
             (this as Record<string, unknown>)[prop] = optionValue !== undefined
                 ? (schema.processor
                     ? schema.processor(optionValue as number)

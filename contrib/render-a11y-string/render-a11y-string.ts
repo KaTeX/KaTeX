@@ -14,9 +14,7 @@
  * when read by a screenreader.
  */
 
-// NOTE: since we're importing types here these files won't actually be
-// included in the build.
-import type {Atom} from "../../src/symbols";
+import {ATOMS, type Atom} from "../../src/symbols";
 import type {AnyParseNode} from "../../src/parseNode";
 import type {SettingsOptions} from "../../src/Settings";
 import katex from "katex";
@@ -648,8 +646,7 @@ const handleObject = (
             // side of things and extract the text from that.
             // mclass values are prefixed with "m" (e.g. "mrel" -> "rel")
             const atomType = tree.mclass.slice(1);
-            const validAtoms = ["bin", "close", "inner", "open", "punct", "rel"];
-            if (atomType !== "normal" && !validAtoms.includes(atomType)) {
+            if (atomType !== "normal" && !(atomType in ATOMS)) {
                 throw new Error(`Unexpected mclass atom type: "${atomType}"`);
             }
             buildA11yStrings(tree.body, a11yStrings, atomType as Atom | "normal");

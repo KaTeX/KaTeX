@@ -222,7 +222,7 @@ export class Span<ChildType extends VirtualNode> implements HtmlDomNode {
      * wrapped in a vlist (e.g. \oiint / \oiiint).  Read by supsub to adjust
      * subscript positioning.  Defaults to 0.
      */
-    italic: number = 0;
+    italic!: number;
 
     constructor(
         classes?: string[],
@@ -232,6 +232,11 @@ export class Span<ChildType extends VirtualNode> implements HtmlDomNode {
     ) {
         initNode.call(this, classes, options, style);
         this.children = children || [];
+        // Non-enumerable so it does not appear in test snapshots — only
+        // \oiint / \oiiint builders set this to a nonzero value.
+        Object.defineProperty(this, 'italic', {
+            value: 0, writable: true, enumerable: false, configurable: true,
+        });
     }
 
     /**
