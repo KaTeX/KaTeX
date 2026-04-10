@@ -75,7 +75,10 @@ const toNode = function(this: HtmlNodeData, tagName: string): HTMLElement {
 
     // Apply inline styles
     for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-        (node.style as any)[key] = this.style[key];
+        const value = this.style[key];
+        if (value !== undefined) {
+            node.style[key] = value;
+        }
     }
 
     // Apply attributes
@@ -116,7 +119,10 @@ const toMarkup = function(this: HtmlNodeData, tagName: string): string {
 
     // Add the styles, after hyphenation
     for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-        styles += `${hyphenate(key)}:${this.style[key]};`;
+        const value = this.style[key];
+        if (value !== undefined) {
+            styles += `${hyphenate(key)}:${value};`;
+        }
     }
 
     if (styles) {
@@ -211,6 +217,12 @@ export class Span<ChildType extends VirtualNode> implements HtmlDomNode {
     width: number | null | undefined;
     maxFontSize!: number;
     style!: CssStyle;
+    /**
+     * Italic correction carried over from a SymbolNode when the symbol is
+     * wrapped in a vlist (e.g. \oiint / \oiiint).  Read by supsub to adjust
+     * subscript positioning.  Defaults to 0.
+     */
+    italic!: number;
 
     constructor(
         classes?: string[],
@@ -220,6 +232,11 @@ export class Span<ChildType extends VirtualNode> implements HtmlDomNode {
     ) {
         initNode.call(this, classes, options, style);
         this.children = children || [];
+        // Non-enumerable so it does not appear in test snapshots — only
+        // \oiint / \oiiint builders set this to a nonzero value.
+        Object.defineProperty(this, 'italic', {
+            value: 0, writable: true, enumerable: false, configurable: true,
+        });
     }
 
     /**
@@ -323,7 +340,10 @@ export class Img implements VirtualNode {
 
         // Apply inline styles
         for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-            (node.style as any)[key] = this.style[key];
+            const value = this.style[key];
+            if (value !== undefined) {
+                node.style[key] = value;
+            }
         }
 
         return node;
@@ -336,7 +356,10 @@ export class Img implements VirtualNode {
         // Add the styles, after hyphenation
         let styles = "";
         for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-            styles += `${hyphenate(key)}:${this.style[key]};`;
+            const value = this.style[key];
+            if (value !== undefined) {
+                styles += `${hyphenate(key)}:${value};`;
+            }
         }
         if (styles) {
             markup += ` style="${escape(styles)}"`;
@@ -432,7 +455,10 @@ export class SymbolNode implements HtmlDomNode {
 
         for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
             span = span || document.createElement("span");
-            (span.style as any)[key] = this.style[key];
+            const value = this.style[key];
+            if (value !== undefined) {
+                span.style[key] = value;
+            }
         }
 
         if (span) {
@@ -466,7 +492,10 @@ export class SymbolNode implements HtmlDomNode {
             styles += `margin-right:${makeEm(this.italic)};`;
         }
         for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-            styles += hyphenate(key) + ":" + this.style[key] + ";";
+            const value = this.style[key];
+            if (value !== undefined) {
+                styles += hyphenate(key) + ":" + value + ";";
+            }
         }
 
         if (styles) {

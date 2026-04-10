@@ -275,7 +275,7 @@ function dCellStyle(envName: string): StyleStr {
 }
 
 type Outrow = {
-    [idx: number]: any;
+    [idx: number]: HtmlDomNode;
     height: number;
     depth: number;
     pos: number;
@@ -341,7 +341,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             nc = inrow.length;
         }
 
-        const outrow: Outrow = (new Array(inrow.length) as any);
+        const outrow = new Array(inrow.length) as unknown as Outrow;
         for (c = 0; c < inrow.length; ++c) {
             const elt = html.buildGroup(inrow[c], options);
             if (depth < elt.depth) {

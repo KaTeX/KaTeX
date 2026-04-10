@@ -51,6 +51,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     }
 
     let base;
+    // Italic correction from the symbol glyph, captured before the symbol
+    // may be wrapped in a vlist (for \oiint/\oiiint).  Stays 0 for non-symbol ops.
+    let symbolItalic = 0;
     if (group.symbol) {
         // If this is a symbol, create the symbol.
         const fontName = large ? "Size2-Regular" : "Size1-Regular";
@@ -66,11 +69,11 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
         base = makeSymbol(
             group.name, fontName, "math", options,
             ["mop", "op-symbol", large ? "large-op" : "small-op"]);
+        symbolItalic = base.italic;
 
         if (stash.length > 0) {
             // We're in \oiint or \oiiint. Overlay the oval.
             // TODO: When font glyphs are available, delete this code.
-            const italic = base.italic;
             const oval = staticSvg(stash + "Size"
                 + (large ? "2" : "1"), options);
             base = makeVList({
@@ -82,8 +85,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             }, options);
             group.name = "\\" + stash;
             base.classes.unshift("mop");
-            // TODO(ts)
-            (base as any).italic = italic;
+            // Carry the italic correction from the original symbol to the
+            // vlist wrapper so supsub can use it for subscript positioning.
+            base.italic = symbolItalic;
         }
     } else if (group.body) {
         // If this is a list, compose that list.
@@ -120,8 +124,8 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             options.fontMetrics().axisHeight;
 
         // The slant of the symbol is just its italic correction.
-        // TODO(ts)
-        slant = (base as SymbolNode & {italic?: number}).italic || 0;
+        // Both SymbolNode and Span (for \oiint/\oiiint) carry .italic.
+        slant = base.italic;
     }
 
     if (hasLimits) {
