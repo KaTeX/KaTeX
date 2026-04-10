@@ -83,6 +83,11 @@ type Schema = {
         /**
          * The function to process the option.
          */
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // `any` is required because processors operate on heterogeneous
+        // option types (numbers, strings, objects). Fixing this requires
+        // making Schema generic over each setting key so that processor
+        // signatures are inferred per-option.
         processor?: (value: any) => any;
         /**
          * The command line argument. See Commander.js docs for more information.
