@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.45](https://github.com/KaTeX/KaTeX/compare/v0.16.44...v0.16.45) (2026-04-05)
+
+
+### Bug Fixes
+
+* wrap vcenter mpadded in mrow for valid MathML ([#4193](https://github.com/KaTeX/KaTeX/issues/4193)) ([ee66b78](https://github.com/KaTeX/KaTeX/commit/ee66b78d24340edbbd05b08a4a429ce9ed158b25)), closes [#4078](https://github.com/KaTeX/KaTeX/issues/4078)
+
 ## [0.16.44](https://github.com/KaTeX/KaTeX/compare/v0.16.43...v0.16.44) (2026-03-27)
 
 
