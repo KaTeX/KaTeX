@@ -81,11 +81,15 @@ type Schema = {
          */
         description?: string;
         /**
-         * The function to process the option.  Only defined for numeric
-         * settings (minRuleThickness, maxSize, maxExpand); if a processor
-         * is needed for a non-numeric setting, widen this type accordingly.
+         * The function to process the option.
          */
-        processor?: (value: number) => number;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // All current processors are (number) => number, but the
+        // constructor loops over Object.keys so optionValue loses
+        // per-key type info. Narrowing to number would require a cast
+        // at the call site; `any` keeps the schema type simple.
+        // Fix: make Schema generic per setting key.
+        processor?: (value: any) => any;
         /**
          * The command line argument. See Commander.js docs for more information.
          * If not specified, the name prefixed with -- will be used. Set false not
@@ -277,11 +281,9 @@ export default class Settings {
             const schema = SETTINGS_SCHEMA[prop] as SchemaEntry;
             const optionValue = options[prop];
             // TODO: validate options
-            // processor is only defined for numeric settings
-            // (minRuleThickness, maxSize, maxExpand), so the number cast is safe.
             (this as Record<string, unknown>)[prop] = optionValue !== undefined
                 ? (schema.processor
-                    ? schema.processor(optionValue as number)
+                    ? schema.processor(optionValue)
                     : optionValue)
                 : getDefaultValue(schema);
         }
