@@ -83,12 +83,12 @@ type Schema = {
         /**
          * The function to process the option.
          */
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         // All current processors are (number) => number, but the
         // constructor loops over Object.keys so optionValue loses
         // per-key type info. Narrowing to number would require a cast
         // at the call site; `any` keeps the schema type simple.
         // Fix: make Schema generic per setting key.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         processor?: (value: any) => any;
         /**
          * The command line argument. See Commander.js docs for more information.
@@ -223,8 +223,8 @@ export const SETTINGS_SCHEMA: Schema = {
 };
 
 function getDefaultValue(schema: SchemaEntry): SettingsValue {
-    if ("default" in schema && schema.default !== undefined) {
-        return schema.default;
+    if ("default" in schema) {
+        return schema.default!;
     }
     const type = schema.type;
     const defaultType = Array.isArray(type) ? type[0] : type;
@@ -240,11 +240,9 @@ function getDefaultValue(schema: SchemaEntry): SettingsValue {
             return 0;
         case 'object':
             return {};
-        case 'function':
-            // Function types (e.g. strict, trust) always specify an explicit
-            // default in the schema, so this should never be reached.
+        default:
             throw new Error(
-                "Function-type settings must declare an explicit default.");
+                "Unexpected schema type; settings must declare an explicit default.");
     }
 }
 

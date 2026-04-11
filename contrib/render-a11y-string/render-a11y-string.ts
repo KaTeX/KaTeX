@@ -18,6 +18,11 @@ import {ATOMS, type Atom} from "../../src/symbols";
 import type {AnyParseNode} from "../../src/parseNode";
 import type {SettingsOptions} from "../../src/Settings";
 import katex from "katex";
+
+function isAtom(value: string): value is Atom {
+    return value in ATOMS;
+}
+
 const stringMap: Record<string, string> = {
     "(": "left parenthesis",
     ")": "right parenthesis",
@@ -645,11 +650,14 @@ const handleObject = (
             // \neq and \ne are macros so we let "htmlmathml" render the mathmal
             // side of things and extract the text from that.
             // mclass values are prefixed with "m" (e.g. "mrel" -> "rel")
-            const atomType = tree.mclass.slice(1);
-            if (atomType !== "normal" && !(atomType in ATOMS)) {
+            const atomType: string = tree.mclass.slice(1);
+            if (atomType === "normal") {
+                buildA11yStrings(tree.body, a11yStrings, atomType);
+            } else if (isAtom(atomType)) {
+                buildA11yStrings(tree.body, a11yStrings, atomType);
+            } else {
                 throw new Error(`Unexpected mclass atom type: "${atomType}"`);
             }
-            buildA11yStrings(tree.body, a11yStrings, atomType as Atom | "normal");
             break;
         }
 
