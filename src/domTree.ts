@@ -74,12 +74,7 @@ const toNode = function(this: HtmlNodeData, tagName: string): HTMLElement {
     node.className = createClass(this.classes);
 
     // Apply inline styles
-    for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-        const value = this.style[key];
-        if (value !== undefined) {
-            node.style[key] = value;
-        }
-    }
+    Object.assign(node.style, this.style);
 
     // Apply attributes
     for (const attr of Object.keys(this.attributes)) {
@@ -339,12 +334,7 @@ export class Img implements VirtualNode {
         node.className = "mord";
 
         // Apply inline styles
-        for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-            const value = this.style[key];
-            if (value !== undefined) {
-                node.style[key] = value;
-            }
-        }
+        Object.assign(node.style, this.style);
 
         return node;
     }
@@ -453,12 +443,9 @@ export class SymbolNode implements HtmlDomNode {
             span.className = createClass(this.classes);
         }
 
-        for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
+        if (Object.keys(this.style).length > 0) {
             span = span || document.createElement("span");
-            const value = this.style[key];
-            if (value !== undefined) {
-                span.style[key] = value;
-            }
+            Object.assign(span.style, this.style);
         }
 
         if (span) {
