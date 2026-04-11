@@ -43,6 +43,10 @@ export type Atom = keyof typeof ATOMS;
 export type NonAtom = keyof typeof NON_ATOMS;
 export type Group = Atom | NonAtom;
 
+export function isAtom(value: string): value is Atom {
+    return value in ATOMS;
+}
+
 type CharInfoMap = Record<string, {font: Font, group: Group, replace: string | null | undefined}>;
 
 const symbols: Record<Mode, CharInfoMap> = {

@@ -1,7 +1,7 @@
 /* eslint no-constant-condition:0 */
 import functions from "./functions";
 import MacroExpander, {implicitCommands} from "./MacroExpander";
-import symbols, {ATOMS, extraLatin} from "./symbols";
+import symbols, {ATOMS, isAtom, extraLatin} from "./symbols";
 import {validUnit} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import ParseError from "./ParseError";
@@ -17,14 +17,10 @@ import unicodeSymbols from /*preval*/ "./unicodeSymbols";
 
 import type {ParseNode, AnyParseNode, SymbolParseNode, UnsupportedCmdParseNode}
     from "./parseNode";
-import type {Atom, Group} from "./symbols";
+import type {Group} from "./symbols";
 import type {Mode, ArgType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
 import type {EnvSpec} from "./defineEnvironment";
-
-function isAtom(group: Group): group is Atom {
-    return group in ATOMS;
-}
 
 /**
  * This file contains the parser used to parse out a TeX expression from the

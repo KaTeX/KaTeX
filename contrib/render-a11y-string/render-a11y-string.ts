@@ -14,15 +14,10 @@
  * when read by a screenreader.
  */
 
-import {ATOMS, type Atom} from "../../src/symbols";
+import {isAtom, type Atom} from "../../src/symbols";
 import type {AnyParseNode} from "../../src/parseNode";
 import type {SettingsOptions} from "../../src/Settings";
 import katex from "katex";
-
-function isAtom(value: string): value is Atom {
-    return value in ATOMS;
-}
-
 const stringMap: Record<string, string> = {
     "(": "left parenthesis",
     ")": "right parenthesis",
