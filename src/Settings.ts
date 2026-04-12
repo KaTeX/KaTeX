@@ -52,8 +52,8 @@ export type AnyTrustContext = TrustContextTypes[keyof TrustContextTypes];
 export type TrustFunction = (context: AnyTrustContext) => boolean | null | undefined;
 export type SettingsOptions = Partial<Settings>;
 
-type EnumType = {
-    enum: string[];
+type EnumType<T extends string = string> = {
+    enum: T[];
 };
 
 type Type = "boolean" | "string" | "number" | "object" | "function" | EnumType;
@@ -63,18 +63,9 @@ type Type = "boolean" | "string" | "number" | "object" | "function" | EnumType;
  * option-value types, not default/schema values, so they are excluded.
  */
 type SettingsValue = boolean | string | number | MacroMap | string[];
-type SchemaEntry<K extends keyof SettingsOptions> = {
-    /**
-     * Allowed type(s) of the value.
-     */
-    type: Type | Type[];
-    /**
-     * The default value. If not specified, false for boolean, an empty string
-     * for string, 0 for number, an empty object for object, or the first item
-     * for enum will be used. If multiple types are allowed, the first allowed
-     * type will be used for determining the default value.
-     */
-    default?: Settings[K];
+type DefaultValue = Exclude<SettingsValue, string[]>;
+
+type SchemaMetadata<K extends keyof SettingsOptions> = {
     /**
      * The description.
      */
@@ -106,6 +97,96 @@ type SchemaEntry<K extends keyof SettingsOptions> = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     cliProcessor?: (...args: any[]) => SettingsValue;
 };
+
+type BooleanSchema<K extends keyof SettingsOptions> = SchemaMetadata<K> & {
+    /**
+     * Allowed type(s) of the value.
+     */
+    type: "boolean";
+    /**
+     * The default value. If not specified, false will be used.
+     */
+    default?: Extract<Settings[K], boolean>;
+};
+
+type StringSchema<K extends keyof SettingsOptions> = SchemaMetadata<K> & {
+    /**
+     * Allowed type(s) of the value.
+     */
+    type: "string";
+    /**
+     * The default value. If not specified, an empty string will be used.
+     */
+    default?: Extract<Settings[K], string>;
+};
+
+type NumberSchema<K extends keyof SettingsOptions> = SchemaMetadata<K> & {
+    /**
+     * Allowed type(s) of the value.
+     */
+    type: "number";
+    /**
+     * The default value. If not specified, 0 will be used.
+     */
+    default?: Extract<Settings[K], number>;
+};
+
+type ObjectSchema<K extends keyof SettingsOptions> = SchemaMetadata<K> & {
+    /**
+     * Allowed type(s) of the value.
+     */
+    type: "object";
+    /**
+     * The default value. If not specified, an empty object will be used.
+     */
+    default?: Extract<Settings[K], MacroMap>;
+};
+
+type FunctionSchema<K extends keyof SettingsOptions> = SchemaMetadata<K> & {
+    /**
+     * Allowed type(s) of the value.
+     */
+    type: "function";
+    /**
+     * Settings do not currently use function-valued defaults.
+     */
+    default?: never;
+};
+
+type EnumSchema<K extends keyof SettingsOptions> = SchemaMetadata<K> & {
+    /**
+     * Allowed type(s) of the value.
+     */
+    type: EnumType<Extract<Settings[K], string>>;
+    /**
+     * The default value. If not specified, the first enum value will be used.
+     */
+    default?: Extract<Settings[K], string>;
+};
+
+type SingleTypeSchema<K extends keyof SettingsOptions> =
+    | BooleanSchema<K>
+    | StringSchema<K>
+    | NumberSchema<K>
+    | ObjectSchema<K>
+    | FunctionSchema<K>
+    | EnumSchema<K>;
+
+type MultiTypeSchema<K extends keyof SettingsOptions> = SchemaMetadata<K> & {
+    /**
+     * Allowed type(s) of the value.
+     */
+    type: [SingleTypeSchema<K>["type"], ...Array<SingleTypeSchema<K>["type"]>];
+    /**
+     * The default value. If not specified, the first allowed type determines
+     * the default value.
+     */
+    default?: Extract<Settings[K], DefaultValue>;
+};
+
+type SchemaEntry<K extends keyof SettingsOptions> =
+    | SingleTypeSchema<K>
+    | MultiTypeSchema<K>;
 
 type Schema = {
     [key in keyof SettingsOptions]?: SchemaEntry<key>;
@@ -216,30 +297,41 @@ export const SETTINGS_SCHEMA: Schema = {
     },
 };
 
-function getDefaultValue<K extends keyof SettingsOptions>(
-    schema: SchemaEntry<K>,
-): Settings[K] {
-    if ("default" in schema) {
-        return schema.default!;
+function getImplicitDefault(type: "boolean"): boolean;
+function getImplicitDefault(type: "string"): string;
+function getImplicitDefault(type: "number"): number;
+function getImplicitDefault(type: "object"): MacroMap;
+function getImplicitDefault(type: "function"): never;
+function getImplicitDefault<T extends string>(type: EnumType<T>): T;
+function getImplicitDefault(type: Type): DefaultValue;
+function getImplicitDefault(type: Type): DefaultValue {
+    if (typeof type !== 'string') {
+        return type.enum[0];
     }
-    const type = schema.type;
-    const defaultType = Array.isArray(type) ? type[0] : type;
-    if (typeof defaultType !== 'string') {
-        return defaultType.enum[0] as Settings[K];
-    }
-    switch (defaultType) {
+    switch (type) {
         case 'boolean':
-            return false as Settings[K];
+            return false;
         case 'string':
-            return '' as Settings[K];
+            return '';
         case 'number':
-            return 0 as Settings[K];
+            return 0;
         case 'object':
-            return {} as Settings[K];
+            return {};
         default:
             throw new Error(
                 "Unexpected schema type; settings must declare an explicit default.");
     }
+}
+
+function getDefaultValue<K extends keyof SettingsOptions>(
+    schema: SchemaEntry<K>,
+): Settings[K];
+function getDefaultValue(schema: SchemaEntry<keyof SettingsOptions>): DefaultValue {
+    if (schema.default !== undefined) {
+        return schema.default;
+    }
+    const type = Array.isArray(schema.type) ? schema.type[0] : schema.type;
+    return getImplicitDefault(type);
 }
 
 function applySetting<K extends keyof SettingsOptions>(
