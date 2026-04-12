@@ -23,7 +23,7 @@ container=$(docker create -t -u 0:0 \
     "${imgname}:${tag}" \
     nodejs texcmp.js "$@")
 trap cleanup EXIT
-tar c dockers/texcmp/{texcmp.js,package.json} \
+COPYFILE_DISABLE=1 tar c --no-xattrs dockers/texcmp/{texcmp.js,package.json} \
     test/screenshotter/{ss_data.{js,yaml},images/*-firefox.png,test.tex} \
     | docker cp - "${container}:/KaTeX"
 docker start -a "${container}"

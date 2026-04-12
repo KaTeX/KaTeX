@@ -77,7 +77,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
         //    equation           eqn                 eqn
 
         const vSpan = makeSpan(
-            ["mord", (group.isOver ? "mover" : "munder")],
+            ["minner", (group.isOver ? "mover" : "munder")],
             [vlist], options);
 
         if (group.isOver) {
@@ -104,7 +104,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
     }
 
     return makeSpan(
-        ["mord", (group.isOver ? "mover" : "munder")], [vlist], options);
+        ["minner", (group.isOver ? "mover" : "munder")], [vlist], options);
 };
 
 const mathmlBuilder: MathMLBuilder<"horizBrace"> = (group, options) => {
@@ -118,7 +118,7 @@ const mathmlBuilder: MathMLBuilder<"horizBrace"> = (group, options) => {
 // Horizontal stretchy braces
 defineFunction({
     type: "horizBrace",
-    names: ["\\overbrace", "\\underbrace"],
+    names: ["\\overbrace", "\\underbrace", "\\overbracket", "\\underbracket"],
     props: {
         numArgs: 1,
     },
@@ -127,7 +127,7 @@ defineFunction({
             type: "horizBrace",
             mode: parser.mode,
             label: funcName,
-            isOver: /^\\over/.test(funcName),
+            isOver: funcName.includes("\\over"),
             base: args[0],
         };
     },

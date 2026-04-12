@@ -24,6 +24,7 @@ $display-margin: 1em 0 !default;
 .katex {
     font: normal 1.21em KaTeX_Main, Times New Roman, serif;
     line-height: 1.2;
+    position: relative;
 
     // Protect elements inside .katex from inheriting text-indent.
     text-indent: 0;

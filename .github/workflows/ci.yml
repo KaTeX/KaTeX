@@ -5,23 +5,24 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
     - name: Enable Corepack
       run: corepack enable
 
-    - name: Use Node.js 20
-      uses: actions/setup-node@v4
+    - name: Use Node.js 24
+      uses: actions/setup-node@v6
       with:
-        node-version: '20'
+        node-version: '24'
         cache: yarn
 
     - name: Install dependencies
@@ -46,7 +47,7 @@ jobs:
     - name: Verify built bundle
       run: yarn test:build
 
-    - uses: codecov/codecov-action@v3
+    - uses: codecov/codecov-action@v6
       with:
         directory: ./coverage/
       timeout-minutes: 3
@@ -58,7 +59,7 @@ jobs:
     needs: test
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -66,10 +67,10 @@ jobs:
     - name: Enable Corepack
       run: corepack enable
 
-    - name: Use Node.js 20
-      uses: actions/setup-node@v4
+    - name: Use Node.js 24
+      uses: actions/setup-node@v6
       with:
-        node-version: '20'
+        node-version: '24'
 
     - name: Install dependencies
       run: yarn --immutable

@@ -1,11 +1,7 @@
 #!/bin/bash
 
 # This script does a one-shot creation of screenshots, creating needed
-# docker containers and removing them afterwards.  During development,
-# it might be desirable to avoid the overhead for starting and
-# stopping the containers.  Developers are encouraged to manage
-# suitable containers themselves, calling the screenshotter.js script
-# directly.
+# docker containers and removing them afterwards.
 
 cleanup() {
     [[ "${container}" ]] \
@@ -17,39 +13,59 @@ cleanup() {
 container=
 trap cleanup EXIT
 status=0
-for browserTag in "firefox:3.141.59-20210929" "chrome:3.141.59-20210422"; do
+for browserTag in "firefox:128.0-20260222" "chromium:145.0-20260222"; do
     browser=${browserTag%:*}
+    # We use Chromium so it works on all architectures.
+    # We hack the name because old images were for chrome
+    # and selenium-webdriver expects "chrome" as browser name
+    if [ "${browser}" = "chromium" ]; then
+        browser="chrome"
+    fi
     image=selenium/standalone-${browserTag}
     echo "Starting container for ${image}"
-    container=$(docker run -d -P ${image})
+    #https://github.com/SeleniumHQ/docker-selenium#--shm-size2g
+    container=$(docker run -d --shm-size=2g -P ${image})
     [[ ${container} ]] || continue
-    echo "Container ${container:0:12} started, creating screenshots..."
-    if yarn node "$(dirname "$0")"/screenshotter.js \
-            --browser="${browser}" --container="${container}" "$@"; then
-        res=Done
+    echo "Container ${container:0:12} started"
+
+    echo "Creating screenshots for ${browser}..."
+    yarn node "$(dirname "$0")"/screenshotter.js \
+            --browser="${browser}" --container="${container}" \
+            "$@"
+    rc=$?
+    if [ $rc -eq 0 ]; then
+        res="Done"
+    elif [ $rc -eq 3 ]; then
+        res="Screenshots mismatched"
+        status=1
     else
-        res=Failed
+        res="Failed (exit code $rc)"
         status=1
     fi
-    echo "${res} taking screenshots, stopping and removing ${container:0:12}"
+    echo "${res} for ${browser}, stopping and removing ${container:0:12}"
     cleanup
 done
 
 if [[ $BROWSERSTACK_USER ]]; then
     echo "Creating screenshots for Safari..."
-    if yarn node "$(dirname "$0")"/screenshotter.js \
+    yarn node "$(dirname "$0")"/screenshotter.js \
             --browser=safari --browserstack --selenium-capabilities '{
                 "browserName": "Safari",
                 "browser_version": "13.1",
                 "os": "OS X",
                 "os_version": "Catalina"
-            }' "$@"; then
-        res=Done
+            }' "$@"
+    rc=$?
+    if [ $rc -eq 0 ]; then
+        res="Done"
+    elif [ $rc -eq 3 ]; then
+        res="Screenshots mismatched"
+        status=1
     else
-        res=Failed
+        res="Failed (exit code $rc)"
         status=1
     fi
-    echo "${res} taking screenshots"
+    echo "${res} for safari"
 fi
 
 exit ${status}

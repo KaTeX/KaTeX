@@ -122,6 +122,10 @@ defineSymbol(math, main, rel, "\u220b", "\\owns");
 // Punctuation
 defineSymbol(math, main, punct, "\u002e", "\\ldotp");
 defineSymbol(math, main, punct, "\u22c5", "\\cdotp");
+// The KaTeX fonts do not contain U+00B7. Use the centered dot glyph at U+22C5
+// in both modes, but keep math-mode punctuation spacing only in math mode.
+defineSymbol(math, main, punct, "\u22c5", "\u00b7");
+defineSymbol(text, main, textord, "\u22c5", "\u00b7");
 
 // Misc Symbols
 defineSymbol(math, main, textord, "\u0023", "\\#");

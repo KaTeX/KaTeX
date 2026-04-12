@@ -398,8 +398,8 @@ const makeStackedDelim = function(
         const viewBoxHeight = Math.round(realHeightTotal  * 1000);
         const pathStr = tallDelim(svgLabel, Math.round(midHeight * 1000));
         const path = new PathNode(svgLabel, pathStr);
-        const width = (viewBoxWidth / 1000).toFixed(3) + "em";
-        const height = (viewBoxHeight / 1000).toFixed(3) + "em";
+        const width = makeEm(viewBoxWidth / 1000);
+        const height = makeEm(viewBoxHeight / 1000);
         const svg = new SvgNode([path], {
             "width": width,
             "height": height,

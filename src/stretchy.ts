@@ -26,6 +26,8 @@ const stretchyCodePoint: Record<string, string> = {
     xrightarrow: "\u2192",
     underbrace: "\u23df",
     overbrace: "\u23de",
+    underbracket: "\u23b5",
+    overbracket: "\u23b4",
     overgroup: "\u23e0",
     undergroup: "\u23e1",
     overleftrightarrow: "\u2194",
@@ -94,18 +96,6 @@ export const stretchyMathML = function(label: string): MathNode {
 //    Some functions, such as \cancel, need to vary their aspect ratio. These
 //    functions do not get the overflow SVG treatment.
 
-// Second Brush Stroke
-//    Low resolution monitors struggle to display images in fine detail.
-//    So browsers apply anti-aliasing. A long straight arrow shaft therefore
-//    will sometimes appear as if it has a blurred edge.
-
-//    To mitigate this, these SVG files contain a second "brush-stroke" on the
-//    arrow shafts. That is, a second long thin rectangular SVG path has been
-//    written directly on top of each arrow shaft. This reinforcement causes
-//    some of the screen pixels to display as black instead of the anti-aliased
-//    gray pixel that a  single path would generate. So we get arrow shafts
-//    whose edges appear to be sharper.
-
 // In the katexImagesData object just below, the dimensions all
 // correspond to path geometry inside the relevant SVG.
 // For example, \overrightarrow uses the same arrowhead as glyph U+2192
@@ -153,6 +143,8 @@ const katexImagesData: {
     xhookrightarrow: [["lefthook", "rightarrow"], 1.08, 522],
     overlinesegment: [["leftlinesegment", "rightlinesegment"], 0.888, 522],
     underlinesegment: [["leftlinesegment", "rightlinesegment"], 0.888, 522],
+    overbracket: [["leftbracketover", "rightbracketover"], 1.6, 440],
+    underbracket: [["leftbracketunder", "rightbracketunder"], 1.6, 410],
     overgroup: [["leftgroup", "rightgroup"], 0.888, 342],
     undergroup: [["leftgroupunder", "rightgroupunder"], 0.888, 342],
     xmapsto: [["leftmapsto", "rightarrow"], 1.5, 522],
