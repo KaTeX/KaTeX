@@ -63,59 +63,53 @@ type Type = "boolean" | "string" | "number" | "object" | "function" | EnumType;
  * option-value types, not default/schema values, so they are excluded.
  */
 type SettingsValue = boolean | string | number | MacroMap | string[];
-type Schema = {
-    [key in keyof SettingsOptions]?: {
-        /**
-         * Allowed type(s) of the value.
-         */
-        type: Type | Type[];
-        /**
-         * The default value. If not specified, false for boolean, an empty string
-         * for string, 0 for number, an empty object for object, or the first item
-         * for enum will be used. If multiple types are allowed, the first allowed
-         * type will be used for determining the default value.
-         */
-        default?: SettingsValue;
-        /**
-         * The description.
-         */
-        description?: string;
-        /**
-         * The function to process the option.
-         */
-        // All current processors are (number) => number, but the
-        // constructor loops over Object.keys so optionValue loses
-        // per-key type info. Narrowing to number would require a cast
-        // at the call site; `any` keeps the schema type simple.
-        // Fix: make Schema generic per setting key.
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        processor?: (value: any) => any;
-        /**
-         * The command line argument. See Commander.js docs for more information.
-         * If not specified, the name prefixed with -- will be used. Set false not
-         * to add to the CLI.
-         */
-        cli?: string | false;
-        /**
-         * The default value for the CLI.
-         */
-        cliDefault?: SettingsValue;
-        /**
-         * The description for the CLI. If not specified, the description for the
-         * option will be used.
-         */
-        cliDescription?: string;
-        /**
-         * The custom argument processor for the CLI. See Commander.js docs for
-         * more information. Signature varies per setting (e.g. parseFloat,
-         * or (def, defs) => defs.push(def) for macros).
-         */
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        cliProcessor?: (...args: any[]) => SettingsValue;
-    };
+type SchemaEntry<K extends keyof SettingsOptions> = {
+    /**
+     * Allowed type(s) of the value.
+     */
+    type: Type | Type[];
+    /**
+     * The default value. If not specified, false for boolean, an empty string
+     * for string, 0 for number, an empty object for object, or the first item
+     * for enum will be used. If multiple types are allowed, the first allowed
+     * type will be used for determining the default value.
+     */
+    default?: Settings[K];
+    /**
+     * The description.
+     */
+    description?: string;
+    /**
+     * The function to process the option.
+     */
+    processor?: (value: Settings[K]) => Settings[K];
+    /**
+     * The command line argument. See Commander.js docs for more information.
+     * If not specified, the name prefixed with -- will be used. Set false not
+     * to add to the CLI.
+     */
+    cli?: string | false;
+    /**
+     * The default value for the CLI.
+     */
+    cliDefault?: SettingsValue;
+    /**
+     * The description for the CLI. If not specified, the description for the
+     * option will be used.
+     */
+    cliDescription?: string;
+    /**
+     * The custom argument processor for the CLI. See Commander.js docs for
+     * more information. Signature varies per setting (e.g. parseFloat,
+     * or (def, defs) => defs.push(def) for macros).
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    cliProcessor?: (...args: any[]) => SettingsValue;
 };
 
-type SchemaEntry = NonNullable<Schema[keyof SettingsOptions]>;
+type Schema = {
+    [key in keyof SettingsOptions]?: SchemaEntry<key>;
+};
 
 // TODO: automatically generate documentation
 // TODO: check all properties on Settings exist
@@ -222,28 +216,44 @@ export const SETTINGS_SCHEMA: Schema = {
     },
 };
 
-function getDefaultValue(schema: SchemaEntry): SettingsValue {
+function getDefaultValue<K extends keyof SettingsOptions>(
+    schema: SchemaEntry<K>,
+): Settings[K] {
     if ("default" in schema) {
         return schema.default!;
     }
     const type = schema.type;
     const defaultType = Array.isArray(type) ? type[0] : type;
     if (typeof defaultType !== 'string') {
-        return defaultType.enum[0];
+        return defaultType.enum[0] as Settings[K];
     }
     switch (defaultType) {
         case 'boolean':
-            return false;
+            return false as Settings[K];
         case 'string':
-            return '';
+            return '' as Settings[K];
         case 'number':
-            return 0;
+            return 0 as Settings[K];
         case 'object':
-            return {};
+            return {} as Settings[K];
         default:
             throw new Error(
                 "Unexpected schema type; settings must declare an explicit default.");
     }
+}
+
+function applySetting<K extends keyof SettingsOptions>(
+    target: Settings,
+    prop: K,
+    options: SettingsOptions,
+    schema: SchemaEntry<K>,
+) {
+    const optionValue = options[prop];
+    target[prop] = optionValue !== undefined
+        ? (schema.processor
+            ? schema.processor(optionValue)
+            : optionValue)
+        : getDefaultValue(schema);
 }
 
 /**
@@ -276,14 +286,11 @@ export default class Settings {
         // allow null options
         options = options || {};
         for (const prop of Object.keys(SETTINGS_SCHEMA) as Array<keyof SettingsOptions>) {
-            const schema = SETTINGS_SCHEMA[prop] as SchemaEntry;
-            const optionValue = options[prop];
-            // TODO: validate options
-            (this as Record<string, unknown>)[prop] = optionValue !== undefined
-                ? (schema.processor
-                    ? schema.processor(optionValue)
-                    : optionValue)
-                : getDefaultValue(schema);
+            const schema = SETTINGS_SCHEMA[prop] as SchemaEntry<typeof prop> | undefined;
+            if (schema) {
+                // TODO: validate options
+                applySetting(this, prop, options, schema);
+            }
         }
     }
 
