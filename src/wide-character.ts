@@ -6,35 +6,80 @@
  * the font information necessary to render it properly.
  */
 
-import type {Mode, ValueOf, WideCharFontName} from "./types";
-import {FontClass} from "./types";
+import type {FontName} from "./types";
 import ParseError from "./ParseError";
 
 type WideChar = {
-    readonly class: ValueOf<typeof FontClass>;
-    readonly font: WideCharFontName | "";
+    readonly mathClass: string;
+    readonly textClass: string;
+    readonly font: FontName | "";
 };
 
-const boldUpright: WideChar = {class: FontClass.boldUpright, font: "Main-Bold"};
-const italic: WideChar = {class: FontClass.italic, font: "Math-Italic"};
-const boldItalic: WideChar = {class: FontClass.boldItalic, font: "Main-BoldItalic"};
-const script: WideChar = {class: FontClass.script, font: "Script-Regular"};
-const noFont: WideChar = {class: FontClass.noFont, font: ""};
-const fraktur: WideChar = {class: FontClass.fraktur, font: "Fraktur-Regular"};
-const doubleStruck: WideChar = {class: FontClass.doubleStruck, font: "AMS-Regular"};
-const boldFraktur: WideChar = {class: FontClass.boldFraktur, font: "Fraktur-Regular"};
-const sansSerif: WideChar = {class: FontClass.sansSerif, font: "SansSerif-Regular"};
-const boldSansSerif: WideChar = {class: FontClass.boldSansSerif, font: "SansSerif-Bold"};
-const italicSansSerif: WideChar = {class: FontClass.italicSansSerif, font: "SansSerif-Italic"};
-const monospace: WideChar = {class: FontClass.monospace, font: "Typewriter-Regular"};
+const boldUpright: WideChar = {
+    mathClass: "mathbf",
+    textClass: "textbf",
+    font: "Main-Bold",
+};
+const italic: WideChar = {
+    mathClass: "mathnormal",
+    textClass: "textit",
+    font: "Math-Italic",
+};
+const boldItalic: WideChar = {
+    mathClass: "boldsymbol",
+    textClass: "boldsymbol",
+    font: "Main-BoldItalic",
+};
+const script: WideChar = {
+    mathClass: "mathscr",
+    textClass: "textscr",
+    font: "Script-Regular",
+};
+const noFont: WideChar = {mathClass: "", textClass: "", font: ""};
+const fraktur: WideChar = {
+    mathClass: "mathfrak",
+    textClass: "textfrak",
+    font: "Fraktur-Regular",
+};
+const doubleStruck: WideChar = {
+    mathClass: "mathbb",
+    textClass: "textbb",
+    font: "AMS-Regular",
+};
+const boldFraktur: WideChar = {
+    mathClass: "mathboldfrak",
+    textClass: "textboldfrak",
+    font: "Fraktur-Regular",
+};
+const sansSerif: WideChar = {
+    mathClass: "mathsf",
+    textClass: "textsf",
+    font: "SansSerif-Regular",
+};
+const boldSansSerif: WideChar = {
+    mathClass: "mathboldsf",
+    textClass: "textboldsf",
+    font: "SansSerif-Bold",
+};
+const italicSansSerif: WideChar = {
+    mathClass: "mathitsf",
+    textClass: "textitsf",
+    font: "SansSerif-Italic",
+};
+const monospace: WideChar = {
+    mathClass: "mathtt",
+    textClass: "texttt",
+    font: "Typewriter-Regular",
+};
 
 /**
  * Data below is from https://www.unicode.org/charts/PDF/U1D400.pdf
  * That document sorts characters into groups by font type, say bold or italic.
  *
- * In the arrays below, each object consists of two properties:
+ * In the arrays below, each object consists of three properties:
+ *      * The CSS class of that group when in math mode.
+ *      * The CSS class of that group when in text mode.
  *      * The font name, so that KaTeX can get font metrics.
- *      * The CSS class of that group depending on the mode.
  */
 
 const wideLatinLetterData = [
@@ -66,11 +111,7 @@ const wideNumeralData = [
 
 export const wideCharacterFont = (
     wideChar: string,
-    mode: Mode,
-):{
-    readonly font: WideCharFontName | "";
-    readonly cssClass: FontClass;
-} => {
+): WideChar => {
 
     // IE doesn't support codePointAt(). So work with the surrogate pair.
     const H = wideChar.charCodeAt(0);    // high surrogate
@@ -81,23 +122,20 @@ export const wideCharacterFont = (
         // wideLatinLetterData contains exactly 26 chars on each row.
         // So we can calculate the relevant row. No traverse necessary.
         const i = Math.floor((codePoint - 0x1D400) / 26);
-        const entry = wideLatinLetterData[i];
-        return {font: entry.font, cssClass: entry.class[mode]};
+        return wideLatinLetterData[i];
 
     } else if (0x1D7CE <= codePoint && codePoint <= 0x1D7FF) {
         // Numerals, ten per row.
         const i = Math.floor((codePoint - 0x1D7CE) / 10);
-        const entry = wideNumeralData[i];
-        return {font: entry.font, cssClass: entry.class[mode]};
+        return wideNumeralData[i];
 
     } else if (codePoint === 0x1D6A5 || codePoint === 0x1D6A6) {
         // dotless i or j
-        const entry = wideLatinLetterData[0];
-        return {font: entry.font, cssClass: entry.class[mode]};
+        return wideLatinLetterData[0];
 
     } else if (0x1D6A6 < codePoint && codePoint < 0x1D7CE) {
         // Greek letters. Not supported, yet.
-        return {font: "", cssClass: FontClass.noFont[mode]};
+        return noFont;
 
     } else {
         // We don't support any wide characters outside 1D400–1D7FF.

@@ -1,5 +1,3 @@
-export type ValueOf<T> = T[keyof T];
-
 export type Mode = "math" | "text";
 
 // LaTeX argument type.
@@ -30,7 +28,7 @@ export type FontVariant = "bold" | "bold-italic" | "bold-sans-serif" |
     "double-struck" | "fraktur" | "italic" | "monospace" | "normal" | "sans-serif" |
     "sans-serif-bold-italic" | "sans-serif-italic" | "script";
 
-export type WideCharFontName =
+export type FontName =
     | "Main-Bold"
     | "Math-Italic"
     | "Main-BoldItalic"
@@ -41,20 +39,3 @@ export type WideCharFontName =
     | "SansSerif-Bold"
     | "SansSerif-Italic"
     | "Typewriter-Regular";
-
-export const FontClass = {
-    boldUpright: {math: "mathbf", text: "textbf"},
-    italic: {math: "mathnormal", text: "textit"},
-    boldItalic: {math: "boldsymbol", text: "boldsymbol"},
-    script: {math: "mathscr", text: "textscr"},
-    noFont: {math: "", text: ""},
-    fraktur: {math: "mathfrak", text: "textfrak"},
-    doubleStruck: {math: "mathbb", text: "textbb"},
-    boldFraktur: {math: "mathboldfrak", text: "textboldfrak"},
-    sansSerif: {math: "mathsf", text: "textsf"},
-    boldSansSerif: {math: "mathboldsf", text: "textboldsf"},
-    italicSansSerif: {math: "mathitsf", text: "textitsf"},
-    monospace: {math: "mathtt", text: "texttt"},
-} as const satisfies Record<string, Record<Mode, string>>;
-
-export type FontClass = ValueOf<typeof FontClass>[Mode];

@@ -177,7 +177,9 @@ export const makeOrd = function<NODETYPE extends "spacing" | "mathord" | "textor
     let wideFontName = "";
     let wideFontClass = "";
     if (text.charCodeAt(0) === 0xD835) {
-        ({font: wideFontName, cssClass: wideFontClass} = wideCharacterFont(text, mode));
+        const wideCharData = wideCharacterFont(text);
+        wideFontName = wideCharData.font;
+        wideFontClass = wideCharData[`${mode}Class`];
     }
     if (wideFontName) {
         // surrogate pairs get special treatment
