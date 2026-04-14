@@ -96,18 +96,6 @@ export const stretchyMathML = function(label: string): MathNode {
 //    Some functions, such as \cancel, need to vary their aspect ratio. These
 //    functions do not get the overflow SVG treatment.
 
-// Second Brush Stroke
-//    Low resolution monitors struggle to display images in fine detail.
-//    So browsers apply anti-aliasing. A long straight arrow shaft therefore
-//    will sometimes appear as if it has a blurred edge.
-
-//    To mitigate this, these SVG files contain a second "brush-stroke" on the
-//    arrow shafts. That is, a second long thin rectangular SVG path has been
-//    written directly on top of each arrow shaft. This reinforcement causes
-//    some of the screen pixels to display as black instead of the anti-aliased
-//    gray pixel that a  single path would generate. So we get arrow shafts
-//    whose edges appear to be sharper.
-
 // In the katexImagesData object just below, the dimensions all
 // correspond to path geometry inside the relevant SVG.
 // For example, \overrightarrow uses the same arrowhead as glyph U+2192
