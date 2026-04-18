@@ -15,8 +15,8 @@ import {Token} from "./Token";
 import unicodeAccents from /*preval*/ "./unicodeAccents";
 import unicodeSymbols from /*preval*/ "./unicodeSymbols";
 
-import type {ParseNode, AnyParseNode, SymbolParseNode, UnsupportedCmdParseNode}
-    from "./parseNode";
+import type {NodeType, ParseNode, AnyParseNode, SymbolParseNode,
+    UnsupportedCmdParseNode} from "./parseNode";
 import type {Group} from "./symbols";
 import type {Mode, ArgType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
@@ -521,8 +521,7 @@ export default class Parser {
      */
     parseArguments(
         func: string,   // Should look like "\name" or "\begin{name}".
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        funcData: FunctionSpec<any> | EnvSpec<any>,
+        funcData: FunctionSpec<NodeType> | EnvSpec<NodeType>,
     ): {
         args: AnyParseNode[];
         optArgs: (AnyParseNode | null | undefined)[];

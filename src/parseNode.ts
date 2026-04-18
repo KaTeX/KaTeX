@@ -1,7 +1,7 @@
-import {NON_ATOMS} from "./symbols";
+import {NON_ATOMS} from "./atoms";
 import type SourceLocation from "./SourceLocation";
 import type {AlignSpec, ColSeparationType} from "./environments/array";
-import type {Atom} from "./symbols";
+import type {Atom} from "./atoms";
 import type {Mode, StyleStr} from "./types";
 import type {Token} from "./Token";
 import type {Measurement} from "./units";

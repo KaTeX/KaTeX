@@ -58,10 +58,10 @@ const delimiters = new Set([
 type IsMiddle = {delim: string, options: Options};
 
 /**
- * An HtmlDomNode that may carry an `isMiddle` property, used by the
+ * An HtmlDomNode that carries an `isMiddle` property, used by the
  * \middle command to communicate delimiter info to the \left/\right builder.
  */
-type MiddleDelimNode = HtmlDomNode & {isMiddle?: IsMiddle};
+type MiddleDelimNode = HtmlDomNode & {isMiddle: IsMiddle};
 
 function isMiddleDelimNode(node: HtmlDomNode): node is MiddleDelimNode {
     return 'isMiddle' in node;
@@ -221,7 +221,7 @@ defineFunction({
         // Calculate its height and depth
         for (let i = 0; i < inner.length; i++) {
             const node = inner[i];
-            if (isMiddleDelimNode(node) && node.isMiddle) {
+            if (isMiddleDelimNode(node)) {
                 hadMiddle = true;
             } else {
                 innerHeight = Math.max(inner[i].height, innerHeight);
@@ -253,7 +253,7 @@ defineFunction({
         if (hadMiddle) {
             for (let i = 1; i < inner.length; i++) {
                 const middleDelim = inner[i];
-                if (isMiddleDelimNode(middleDelim) && middleDelim.isMiddle) {
+                if (isMiddleDelimNode(middleDelim)) {
                     const isMiddle = middleDelim.isMiddle;
                     // Apply the options that were active when \middle was called
                     inner[i] = makeLeftRightDelim(
@@ -339,9 +339,9 @@ defineFunction({
 
             // Patch an ad-hoc property onto the node so the \left/\right
             // builder can reconstruct appropriately sized middle delimiters.
-            // Cast required: isMiddle is not part of HtmlDomNode; read
-            // side uses isMiddleDelimNode() to check before accessing.
-            (middleDelim as MiddleDelimNode).isMiddle = {
+            // isMiddle is not part of HtmlDomNode; the read side uses
+            // isMiddleDelimNode() to check before accessing.
+            (middleDelim as unknown as MiddleDelimNode).isMiddle = {
                 delim: group.delim, options,
             };
         }

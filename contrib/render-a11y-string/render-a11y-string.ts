@@ -14,7 +14,7 @@
  * when read by a screenreader.
  */
 
-import {isAtom, type Atom} from "../../src/symbols";
+import {isAtom, type Atom} from "../../src/atoms";
 import type {AnyParseNode} from "../../src/parseNode";
 import type {SettingsOptions} from "../../src/Settings";
 import katex from "katex";
