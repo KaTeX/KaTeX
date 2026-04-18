@@ -274,7 +274,8 @@ function dCellStyle(envName: string): StyleStr {
     }
 }
 
-type Outrow = HtmlDomNode[] & {
+type Outrow = {
+    cells: HtmlDomNode[];
     height: number;
     depth: number;
     pos: number;
@@ -286,7 +287,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     const nr = group.body.length;
     const hLinesBeforeRow = group.hLinesBeforeRow;
     let nc = 0;
-    const body = new Array(nr);
+    const body: Outrow[] = new Array(nr);
     const hlines: Array<{pos: number; isDashed: boolean}> = [];
     const ruleThickness = Math.max(
         // From LaTeX \showthe\arrayrulewidth. Equals 0.04 em.
@@ -340,10 +341,12 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             nc = inrow.length;
         }
 
-        const outrow: Outrow = Object.assign(
-            new Array<HtmlDomNode>(inrow.length),
-            {height: 0, depth: 0, pos: 0},
-        );
+        const outrow: Outrow = {
+            cells: new Array<HtmlDomNode>(inrow.length),
+            height: 0,
+            depth: 0,
+            pos: 0,
+        };
         for (c = 0; c < inrow.length; ++c) {
             const elt = html.buildGroup(inrow[c], options);
             if (depth < elt.depth) {
@@ -352,7 +355,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             if (height < elt.height) {
                 height = elt.height;
             }
-            outrow[c] = elt;
+            outrow.cells[c] = elt;
         }
 
         const rowGap = group.rowGaps[r];
@@ -482,7 +485,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         }> = [];
         for (r = 0; r < nr; ++r) {
             const row = body[r];
-            const elem = row[c];
+            const elem = row.cells[c];
             if (!elem) {
                 continue;
             }

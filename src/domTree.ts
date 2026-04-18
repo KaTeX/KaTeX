@@ -28,6 +28,21 @@ export const createClass = function(classes: string[]): string {
     return classes.filter(cls => cls).join(" ");
 };
 
+/**
+ * Serialize a CssStyle object into a semicolon-delimited inline-style string
+ * (hyphenating camelCase property names). Returns "" when no property is set.
+ */
+const cssStyleToString = function(style: CssStyle): string {
+    let styles = "";
+    for (const key of Object.keys(style) as Array<keyof CssStyle>) {
+        const value = style[key];
+        if (value !== undefined) {
+            styles += `${hyphenate(key)}:${value};`;
+        }
+    }
+    return styles;
+};
+
 type InitNodeData = {
     classes: string[];
     attributes: Record<string, string>;
@@ -110,16 +125,7 @@ const toMarkup = function(this: HtmlNodeData, tagName: string): string {
         markup += ` class="${escape(createClass(this.classes))}"`;
     }
 
-    let styles = "";
-
-    // Add the styles, after hyphenation
-    for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-        const value = this.style[key];
-        if (value !== undefined) {
-            styles += `${hyphenate(key)}:${value};`;
-        }
-    }
-
+    const styles = cssStyleToString(this.style);
     if (styles) {
         markup += ` style="${escape(styles)}"`;
     }
@@ -343,14 +349,7 @@ export class Img implements VirtualNode {
         let markup = `<img src="${escape(this.src)}"` +
           ` alt="${escape(this.alt)}"`;
 
-        // Add the styles, after hyphenation
-        let styles = "";
-        for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-            const value = this.style[key];
-            if (value !== undefined) {
-                styles += `${hyphenate(key)}:${value};`;
-            }
-        }
+        const styles = cssStyleToString(this.style);
         if (styles) {
             markup += ` style="${escape(styles)}"`;
         }
@@ -478,12 +477,7 @@ export class SymbolNode implements HtmlDomNode {
         if (this.italic > 0) {
             styles += `margin-right:${makeEm(this.italic)};`;
         }
-        for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-            const value = this.style[key];
-            if (value !== undefined) {
-                styles += hyphenate(key) + ":" + value + ";";
-            }
-        }
+        styles += cssStyleToString(this.style);
 
         if (styles) {
             needsSpan = true;
