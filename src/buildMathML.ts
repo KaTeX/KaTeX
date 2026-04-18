@@ -320,6 +320,8 @@ export default function buildMathML(
     // of span are expected to have more fields in `buildHtml` contexts.
     // The MathNode implements VirtualNode (toNode/toMarkup) which is all that
     // Span needs from its children for rendering.
+    // TODO(ts): Span's child type is HtmlDomNode, but MathNode only implements
+    // VirtualNode. The double-cast acknowledges this architectural limitation.
     const wrapperClass = forMathmlOnly ? "katex" : "katex-mathml";
     return makeSpan([wrapperClass], [math as unknown as HtmlDomNode]);
 }
