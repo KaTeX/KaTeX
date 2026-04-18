@@ -177,12 +177,13 @@ export const makeOrd = function<NODETYPE extends "spacing" | "mathord" | "textor
     let wideFontName = "";
     let wideFontClass = "";
     if (text.charCodeAt(0) === 0xD835) {
-        [wideFontName, wideFontClass] = wideCharacterFont(text, mode);
+        const wideCharData = wideCharacterFont(text);
+        wideFontName = wideCharData.font;
+        wideFontClass = wideCharData[`${mode}Class`];
     }
-    if (wideFontName.length > 0) {
+    if (wideFontName) {
         // surrogate pairs get special treatment
-        return makeSymbol(text, wideFontName, mode, options,
-            classes.concat(wideFontClass));
+        return makeSymbol(text, wideFontName, mode, options, classes.concat(wideFontClass));
     } else if (fontOrFamily) {
         let fontName;
         let fontClasses;
