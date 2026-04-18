@@ -107,10 +107,6 @@ type SvgData3 = [string[], number, number];
 type SvgData4 = [[string], number, number, string];
 type SvgData = SvgData3 | SvgData4;
 
-function isSvgData4(data: SvgData): data is SvgData4 {
-    return data.length === 4;
-}
-
 const katexImagesData: {[key: string]: SvgData} = {
                    //   path(s), minWidth, height, align
     overrightarrow: [["rightarrow"], 0.888, 522, "xMaxYMin"],
@@ -244,13 +240,12 @@ export const stretchySvg = function(
             let widthClasses;
             let aligns;
             if (numSvgChildren === 1) {
-                if (!isSvgData4(data)) {
+                if (data.length !== 4) {
                     throw new Error(
                         `Expected 4-tuple for single-path SVG data "${label}".`);
                 }
-                const align1: string = data[3];
                 widthClasses = ["hide-tail"];
-                aligns = [align1];
+                aligns = [data[3]];
             } else if (numSvgChildren === 2) {
                 widthClasses = ["halfarrow-left", "halfarrow-right"];
                 aligns = ["xMinYMin", "xMaxYMin"];
