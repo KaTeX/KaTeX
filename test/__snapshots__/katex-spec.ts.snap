@@ -173,7 +173,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
         ],
         "depth": 0,
         "height": 0,
-        "italic": 0,
         "maxFontSize": 0,
         "style": {
         }
@@ -184,7 +183,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     ],
     "depth": 0,
     "height": 0,
-    "italic": 0,
     "maxFontSize": 0,
     "style": {
     }
@@ -214,7 +212,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     ],
     "depth": 0,
     "height": 0,
-    "italic": 0,
     "maxFontSize": 0,
     "style": {
       "marginRight": "0.2778em"
@@ -249,7 +246,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
         ],
         "depth": 0,
         "height": 0.39111,
-        "italic": 0,
         "maxFontSize": 1,
         "style": {
         }
@@ -260,7 +256,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     ],
     "depth": 0,
     "height": 0.39111,
-    "italic": 0,
     "maxFontSize": 1,
     "style": {
     }
@@ -275,7 +270,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     ],
     "depth": 0,
     "height": 0,
-    "italic": 0,
     "maxFontSize": 0,
     "style": {
       "marginRight": "0.2778em"
@@ -306,7 +300,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     ],
     "depth": 0,
     "height": 0,
-    "italic": 0,
     "maxFontSize": 0,
     "style": {
       "marginRight": "0.2222em"
@@ -341,7 +334,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
         ],
         "depth": 0.13333,
         "height": 0.63333,
-        "italic": 0,
         "maxFontSize": 1,
         "style": {
         }
@@ -352,7 +344,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     ],
     "depth": 0.13333,
     "height": 0.63333,
-    "italic": 0,
     "maxFontSize": 1,
     "style": {
     }
@@ -367,7 +358,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     ],
     "depth": 0,
     "height": 0,
-    "italic": 0,
     "maxFontSize": 0,
     "style": {
       "marginRight": "0.2222em"
@@ -398,7 +388,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     ],
     "depth": 0,
     "height": 0,
-    "italic": 0,
     "maxFontSize": 0,
     "style": {
       "marginRight": "0.2222em"
@@ -433,7 +422,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
         ],
         "depth": 0.13333,
         "height": 0.63333,
-        "italic": 0,
         "maxFontSize": 1,
         "style": {
         }
@@ -444,7 +432,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     ],
     "depth": 0.13333,
     "height": 0.63333,
-    "italic": 0,
     "maxFontSize": 1,
     "style": {
     }
@@ -459,7 +446,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     ],
     "depth": 0,
     "height": 0,
-    "italic": 0,
     "maxFontSize": 0,
     "style": {
       "marginRight": "0.2222em"
@@ -509,7 +495,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
         ],
         "depth": 0.19444,
         "height": 0.44444,
-        "italic": 0,
         "maxFontSize": 1,
         "style": {
         }
@@ -520,7 +505,6 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     ],
     "depth": 0.19444,
     "height": 0.44444,
-    "italic": 0,
     "maxFontSize": 1,
     "style": {
     }
@@ -624,7 +608,6 @@ exports[`A parser that does not throw on unsupported commands should build katex
   ],
   "depth": 0,
   "height": 0,
-  "italic": 0,
   "maxFontSize": 0,
   "style": {
   }
@@ -672,7 +655,6 @@ exports[`An HTML extension builder should not affect spacing 1`] = `
         ],
         "depth": 0,
         "height": 0,
-        "italic": 0,
         "maxFontSize": 0,
         "style": {
           "marginRight": "0.2222em"
@@ -702,7 +684,6 @@ exports[`An HTML extension builder should not affect spacing 1`] = `
         ],
         "depth": 0,
         "height": 0,
-        "italic": 0,
         "maxFontSize": 0,
         "style": {
           "marginRight": "0.2222em"
@@ -714,7 +695,6 @@ exports[`An HTML extension builder should not affect spacing 1`] = `
     ],
     "depth": 0.08333,
     "height": 0.58333,
-    "italic": 0,
     "maxFontSize": 1,
     "style": {
     }
@@ -765,7 +745,6 @@ exports[`An HTML extension builder should render with trust and strict setting 1
     ],
     "depth": 0,
     "height": 0.43056,
-    "italic": 0,
     "maxFontSize": 1,
     "style": {
     }
@@ -796,7 +775,6 @@ exports[`An HTML extension builder should render with trust and strict setting 1
     ],
     "depth": 0,
     "height": 0.43056,
-    "italic": 0,
     "maxFontSize": 1,
     "style": {
     }
@@ -827,7 +805,6 @@ exports[`An HTML extension builder should render with trust and strict setting 1
     ],
     "depth": 0,
     "height": 0.43056,
-    "italic": 0,
     "maxFontSize": 1,
     "style": {
     }
@@ -859,7 +836,6 @@ exports[`An HTML extension builder should render with trust and strict setting 1
     ],
     "depth": 0,
     "height": 0.43056,
-    "italic": 0,
     "maxFontSize": 1,
     "style": {
     }
@@ -1053,7 +1029,6 @@ exports[`An includegraphics builder should not render without trust setting 1`] 
     ],
     "depth": 0.25,
     "height": 0.75,
-    "italic": 0,
     "maxFontSize": 1,
     "style": {
       "color": "#cc0000"
@@ -1428,7 +1403,6 @@ exports[`href and url commands should not affect spacing around 1`] = `
     ],
     "depth": 0,
     "height": 0,
-    "italic": 0,
     "maxFontSize": 0,
     "style": {
       "marginRight": "0.2222em"
@@ -1463,7 +1437,6 @@ exports[`href and url commands should not affect spacing around 1`] = `
         ],
         "depth": 0,
         "height": 0,
-        "italic": 0,
         "maxFontSize": 0,
         "style": {
           "marginRight": "0.2222em"

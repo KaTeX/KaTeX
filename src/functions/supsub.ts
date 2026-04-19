@@ -127,7 +127,8 @@ defineFunctionBuilders({
             if (base instanceof SymbolNode || isOiint) {
                 // SymbolNode has .italic natively; for \oiint/\oiiint the
                 // op builder stores .italic on the wrapping Span.
-                marginLeft = makeEm(-(base as SymbolNode | Span<HtmlDomNode>).italic);
+                marginLeft = makeEm(
+                    -((base as SymbolNode | Span<HtmlDomNode>).italic ?? 0));
             }
         }
 
