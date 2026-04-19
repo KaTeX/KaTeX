@@ -124,8 +124,9 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
             options.fontMetrics().axisHeight;
 
         // The slant of the symbol is just its italic correction.
-        // Both SymbolNode and Span (for \oiint/\oiiint) carry .italic.
-        slant = base.italic;
+        // SymbolNode carries .italic natively; Span (for \oiint/\oiiint)
+        // only has it set when nonzero, so default to 0.
+        slant = base.italic ?? 0;
     }
 
     if (hasLimits) {
