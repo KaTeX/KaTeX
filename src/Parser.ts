@@ -1,7 +1,8 @@
 /* eslint no-constant-condition:0 */
 import functions from "./functions";
 import MacroExpander, {implicitCommands} from "./MacroExpander";
-import symbols, {ATOMS, isAtom, extraLatin} from "./symbols";
+import symbols, {extraLatin} from "./symbols";
+import {isAtom} from "./atoms";
 import {validUnit} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import ParseError from "./ParseError";
@@ -17,7 +18,7 @@ import unicodeSymbols from /*preval*/ "./unicodeSymbols";
 
 import type {NodeType, ParseNode, AnyParseNode, SymbolParseNode,
     UnsupportedCmdParseNode} from "./parseNode";
-import type {Group} from "./symbols";
+import type {Group} from "./atoms";
 import type {Mode, ArgType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
 import type {EnvSpec} from "./defineEnvironment";

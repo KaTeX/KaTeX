@@ -1,8 +1,6 @@
 import {defineFunctionBuilders} from "../defineFunction";
 import {makeSpan, makeVList} from "../buildCommon";
-import {Span, SymbolNode} from "../domTree";
-
-import type {HtmlDomNode} from "../domTree";
+import {Span, SymbolNode, type HtmlDomNode} from "../domTree";
 import {isCharacterBox} from "../utils";
 import {MathNode} from "../mathMLTree";
 import {makeEm} from "../units";

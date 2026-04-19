@@ -103,9 +103,7 @@ export const stretchyMathML = function(label: string): MathNode {
 // That is, inside the font, that arrowhead is 522 units tall, which
 // corresponds to 0.522 em inside the document.
 
-type SvgData3 = [string[], number, number];
-type SvgData4 = [[string], number, number, string];
-type SvgData = SvgData3 | SvgData4;
+type SvgData = [string[], number, number, string?];
 
 const katexImagesData: {[key: string]: SvgData} = {
                    //   path(s), minWidth, height, align

@@ -16,12 +16,8 @@
  * accepted in (e.g. "math" or "text").
  */
 
-import {ATOMS, NON_ATOMS, isAtom} from "./atoms";
-import type {Atom, Group, NonAtom} from "./atoms";
+import type {Group} from "./atoms";
 import type {Mode} from "./types";
-
-export {ATOMS, NON_ATOMS, isAtom};
-export type {Atom, Group, NonAtom};
 
 type Font = "main" | "ams";
 
