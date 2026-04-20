@@ -20,16 +20,27 @@ const parseTree = function(
     if (!(typeof toParse === 'string' || toParse instanceof String)) {
         throw new TypeError('KaTeX can only parse string typed expression');
     }
-    const parser = new Parser(toParse as string, settings);
+    const expression = settings.siunitx
+        ? `\\sisetup{${settings.siunitx}}${toParse as string}`
+        : (toParse as string);
+    const parser = new Parser(expression, settings);
 
     // Blank out any \df@tag to avoid spurious "Duplicate \tag" errors
     delete parser.gullet.macros.current["\\df@tag"];
 
     let tree = parser.parse();
 
+    if (settings.siunitx && tree.length > 0) {
+        const firstNode = tree[0];
+        if (firstNode.type === "siunitx" && firstNode.command === "\\sisetup") {
+            tree = tree.slice(1);
+        }
+    }
+
     // Prevent a color definition from persisting between calls to katex.render().
     delete parser.gullet.macros.current["\\current@color"];
     delete parser.gullet.macros.current["\\color"];
+    delete parser.gullet.macros.current["\\@siunitx@options"];
 
     // If the input used \tag, it will set the \df@tag macro to the tag.
     // In this case, we separately parse the tag and wrap the tree.

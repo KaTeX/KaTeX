@@ -195,6 +195,13 @@ export interface KatexOptions {
      * @default false
      */
     globalGroup?: boolean;
+    /**
+     * Default siunitx options, equivalent to prepending
+     * `\sisetup{...}` to each rendered expression.
+     *
+     * @default ""
+     */
+    siunitx?: string;
 }
 
 /**

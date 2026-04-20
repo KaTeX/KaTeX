@@ -70,6 +70,7 @@ You can provide an object of options as the last argument to [`katex.render` and
   - Allow certain commands with specific protocols: `trust: (context) => ['\\url', '\\href'].includes(context.command) && ['http', 'https', '_relative'].includes(context.protocol)`
 
 - `globalGroup`: `boolean`  (default: `false`). Run KaTeX code in the global group. As a consequence, macros defined at the top level by `\def` and `\newcommand` are added to the `macros` argument and can be used in subsequent render calls. In LaTeX, constructs such as `\begin{equation}` and `$$` create a local group and prevent definitions other than `\gdef` from becoming visible outside of those blocks, so this is KaTeX's default behavior.
+- `siunitx`: `string` (default: `""`). Default siunitx configuration, equivalent to prepending `\sisetup{...}` at the start of each render call. Example: `siunitx: "group-separator={,},group-minimum-digits=4,per-mode=reciprocal"`.
 
 For example:
 
