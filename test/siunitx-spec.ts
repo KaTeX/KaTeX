@@ -7,6 +7,15 @@ import {r} from "./helpers";
 const katex: any = katexOrig;
 
 describe("siunitx-compatible commands", function() {
+    it("should report invalid settings.siunitx brace balance clearly", function() {
+        expect(() => katex.renderToString(
+            String.raw`\num{1}`,
+            {siunitx: "group-separator={,}}"},
+        )).toThrow(
+            "Invalid `siunitx` option: unbalanced braces in settings.siunitx.",
+        );
+    });
+
     it("should parse basic siunitx commands", function() {
         expect`\num{12345}`.toParse();
         expect`\numlist{1;2;3}`.toParse();

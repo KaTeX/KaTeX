@@ -16,14 +16,26 @@ type KaTeXWithSiunitxInternals = typeof katex & {
 };
 
 const k = katex as KaTeXWithSiunitxInternals;
-if (!k.__siunitxInternals) {
-    throw new Error(
-        "KaTeX siunitx internals are unavailable. " +
-        "Load the matching core KaTeX build first.",
-    );
-}
+type SiunitxInternals = NonNullable<KaTeXWithSiunitxInternals["__siunitxInternals"]>;
 
-const {defineFunction, makeSpan, MathNode, html, mml, ParseError} = k.__siunitxInternals;
+let defineFunction: SiunitxInternals["defineFunction"];
+let makeSpan: SiunitxInternals["makeSpan"];
+let MathNode: SiunitxInternals["MathNode"];
+let html: SiunitxInternals["html"];
+let mml: SiunitxInternals["mml"];
+let ParseError: SiunitxInternals["ParseError"];
+
+const ensureSiunitxInternals = (): void => {
+    const internals = k.__siunitxInternals;
+    if (!internals) {
+        throw new Error(
+            "KaTeX siunitx internals are unavailable. " +
+            "Load the matching core KaTeX build first.",
+        );
+    }
+
+    ({defineFunction, makeSpan, MathNode, html, mml, ParseError} = internals);
+};
 
 /**
  * Practical siunitx-compatible support for:
@@ -757,6 +769,7 @@ const getCurrentOptions = (parser: Parser): SiunitxOptions => {
 };
 
 const setCurrentOptions = (parser: Parser, options: SiunitxOptions) => {
+    // Declarations (\DeclareSI*) should persist globally, matching LaTeX behavior.
     parser.gullet.macros.set(SIUNITX_OPTIONS_MACRO, JSON.stringify(options), true);
 };
 
@@ -4638,6 +4651,7 @@ export const registerSiunitx = () => {
     if (siunitxRegistered) {
         return;
     }
+    ensureSiunitxInternals();
     siunitxRegistered = true;
 
     defineFunction({
@@ -4661,6 +4675,7 @@ export const registerSiunitx = () => {
                 parser.gullet.future(),
             );
             }
+            // \sisetup is scoped to the current group by default (no global flag).
             parser.gullet.macros.set(SIUNITX_OPTIONS_MACRO, JSON.stringify(options));
 
             const node: SiunitxNode = {

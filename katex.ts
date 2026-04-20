@@ -155,6 +155,10 @@ const __domTree = {
     LineNode,
 };
 
+// Internal bridge used only by the bundled siunitx contrib extension.
+// This is intentionally exposed so contrib/siunitx can register against the
+// same core function registry instance, but it is NOT a supported extension API.
+// Treat as unstable internals; shape/behavior may change without notice.
 const __siunitxInternals = {
     defineFunction,
     makeSpan,
@@ -252,6 +256,13 @@ export default {
      * adds a new macro to builtin macro list
      */
     __defineMacro: defineMacro,
+    /**
+     * Internal bridge for bundled contrib/siunitx registration.
+     *
+     * NOTE: This is unstable and not a general-purpose extension point.
+     * It exists as an implementation detail so the siunitx contrib package can
+     * access core internals in the same module instance.
+     */
     __siunitxInternals,
     /**
      * Expose the dom tree node types, which can be useful for type checking nodes.

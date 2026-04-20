@@ -34,3 +34,4 @@ import "katex/contrib/siunitx";
 
 - The `siunitx` render option (for example `siunitx: "group-separator={,}"`) requires this extension to be loaded first.
 - The extension registers its commands on the KaTeX instance when imported.
+- KaTeX exposes `__siunitxInternals` so this extension can register into core internals. This is an unstable internal bridge for `contrib/siunitx` only, not a public/general extension API.

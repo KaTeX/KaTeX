@@ -11,6 +11,37 @@ import functions from "./functions";
 import type Settings from "./Settings";
 import type {AnyParseNode} from "./parseNode";
 
+const hasBalancedSiunitxBraces = (siunitxSettings: string): boolean => {
+    let depth = 0;
+
+    for (let i = 0; i < siunitxSettings.length; i++) {
+        const char = siunitxSettings[i];
+        if (char !== "{" && char !== "}") {
+            continue;
+        }
+
+        // In TeX, \{ and \} are control symbols and do not open/close groups.
+        let backslashCount = 0;
+        for (let j = i - 1; j >= 0 && siunitxSettings[j] === "\\"; j--) {
+            backslashCount++;
+        }
+        if (backslashCount % 2 === 1) {
+            continue;
+        }
+
+        if (char === "{") {
+            depth++;
+        } else {
+            depth--;
+            if (depth < 0) {
+                return false;
+            }
+        }
+    }
+
+    return depth === 0;
+};
+
 /**
  * Parses an expression using a Parser, then returns the parsed result.
  */
@@ -24,6 +55,11 @@ const parseTree = function(
     if (settings.siunitx && !functions["\\sisetup"]) {
         throw new ParseError(
             "The `siunitx` option requires loading `katex/contrib/siunitx` first.",
+        );
+    }
+    if (settings.siunitx && !hasBalancedSiunitxBraces(settings.siunitx)) {
+        throw new ParseError(
+            "Invalid `siunitx` option: unbalanced braces in settings.siunitx.",
         );
     }
     const expression = settings.siunitx
