@@ -66,6 +66,14 @@ type AngleMode = "input" | "arc" | "decimal";
 type DurationMode = "input" | "component" | "decimal";
 type QualifierMode = "subscript" | "bracket";
 type PrefixMode = "input" | "combine-exponent" | "extract-exponent";
+type DeclaredUnit = {
+    symbol: string;
+    options: string;
+};
+type DeclaredPrefix = {
+    symbol: string;
+    exponent: number;
+};
 
 type SiunitxOptions = {
     "detect-all": boolean;
@@ -141,6 +149,11 @@ type SiunitxOptions = {
     "power-half-as-sqrt": boolean;
     "prefix-mode": PrefixMode;
     "extract-mass-in-kilograms": boolean;
+    "__declared-units__"?: Record<string, DeclaredUnit>;
+    "__declared-prefixes__"?: Record<string, DeclaredPrefix>;
+    "__declared-powers-before__"?: Record<string, string>;
+    "__declared-powers-after__"?: Record<string, string>;
+    "__declared-qualifiers__"?: Record<string, string>;
 };
 
 const DEFAULT_OPTIONS: SiunitxOptions = {
@@ -217,6 +230,11 @@ const DEFAULT_OPTIONS: SiunitxOptions = {
     "power-half-as-sqrt": false,
     "prefix-mode": "input",
     "extract-mass-in-kilograms": true,
+    "__declared-units__": {},
+    "__declared-prefixes__": {},
+    "__declared-powers-before__": {},
+    "__declared-powers-after__": {},
+    "__declared-qualifiers__": {},
 };
 
 const SIUNITX_OPTIONS_MACRO = "\\@siunitx@options";
@@ -522,6 +540,7 @@ const parseOptions = (src: string, base?: SiunitxOptions): SiunitxOptions => {
             case "inter-unit-product":
                 opts["inter-unit-product"] = parseTextLikeOption(rawValue);
                 break;
+            case "quantity-product":
             case "number-unit-product":
             case "number-unit-separator":
                 opts["number-unit-separator"] = parseTextLikeOption(rawValue);
@@ -720,6 +739,53 @@ const getCurrentOptions = (parser: Parser): SiunitxOptions => {
     } catch {
         return Object.assign({}, DEFAULT_OPTIONS);
     }
+};
+
+const setCurrentOptions = (parser: Parser, options: SiunitxOptions) => {
+    parser.gullet.macros.set(SIUNITX_OPTIONS_MACRO, JSON.stringify(options), true);
+};
+
+const parseControlSequenceName = (raw: string, command: string, label: string): string => {
+    const s = raw.trim();
+    if (!s.startsWith("\\") || /^\\[{}]$/u.test(s)) {
+        throw new Error(`${command} ${label} must be a control sequence`);
+    }
+    return s.slice(1);
+};
+
+const normalizeDeclaredUnitSymbol = (raw: string): string => {
+    return raw
+        .replace(/\\text\s*\{\s*\\textdegree\s*\}/gu, "°")
+        .replace(/\\textdegree/gu, "°")
+        .trim();
+};
+
+const canonicalOptionKey = (key: string): string => {
+    switch (key) {
+        case "number-unit-product":
+        case "quantity-product":
+            return "number-unit-separator";
+        case "range-phrase-text":
+            return "range-phrase";
+        default:
+            return key;
+    }
+};
+
+const extractOptionKeys = (src: string): Set<string> => {
+    const keys = new Set<string>();
+    const s = (src || "").trim();
+    if (!s) {
+        return keys;
+    }
+    for (const item of splitOptionItems(s)) {
+        const eq = item.indexOf("=");
+        const key = canonicalOptionKey((eq >= 0 ? item.slice(0, eq) : item).trim());
+        if (key) {
+            keys.add(key);
+        }
+    }
+    return keys;
 };
 
 const parseLiteralNumberBody = (
@@ -1930,12 +1996,13 @@ const parseComplexInput = (raw: string, opts: SiunitxOptions): ComplexValue | nu
 };
 
 const formatComplexRootOutput = (opts: SiunitxOptions): string => {
+    const ctx = getUnitRuntimeContext(opts);
     const out = parseTextLikeOption(opts["output-complex-root"]).trim();
     if (!out) {
         return "i";
     }
     if (out.startsWith("\\")) {
-        const rendered = renderUnitToken(out);
+        const rendered = renderUnitToken(out, ctx);
         return rendered || out.slice(1);
     }
     return out;
@@ -1953,9 +2020,10 @@ const formatComplexPhaseSymbol = (opts: SiunitxOptions): string => {
 };
 
 const formatComplexDegreeSymbol = (opts: SiunitxOptions): string => {
+    const ctx = getUnitRuntimeContext(opts);
     const raw = opts["complex-symbol-degree"].trim() || "\\degree";
     if (raw.startsWith("\\")) {
-        const rendered = renderUnitToken(raw);
+        const rendered = renderUnitToken(raw, ctx);
         return rendered || "°";
     }
     return parseTextLikeOption(raw) || "°";
@@ -2349,7 +2417,56 @@ const UNIT_PREFIX_MAP: Record<string, string> = {
     quecto: "q",
 };
 
-const renderUnitToken = (token: string): string => {
+type UnitRuntimeContext = {
+    unitMap: Record<string, string>;
+    prefixMap: Record<string, string>;
+    prefixExponentByMacro: Record<string, number>;
+    prefixMacroByExponent: Record<number, string>;
+    declaredUnits: Record<string, DeclaredUnit>;
+    declaredPowersBefore: Record<string, string>;
+    declaredPowersAfter: Record<string, string>;
+    declaredQualifiers: Record<string, string>;
+};
+
+const getUnitRuntimeContext = (opts: SiunitxOptions): UnitRuntimeContext => {
+    const declaredUnits = opts["__declared-units__"] || {};
+    const declaredPrefixes = opts["__declared-prefixes__"] || {};
+    const unitMap = Object.assign({}, UNIT_MACRO_MAP);
+    const prefixMap = Object.assign({}, UNIT_PREFIX_MAP);
+    const prefixExponentByMacro = Object.assign({}, PREFIX_EXPONENT_BY_MACRO);
+    const prefixMacroByExponent = Object.assign({}, PREFIX_MACRO_BY_EXPONENT);
+    for (const name of Object.keys(declaredUnits)) {
+        if (name) {
+            unitMap[name] = declaredUnits[name].symbol;
+        }
+    }
+    for (const name of Object.keys(declaredPrefixes)) {
+        if (!name) {
+            continue;
+        }
+        const entry = declaredPrefixes[name];
+        prefixMap[name] = entry.symbol;
+        prefixExponentByMacro[name] = entry.exponent;
+        if (prefixMacroByExponent[entry.exponent] == null) {
+            prefixMacroByExponent[entry.exponent] = `\\${name}`;
+        }
+    }
+    return {
+        unitMap,
+        prefixMap,
+        prefixExponentByMacro,
+        prefixMacroByExponent,
+        declaredUnits,
+        declaredPowersBefore: Object.assign({}, opts["__declared-powers-before__"] || {}),
+        declaredPowersAfter: Object.assign({}, opts["__declared-powers-after__"] || {}),
+        declaredQualifiers: Object.assign({}, opts["__declared-qualifiers__"] || {}),
+    };
+};
+
+const renderUnitToken = (
+    token: string,
+    ctx: UnitRuntimeContext,
+): string => {
     if (!token.startsWith("\\")) {
         return token;
     }
@@ -2360,18 +2477,18 @@ const renderUnitToken = (token: string): string => {
         return "/";
     }
 
-    if (UNIT_MACRO_MAP[name]) {
-        return UNIT_MACRO_MAP[name];
+    if (ctx.unitMap[name]) {
+        return ctx.unitMap[name];
     }
 
     // Prefix+unit shorthand support e.g. \km \ms etc.
-    for (const p of Object.keys(UNIT_PREFIX_MAP).sort(
+    for (const p of Object.keys(ctx.prefixMap).sort(
         (a, b) => b.length - a.length,
     )) {
         if (name.startsWith(p) && name.length > p.length) {
             const rest = name.slice(p.length);
-            if (UNIT_MACRO_MAP[rest]) {
-                return `${UNIT_PREFIX_MAP[p]}${UNIT_MACRO_MAP[rest]}`;
+            if (ctx.unitMap[rest]) {
+                return `${ctx.prefixMap[p]}${ctx.unitMap[rest]}`;
             }
         }
     }
@@ -2393,6 +2510,7 @@ const tokenizeUnitInput = (raw: string): string[] => {
 const splitFractionUnitParts = (
     raw: string,
     opts: SiunitxOptions,
+    ctx: UnitRuntimeContext,
 ): {
     numeratorRaw: string;
     denominatorRaw: string;
@@ -2409,7 +2527,7 @@ const splitFractionUnitParts = (
             return false;
         }
         const name = token.slice(1);
-        return !!UNIT_PREFIX_MAP[name] && !UNIT_MACRO_MAP[name];
+        return !!ctx.prefixMap[name] && !ctx.unitMap[name];
     };
     const readToThePower = (
         start: number,
@@ -2526,6 +2644,16 @@ const splitFractionUnitParts = (
                 }
                 continue;
             }
+            if (tk.startsWith("\\")) {
+                const name = tk.slice(1);
+                if (ctx.declaredQualifiers[name] ||
+                    ctx.declaredPowersBefore[name] ||
+                    ctx.declaredPowersAfter[name]) {
+                    itemTokens.push(tk);
+                    i++;
+                    continue;
+                }
+            }
             break;
         }
 
@@ -2613,19 +2741,20 @@ const PREFIX_MACRO_BY_EXPONENT: Record<number, string> = {
 
 const getCombinedPrefixBase = (
     token: string,
+    ctx: UnitRuntimeContext,
 ): {prefixExp: number; baseToken: string} | null => {
     if (!token.startsWith("\\")) {
         return null;
     }
     const name = token.slice(1);
-    for (const key of Object.keys(PREFIX_EXPONENT_BY_MACRO).sort(
+    for (const key of Object.keys(ctx.prefixExponentByMacro).sort(
         (a, b) => b.length - a.length,
     )) {
         if (name.startsWith(key) && name.length > key.length) {
             const rest = name.slice(key.length);
-            if (UNIT_MACRO_MAP[rest]) {
+            if (ctx.unitMap[rest]) {
                 return {
-                    prefixExp: PREFIX_EXPONENT_BY_MACRO[key],
+                    prefixExp: ctx.prefixExponentByMacro[key],
                     baseToken: `\\${rest}`,
                 };
             }
@@ -2724,6 +2853,7 @@ const applyPrefixModeToQuantity = (
     rawNumber: string,
     rawUnit: string,
     opts: SiunitxOptions,
+    ctx: UnitRuntimeContext,
 ): {number: string; unit: string} => {
     if (opts["prefix-mode"] === "input" || !rawUnit.trim()) {
         return {number: rawNumber, unit: rawUnit};
@@ -2746,19 +2876,19 @@ const applyPrefixModeToQuantity = (
                 continue;
             }
             const name = tk.slice(1);
-            if (PREFIX_EXPONENT_BY_MACRO[name] != null && !UNIT_MACRO_MAP[name]) {
+            if (ctx.prefixExponentByMacro[name] != null && !ctx.unitMap[name]) {
                 pendingPrefixIndex = i;
-                pendingPrefixExp = PREFIX_EXPONENT_BY_MACRO[name];
+                pendingPrefixExp = ctx.prefixExponentByMacro[name];
                 continue;
             }
             if (name === "per" || name === "of" || name === "squared" ||
                 name === "cubed" || name === "tothe") {
                 continue;
             }
-            const combined = getCombinedPrefixBase(tk);
+            const combined = getCombinedPrefixBase(tk, ctx);
             const currentPrefix = combined ? combined.prefixExp : pendingPrefixExp;
             const nextPrefix = currentPrefix + parsed.exponent;
-            const newPrefixToken = PREFIX_MACRO_BY_EXPONENT[nextPrefix];
+            const newPrefixToken = ctx.prefixMacroByExponent[nextPrefix];
             if (newPrefixToken == null) {
                 break;
             }
@@ -2788,8 +2918,8 @@ const applyPrefixModeToQuantity = (
         const tk = tokens[i];
         if (tk.startsWith("\\")) {
             const name = tk.slice(1);
-            if (PREFIX_EXPONENT_BY_MACRO[name] != null && !UNIT_MACRO_MAP[name]) {
-                pendingPrefixExp = PREFIX_EXPONENT_BY_MACRO[name];
+            if (ctx.prefixExponentByMacro[name] != null && !ctx.unitMap[name]) {
+                pendingPrefixExp = ctx.prefixExponentByMacro[name];
                 pendingPrefixActive = true;
                 continue;
             }
@@ -2804,7 +2934,7 @@ const applyPrefixModeToQuantity = (
             outTokens.push(tk);
             continue;
         }
-        const combined = getCombinedPrefixBase(tk);
+        const combined = getCombinedPrefixBase(tk, ctx);
         const combinedExp = combined ? combined.prefixExp : 0;
         const baseToken = combined ? combined.baseToken : tk;
         const totalPrefixExp = (pendingPrefixActive ? pendingPrefixExp : 0) + combinedExp;
@@ -2907,7 +3037,18 @@ const reorderPowerPositiveFirst = (formatted: string): string => {
     return [...positive, ...negative].join(" ");
 };
 
-const formatUnit = (raw: string, opts: SiunitxOptions, powerFactor = 1): string => {
+const formatUnitInternal = (
+    raw: string,
+    opts: SiunitxOptions,
+    powerFactor: number,
+    ctx: UnitRuntimeContext,
+    lockedOptionKeys: Set<string>,
+    recursionDepth = 0,
+    allowLiteralUnits = false,
+): string => {
+    if (recursionDepth > 8) {
+        return raw.replace(/\\/g, "").replace(/[{}]/g, "").replace(/\s+/g, " ").trim();
+    }
     if (!opts["parse-units"]) {
         return raw.replace(/\\/g, "").replace(/[{}]/g, "").replace(/\s+/g, " ").trim();
     }
@@ -2916,15 +3057,31 @@ const formatUnit = (raw: string, opts: SiunitxOptions, powerFactor = 1): string 
         perMode = resolveSingleSymbolPerMode(raw, opts);
     }
     if (perMode === "symbol") {
-        const parts = splitFractionUnitParts(raw, opts);
+        const parts = splitFractionUnitParts(raw, opts, ctx);
         if (parts) {
             const baseOpts: SiunitxOptions = Object.assign(
                 {},
                 opts,
                 {"per-mode": "power" as PerMode},
             );
-            const numerator = formatUnit(parts.numeratorRaw, baseOpts, powerFactor);
-            const denominator = formatUnit(parts.denominatorRaw, baseOpts, powerFactor);
+            const numerator = formatUnitInternal(
+                parts.numeratorRaw,
+                baseOpts,
+                powerFactor,
+                ctx,
+                lockedOptionKeys,
+                recursionDepth,
+                allowLiteralUnits,
+            );
+            const denominator = formatUnitInternal(
+                parts.denominatorRaw,
+                baseOpts,
+                powerFactor,
+                ctx,
+                lockedOptionKeys,
+                recursionDepth,
+                allowLiteralUnits,
+            );
             const perSymbol = opts["per-symbol"] || "/";
             const wrappedDenominator = (opts["bracket-unit-denominator"] &&
                 parts.denominatorCount > 1)
@@ -2934,7 +3091,7 @@ const formatUnit = (raw: string, opts: SiunitxOptions, powerFactor = 1): string 
         }
     }
     if (perMode === "fraction") {
-        const parts = splitFractionUnitParts(raw, opts);
+        const parts = splitFractionUnitParts(raw, opts, ctx);
         if (parts) {
             const baseOpts: SiunitxOptions = Object.assign(
                 {},
@@ -2943,7 +3100,15 @@ const formatUnit = (raw: string, opts: SiunitxOptions, powerFactor = 1): string 
             );
             // Real fractions are built in the builder path; text fallback should
             // stay readable and never emit dash separators.
-            return formatUnit(raw, baseOpts, powerFactor);
+            return formatUnitInternal(
+                raw,
+                baseOpts,
+                powerFactor,
+                ctx,
+                lockedOptionKeys,
+                recursionDepth,
+                allowLiteralUnits,
+            );
         }
     }
 
@@ -2958,6 +3123,7 @@ const formatUnit = (raw: string, opts: SiunitxOptions, powerFactor = 1): string 
     let denominatorStart = -1;
     let denominatorTokenCount = 0;
     let pendingPrefix: string | null = null;
+    let pendingLeadingPower: string | null = null;
     const mergeBracketDenominator =
         perMode === "symbol" && opts["bracket-unit-denominator"];
     const perSymbol = opts["per-symbol"] || "/";
@@ -3177,15 +3343,51 @@ const formatUnit = (raw: string, opts: SiunitxOptions, powerFactor = 1): string 
 
         if (tk.startsWith("\\")) {
             const name = tk.slice(1);
-            if (UNIT_PREFIX_MAP[name] && !UNIT_MACRO_MAP[name]) {
-                pendingPrefix = UNIT_PREFIX_MAP[name];
+            if (ctx.declaredPowersBefore[name]) {
+                pendingLeadingPower = ctx.declaredPowersBefore[name];
+                continue;
+            }
+            if (ctx.declaredPowersAfter[name]) {
+                appendPowerToLastUnit(ctx.declaredPowersAfter[name]);
+                continue;
+            }
+            if (ctx.declaredQualifiers[name]) {
+                appendQualifierToLastUnit(ctx.declaredQualifiers[name]);
+                continue;
+            }
+            if (ctx.prefixMap[name] && !ctx.unitMap[name]) {
+                pendingPrefix = ctx.prefixMap[name];
                 continue;
             }
         }
 
-        let rendered = renderUnitToken(tk);
+        let rendered = renderUnitToken(tk, ctx);
+        if (tk.startsWith("\\")) {
+            const name = tk.slice(1);
+            const declaredUnit = ctx.declaredUnits[name];
+            if (declaredUnit) {
+                const localOpts = declaredUnit.options
+                    ? parseOptions(declaredUnit.options, opts)
+                    : opts;
+                for (const key of lockedOptionKeys) {
+                    if ((opts as unknown as Record<string, unknown>)[key] != null) {
+                        (localOpts as unknown as Record<string, unknown>)[key] =
+                            (opts as unknown as Record<string, unknown>)[key];
+                    }
+                }
+                rendered = formatUnitInternal(
+                    declaredUnit.symbol,
+                    localOpts,
+                    1,
+                    ctx,
+                    lockedOptionKeys,
+                    recursionDepth + 1,
+                    true,
+                );
+            }
+        }
         if (pendingPrefix) {
-            if (UNIT_MACRO_MAP[rendered] || UNIT_MACRO_MAP[tk.slice(1)]) {
+            if (tk.startsWith("\\") && !!ctx.unitMap[tk.slice(1)]) {
                 rendered = `${pendingPrefix}${rendered}`;
             } else if (rendered.length > 0 && rendered !== "/" && rendered !== "^") {
                 rendered = `${pendingPrefix}${rendered}`;
@@ -3193,6 +3395,7 @@ const formatUnit = (raw: string, opts: SiunitxOptions, powerFactor = 1): string 
             pendingPrefix = null;
         }
         if (opts["forbid-literal-units"] &&
+            !allowLiteralUnits &&
             !tk.startsWith("\\") &&
             /[A-Za-z]/.test(tk)) {
             throw new Error(`Literal unit token "${tk}" is forbidden`);
@@ -3230,6 +3433,10 @@ const formatUnit = (raw: string, opts: SiunitxOptions, powerFactor = 1): string 
         }
 
         out.push(rendered);
+        if (pendingLeadingPower && isUnitLikeToken(rendered)) {
+            appendPowerToLastUnit(pendingLeadingPower);
+            pendingLeadingPower = null;
+        }
     }
 
     if (mergeBracketDenominator &&
@@ -3244,6 +3451,46 @@ const formatUnit = (raw: string, opts: SiunitxOptions, powerFactor = 1): string 
         formatted = reorderPowerPositiveFirst(formatted);
     }
     return formatted;
+};
+
+const formatUnit = (
+    raw: string,
+    opts: SiunitxOptions,
+    powerFactor = 1,
+    lockedOptionKeys?: Set<string>,
+): string => {
+    const ctx = getUnitRuntimeContext(opts);
+    return formatUnitInternal(
+        raw,
+        opts,
+        powerFactor,
+        ctx,
+        lockedOptionKeys || new Set<string>(),
+    );
+};
+
+const resolveUnitScopedOptions = (
+    rawUnit: string,
+    opts: SiunitxOptions,
+    lockedOptionKeys: Set<string>,
+): SiunitxOptions => {
+    const tokens = tokenizeUnitInput((rawUnit || "").trim());
+    if (tokens.length !== 1 || !tokens[0].startsWith("\\")) {
+        return opts;
+    }
+    const name = tokens[0].slice(1);
+    const declared = (opts["__declared-units__"] || {})[name];
+    if (!declared || !declared.options) {
+        return opts;
+    }
+    const resolved = parseOptions(declared.options, opts);
+    for (const key of lockedOptionKeys) {
+        if ((opts as unknown as Record<string, unknown>)[key] != null) {
+            (resolved as unknown as Record<string, unknown>)[key] =
+                (opts as unknown as Record<string, unknown>)[key];
+        }
+    }
+    return resolved;
 };
 
 const validateUnitInput = (raw: string, opts: SiunitxOptions) => {
@@ -3856,9 +4103,10 @@ const joinPieceLists = (
 const getFractionUnitPiece = (
     rawUnit: string,
     opts: SiunitxOptions,
+    ctx: UnitRuntimeContext,
     powerFactor = 1,
 ): FractionPiece | null => {
-    const parts = splitFractionUnitParts(rawUnit || "", opts);
+    const parts = splitFractionUnitParts(rawUnit || "", opts, ctx);
     if (!parts) {
         return null;
     }
@@ -3868,8 +4116,20 @@ const getFractionUnitPiece = (
         {"per-mode": "symbol" as PerMode},
     );
     return {
-        numerator: formatUnit(parts.numeratorRaw, baseOpts, powerFactor),
-        denominator: formatUnit(parts.denominatorRaw, baseOpts, powerFactor),
+        numerator: formatUnitInternal(
+            parts.numeratorRaw,
+            baseOpts,
+            powerFactor,
+            ctx,
+            new Set<string>(),
+        ),
+        denominator: formatUnitInternal(
+            parts.denominatorRaw,
+            baseOpts,
+            powerFactor,
+            ctx,
+            new Set<string>(),
+        ),
     };
 };
 
@@ -3879,14 +4139,16 @@ const maybeGetFractionContentPieces = (
     if (group.options["per-mode"] !== "fraction") {
         return null;
     }
+    const ctx = getUnitRuntimeContext(group.options);
     const sep = group.options["number-unit-separator"];
     const unit = group.unit || "";
     const adjustedSingle = applyPrefixModeToQuantity(
         group.number || "",
         unit,
         group.options,
+        ctx,
     );
-    const fractionUnit = getFractionUnitPiece(adjustedSingle.unit, group.options);
+    const fractionUnit = getFractionUnitPiece(adjustedSingle.unit, group.options, ctx);
     if (!fractionUnit &&
         group.command !== "\\qtylist" &&
         group.command !== "\\qtyproduct" &&
@@ -3964,7 +4226,12 @@ const maybeGetFractionContentPieces = (
                 return fractionUnit ? [`(${numbers})${sep}`, fractionUnit] : null;
             }
             if (mode === "power" || mode === "bracket-power") {
-                const poweredUnit = getFractionUnitPiece(unit, group.options, items.length);
+                const poweredUnit = getFractionUnitPiece(
+                    unit,
+                    group.options,
+                    ctx,
+                    items.length,
+                );
                 if (!poweredUnit) {
                     return null;
                 }
@@ -4070,17 +4337,35 @@ const formatContent = (group: SiunitxNode): string => {
             return formatComplexNum(group.number || "", group.options);
         case "\\si":
         case "\\unit":
-            return formatUnit(group.unit || "", group.options);
+            return formatUnit(
+                group.unit || "",
+                group.options,
+                1,
+                new Set(group.optionKeys || []),
+            );
         case "\\SI":
         case "\\qty": {
+            const lockedOptionKeys = new Set(group.optionKeys || []);
+            const effectiveOptions = resolveUnitScopedOptions(
+                group.unit || "",
+                group.options,
+                lockedOptionKeys,
+            );
+            const ctx = getUnitRuntimeContext(effectiveOptions);
             const adjusted = applyPrefixModeToQuantity(
                 group.number || "",
                 group.unit || "",
-                group.options,
+                effectiveOptions,
+                ctx,
             );
-            const n = formatNum(adjusted.number, group.options);
-            const u = formatUnit(adjusted.unit, group.options);
-            return `${n}${group.options["number-unit-separator"]}${u}`;
+            const n = formatNum(adjusted.number, effectiveOptions);
+            const u = formatUnit(
+                adjusted.unit,
+                effectiveOptions,
+                1,
+                lockedOptionKeys,
+            );
+            return `${n}${effectiveOptions["number-unit-separator"]}${u}`;
         }
         case "\\qtylist":
             return formatQtyList(
@@ -4144,8 +4429,14 @@ const getNoParseNumberNodes = (
         return group.body;
     }
     if (group.command === "\\SI" || group.command === "\\qty") {
-        const u = formatUnit(group.unit || "", group.options);
-        const sep = group.options["number-unit-separator"];
+        const lockedOptionKeys = new Set(group.optionKeys || []);
+        const effectiveOptions = resolveUnitScopedOptions(
+            group.unit || "",
+            group.options,
+            lockedOptionKeys,
+        );
+        const u = formatUnit(group.unit || "", effectiveOptions, 1, lockedOptionKeys);
+        const sep = effectiveOptions["number-unit-separator"];
         return [
             ...group.body,
             ...textToMathNodesWithMode(`${sep}${u}`, mode),
@@ -4225,6 +4516,201 @@ defineFunction({
             body: [],
         };
         return node;
+    },
+    htmlBuilder: siunitxHtmlBuilder,
+    mathmlBuilder: siunitxMathmlBuilder,
+});
+
+defineFunction({
+    type: "siunitx",
+    names: ["\\DeclareSIUnit"],
+    props: {
+        numArgs: 2,
+        numOptionalArgs: 1,
+        argTypes: ["raw", "raw", "raw"],
+        allowedInText: true,
+        primitive: true,
+    },
+    handler: ({parser}, args, optArgs) => {
+        const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
+        const unitRaw = (args[0] as ParseNode<"raw">).string;
+        const symbolRaw = (args[1] as ParseNode<"raw">).string;
+        const options = getCurrentOptions(parser);
+        try {
+            const unitName = parseControlSequenceName(unitRaw, "\\DeclareSIUnit", "unit");
+            // Validate unit-level options at declaration time.
+            parseOptions(opt || "", options);
+            options["__declared-units__"] = Object.assign(
+                {},
+                options["__declared-units__"],
+                {
+                    [unitName]: {
+                        symbol: normalizeDeclaredUnitSymbol(symbolRaw),
+                        options: opt || "",
+                    },
+                },
+            );
+            setCurrentOptions(parser, options);
+        } catch (e) {
+            throw new ParseError(
+                `Invalid \\DeclareSIUnit arguments: ${(e as Error).message}`,
+                parser.gullet.future(),
+            );
+        }
+        return {
+            type: "siunitx",
+            mode: parser.mode,
+            command: "\\DeclareSIUnit",
+            options,
+            body: [],
+        };
+    },
+    htmlBuilder: siunitxHtmlBuilder,
+    mathmlBuilder: siunitxMathmlBuilder,
+});
+
+defineFunction({
+    type: "siunitx",
+    names: ["\\DeclareSIPrefix"],
+    props: {
+        numArgs: 0,
+        allowedInText: true,
+        primitive: true,
+    },
+    handler: ({parser}) => {
+        const options = getCurrentOptions(parser);
+        try {
+            const prefixArg = parser.parseStringGroup("raw", false);
+            const symbolArg = parser.parseStringGroup("raw", false);
+            const exponentArg = parser.parseStringGroup("raw", false);
+            const name = parseControlSequenceName(
+                prefixArg ? prefixArg.text : "",
+                "\\DeclareSIPrefix",
+                "prefix",
+            );
+            const symbol = parseTextLikeOption(symbolArg ? symbolArg.text : "");
+            const exponent = Math.trunc(Number((exponentArg ? exponentArg.text : "").trim()));
+            if (!Number.isFinite(exponent)) {
+                throw new Error("prefix exponent must be a number");
+            }
+            options["__declared-prefixes__"] = Object.assign(
+                {},
+                options["__declared-prefixes__"],
+                {[name]: {symbol, exponent}},
+            );
+            setCurrentOptions(parser, options);
+        } catch (e) {
+            throw new ParseError(
+                `Invalid \\DeclareSIPrefix arguments: ${(e as Error).message}`,
+                parser.gullet.future(),
+            );
+        }
+        return {
+            type: "siunitx",
+            mode: parser.mode,
+            command: "\\DeclareSIPrefix",
+            options,
+            body: [],
+        };
+    },
+    htmlBuilder: siunitxHtmlBuilder,
+    mathmlBuilder: siunitxMathmlBuilder,
+});
+
+defineFunction({
+    type: "siunitx",
+    names: ["\\DeclareSIPower"],
+    props: {
+        numArgs: 0,
+        allowedInText: true,
+        primitive: true,
+    },
+    handler: ({parser}) => {
+        const options = getCurrentOptions(parser);
+        try {
+            const beforeArg = parser.parseStringGroup("raw", false);
+            const afterArg = parser.parseStringGroup("raw", false);
+            const powerArg = parser.parseStringGroup("raw", false);
+            const beforeName = parseControlSequenceName(
+                beforeArg ? beforeArg.text : "",
+                "\\DeclareSIPower",
+                "symbol-before",
+            );
+            const afterName = parseControlSequenceName(
+                afterArg ? afterArg.text : "",
+                "\\DeclareSIPower",
+                "symbol-after",
+            );
+            const power = (powerArg ? powerArg.text : "").trim();
+            if (!power) {
+                throw new Error("power must be non-empty");
+            }
+            options["__declared-powers-before__"] = Object.assign(
+                {},
+                options["__declared-powers-before__"],
+                {[beforeName]: power},
+            );
+            options["__declared-powers-after__"] = Object.assign(
+                {},
+                options["__declared-powers-after__"],
+                {[afterName]: power},
+            );
+            setCurrentOptions(parser, options);
+        } catch (e) {
+            throw new ParseError(
+                `Invalid \\DeclareSIPower arguments: ${(e as Error).message}`,
+                parser.gullet.future(),
+            );
+        }
+        return {
+            type: "siunitx",
+            mode: parser.mode,
+            command: "\\DeclareSIPower",
+            options,
+            body: [],
+        };
+    },
+    htmlBuilder: siunitxHtmlBuilder,
+    mathmlBuilder: siunitxMathmlBuilder,
+});
+
+defineFunction({
+    type: "siunitx",
+    names: ["\\DeclareSIQualifier"],
+    props: {
+        numArgs: 0,
+        allowedInText: true,
+        primitive: true,
+    },
+    handler: ({parser}) => {
+        const options = getCurrentOptions(parser);
+        try {
+            const qualifierArg = parser.parseStringGroup("raw", false);
+            const symbolArg = parser.parseStringGroup("raw", false);
+            const name = parseControlSequenceName(
+                qualifierArg ? qualifierArg.text : "",
+                "\\DeclareSIQualifier",
+                "qualifier",
+            );
+            options["__declared-qualifiers__"] = Object.assign(
+                {},
+                options["__declared-qualifiers__"],
+                {[name]: parseTextLikeOption(symbolArg ? symbolArg.text : "")},
+            );
+            setCurrentOptions(parser, options);
+        } catch (e) {
+            throw new ParseError(
+                `Invalid \\DeclareSIQualifier arguments: ${(e as Error).message}`,
+                parser.gullet.future(),
+            );
+        }
+        return {
+            type: "siunitx",
+            mode: parser.mode,
+            command: "\\DeclareSIQualifier",
+            options,
+            body: [],
+        };
     },
     htmlBuilder: siunitxHtmlBuilder,
     mathmlBuilder: siunitxMathmlBuilder,
@@ -4431,6 +4917,7 @@ defineFunction({
     handler: ({parser, funcName}, args, optArgs) => {
         const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
         const u = (args[0] as ParseNode<"raw">).string;
+        const optionKeys = extractOptionKeys(opt);
 
         let options: SiunitxOptions;
         try {
@@ -4449,6 +4936,7 @@ defineFunction({
             command: (funcName as "\\si" | "\\unit") || "\\si",
             options,
             unit: u,
+            optionKeys: Array.from(optionKeys),
         };
         return node;
     },
@@ -4511,6 +4999,7 @@ defineFunction({
         const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
         const n = (args[0] as ParseNode<"raw">).string;
         const u = (args[1] as ParseNode<"raw">).string;
+        const optionKeys = extractOptionKeys(opt);
 
         let options: SiunitxOptions;
         try {
@@ -4535,6 +5024,7 @@ defineFunction({
             body: !options["parse-numbers"]
                 ? parseLiteralNumberBody(parser, n, command)
                 : undefined,
+            optionKeys: Array.from(optionKeys),
         };
         return node;
     },

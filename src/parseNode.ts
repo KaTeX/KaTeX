@@ -439,7 +439,9 @@ type ParseNodeTypes = {
             "\\si" | "\\unit" |
             "\\SI" | "\\qty" | "\\complexqty" |
             "\\qtylist" | "\\qtyproduct" | "\\ang" |
-            "\\sisetup" | "\\numrange" | "\\SIrange" | "\\qtyrange";
+            "\\sisetup" | "\\numrange" | "\\SIrange" | "\\qtyrange" |
+            "\\DeclareSIUnit" | "\\DeclareSIPrefix" |
+            "\\DeclareSIPower" | "\\DeclareSIQualifier";
         options: {
             "detect-all": boolean;
             "separate-uncertainty": boolean;
@@ -529,6 +531,7 @@ type ParseNodeTypes = {
         unit?: string;
         angle?: string;
         body?: AnyParseNode[];
+        optionKeys?: string[];
     };
     "sizing": {
         type: "sizing";

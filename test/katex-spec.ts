@@ -511,6 +511,10 @@ describe("siunitx-compatible commands", function() {
         expect`\numrange{1}{10}`.toParse();
         expect`\SIrange{1}{10}{\m}`.toParse();
         expect`\qtyrange{2}{8}{\s}`.toParse();
+        expect`\DeclareSIUnit[quantity-product={}]{\degree}{\text{\textdegree}}`.toParse();
+        expect`\DeclareSIPrefix\kilo{k}{3}`.toParse();
+        expect`\DeclareSIPower\quartic\tothefourth{4}`.toParse();
+        expect`\DeclareSIQualifier\polymer{pol}`.toParse();
     });
 
     it("should build basic siunitx commands", function() {
@@ -530,6 +534,10 @@ describe("siunitx-compatible commands", function() {
         expect`\numrange{1}{10}`.toBuild();
         expect`\SIrange{1}{10}{\m}`.toBuild();
         expect`\qtyrange{2}{8}{\s}`.toBuild();
+        expect`\DeclareSIUnit[quantity-product={}]{\degree}{\text{\textdegree}}`.toBuild();
+        expect`\DeclareSIPrefix\kilo{k}{3}`.toBuild();
+        expect`\DeclareSIPower\quartic\tothefourth{4}`.toBuild();
+        expect`\DeclareSIQualifier\polymer{pol}`.toBuild();
     });
 
     it("should support optional siunitx command options", function() {
@@ -763,6 +771,54 @@ describe("siunitx-compatible commands", function() {
         expect(
             katex.renderToString(r`\num[retain-zero-uncertainty]{12.3(0)}`),
         ).toContain(">12.3(0)<");
+    });
+
+    it("should support declared SI units, prefixes, powers, and qualifiers", function() {
+        const degree = katex.renderToString(
+            String.raw`\DeclareSIUnit[quantity-product={}]{\degree}{\text{\textdegree}}\qty{3.1415}{\degree}`,
+        );
+        expect(degree).toContain("3.1415°");
+
+        const degreeOverride = katex.renderToString(
+            String.raw`\DeclareSIUnit[quantity-product={}]{\degree}{\text{\textdegree}}\qty[quantity-product={x}]{67890}{\degree}`,
+        );
+        expect(degreeOverride).toContain("67");
+        expect(degreeOverride).toContain("890x°");
+
+        const prefixed = katex.renderToString(
+            String.raw`\DeclareSIPrefix\mykilo{k}{3}\unit{\mykilo\gram}`,
+        );
+        expect(prefixed).toContain("kg");
+
+        const powers = katex.renderToString(
+            String.raw`\DeclareSIPower\quartic\tothefourth{4}\unit{\kilogram\tothefourth}\ \unit{\quartic\metre}`,
+            {output: "mathml"},
+        );
+        expect(powers).toContain("⁴");
+
+        const qualified = katex.renderToString(
+            String.raw`\DeclareSIQualifier\polymer{pol}\DeclareSIQualifier\catalyst{cat}\qty{1.234}{\gram\polymer\per\mole\catalyst\per\hour}`,
+            {output: "mathml"},
+        );
+        expect(qualified).toContain("pol");
+        expect(qualified).toContain("cat");
+    });
+
+    it("should keep declared qualifiers in denominator units", function() {
+        const markup = katex.renderToString(
+            String.raw`\DeclareSIQualifier\cat{cat}\unit[per-mode=symbol]{\gram\per\mole\cat\per\hour}`,
+        );
+        expect(markup).toContain("g/(");
+        expect(markup).toContain("h)");
+        expect(markup).toContain("cat");
+        expect(markup).not.toMatch(/g(?:\u00a0| )cat/u);
+    });
+
+    it("should allow declared unit literal symbols when literals are forbidden", function() {
+        const markup = katex.renderToString(
+            String.raw`\sisetup{forbid-literal-units=true}\DeclareSIUnit\foo{f}\unit{\foo}`,
+        );
+        expect(markup).toContain(">f<");
     });
 
     it("should evaluate expressions when enabled", function() {
