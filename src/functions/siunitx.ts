@@ -2499,9 +2499,12 @@ const renderUnitToken = (
 
 const tokenizeUnitInput = (raw: string): string[] => {
     const tokens: string[] = [];
-    const re = /\\[A-Za-z]+|\/|\*|\^|\{|\}|\(|\)|[+-]?\d+|[^\s]/g;
+    const normalizedRaw = raw
+        .replace(/\\nobreakspace/g, "~")
+        .replace(/\bnobreakspace\b/g, "~");
+    const re = /\\[A-Za-z]+|\/|\*|\^|_|\{|\}|\(|\)|~|\.|[+-]?\d+|[A-Za-zµΩ]+|[^\s]/g;
     let m: RegExpExecArray | null;
-    while ((m = re.exec(raw)) != null) {
+    while ((m = re.exec(normalizedRaw)) != null) {
         tokens.push(m[0]);
     }
     return tokens;
@@ -2619,6 +2622,34 @@ const splitFractionUnitParts = (
                 i = parsed.end;
                 continue;
             }
+            if (tk === "_") {
+                itemTokens.push(tk);
+                i++;
+                if (i >= tokens.length) {
+                    break;
+                }
+                if (tokens[i] === "{") {
+                    let depth = 0;
+                    while (i < tokens.length) {
+                        const part = tokens[i];
+                        itemTokens.push(part);
+                        if (part === "{") {
+                            depth++;
+                        } else if (part === "}") {
+                            depth--;
+                            if (depth === 0) {
+                                i++;
+                                break;
+                            }
+                        }
+                        i++;
+                    }
+                } else {
+                    itemTokens.push(tokens[i]);
+                    i++;
+                }
+                continue;
+            }
             if (tk === "\\of") {
                 itemTokens.push(tk);
                 i++;
@@ -2675,7 +2706,7 @@ const splitFractionUnitParts = (
             i++;
             continue;
         }
-        if (tk === "*") {
+        if (tk === "*" || tk === "." || tk === "~" || tk === "\\nobreakspace") {
             i++;
             continue;
         }
@@ -3264,6 +3295,76 @@ const formatUnitInternal = (
 
         if (tk === "*") {
             out.push(interUnitProduct);
+            continue;
+        }
+        if (tk === "." || tk === "~" || tk === "\\nobreakspace") {
+            out.push(interUnitProduct);
+            continue;
+        }
+        if (tk === "_") {
+            let qualifier = "";
+            if (tokens[i + 1] === "{") {
+                let j = i + 2;
+                let depth = 1;
+                const parts: string[] = [];
+                while (j < tokens.length && depth > 0) {
+                    const part = tokens[j];
+                    if (part === "{") {
+                        depth++;
+                    } else if (part === "}") {
+                        depth--;
+                        if (depth === 0) {
+                            j++;
+                            break;
+                        }
+                    }
+                    if (depth > 0) {
+                        parts.push(part);
+                    }
+                    j++;
+                }
+                qualifier = parts.join("").trim();
+                i = j - 1;
+            } else if (tokens[i + 1]) {
+                qualifier = tokens[i + 1].replace(/^\\/u, "");
+                i += 1;
+            }
+            if (qualifier) {
+                appendQualifierToLastUnit(qualifier);
+            }
+            continue;
+        }
+        if (tk === "^") {
+            let power = "";
+            if (tokens[i + 1] === "{") {
+                let j = i + 2;
+                let depth = 1;
+                const parts: string[] = [];
+                while (j < tokens.length && depth > 0) {
+                    const part = tokens[j];
+                    if (part === "{") {
+                        depth++;
+                    } else if (part === "}") {
+                        depth--;
+                        if (depth === 0) {
+                            j++;
+                            break;
+                        }
+                    }
+                    if (depth > 0) {
+                        parts.push(part);
+                    }
+                    j++;
+                }
+                power = parts.join("").trim();
+                i = j - 1;
+            } else if (tokens[i + 1]) {
+                power = tokens[i + 1];
+                i += 1;
+            }
+            if (power) {
+                appendPowerToLastUnit(power);
+            }
             continue;
         }
         if (tk === "\\squared") {

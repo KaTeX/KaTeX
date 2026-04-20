@@ -821,6 +821,27 @@ describe("siunitx-compatible commands", function() {
         expect(markup).toContain(">f<");
     });
 
+    it("should parse literal siunitx unit syntax with ., ~, _ and ^", function() {
+        const one = katex.renderToString(
+            String.raw`\unit{kg.m/s^2}`,
+            {output: "mathml"},
+        );
+        expect(one).toContain("kg");
+        expect(one).toContain("m");
+        expect(one).toContain("s");
+        expect(one).toContain("²");
+
+        const two = katex.renderToString(
+            String.raw`\unit{g_{polymer}~mol_{cat}.s^{-1}}`,
+            {output: "mathml"},
+        );
+        expect(two).toContain("polymer");
+        expect(two).toContain("cat");
+        expect(two).toContain("<msub>");
+        expect(two).toContain("⁻");
+        expect(two).not.toContain("nobreakspace");
+    });
+
     it("should evaluate expressions when enabled", function() {
         const direct = katex.renderToString(
             r`\qty[evaluate-expression]{2 + 4 * 3}{\joule}`,
