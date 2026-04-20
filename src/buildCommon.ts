@@ -608,8 +608,10 @@ export const makeVList = function(params: VListParam, options: Options): DomSpan
         // It should render with the height that we define. But Chrome, in
         // contenteditable mode only, treats that span as if it contains some
         // text content. And that min-height over-rides our desired height.
-        // So we put another empty span inside the depth strut span.
-        const emptySpan = makeSpan([], []);
+        // So we put another span inside the depth strut span, and give it a
+        // zero-width space so the inner span is not elided from markup by
+        // Span.canOmit() (same idiom as the topStrut below).
+        const emptySpan = makeSpan([], [new SymbolNode("\u200b")]);
         const depthStrut = makeSpan(["vlist"], [emptySpan]);
         depthStrut.style.height = makeEm(-minPos);
 

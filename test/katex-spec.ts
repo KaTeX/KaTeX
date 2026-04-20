@@ -2450,6 +2450,30 @@ describe("Build-time class filtering", function() {
         // "mathfrak" is a styled class — its span must not be unwrapped
         expect(markup).toContain("<span class=\"mathfrak\">R</span>");
     });
+
+    it("toMarkup() omits a truly-empty span from output", function() {
+        // \cfrac emits a zero-width rightDelim as makeSpan([]); it should
+        // not appear as a literal <span></span> in the markup.
+        const markup = katex.renderToString(r`\cfrac{1}{2}`, {output: "html"});
+        expect(markup).not.toContain("<span></span>");
+    });
+
+    it("toMarkup() omits empty tagSpans for starred environments", function() {
+        // align* puts a makeSpan([], [], options) tagSpan per row; those
+        // were previously emitted as literal <span></span>.
+        const markup = katex.renderToString(
+            r`\begin{align*} a &= b \\ c &= d \end{align*}`,
+            {output: "html", displayMode: true});
+        expect(markup).not.toContain("<span></span>");
+    });
+
+    it("toMarkup() keeps spans that carry only a style attribute", function() {
+        // A span with no class/children but a non-empty style (e.g. pstrut
+        // height) must still be serialized — otherwise layout breaks.
+        const markup = katex.renderToString(r`x_1`, {output: "html"});
+        // The pstrut struts in the vlist carry an inline height style
+        expect(markup).toMatch(/<span class="pstrut"/);
+    });
 });
 
 describe("A parse tree generator", function() {
