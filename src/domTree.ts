@@ -286,11 +286,29 @@ export class Span<ChildType extends VirtualNode> implements HtmlDomNode {
             !filterClasses(this.classes).length;
     }
 
+    /**
+     * Check if this span can be omitted entirely from markup: no children,
+     * no styles, no attributes, and no classes that survive filterClasses
+     * (so the element would emit as a literal `<span></span>` after
+     * build-time class stripping). Only applied in toMarkup() for the same
+     * toNode()/toMarkup() divergence rationale documented on canUnwrap().
+     * See #3353, #3366.
+     */
+    private canOmit(): boolean {
+        return this.children.length === 0 &&
+            Object.keys(this.style).length === 0 &&
+            Object.keys(this.attributes).length === 0 &&
+            !filterClasses(this.classes).length;
+    }
+
     toNode(): HTMLElement {
         return toNode.call(this, "span");
     }
 
     toMarkup(): string {
+        if (this.canOmit()) {
+            return "";
+        }
         if (this.canUnwrap()) {
             let childMarkup = "";
             for (let i = 0; i < this.children.length; i++) {
