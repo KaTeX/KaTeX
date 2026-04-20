@@ -47,23 +47,21 @@ export const htmlBuilder: HtmlBuilderSupSub<"horizBrace"> = (grp, options) => {
             children: [
                 {type: "elem", elem: body},
                 {type: "kern", size: 0.1},
-                {type: "elem", elem: braceBody},
+                {type: "elem", elem: braceBody,
+                    wrapperClasses: ["svg-align"]},
             ],
         }, options);
-        // TODO(ts): Replace this with passing "svg-align" into makeVList.
-        (vlist as any).children[0].children[0].children[1].classes.push("svg-align");
     } else {
         vlist = makeVList({
             positionType: "bottom",
             positionData: body.depth + 0.1 + braceBody.height,
             children: [
-                {type: "elem", elem: braceBody},
+                {type: "elem", elem: braceBody,
+                    wrapperClasses: ["svg-align"]},
                 {type: "kern", size: 0.1},
                 {type: "elem", elem: body},
             ],
         }, options);
-        // TODO(ts): Replace this with passing "svg-align" into makeVList.
-        (vlist as any).children[0].children[0].children[0].classes.push("svg-align");
     }
 
     if (supSubGroup) {

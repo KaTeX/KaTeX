@@ -159,7 +159,8 @@ const traverseNonSpaceNodes = function(
         const partialGroup = checkPartialGroup(node);
 
         if (partialGroup) { // Recursive DFS
-            // TODO(ts): make nodes a $ReadOnlyArray by returning a new array
+            // TODO(ts): partialGroup.children is ReadonlyArray but this
+            // function mutates the array (insertAfter splices into it).
             traverseNonSpaceNodes(partialGroup.children as HtmlDomNode[],
                 callback, prev, null, isRoot);
             continue;
@@ -266,8 +267,8 @@ export const buildGroup = function(
     }
 
     if (groupBuilders[group.type]) {
-        // Call the groupBuilders function
-        // TODO(ts)
+        // TODO(ts): groupBuilders is Record<string, HtmlBuilder<any>>;
+        // a type-safe registry would need a mapped type keyed by NodeType.
         let groupNode: HtmlDomNode = groupBuilders[group.type](group, options);
 
         // If the size changed between the parent and the current group, account

@@ -28,6 +28,21 @@ export const createClass = function(classes: string[]): string {
     return classes.filter(cls => cls).join(" ");
 };
 
+/**
+ * Serialize a CssStyle object into a semicolon-delimited inline-style string
+ * (hyphenating camelCase property names). Returns "" when no property is set.
+ */
+const cssStyleToString = function(style: CssStyle): string {
+    let styles = "";
+    for (const key of Object.keys(style) as Array<keyof CssStyle>) {
+        const value = style[key];
+        if (value !== undefined) {
+            styles += `${hyphenate(key)}:${value};`;
+        }
+    }
+    return styles;
+};
+
 type InitNodeData = {
     classes: string[];
     attributes: Record<string, string>;
@@ -74,9 +89,7 @@ const toNode = function(this: HtmlNodeData, tagName: string): HTMLElement {
     node.className = createClass(this.classes);
 
     // Apply inline styles
-    for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-        (node.style as any)[key] = this.style[key];
-    }
+    Object.assign(node.style, this.style);
 
     // Apply attributes
     for (const attr of Object.keys(this.attributes)) {
@@ -112,13 +125,7 @@ const toMarkup = function(this: HtmlNodeData, tagName: string): string {
         markup += ` class="${escape(createClass(this.classes))}"`;
     }
 
-    let styles = "";
-
-    // Add the styles, after hyphenation
-    for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-        styles += `${hyphenate(key)}:${this.style[key]};`;
-    }
-
+    const styles = cssStyleToString(this.style);
     if (styles) {
         markup += ` style="${escape(styles)}"`;
     }
@@ -211,6 +218,12 @@ export class Span<ChildType extends VirtualNode> implements HtmlDomNode {
     width: number | null | undefined;
     maxFontSize!: number;
     style!: CssStyle;
+    /**
+     * Italic correction carried over from a SymbolNode when the symbol is
+     * wrapped in a vlist (e.g. \oiint / \oiiint).  Read by supsub to adjust
+     * subscript positioning.  Only set when nonzero; use `?? 0` at read sites.
+     */
+    italic?: number;
 
     constructor(
         classes?: string[],
@@ -322,9 +335,7 @@ export class Img implements VirtualNode {
         node.className = "mord";
 
         // Apply inline styles
-        for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-            (node.style as any)[key] = this.style[key];
-        }
+        Object.assign(node.style, this.style);
 
         return node;
     }
@@ -333,11 +344,7 @@ export class Img implements VirtualNode {
         let markup = `<img src="${escape(this.src)}"` +
           ` alt="${escape(this.alt)}"`;
 
-        // Add the styles, after hyphenation
-        let styles = "";
-        for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-            styles += `${hyphenate(key)}:${this.style[key]};`;
-        }
+        const styles = cssStyleToString(this.style);
         if (styles) {
             markup += ` style="${escape(styles)}"`;
         }
@@ -430,9 +437,9 @@ export class SymbolNode implements HtmlDomNode {
             span.className = createClass(this.classes);
         }
 
-        for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
+        if (Object.keys(this.style).length > 0) {
             span = span || document.createElement("span");
-            (span.style as any)[key] = this.style[key];
+            Object.assign(span.style, this.style);
         }
 
         if (span) {
@@ -465,9 +472,7 @@ export class SymbolNode implements HtmlDomNode {
         if (this.italic > 0) {
             styles += `margin-right:${makeEm(this.italic)};`;
         }
-        for (const key of Object.keys(this.style) as Array<keyof CssStyle>) {
-            styles += hyphenate(key) + ":" + this.style[key] + ";";
-        }
+        styles += cssStyleToString(this.style);
 
         if (styles) {
             needsSpan = true;
