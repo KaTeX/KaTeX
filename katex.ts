@@ -11,8 +11,11 @@ import ParseError from "./src/ParseError";
 import Settings, {SETTINGS_SCHEMA} from "./src/Settings";
 
 import {buildTree, buildHTMLTree} from "./src/buildTree";
+import * as html from "./src/buildHTML";
+import * as mml from "./src/buildMathML";
 import parseTree from "./src/parseTree";
 import {makeSpan} from "./src/buildCommon";
+import {MathNode} from "./src/mathMLTree";
 import {
     Span,
     Anchor,
@@ -152,6 +155,15 @@ const __domTree = {
     LineNode,
 };
 
+const __siunitxInternals = {
+    defineFunction,
+    makeSpan,
+    MathNode,
+    html,
+    mml,
+    ParseError,
+};
+
 // ESM exports
 export {
     version,
@@ -166,6 +178,7 @@ export {
     defineSymbol as __defineSymbol,
     defineFunction as __defineFunction,
     defineMacro as __defineMacro,
+    __siunitxInternals,
     __domTree,
 };
 
@@ -239,6 +252,7 @@ export default {
      * adds a new macro to builtin macro list
      */
     __defineMacro: defineMacro,
+    __siunitxInternals,
     /**
      * Expose the dom tree node types, which can be useful for type checking nodes.
      *

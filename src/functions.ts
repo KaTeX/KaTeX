@@ -40,7 +40,6 @@ import "./functions/raisebox";
 import "./functions/relax";
 import "./functions/rule";
 import "./functions/sizing";
-import "./functions/siunitx";
 import "./functions/smash";
 import "./functions/sqrt";
 import "./functions/styling";

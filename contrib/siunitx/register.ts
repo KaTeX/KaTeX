@@ -1,14 +1,29 @@
-import defineFunction from "../defineFunction";
-import {makeSpan} from "../buildCommon";
-import {MathNode} from "../mathMLTree";
-import ParseError from "../ParseError";
+import katex from "katex";
 
-import * as html from "../buildHTML";
-import * as mml from "../buildMathML";
+import type Options from "../../src/Options";
+import type Parser from "../../src/Parser";
+import type {AnyParseNode, ParseNode} from "../../src/parseNode";
 
-import type Options from "../Options";
-import type Parser from "../Parser";
-import type {AnyParseNode, ParseNode} from "../parseNode";
+type KaTeXWithSiunitxInternals = typeof katex & {
+    __siunitxInternals?: {
+        defineFunction: typeof import("../../src/defineFunction").default;
+        makeSpan: typeof import("../../src/buildCommon").makeSpan;
+        MathNode: typeof import("../../src/mathMLTree").MathNode;
+        html: typeof import("../../src/buildHTML");
+        mml: typeof import("../../src/buildMathML");
+        ParseError: typeof import("../../src/ParseError").default;
+    };
+};
+
+const k = katex as KaTeXWithSiunitxInternals;
+if (!k.__siunitxInternals) {
+    throw new Error(
+        "KaTeX siunitx internals are unavailable. " +
+        "Load the matching core KaTeX build first.",
+    );
+}
+
+const {defineFunction, makeSpan, MathNode, html, mml, ParseError} = k.__siunitxInternals;
 
 /**
  * Practical siunitx-compatible support for:
@@ -4037,15 +4052,15 @@ const textToMathNodesWithMode = (
             }
         }
         if (SUPERSCRIPT_REVERSE_MAP[text[i]]) {
-            const last = nodes[nodes.length - 1];
-            if (last && last.type === "supsub") {
-                let j = i;
-                let exponent = "";
-                while (j < text.length && SUPERSCRIPT_REVERSE_MAP[text[j]]) {
-                    exponent += SUPERSCRIPT_REVERSE_MAP[text[j]];
-                    j++;
-                }
-                if (exponent) {
+            let j = i;
+            let exponent = "";
+            while (j < text.length && SUPERSCRIPT_REVERSE_MAP[text[j]]) {
+                exponent += SUPERSCRIPT_REVERSE_MAP[text[j]];
+                j++;
+            }
+            if (exponent) {
+                const last = nodes[nodes.length - 1];
+                if (last && last.type === "supsub") {
                     const supGroup: ParseNode<"ordgroup"> = last.sup &&
                             last.sup.type === "ordgroup"
                         ? last.sup
@@ -4062,6 +4077,37 @@ const textToMathNodesWithMode = (
                         })),
                     );
                     last.sup = supGroup;
+                    i = j;
+                    continue;
+                }
+                const supBody = Array.from(exponent).map((ch) => ({
+                    type: "textord" as const,
+                    mode,
+                    text: ch,
+                }));
+                const baseNodes: ParseNode<"textord">[] = [];
+                while (nodes.length > 0) {
+                    const prev = nodes[nodes.length - 1];
+                    if (prev.type !== "textord" || isBoundary(prev.text)) {
+                        break;
+                    }
+                    baseNodes.unshift(nodes.pop() as ParseNode<"textord">);
+                }
+                if (baseNodes.length > 0) {
+                    nodes.push({
+                        type: "supsub",
+                        mode,
+                        base: {
+                            type: "ordgroup",
+                            mode,
+                            body: baseNodes,
+                        },
+                        sup: {
+                            type: "ordgroup",
+                            mode,
+                            body: supBody,
+                        },
+                    });
                     i = j;
                     continue;
                 }
@@ -4406,7 +4452,7 @@ const maybeBuildFractionUnitMathML = (group: SiunitxNode, options: Options) => {
             options,
         );
     }
-    const children: MathNode[] = [];
+    const children: InstanceType<typeof MathNode>[] = [];
     for (const piece of pieces) {
         if (typeof piece === "string") {
             if (piece) {
@@ -4586,717 +4632,727 @@ const siunitxMathmlBuilder = (group: SiunitxNode, options: Options) => {
 // Command definitions
 // -----------------------------
 
-defineFunction({
-    type: "siunitx",
-    names: ["\\sisetup"],
-    props: {
-        numArgs: 1,
-        argTypes: ["raw"],
-        allowedInText: true,
-        primitive: true,
-    },
-    handler: ({parser}, args) => {
-        const raw = (args[0] as ParseNode<"raw">).string;
-        const baseOptions = getCurrentOptions(parser);
-        let options: SiunitxOptions;
-        try {
-            options = parseOptions(raw, baseOptions);
-        } catch (e) {
-            throw new ParseError(
+let siunitxRegistered = false;
+
+export const registerSiunitx = () => {
+    if (siunitxRegistered) {
+        return;
+    }
+    siunitxRegistered = true;
+
+    defineFunction({
+        type: "siunitx",
+        names: ["\\sisetup"],
+        props: {
+            numArgs: 1,
+            argTypes: ["raw"],
+            allowedInText: true,
+            primitive: true,
+        },
+        handler: ({parser}, args) => {
+            const raw = (args[0] as ParseNode<"raw">).string;
+            const baseOptions = getCurrentOptions(parser);
+            let options: SiunitxOptions;
+            try {
+                options = parseOptions(raw, baseOptions);
+            } catch (e) {
+                throw new ParseError(
                 `Invalid \\sisetup options: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
-        parser.gullet.macros.set(SIUNITX_OPTIONS_MACRO, JSON.stringify(options));
+            }
+            parser.gullet.macros.set(SIUNITX_OPTIONS_MACRO, JSON.stringify(options));
 
-        const node: SiunitxNode = {
-            type: "siunitx",
-            mode: parser.mode,
-            command: "\\sisetup",
-            options,
-            body: [],
-        };
-        return node;
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
+            const node: SiunitxNode = {
+                type: "siunitx",
+                mode: parser.mode,
+                command: "\\sisetup",
+                options,
+                body: [],
+            };
+            return node;
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
 
-defineFunction({
-    type: "siunitx",
-    names: ["\\DeclareSIUnit"],
-    props: {
-        numArgs: 2,
-        numOptionalArgs: 1,
-        argTypes: ["raw", "raw", "raw"],
-        allowedInText: true,
-        primitive: true,
-    },
-    handler: ({parser}, args, optArgs) => {
-        const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
-        const unitRaw = (args[0] as ParseNode<"raw">).string;
-        const symbolRaw = (args[1] as ParseNode<"raw">).string;
-        const options = getCurrentOptions(parser);
-        try {
-            const unitName = parseControlSequenceName(unitRaw, "\\DeclareSIUnit", "unit");
+    defineFunction({
+        type: "siunitx",
+        names: ["\\DeclareSIUnit"],
+        props: {
+            numArgs: 2,
+            numOptionalArgs: 1,
+            argTypes: ["raw", "raw", "raw"],
+            allowedInText: true,
+            primitive: true,
+        },
+        handler: ({parser}, args, optArgs) => {
+            const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
+            const unitRaw = (args[0] as ParseNode<"raw">).string;
+            const symbolRaw = (args[1] as ParseNode<"raw">).string;
+            const options = getCurrentOptions(parser);
+            try {
+                const unitName = parseControlSequenceName(unitRaw, "\\DeclareSIUnit", "unit");
             // Validate unit-level options at declaration time.
-            parseOptions(opt || "", options);
-            options["__declared-units__"] = Object.assign(
+                parseOptions(opt || "", options);
+                options["__declared-units__"] = Object.assign(
                 {},
                 options["__declared-units__"],
-                {
-                    [unitName]: {
-                        symbol: normalizeDeclaredUnitSymbol(symbolRaw),
-                        options: opt || "",
+                    {
+                        [unitName]: {
+                            symbol: normalizeDeclaredUnitSymbol(symbolRaw),
+                            options: opt || "",
+                        },
                     },
-                },
             );
-            setCurrentOptions(parser, options);
-        } catch (e) {
-            throw new ParseError(
+                setCurrentOptions(parser, options);
+            } catch (e) {
+                throw new ParseError(
                 `Invalid \\DeclareSIUnit arguments: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
-        return {
-            type: "siunitx",
-            mode: parser.mode,
-            command: "\\DeclareSIUnit",
-            options,
-            body: [],
-        };
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
+            }
+            return {
+                type: "siunitx",
+                mode: parser.mode,
+                command: "\\DeclareSIUnit",
+                options,
+                body: [],
+            };
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
 
-defineFunction({
-    type: "siunitx",
-    names: ["\\DeclareSIPrefix"],
-    props: {
-        numArgs: 0,
-        allowedInText: true,
-        primitive: true,
-    },
-    handler: ({parser}) => {
-        const options = getCurrentOptions(parser);
-        try {
-            const prefixArg = parser.parseStringGroup("raw", false);
-            const symbolArg = parser.parseStringGroup("raw", false);
-            const exponentArg = parser.parseStringGroup("raw", false);
-            const name = parseControlSequenceName(
+    defineFunction({
+        type: "siunitx",
+        names: ["\\DeclareSIPrefix"],
+        props: {
+            numArgs: 0,
+            allowedInText: true,
+            primitive: true,
+        },
+        handler: ({parser}) => {
+            const options = getCurrentOptions(parser);
+            try {
+                const prefixArg = parser.parseStringGroup("raw", false);
+                const symbolArg = parser.parseStringGroup("raw", false);
+                const exponentArg = parser.parseStringGroup("raw", false);
+                const name = parseControlSequenceName(
                 prefixArg ? prefixArg.text : "",
                 "\\DeclareSIPrefix",
                 "prefix",
             );
-            const symbol = parseTextLikeOption(symbolArg ? symbolArg.text : "");
-            const exponent = Math.trunc(Number((exponentArg ? exponentArg.text : "").trim()));
-            if (!Number.isFinite(exponent)) {
-                throw new Error("prefix exponent must be a number");
-            }
-            options["__declared-prefixes__"] = Object.assign(
+                const symbol = parseTextLikeOption(symbolArg ? symbolArg.text : "");
+                const exponent = Math.trunc(Number((exponentArg ? exponentArg.text : "").trim()));
+                if (!Number.isFinite(exponent)) {
+                    throw new Error("prefix exponent must be a number");
+                }
+                options["__declared-prefixes__"] = Object.assign(
                 {},
                 options["__declared-prefixes__"],
                 {[name]: {symbol, exponent}},
             );
-            setCurrentOptions(parser, options);
-        } catch (e) {
-            throw new ParseError(
+                setCurrentOptions(parser, options);
+            } catch (e) {
+                throw new ParseError(
                 `Invalid \\DeclareSIPrefix arguments: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
-        return {
-            type: "siunitx",
-            mode: parser.mode,
-            command: "\\DeclareSIPrefix",
-            options,
-            body: [],
-        };
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
+            }
+            return {
+                type: "siunitx",
+                mode: parser.mode,
+                command: "\\DeclareSIPrefix",
+                options,
+                body: [],
+            };
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
 
-defineFunction({
-    type: "siunitx",
-    names: ["\\DeclareSIPower"],
-    props: {
-        numArgs: 0,
-        allowedInText: true,
-        primitive: true,
-    },
-    handler: ({parser}) => {
-        const options = getCurrentOptions(parser);
-        try {
-            const beforeArg = parser.parseStringGroup("raw", false);
-            const afterArg = parser.parseStringGroup("raw", false);
-            const powerArg = parser.parseStringGroup("raw", false);
-            const beforeName = parseControlSequenceName(
+    defineFunction({
+        type: "siunitx",
+        names: ["\\DeclareSIPower"],
+        props: {
+            numArgs: 0,
+            allowedInText: true,
+            primitive: true,
+        },
+        handler: ({parser}) => {
+            const options = getCurrentOptions(parser);
+            try {
+                const beforeArg = parser.parseStringGroup("raw", false);
+                const afterArg = parser.parseStringGroup("raw", false);
+                const powerArg = parser.parseStringGroup("raw", false);
+                const beforeName = parseControlSequenceName(
                 beforeArg ? beforeArg.text : "",
                 "\\DeclareSIPower",
                 "symbol-before",
             );
-            const afterName = parseControlSequenceName(
+                const afterName = parseControlSequenceName(
                 afterArg ? afterArg.text : "",
                 "\\DeclareSIPower",
                 "symbol-after",
             );
-            const power = (powerArg ? powerArg.text : "").trim();
-            if (!power) {
-                throw new Error("power must be non-empty");
-            }
-            options["__declared-powers-before__"] = Object.assign(
+                const power = (powerArg ? powerArg.text : "").trim();
+                if (!power) {
+                    throw new Error("power must be non-empty");
+                }
+                options["__declared-powers-before__"] = Object.assign(
                 {},
                 options["__declared-powers-before__"],
                 {[beforeName]: power},
             );
-            options["__declared-powers-after__"] = Object.assign(
+                options["__declared-powers-after__"] = Object.assign(
                 {},
                 options["__declared-powers-after__"],
                 {[afterName]: power},
             );
-            setCurrentOptions(parser, options);
-        } catch (e) {
-            throw new ParseError(
+                setCurrentOptions(parser, options);
+            } catch (e) {
+                throw new ParseError(
                 `Invalid \\DeclareSIPower arguments: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
-        return {
-            type: "siunitx",
-            mode: parser.mode,
-            command: "\\DeclareSIPower",
-            options,
-            body: [],
-        };
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
+            }
+            return {
+                type: "siunitx",
+                mode: parser.mode,
+                command: "\\DeclareSIPower",
+                options,
+                body: [],
+            };
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
 
-defineFunction({
-    type: "siunitx",
-    names: ["\\DeclareSIQualifier"],
-    props: {
-        numArgs: 0,
-        allowedInText: true,
-        primitive: true,
-    },
-    handler: ({parser}) => {
-        const options = getCurrentOptions(parser);
-        try {
-            const qualifierArg = parser.parseStringGroup("raw", false);
-            const symbolArg = parser.parseStringGroup("raw", false);
-            const name = parseControlSequenceName(
+    defineFunction({
+        type: "siunitx",
+        names: ["\\DeclareSIQualifier"],
+        props: {
+            numArgs: 0,
+            allowedInText: true,
+            primitive: true,
+        },
+        handler: ({parser}) => {
+            const options = getCurrentOptions(parser);
+            try {
+                const qualifierArg = parser.parseStringGroup("raw", false);
+                const symbolArg = parser.parseStringGroup("raw", false);
+                const name = parseControlSequenceName(
                 qualifierArg ? qualifierArg.text : "",
                 "\\DeclareSIQualifier",
                 "qualifier",
             );
-            options["__declared-qualifiers__"] = Object.assign(
+                options["__declared-qualifiers__"] = Object.assign(
                 {},
                 options["__declared-qualifiers__"],
                 {[name]: parseTextLikeOption(symbolArg ? symbolArg.text : "")},
             );
-            setCurrentOptions(parser, options);
-        } catch (e) {
-            throw new ParseError(
+                setCurrentOptions(parser, options);
+            } catch (e) {
+                throw new ParseError(
                 `Invalid \\DeclareSIQualifier arguments: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
-        return {
-            type: "siunitx",
-            mode: parser.mode,
-            command: "\\DeclareSIQualifier",
-            options,
-            body: [],
-        };
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
+            }
+            return {
+                type: "siunitx",
+                mode: parser.mode,
+                command: "\\DeclareSIQualifier",
+                options,
+                body: [],
+            };
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
 
-defineFunction({
-    type: "siunitx",
-    names: ["\\num"],
-    props: {
-        numArgs: 1,
-        numOptionalArgs: 1,
-        argTypes: ["raw", "raw"],
-        allowedInText: true,
-    },
-    handler: ({parser}, args, optArgs) => {
-        const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
-        const n = (args[0] as ParseNode<"raw">).string;
+    defineFunction({
+        type: "siunitx",
+        names: ["\\num"],
+        props: {
+            numArgs: 1,
+            numOptionalArgs: 1,
+            argTypes: ["raw", "raw"],
+            allowedInText: true,
+        },
+        handler: ({parser}, args, optArgs) => {
+            const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
+            const n = (args[0] as ParseNode<"raw">).string;
 
-        let options: SiunitxOptions;
-        try {
-            options = parseOptions(opt || "", getCurrentOptions(parser));
-        } catch (e) {
-            throw new ParseError(
+            let options: SiunitxOptions;
+            try {
+                options = parseOptions(opt || "", getCurrentOptions(parser));
+            } catch (e) {
+                throw new ParseError(
                 `Invalid \\num options: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
+            }
 
-        const node: SiunitxNode = {
-            type: "siunitx",
-            mode: parser.mode,
-            command: "\\num",
-            options,
-            number: n,
-            body: !options["parse-numbers"]
+            const node: SiunitxNode = {
+                type: "siunitx",
+                mode: parser.mode,
+                command: "\\num",
+                options,
+                number: n,
+                body: !options["parse-numbers"]
                 ? parseLiteralNumberBody(parser, n, "\\num")
                 : undefined,
-        };
-        return node;
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
+            };
+            return node;
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
 
-defineFunction({
-    type: "siunitx",
-    names: ["\\numlist"],
-    props: {
-        numArgs: 1,
-        numOptionalArgs: 1,
-        argTypes: ["raw", "raw"],
-        allowedInText: true,
-    },
-    handler: ({parser}, args, optArgs) => {
-        const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
-        const numbers = (args[0] as ParseNode<"raw">).string;
+    defineFunction({
+        type: "siunitx",
+        names: ["\\numlist"],
+        props: {
+            numArgs: 1,
+            numOptionalArgs: 1,
+            argTypes: ["raw", "raw"],
+            allowedInText: true,
+        },
+        handler: ({parser}, args, optArgs) => {
+            const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
+            const numbers = (args[0] as ParseNode<"raw">).string;
 
-        let options: SiunitxOptions;
-        try {
-            options = parseOptions(opt || "", getCurrentOptions(parser));
-        } catch (e) {
-            throw new ParseError(
+            let options: SiunitxOptions;
+            try {
+                options = parseOptions(opt || "", getCurrentOptions(parser));
+            } catch (e) {
+                throw new ParseError(
                 `Invalid \\numlist options: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
+            }
 
-        const node: SiunitxNode = {
-            type: "siunitx",
-            mode: parser.mode,
-            command: "\\numlist",
-            options,
-            number: numbers,
-        };
-        return node;
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
+            const node: SiunitxNode = {
+                type: "siunitx",
+                mode: parser.mode,
+                command: "\\numlist",
+                options,
+                number: numbers,
+            };
+            return node;
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
 
-defineFunction({
-    type: "siunitx",
-    names: ["\\numproduct"],
-    props: {
-        numArgs: 1,
-        numOptionalArgs: 1,
-        argTypes: ["raw", "raw"],
-        allowedInText: true,
-    },
-    handler: ({parser}, args, optArgs) => {
-        const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
-        const numbers = (args[0] as ParseNode<"raw">).string;
+    defineFunction({
+        type: "siunitx",
+        names: ["\\numproduct"],
+        props: {
+            numArgs: 1,
+            numOptionalArgs: 1,
+            argTypes: ["raw", "raw"],
+            allowedInText: true,
+        },
+        handler: ({parser}, args, optArgs) => {
+            const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
+            const numbers = (args[0] as ParseNode<"raw">).string;
 
-        let options: SiunitxOptions;
-        try {
-            options = parseOptions(opt || "", getCurrentOptions(parser));
-        } catch (e) {
-            throw new ParseError(
+            let options: SiunitxOptions;
+            try {
+                options = parseOptions(opt || "", getCurrentOptions(parser));
+            } catch (e) {
+                throw new ParseError(
                 `Invalid \\numproduct options: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
-
-        const node: SiunitxNode = {
-            type: "siunitx",
-            mode: parser.mode,
-            command: "\\numproduct",
-            options,
-            number: numbers,
-        };
-        return node;
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
-
-defineFunction({
-    type: "siunitx",
-    names: ["\\duration"],
-    props: {
-        numArgs: 1,
-        numOptionalArgs: 1,
-        argTypes: ["raw", "raw"],
-        allowedInText: true,
-    },
-    handler: ({parser}, args, optArgs) => {
-        const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
-        const duration = (args[0] as ParseNode<"raw">).string;
-
-        let options: SiunitxOptions;
-        try {
-            options = parseOptions(opt || "", getCurrentOptions(parser));
-            if (!parseDurationInput(duration, options)) {
-                throw new Error(`Invalid duration "${duration}"`);
             }
-        } catch (e) {
-            throw new ParseError(
+
+            const node: SiunitxNode = {
+                type: "siunitx",
+                mode: parser.mode,
+                command: "\\numproduct",
+                options,
+                number: numbers,
+            };
+            return node;
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
+
+    defineFunction({
+        type: "siunitx",
+        names: ["\\duration"],
+        props: {
+            numArgs: 1,
+            numOptionalArgs: 1,
+            argTypes: ["raw", "raw"],
+            allowedInText: true,
+        },
+        handler: ({parser}, args, optArgs) => {
+            const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
+            const duration = (args[0] as ParseNode<"raw">).string;
+
+            let options: SiunitxOptions;
+            try {
+                options = parseOptions(opt || "", getCurrentOptions(parser));
+                if (!parseDurationInput(duration, options)) {
+                    throw new Error(`Invalid duration "${duration}"`);
+                }
+            } catch (e) {
+                throw new ParseError(
                 `Invalid \\duration options/input: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
-
-        const node: SiunitxNode = {
-            type: "siunitx",
-            mode: parser.mode,
-            command: "\\duration",
-            options,
-            number: duration,
-        };
-        return node;
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
-
-defineFunction({
-    type: "siunitx",
-    names: ["\\complexnum"],
-    props: {
-        numArgs: 1,
-        numOptionalArgs: 1,
-        argTypes: ["raw", "raw"],
-        allowedInText: true,
-    },
-    handler: ({parser}, args, optArgs) => {
-        const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
-        const n = (args[0] as ParseNode<"raw">).string;
-
-        let options: SiunitxOptions;
-        try {
-            options = parseOptions(opt || "", getCurrentOptions(parser));
-            if (!parseComplexInput(n, options)) {
-                throw new Error(`Invalid complex number "${n}"`);
             }
-        } catch (e) {
-            throw new ParseError(
+
+            const node: SiunitxNode = {
+                type: "siunitx",
+                mode: parser.mode,
+                command: "\\duration",
+                options,
+                number: duration,
+            };
+            return node;
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
+
+    defineFunction({
+        type: "siunitx",
+        names: ["\\complexnum"],
+        props: {
+            numArgs: 1,
+            numOptionalArgs: 1,
+            argTypes: ["raw", "raw"],
+            allowedInText: true,
+        },
+        handler: ({parser}, args, optArgs) => {
+            const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
+            const n = (args[0] as ParseNode<"raw">).string;
+
+            let options: SiunitxOptions;
+            try {
+                options = parseOptions(opt || "", getCurrentOptions(parser));
+                if (!parseComplexInput(n, options)) {
+                    throw new Error(`Invalid complex number "${n}"`);
+                }
+            } catch (e) {
+                throw new ParseError(
                 `Invalid \\complexnum options/input: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
+            }
 
-        const node: SiunitxNode = {
-            type: "siunitx",
-            mode: parser.mode,
-            command: "\\complexnum",
-            options,
-            number: n,
-        };
-        return node;
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
+            const node: SiunitxNode = {
+                type: "siunitx",
+                mode: parser.mode,
+                command: "\\complexnum",
+                options,
+                number: n,
+            };
+            return node;
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
 
-defineFunction({
-    type: "siunitx",
-    names: ["\\si", "\\unit"],
-    props: {
-        numArgs: 1,
-        numOptionalArgs: 1,
-        argTypes: ["raw", "raw"],
-        allowedInText: true,
-    },
-    handler: ({parser, funcName}, args, optArgs) => {
-        const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
-        const u = (args[0] as ParseNode<"raw">).string;
-        const optionKeys = extractOptionKeys(opt);
+    defineFunction({
+        type: "siunitx",
+        names: ["\\si", "\\unit"],
+        props: {
+            numArgs: 1,
+            numOptionalArgs: 1,
+            argTypes: ["raw", "raw"],
+            allowedInText: true,
+        },
+        handler: ({parser, funcName}, args, optArgs) => {
+            const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
+            const u = (args[0] as ParseNode<"raw">).string;
+            const optionKeys = extractOptionKeys(opt);
 
-        let options: SiunitxOptions;
-        try {
-            options = parseOptions(opt || "", getCurrentOptions(parser));
-            validateUnitInput(u, options);
-        } catch (e) {
-            throw new ParseError(
+            let options: SiunitxOptions;
+            try {
+                options = parseOptions(opt || "", getCurrentOptions(parser));
+                validateUnitInput(u, options);
+            } catch (e) {
+                throw new ParseError(
                 `Invalid \\si options: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
-
-        const node: SiunitxNode = {
-            type: "siunitx",
-            mode: parser.mode,
-            command: (funcName as "\\si" | "\\unit") || "\\si",
-            options,
-            unit: u,
-            optionKeys: Array.from(optionKeys),
-        };
-        return node;
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
-
-defineFunction({
-    type: "siunitx",
-    names: ["\\complexqty"],
-    props: {
-        numArgs: 2,
-        numOptionalArgs: 1,
-        argTypes: ["raw", "raw", "raw"],
-        allowedInText: true,
-    },
-    handler: ({parser}, args, optArgs) => {
-        const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
-        const n = (args[0] as ParseNode<"raw">).string;
-        const u = (args[1] as ParseNode<"raw">).string;
-
-        let options: SiunitxOptions;
-        try {
-            options = parseOptions(opt || "", getCurrentOptions(parser));
-            validateUnitInput(u, options);
-            if (!parseComplexInput(n, options)) {
-                throw new Error(`Invalid complex number "${n}"`);
             }
-        } catch (e) {
-            throw new ParseError(
+
+            const node: SiunitxNode = {
+                type: "siunitx",
+                mode: parser.mode,
+                command: (funcName as "\\si" | "\\unit") || "\\si",
+                options,
+                unit: u,
+                optionKeys: Array.from(optionKeys),
+            };
+            return node;
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
+
+    defineFunction({
+        type: "siunitx",
+        names: ["\\complexqty"],
+        props: {
+            numArgs: 2,
+            numOptionalArgs: 1,
+            argTypes: ["raw", "raw", "raw"],
+            allowedInText: true,
+        },
+        handler: ({parser}, args, optArgs) => {
+            const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
+            const n = (args[0] as ParseNode<"raw">).string;
+            const u = (args[1] as ParseNode<"raw">).string;
+
+            let options: SiunitxOptions;
+            try {
+                options = parseOptions(opt || "", getCurrentOptions(parser));
+                validateUnitInput(u, options);
+                if (!parseComplexInput(n, options)) {
+                    throw new Error(`Invalid complex number "${n}"`);
+                }
+            } catch (e) {
+                throw new ParseError(
                 `Invalid \\complexqty options/input: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
+            }
 
-        const node: SiunitxNode = {
-            type: "siunitx",
-            mode: parser.mode,
-            command: "\\complexqty",
-            options,
-            number: n,
-            unit: u,
-        };
-        return node;
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
+            const node: SiunitxNode = {
+                type: "siunitx",
+                mode: parser.mode,
+                command: "\\complexqty",
+                options,
+                number: n,
+                unit: u,
+            };
+            return node;
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
 
-defineFunction({
-    type: "siunitx",
-    names: ["\\SI", "\\qty"],
-    props: {
-        numArgs: 2,
-        numOptionalArgs: 1,
-        argTypes: ["raw", "raw", "raw"],
-        allowedInText: true,
-    },
-    handler: ({parser, funcName}, args, optArgs) => {
-        const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
-        const n = (args[0] as ParseNode<"raw">).string;
-        const u = (args[1] as ParseNode<"raw">).string;
-        const optionKeys = extractOptionKeys(opt);
+    defineFunction({
+        type: "siunitx",
+        names: ["\\SI", "\\qty"],
+        props: {
+            numArgs: 2,
+            numOptionalArgs: 1,
+            argTypes: ["raw", "raw", "raw"],
+            allowedInText: true,
+        },
+        handler: ({parser, funcName}, args, optArgs) => {
+            const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
+            const n = (args[0] as ParseNode<"raw">).string;
+            const u = (args[1] as ParseNode<"raw">).string;
+            const optionKeys = extractOptionKeys(opt);
 
-        let options: SiunitxOptions;
-        try {
-            options = parseOptions(opt || "", getCurrentOptions(parser));
-            validateUnitInput(u, options);
-        } catch (e) {
-            throw new ParseError(
+            let options: SiunitxOptions;
+            try {
+                options = parseOptions(opt || "", getCurrentOptions(parser));
+                validateUnitInput(u, options);
+            } catch (e) {
+                throw new ParseError(
                 `Invalid ${funcName} options: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
+            }
 
-        const command = (funcName as "\\SI" | "\\qty") || "\\SI";
+            const command = (funcName as "\\SI" | "\\qty") || "\\SI";
 
-        const node: SiunitxNode = {
-            type: "siunitx",
-            mode: parser.mode,
-            command,
-            options,
-            number: n,
-            unit: u,
-            body: !options["parse-numbers"]
+            const node: SiunitxNode = {
+                type: "siunitx",
+                mode: parser.mode,
+                command,
+                options,
+                number: n,
+                unit: u,
+                body: !options["parse-numbers"]
                 ? parseLiteralNumberBody(parser, n, command)
                 : undefined,
-            optionKeys: Array.from(optionKeys),
-        };
-        return node;
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
+                optionKeys: Array.from(optionKeys),
+            };
+            return node;
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
 
-defineFunction({
-    type: "siunitx",
-    names: ["\\qtylist", "\\qtyproduct"],
-    props: {
-        numArgs: 2,
-        numOptionalArgs: 1,
-        argTypes: ["raw", "raw", "raw"],
-        allowedInText: true,
-    },
-    handler: ({parser, funcName}, args, optArgs) => {
-        const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
-        const numbers = (args[0] as ParseNode<"raw">).string;
-        const unit = (args[1] as ParseNode<"raw">).string;
+    defineFunction({
+        type: "siunitx",
+        names: ["\\qtylist", "\\qtyproduct"],
+        props: {
+            numArgs: 2,
+            numOptionalArgs: 1,
+            argTypes: ["raw", "raw", "raw"],
+            allowedInText: true,
+        },
+        handler: ({parser, funcName}, args, optArgs) => {
+            const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
+            const numbers = (args[0] as ParseNode<"raw">).string;
+            const unit = (args[1] as ParseNode<"raw">).string;
 
-        let options: SiunitxOptions;
-        try {
-            options = parseOptions(opt || "", getCurrentOptions(parser));
-            validateUnitInput(unit, options);
-        } catch (e) {
-            throw new ParseError(
+            let options: SiunitxOptions;
+            try {
+                options = parseOptions(opt || "", getCurrentOptions(parser));
+                validateUnitInput(unit, options);
+            } catch (e) {
+                throw new ParseError(
                 `Invalid ${funcName} options: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
-        const hasSetupDefaults =
+            }
+            const hasSetupDefaults =
             typeof parser.gullet.macros.get(SIUNITX_OPTIONS_MACRO) === "string";
-        if (!opt && !hasSetupDefaults && funcName === "\\qtylist") {
-            options["list-units"] = "repeat";
-        }
+            if (!opt && !hasSetupDefaults && funcName === "\\qtylist") {
+                options["list-units"] = "repeat";
+            }
 
-        const command = (funcName as "\\qtylist" | "\\qtyproduct") || "\\qtylist";
+            const command = (funcName as "\\qtylist" | "\\qtyproduct") || "\\qtylist";
 
-        const node: SiunitxNode = {
-            type: "siunitx",
-            mode: parser.mode,
-            command,
-            options,
-            number: numbers,
-            unit,
-        };
-        return node;
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
+            const node: SiunitxNode = {
+                type: "siunitx",
+                mode: parser.mode,
+                command,
+                options,
+                number: numbers,
+                unit,
+            };
+            return node;
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
 
-defineFunction({
-    type: "siunitx",
-    names: ["\\numrange"],
-    props: {
-        numArgs: 2,
-        numOptionalArgs: 1,
-        argTypes: ["raw", "raw", "raw"],
-        allowedInText: true,
-    },
-    handler: ({parser}, args, optArgs) => {
-        const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
-        const n1 = (args[0] as ParseNode<"raw">).string;
-        const n2 = (args[1] as ParseNode<"raw">).string;
+    defineFunction({
+        type: "siunitx",
+        names: ["\\numrange"],
+        props: {
+            numArgs: 2,
+            numOptionalArgs: 1,
+            argTypes: ["raw", "raw", "raw"],
+            allowedInText: true,
+        },
+        handler: ({parser}, args, optArgs) => {
+            const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
+            const n1 = (args[0] as ParseNode<"raw">).string;
+            const n2 = (args[1] as ParseNode<"raw">).string;
 
-        let options: SiunitxOptions;
-        try {
-            options = parseOptions(opt || "", getCurrentOptions(parser));
-        } catch (e) {
-            throw new ParseError(
+            let options: SiunitxOptions;
+            try {
+                options = parseOptions(opt || "", getCurrentOptions(parser));
+            } catch (e) {
+                throw new ParseError(
                 `Invalid \\numrange options: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
+            }
 
-        const node: SiunitxNode = {
-            type: "siunitx",
-            mode: parser.mode,
-            command: "\\numrange",
-            options,
-            number: n1,
-            numberB: n2,
-        };
-        return node;
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
+            const node: SiunitxNode = {
+                type: "siunitx",
+                mode: parser.mode,
+                command: "\\numrange",
+                options,
+                number: n1,
+                numberB: n2,
+            };
+            return node;
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
 
-defineFunction({
-    type: "siunitx",
-    names: ["\\SIrange", "\\qtyrange"],
-    props: {
-        numArgs: 3,
-        numOptionalArgs: 1,
-        argTypes: ["raw", "raw", "raw", "raw"],
-        allowedInText: true,
-    },
-    handler: ({parser, funcName}, args, optArgs) => {
-        const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
-        const n1 = (args[0] as ParseNode<"raw">).string;
-        const n2 = (args[1] as ParseNode<"raw">).string;
-        const u = (args[2] as ParseNode<"raw">).string;
+    defineFunction({
+        type: "siunitx",
+        names: ["\\SIrange", "\\qtyrange"],
+        props: {
+            numArgs: 3,
+            numOptionalArgs: 1,
+            argTypes: ["raw", "raw", "raw", "raw"],
+            allowedInText: true,
+        },
+        handler: ({parser, funcName}, args, optArgs) => {
+            const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
+            const n1 = (args[0] as ParseNode<"raw">).string;
+            const n2 = (args[1] as ParseNode<"raw">).string;
+            const u = (args[2] as ParseNode<"raw">).string;
 
-        let options: SiunitxOptions;
-        try {
-            options = parseOptions(opt || "", getCurrentOptions(parser));
-            validateUnitInput(u, options);
-        } catch (e) {
-            throw new ParseError(
+            let options: SiunitxOptions;
+            try {
+                options = parseOptions(opt || "", getCurrentOptions(parser));
+                validateUnitInput(u, options);
+            } catch (e) {
+                throw new ParseError(
                 `Invalid ${funcName} options: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
-        const hasSetupDefaults =
+            }
+            const hasSetupDefaults =
             typeof parser.gullet.macros.get(SIUNITX_OPTIONS_MACRO) === "string";
-        if (!opt && !hasSetupDefaults && funcName === "\\qtyrange") {
-            options["range-units"] = "repeat";
-        }
+            if (!opt && !hasSetupDefaults && funcName === "\\qtyrange") {
+                options["range-units"] = "repeat";
+            }
 
-        const command = (funcName as "\\SIrange" | "\\qtyrange") || "\\SIrange";
+            const command = (funcName as "\\SIrange" | "\\qtyrange") || "\\SIrange";
 
-        const node: SiunitxNode = {
-            type: "siunitx",
-            mode: parser.mode,
-            command,
-            options,
-            number: n1,
-            numberB: n2,
-            unit: u,
-        };
-        return node;
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
+            const node: SiunitxNode = {
+                type: "siunitx",
+                mode: parser.mode,
+                command,
+                options,
+                number: n1,
+                numberB: n2,
+                unit: u,
+            };
+            return node;
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
 
-defineFunction({
-    type: "siunitx",
-    names: ["\\ang"],
-    props: {
-        numArgs: 1,
-        numOptionalArgs: 1,
-        argTypes: ["raw", "raw"],
-        allowedInText: true,
-    },
-    handler: ({parser}, args, optArgs) => {
-        const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
-        const a = (args[0] as ParseNode<"raw">).string;
+    defineFunction({
+        type: "siunitx",
+        names: ["\\ang"],
+        props: {
+            numArgs: 1,
+            numOptionalArgs: 1,
+            argTypes: ["raw", "raw"],
+            allowedInText: true,
+        },
+        handler: ({parser}, args, optArgs) => {
+            const opt = optArgs[0] ? (optArgs[0] as ParseNode<"raw">).string : "";
+            const a = (args[0] as ParseNode<"raw">).string;
 
-        let options: SiunitxOptions;
-        try {
-            options = parseOptions(opt || "", getCurrentOptions(parser));
-        } catch (e) {
-            throw new ParseError(
+            let options: SiunitxOptions;
+            try {
+                options = parseOptions(opt || "", getCurrentOptions(parser));
+            } catch (e) {
+                throw new ParseError(
                 `Invalid \\ang options: ${(e as Error).message}`,
                 parser.gullet.future(),
             );
-        }
+            }
 
-        const node: SiunitxNode = {
-            type: "siunitx",
-            mode: parser.mode,
-            command: "\\ang",
-            options,
-            angle: a,
-        };
-        return node;
-    },
-    htmlBuilder: siunitxHtmlBuilder,
-    mathmlBuilder: siunitxMathmlBuilder,
-});
+            const node: SiunitxNode = {
+                type: "siunitx",
+                mode: parser.mode,
+                command: "\\ang",
+                options,
+                angle: a,
+            };
+            return node;
+        },
+        htmlBuilder: siunitxHtmlBuilder,
+        mathmlBuilder: siunitxMathmlBuilder,
+    });
+
+};

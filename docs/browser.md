@@ -127,3 +127,15 @@ for more details.
 project. Then bundle using bundlers like [webpack](https://webpack.js.org/) or
 [rollup.js](https://rollupjs.org/). Note that you have to bundle the stylesheet
 (`katex.css`) or include it manually.
+
+## Using siunitx extension
+
+To use siunitx-compatible commands in the browser, load the siunitx extension
+after KaTeX:
+
+```html
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.45/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.45/dist/contrib/siunitx.min.js" crossorigin="anonymous"></script>
+```
+
+After that, commands such as `\num`, `\si`, and `\qty` are available.

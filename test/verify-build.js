@@ -17,6 +17,7 @@ for (const filename of [
     'mathtex-script-type.mjs',
     'mhchem.mjs',
     'render-a11y-string.mjs',
+    'siunitx.mjs',
 ]) {
     const source = fs.readFileSync(path.resolve(contribDir, filename), 'utf8');
     const relativeImport = /(^|\n)import katex from '\.\.\/katex\.mjs';\n/;

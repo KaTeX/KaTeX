@@ -91,3 +91,15 @@ const katex = require('katex');
 require('katex/contrib/mhchem'); // modify katex module
 const html = katex.renderToString('\\ce{CO2 + C -> 2 C0}');
 ```
+
+## Using siunitx extension
+
+The siunitx extension adds commands such as `\num`, `\si`, `\qty`, and
+`\sisetup` by modifying the `katex` module. Load it before rendering siunitx
+input:
+
+```js
+const katex = require('katex');
+require('katex/contrib/siunitx'); // modify katex module
+const html = katex.renderToString('\\qty{9.81}{\\metre\\per\\second\\squared}');
+```

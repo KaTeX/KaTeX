@@ -6,6 +6,7 @@
 import Parser from "./Parser";
 import ParseError from "./ParseError";
 import {Token} from "./Token";
+import functions from "./functions";
 
 import type Settings from "./Settings";
 import type {AnyParseNode} from "./parseNode";
@@ -19,6 +20,11 @@ const parseTree = function(
 ): AnyParseNode[] {
     if (!(typeof toParse === 'string' || toParse instanceof String)) {
         throw new TypeError('KaTeX can only parse string typed expression');
+    }
+    if (settings.siunitx && !functions["\\sisetup"]) {
+        throw new ParseError(
+            "The `siunitx` option requires loading `katex/contrib/siunitx` first.",
+        );
     }
     const expression = settings.siunitx
         ? `\\sisetup{${settings.siunitx}}${toParse as string}`
