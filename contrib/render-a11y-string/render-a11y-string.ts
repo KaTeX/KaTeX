@@ -14,9 +14,7 @@
  * when read by a screenreader.
  */
 
-// NOTE: since we're importing types here these files won't actually be
-// included in the build.
-import type {Atom} from "../../src/symbols";
+import {isAtom, type Atom} from "../../src/atoms";
 import type {AnyParseNode} from "../../src/parseNode";
 import type {SettingsOptions} from "../../src/Settings";
 import katex from "katex";
@@ -646,9 +644,13 @@ const handleObject = (
         case "mclass": {
             // \neq and \ne are macros so we let "htmlmathml" render the mathmal
             // side of things and extract the text from that.
+            // mclass values are prefixed with "m" (e.g. "mrel" -> "rel")
             const atomType = tree.mclass.slice(1);
-            // TODO(ts): drop the leading "m" from the values in mclass
-            buildA11yStrings(tree.body, a11yStrings, atomType as Atom | "normal");
+            if (atomType === "normal" || isAtom(atomType)) {
+                buildA11yStrings(tree.body, a11yStrings, atomType);
+            } else {
+                throw new Error(`Unexpected mclass atom type: "${atomType}"`);
+            }
             break;
         }
 

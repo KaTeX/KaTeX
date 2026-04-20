@@ -62,7 +62,7 @@ export type EnvSpec<NODETYPE extends NodeType> = {
  * `environments.js` exports this same dictionary again and makes it public.
  * `Parser.js` requires this dictionary via `environments.js`.
  */
-export const _environments: Record<string, EnvSpec<any>> = {};
+export const _environments: Record<string, EnvSpec<NodeType>> = {};
 
 type EnvDefSpec<NODETYPE extends NodeType> = {
     // Unique string to differentiate parse nodes.
