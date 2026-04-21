@@ -16,6 +16,35 @@ describe("siunitx-compatible commands", function() {
         );
     });
 
+    it("should allow escaped braces in settings.siunitx values", function() {
+        expect(() => katex.renderToString(
+            String.raw`\num{12345}`,
+            {siunitx: String.raw`group-separator={\}},group-minimum-digits=4`},
+        )).not.toThrow();
+    });
+
+    it("should strip injected \\sisetup node from parse tree", function() {
+        const tree = katex.__parse(
+            String.raw`\num{12345}`,
+            {siunitx: "group-separator={,},group-minimum-digits=4"},
+        );
+        expect(tree.length).toBeGreaterThan(0);
+        expect(tree[0].type).toBe("siunitx");
+        expect(tree[0].command).toBe("\\num");
+    });
+
+    it("should keep parse tree when injected \\sisetup is macro-overridden", function() {
+        const tree = katex.__parse(
+            String.raw`x`,
+            {
+                siunitx: "group-separator={,}",
+                macros: {"\\sisetup": "#1"},
+            },
+        );
+        expect(tree.length).toBeGreaterThan(0);
+        expect(tree[0].type).not.toBe("siunitx");
+    });
+
     it("should parse basic siunitx commands", function() {
         expect`\num{12345}`.toParse();
         expect`\numlist{1;2;3}`.toParse();
