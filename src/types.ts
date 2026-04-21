@@ -1,9 +1,3 @@
-
-/**
- * This file consists only of basic types used in multiple places.
- * For types with javascript, create separate files by themselves.
- */
-
 export type Mode = "math" | "text";
 
 // LaTeX argument type.
@@ -33,3 +27,15 @@ export type BreakToken = "]" | "}" | "\\endgroup" | "$" | "\\)" | "\\\\" | "\\en
 export type FontVariant = "bold" | "bold-italic" | "bold-sans-serif" |
     "double-struck" | "fraktur" | "italic" | "monospace" | "normal" | "sans-serif" |
     "sans-serif-bold-italic" | "sans-serif-italic" | "script";
+
+export type FontName =
+    | "Main-Bold"
+    | "Math-Italic"
+    | "Main-BoldItalic"
+    | "Script-Regular"
+    | "Fraktur-Regular"
+    | "AMS-Regular"
+    | "SansSerif-Regular"
+    | "SansSerif-Bold"
+    | "SansSerif-Italic"
+    | "Typewriter-Regular";

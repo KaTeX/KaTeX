@@ -52,56 +52,145 @@ export type AnyTrustContext = TrustContextTypes[keyof TrustContextTypes];
 export type TrustFunction = (context: AnyTrustContext) => boolean | null | undefined;
 export type SettingsOptions = Partial<Settings>;
 
-type EnumType = {
-    enum: string[];
+type EnumType<T extends string = string> = {
+    enum: T[];
 };
 
 type Type = "boolean" | "string" | "number" | "object" | "function" | EnumType;
-type Schema = {
-    [key in keyof SettingsOptions]?: {
-        /**
-         * Allowed type(s) of the value.
-         */
-        type: Type | Type[];
-        /**
-         * The default value. If not specified, false for boolean, an empty string
-         * for string, 0 for number, an empty object for object, or the first item
-         * for enum will be used. If multiple types are allowed, the first allowed
-         * type will be used for determining the default value.
-         */
-        default?: any;
-        /**
-         * The description.
-         */
-        description?: string;
-        /**
-         * The function to process the option.
-         */
-        processor?: (arg0: any) => any;
-        /**
-         * The command line argument. See Commander.js docs for more information.
-         * If not specified, the name prefixed with -- will be used. Set false not
-         * to add to the CLI.
-         */
-        cli?: string | false;
-        /**
-         * The default value for the CLI.
-         */
-        cliDefault?: any;
-        /**
-         * The description for the CLI. If not specified, the description for the
-         * option will be used.
-         */
-        cliDescription?: string;
-        /**
-         * The custom argument processor for the CLI. See Commander.js docs for
-         * more information.
-         */
-        cliProcessor?: (arg0: any, arg1: any) => any;
-    };
+/**
+ * Union of all values that appear as schema defaults, cliDefaults, or
+ * cliProcessor return values.  StrictFunction / TrustFunction are
+ * option-value types, not default/schema values, so they are excluded.
+ */
+type SettingsValue = boolean | string | number | MacroMap | string[];
+type DefaultValue = Exclude<SettingsValue, string[]>;
+
+type SchemaMetadata<K extends keyof SettingsOptions> = {
+    /**
+     * The description.
+     */
+    description?: string;
+    /**
+     * The function to process the option.
+     */
+    processor?: (value: Settings[K]) => Settings[K];
+    /**
+     * The command line argument. See Commander.js docs for more information.
+     * If not specified, the name prefixed with -- will be used. Set false not
+     * to add to the CLI.
+     */
+    cli?: string | false;
+    /**
+     * The default value for the CLI.
+     */
+    cliDefault?: SettingsValue;
+    /**
+     * The description for the CLI. If not specified, the description for the
+     * option will be used.
+     */
+    cliDescription?: string;
+    /**
+     * The custom argument processor for the CLI. See Commander.js docs for
+     * more information. Signature varies per setting (e.g. parseFloat,
+     * or (def, defs) => defs.push(def) for macros).
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    cliProcessor?: (...args: any[]) => SettingsValue;
 };
 
-type SchemaEntry = NonNullable<Schema[keyof SettingsOptions]>;
+type BooleanSchema<K extends keyof SettingsOptions> = SchemaMetadata<K> & {
+    /**
+     * Allowed type(s) of the value.
+     */
+    type: "boolean";
+    /**
+     * The default value. If not specified, false will be used.
+     */
+    default?: Extract<Settings[K], boolean>;
+};
+
+type StringSchema<K extends keyof SettingsOptions> = SchemaMetadata<K> & {
+    /**
+     * Allowed type(s) of the value.
+     */
+    type: "string";
+    /**
+     * The default value. If not specified, an empty string will be used.
+     */
+    default?: Extract<Settings[K], string>;
+};
+
+type NumberSchema<K extends keyof SettingsOptions> = SchemaMetadata<K> & {
+    /**
+     * Allowed type(s) of the value.
+     */
+    type: "number";
+    /**
+     * The default value. If not specified, 0 will be used.
+     */
+    default?: Extract<Settings[K], number>;
+};
+
+type ObjectSchema<K extends keyof SettingsOptions> = SchemaMetadata<K> & {
+    /**
+     * Allowed type(s) of the value.
+     */
+    type: "object";
+    /**
+     * The default value. If not specified, an empty object will be used.
+     */
+    default?: Extract<Settings[K], MacroMap>;
+};
+
+type FunctionSchema<K extends keyof SettingsOptions> = SchemaMetadata<K> & {
+    /**
+     * Allowed type(s) of the value.
+     */
+    type: "function";
+    /**
+     * Settings do not currently use function-valued defaults.
+     */
+    default?: never;
+};
+
+type EnumSchema<K extends keyof SettingsOptions> = SchemaMetadata<K> & {
+    /**
+     * Allowed type(s) of the value.
+     */
+    type: EnumType<Extract<Settings[K], string>>;
+    /**
+     * The default value. If not specified, the first enum value will be used.
+     */
+    default?: Extract<Settings[K], string>;
+};
+
+type SingleTypeSchema<K extends keyof SettingsOptions> =
+    | BooleanSchema<K>
+    | StringSchema<K>
+    | NumberSchema<K>
+    | ObjectSchema<K>
+    | FunctionSchema<K>
+    | EnumSchema<K>;
+
+type MultiTypeSchema<K extends keyof SettingsOptions> = SchemaMetadata<K> & {
+    /**
+     * Allowed type(s) of the value.
+     */
+    type: [SingleTypeSchema<K>["type"], ...Array<SingleTypeSchema<K>["type"]>];
+    /**
+     * The default value. If not specified, the first allowed type determines
+     * the default value.
+     */
+    default?: Extract<Settings[K], DefaultValue>;
+};
+
+type SchemaEntry<K extends keyof SettingsOptions> =
+    | SingleTypeSchema<K>
+    | MultiTypeSchema<K>;
+
+type Schema = {
+    [key in keyof SettingsOptions]?: SchemaEntry<key>;
+};
 
 // TODO: automatically generate documentation
 // TODO: check all properties on Settings exist
@@ -208,16 +297,18 @@ export const SETTINGS_SCHEMA: Schema = {
     },
 };
 
-function getDefaultValue(schema: SchemaEntry): any {
-    if ("default" in schema) {
-        return schema.default;
+function getImplicitDefault(type: "boolean"): boolean;
+function getImplicitDefault(type: "string"): string;
+function getImplicitDefault(type: "number"): number;
+function getImplicitDefault(type: "object"): MacroMap;
+function getImplicitDefault(type: "function"): never;
+function getImplicitDefault<T extends string>(type: EnumType<T>): T;
+function getImplicitDefault(type: Type): DefaultValue;
+function getImplicitDefault(type: Type): DefaultValue {
+    if (typeof type !== 'string') {
+        return type.enum[0];
     }
-    const type = schema.type;
-    const defaultType = Array.isArray(type) ? type[0] : type;
-    if (typeof defaultType !== 'string') {
-        return defaultType.enum[0];
-    }
-    switch (defaultType) {
+    switch (type) {
         case 'boolean':
             return false;
         case 'string':
@@ -226,7 +317,35 @@ function getDefaultValue(schema: SchemaEntry): any {
             return 0;
         case 'object':
             return {};
+        default:
+            throw new Error(
+                "Unexpected schema type; settings must declare an explicit default.");
     }
+}
+
+function getDefaultValue<K extends keyof SettingsOptions>(
+    schema: SchemaEntry<K>,
+): Settings[K];
+function getDefaultValue(schema: SchemaEntry<keyof SettingsOptions>): DefaultValue {
+    if (schema.default !== undefined) {
+        return schema.default;
+    }
+    const type = Array.isArray(schema.type) ? schema.type[0] : schema.type;
+    return getImplicitDefault(type);
+}
+
+function applySetting<K extends keyof SettingsOptions>(
+    target: Settings,
+    prop: K,
+    options: SettingsOptions,
+    schema: SchemaEntry<K>,
+) {
+    const optionValue = options[prop];
+    target[prop] = optionValue !== undefined
+        ? (schema.processor
+            ? schema.processor(optionValue)
+            : optionValue)
+        : getDefaultValue(schema);
 }
 
 /**
@@ -259,12 +378,11 @@ export default class Settings {
         // allow null options
         options = options || {};
         for (const prop of Object.keys(SETTINGS_SCHEMA) as Array<keyof SettingsOptions>) {
-            const schema = SETTINGS_SCHEMA[prop] as SchemaEntry;
-            const optionValue = options[prop];
-            // TODO: validate options
-            (this as Record<string, unknown>)[prop] = optionValue !== undefined ?
-                (schema.processor ? schema.processor(optionValue) : optionValue)
-                : getDefaultValue(schema);
+            const schema = SETTINGS_SCHEMA[prop] as SchemaEntry<typeof prop> | undefined;
+            if (schema) {
+                // TODO: validate options
+                applySetting(this, prop, options, schema);
+            }
         }
     }
 

@@ -8,6 +8,10 @@ export interface VirtualNode {
     toMarkup(): string;
 }
 
+function isMathDomNode(node: VirtualNode): node is MathDomNode {
+    return 'toText' in node;
+}
+
 
 /**
  * This node represents a document fragment, which contains elements, but when
@@ -64,10 +68,12 @@ export class DocumentFragment<ChildType extends VirtualNode>
      * MathDomNode's only.
      */
     toText(): string {
-        // To avoid this, we would subclass documentFragment separately for
-        // MathML, but polyfills for subclassing is expensive per PR 1469.
-        // TODO(ts): Only works for ChildType = MathDomNode.
-        const toText = (child: ChildType): string => (child as unknown as MathDomNode).toText();
-        return this.children.map(toText).join("");
+        return this.children.map((child: ChildType): string => {
+            if (isMathDomNode(child)) {
+                return child.toText();
+            }
+            throw new Error(
+                `Expected MathDomNode with toText, got ${child.constructor.name}`);
+        }).join("");
     }
 }
