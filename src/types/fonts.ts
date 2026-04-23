@@ -34,7 +34,7 @@ export type FontName =
     | "Typewriter-Regular";
 
 //[depth, height, italic, skew, width]
-export type CharacterMetricsTuple = [number, number, number, number, number];
+export type CharacterMetricsTuple = [depth: number, height: number, italic: number, skew: number, width: number];
 
 export type CharacterMetrics = {
     depth: number;
