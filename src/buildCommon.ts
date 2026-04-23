@@ -673,7 +673,7 @@ const retrieveTextFontName = (
             baseFontName = fontFamily; // use fonts added by a plugin
     }
 
-    let fontStylesName;
+    let fontStylesName: "BoldItalic" | "Bold" | "Italic" | "Regular";
     if (fontWeight === "textbf" && fontShape === "textit") {
         fontStylesName = "BoldItalic";
     } else if (fontWeight === "textbf") {
