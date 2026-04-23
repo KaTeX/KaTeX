@@ -16,7 +16,7 @@ import type {AnyParseNode, SymbolParseNode} from "./parseNode";
 import type {DomSpan, HtmlDomNode} from "./domTree";
 import type {MathDomNode} from "./mathMLTree";
 import type {Mode} from "./types";
-import type {FontVariant} from "./types/fonts";
+import type {FontVariant, MathFont} from "./types/fonts";
 
 const noVariantSymbols = new Set(["\\imath", "\\jmath"]);
 const rowLikeTypes = new Set(["mrow", "mtable"]);
@@ -53,9 +53,8 @@ export const makeRow = function(body: MathDomNode[]): MathDomNode {
     }
 };
 
-const mathFontVariants: Record<
-    string,
-    FontVariant | ((group: SymbolParseNode) => FontVariant)
+const mathFontVariants: Partial<
+    Record<MathFont, FontVariant | ((group: SymbolParseNode) => FontVariant)>
 > = {
     mathit: "italic",
     boldsymbol: (group) => (group.type === "textord" ? "bold" : "bold-italic"),
