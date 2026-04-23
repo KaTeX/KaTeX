@@ -3,6 +3,7 @@ import type SourceLocation from "./SourceLocation";
 import type {AlignSpec, ColSeparationType} from "./environments/array";
 import type {Atom} from "./symbols";
 import type {Mode, StyleStr} from "./types";
+import type {MathFont} from "./types/fonts";
 import type {Token} from "./Token";
 import type {Measurement} from "./units";
 export type NodeType = keyof ParseNodeTypes;
@@ -255,7 +256,7 @@ type ParseNodeTypes = {
         type: "font";
         mode: Mode;
         loc?: SourceLocation | null | undefined;
-        font: string;
+        font: Exclude<MathFont, "">;
         body: AnyParseNode;
     };
     "genfrac": {

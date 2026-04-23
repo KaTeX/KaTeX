@@ -6,13 +6,25 @@
  * the font information necessary to render it properly.
  */
 
-import type {FontName} from "./types";
 import ParseError from "./ParseError";
+import type {FontName} from "./types/fonts";
 
 type WideChar = {
     readonly mathClass: string;
     readonly textClass: string;
-    readonly font: FontName | "";
+    readonly font:
+        | Exclude<
+              FontName,
+              | "Caligraphic-Regular"
+              | "Main-Italic"
+              | "Main-Regular"
+              | "Math-BoldItalic"
+              | "Size1-Regular"
+              | "Size2-Regular"
+              | "Size3-Regular"
+              | "Size4-Regular"
+          >
+        | "";
 };
 
 const boldUpright: WideChar = {

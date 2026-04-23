@@ -22,20 +22,3 @@ export type StyleStr = "text" | "display" | "script" | "scriptscript";
 // Allowable token text for "break" arguments in parser.
 export type BreakToken = "]" | "}" | "\\endgroup" | "$" | "\\)" | "\\\\" | "\\end" |
     "EOF";
-
-// Math font variants.
-export type FontVariant = "bold" | "bold-italic" | "bold-sans-serif" |
-    "double-struck" | "fraktur" | "italic" | "monospace" | "normal" | "sans-serif" |
-    "sans-serif-bold-italic" | "sans-serif-italic" | "script";
-
-export type FontName =
-    | "Main-Bold"
-    | "Math-Italic"
-    | "Main-BoldItalic"
-    | "Script-Regular"
-    | "Fraktur-Regular"
-    | "AMS-Regular"
-    | "SansSerif-Regular"
-    | "SansSerif-Bold"
-    | "SansSerif-Italic"
-    | "Typewriter-Regular";

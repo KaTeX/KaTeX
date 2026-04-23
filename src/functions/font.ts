@@ -9,6 +9,7 @@ import * as mml from "../buildMathML";
 
 import type Options from "../Options";
 import type {ParseNode} from "../parseNode";
+import type {MathFont} from "../types/fonts";
 
 const htmlBuilder = (group: ParseNode<"font">, options: Options) => {
     const font = group.font;
@@ -55,7 +56,7 @@ defineFunction({
         return {
             type: "font",
             mode: parser.mode,
-            font: func.slice(1),
+            font: func.slice(1) as Exclude<MathFont, "">,
             body,
         };
     },
@@ -101,12 +102,11 @@ defineFunction({
     handler: ({parser, funcName, breakOnTokenText}, args) => {
         const {mode} = parser;
         const body = parser.parseExpression(true, breakOnTokenText);
-        const style = `math${funcName.slice(1)}`;
 
         return {
             type: "font",
             mode: mode,
-            font: style,
+            font: `math${funcName.slice(1)}` as Exclude<MathFont, "">,
             body: {
                 type: "ordgroup",
                 mode: parser.mode,

@@ -17,8 +17,8 @@
  */
 
 import type {Mode} from "./types";
+import type {SymbolFont} from "./types/fonts";
 
-type Font = "main" | "ams";
 // Some of these have a "-token" suffix since these are also used as `ParseNode`
 // types for raw text tokens, and we want to avoid conflicts with higher-level
 // `ParseNode` types. These `ParseNode`s are constructed within `Parser` by
@@ -43,7 +43,10 @@ export type Atom = keyof typeof ATOMS;
 export type NonAtom = keyof typeof NON_ATOMS;
 export type Group = Atom | NonAtom;
 
-type CharInfoMap = Record<string, {font: Font, group: Group, replace: string | null | undefined}>;
+type CharInfoMap = Record<
+    string,
+    {font: SymbolFont; group: Group; replace: string | null | undefined}
+>;
 
 const symbols: Record<Mode, CharInfoMap> = {
     "math": {},
@@ -54,9 +57,9 @@ export default symbols;
 /** `acceptUnicodeChar = true` is only applicable if `replace` is set. */
 export function defineSymbol(
     mode: Mode,
-    font: Font,
+    font: SymbolFont,
     group: Group,
-    replace: string | null | undefined,
+    replace: string,
     name: string,
     acceptUnicodeChar?: boolean,
 ) {
@@ -595,8 +598,8 @@ defineSymbol(text, main, spacing, "\u00a0", "\\ ");
 defineSymbol(text, main, spacing, "\u00a0", " ");
 defineSymbol(text, main, spacing, "\u00a0", "\\space");
 defineSymbol(text, main, spacing, "\u00a0", "\\nobreakspace");
-defineSymbol(math, main, spacing, null, "\\nobreak");
-defineSymbol(math, main, spacing, null, "\\allowbreak");
+defineSymbol(math, main, spacing, "", "\\nobreak");
+defineSymbol(math, main, spacing, "", "\\allowbreak");
 defineSymbol(math, main, punct, ",", ",");
 defineSymbol(math, main, punct, ";", ";");
 defineSymbol(math, ams, bin, "\u22bc", "\\barwedge", true);

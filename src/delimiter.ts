@@ -32,11 +32,11 @@ import {makeEm} from "./units";
 import fontMetricsData from "./fontMetricsData";
 
 import type Options from "./Options";
-import type {CharacterMetrics} from "./fontMetrics";
 import type {HtmlDomNode, DomSpan, SvgSpan} from "./domTree";
 import type {Mode} from "./types";
 import type {StyleInterface} from "./Style";
 import type {VListElem} from "./buildCommon";
+import type {CharacterMetrics, FontName} from "./types/fonts";
 
 type StackedDelimiterFont = "Size1-Regular" | "Size4-Regular";
 
@@ -129,7 +129,7 @@ const mathrmSize = function(
     mode: Mode,
     options: Options,
 ): SymbolNode {
-    return makeSymbol(value, "Size" + size + "-Regular",
+    return makeSymbol(value, "Size" + size + "-Regular" as FontName,
         mode, options);
 };
 
