@@ -655,7 +655,7 @@ const retrieveTextFontName = (
     fontWeight: FontWeight,
     fontShape: FontShape,
 ): FontName => {
-    let baseFontName = "";
+    let baseFontName: "AMS" | "Main" | "SansSerif" | "Typewriter" | TextFont;
     switch (fontFamily) {
         case "amsrm":
             baseFontName = "AMS";
