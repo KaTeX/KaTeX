@@ -1,7 +1,8 @@
 /* eslint no-constant-condition:0 */
 import functions from "./functions";
 import MacroExpander, {implicitCommands} from "./MacroExpander";
-import symbols, {ATOMS, extraLatin} from "./symbols";
+import symbols, {extraLatin} from "./symbols";
+import {isAtom} from "./atoms";
 import {validUnit} from "./units";
 import {supportedCodepoint} from "./unicodeScripts";
 import ParseError from "./ParseError";
@@ -15,9 +16,9 @@ import {Token} from "./Token";
 import unicodeAccents from /*preval*/ "./unicodeAccents";
 import unicodeSymbols from /*preval*/ "./unicodeSymbols";
 
-import type {ParseNode, AnyParseNode, SymbolParseNode, UnsupportedCmdParseNode}
-    from "./parseNode";
-import type {Atom, Group} from "./symbols";
+import type {NodeType, ParseNode, AnyParseNode, SymbolParseNode,
+    UnsupportedCmdParseNode} from "./parseNode";
+import type {Group} from "./atoms";
 import type {Mode, ArgType, BreakToken} from "./types";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
 import type {EnvSpec} from "./defineEnvironment";
@@ -521,7 +522,7 @@ export default class Parser {
      */
     parseArguments(
         func: string,   // Should look like "\name" or "\begin{name}".
-        funcData: FunctionSpec<any> | EnvSpec<any>,
+        funcData: FunctionSpec<NodeType> | EnvSpec<NodeType>,
     ): {
         args: AnyParseNode[];
         optArgs: (AnyParseNode | null | undefined)[];
@@ -974,26 +975,22 @@ export default class Parser {
             const group: Group = symbols[this.mode][text].group;
             const loc = SourceLocation.range(nucleus);
             let s: SymbolParseNode;
-            if (ATOMS.hasOwnProperty(group)) {
-                // TODO(ts)
-                const family = group as Atom;
+            if (isAtom(group)) {
                 s = {
                     type: "atom",
                     mode: this.mode,
-                    family,
+                    family: group,
                     loc,
                     text,
                 };
             } else {
-                // TODO(ts)
                 s = {
-                    type: group as Exclude<SymbolParseNode["type"], "atom">,
+                    type: group,
                     mode: this.mode,
                     loc,
                     text,
                 };
             }
-            // TODO(ts)
             symbol = s;
         } else if (text.charCodeAt(0) >= 0x80) { // no symbol for e.g. ^
             if (this.settings.strict) {
@@ -1045,12 +1042,10 @@ export default class Parser {
                     label: command,
                     isStretchy: false,
                     isShifty: true,
-                    // TODO(ts)
                     base: symbol,
                 };
             }
         }
-        // TODO(ts)
         return symbol;
     }
 }

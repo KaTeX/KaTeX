@@ -130,7 +130,7 @@ export type FunctionSpec<NODETYPE extends NodeType> = {
     // _functions is typed FunctionSpec<*> (it stores all TeX function specs).
 
     // Must be specified unless it's handled directly in the parser.
-    handler: FunctionHandler<any> | null | undefined;
+    handler: FunctionHandler<NodeType> | null | undefined;
 };
 
 /**
@@ -138,18 +138,25 @@ export type FunctionSpec<NODETYPE extends NodeType> = {
  * `functions.js` just exports this same dictionary again and makes it public.
  * `Parser.js` requires this dictionary.
  */
-export const _functions: Record<string, FunctionSpec<any>> = {};
+export const _functions: Record<string, FunctionSpec<NodeType>> = {};
 
 /**
  * All HTML builders. Should be only used in the `define*` and the `build*ML`
  * functions.
+ *
+ * Builders for different node types are stored side by side, but
+ * `HtmlBuilder<T>` is contravariant in `T`, so there is no single type
+ * argument that makes storing/retrieving them typecheck.  `any` is used
+ * as an existential-quantifier escape hatch.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const _htmlGroupBuilders: Record<string, HtmlBuilder<any>> = {};
 
 /**
  * All MathML builders. Should be only used in the `define*` and the `build*ML`
- * functions.
+ * functions.  See `_htmlGroupBuilders` above for the rationale behind `any`.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const _mathmlGroupBuilders: Record<string, MathMLBuilder<any>> = {};
 
 export default function defineFunction<NODETYPE extends NodeType>({

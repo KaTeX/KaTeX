@@ -197,6 +197,9 @@ Direct Input: $∂ ∇ ℑ Ⅎ ℵ ℶ ℷ ℸ ⅁ ℏ ð − ∗$
 
 Math-mode Unicode (sub|super)script characters will render as if you had written regular characters in a subscript or superscript. For instance, `A²⁺³` will render the same as `A^{2+3}`.
 
+**Persian/Arabic Numerals**
+For support of Persian/Arabic numerals, try the third-party [persian-katex-plugin](https://github.com/HosseinAgha/persian-katex-plugin).
+
 </div>
 <div class="katex-cards" id="math-alpha">
 

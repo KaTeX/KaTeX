@@ -16,6 +16,7 @@
  * accepted in (e.g. "math" or "text").
  */
 
+import type {Group} from "./atoms";
 import type {Mode} from "./types";
 import type {SymbolFont} from "./types/fonts";
 
