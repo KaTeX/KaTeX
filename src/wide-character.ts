@@ -12,19 +12,18 @@ import type {FontName} from "./types/fonts";
 type WideChar = {
     readonly mathClass: string;
     readonly textClass: string;
-    readonly font:
-        | Exclude<
-              FontName,
-              | "Caligraphic-Regular"
-              | "Main-Italic"
-              | "Main-Regular"
-              | "Math-BoldItalic"
-              | "Size1-Regular"
-              | "Size2-Regular"
-              | "Size3-Regular"
-              | "Size4-Regular"
-          >
-        | "";
+    readonly font: Extract<FontName,
+        | "Main-Bold"
+        | "Math-Italic"
+        | "Main-BoldItalic"
+        | "Script-Regular"
+        | "Fraktur-Regular"
+        | "AMS-Regular"
+        | "SansSerif-Regular"
+        | "SansSerif-Bold"
+        | "SansSerif-Italic"
+        | "Typewriter-Regular"
+    > | "";
 };
 
 const boldUpright: WideChar = {

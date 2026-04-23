@@ -656,6 +656,8 @@ const retrieveTextFontName = (
     fontShape: FontShape,
 ): FontName => {
     let baseFontName: "AMS" | "Main" | "SansSerif" | "Typewriter" | TextFont;
+    let fontStylesName: "BoldItalic" | "Bold" | "Italic" | "Regular";
+
     switch (fontFamily) {
         case "amsrm":
             baseFontName = "AMS";
@@ -673,7 +675,6 @@ const retrieveTextFontName = (
             baseFontName = fontFamily; // use fonts added by a plugin
     }
 
-    let fontStylesName: "BoldItalic" | "Bold" | "Italic" | "Regular";
     if (fontWeight === "textbf" && fontShape === "textit") {
         fontStylesName = "BoldItalic";
     } else if (fontWeight === "textbf") {
