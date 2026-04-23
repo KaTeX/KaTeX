@@ -22,3 +22,5 @@ export type StyleStr = "text" | "display" | "script" | "scriptscript";
 // Allowable token text for "break" arguments in parser.
 export type BreakToken = "]" | "}" | "\\endgroup" | "$" | "\\)" | "\\\\" | "\\end" |
     "EOF";
+
+export type DelimiterSize = 1 | 2 | 3 | 4;

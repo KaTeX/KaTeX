@@ -24,25 +24,6 @@ import type {SymbolFont} from "./types/fonts";
 // types for raw text tokens, and we want to avoid conflicts with higher-level
 // `ParseNode` types. These `ParseNode`s are constructed within `Parser` by
 // looking up the `symbols` map.
-export const ATOMS = {
-    "bin": 1,
-    "close": 1,
-    "inner": 1,
-    "open": 1,
-    "punct": 1,
-    "rel": 1,
-};
-export const NON_ATOMS = {
-    "accent-token": 1,
-    "mathord": 1,
-    "op-token": 1,
-    "spacing": 1,
-    "textord": 1,
-};
-
-export type Atom = keyof typeof ATOMS;
-export type NonAtom = keyof typeof NON_ATOMS;
-export type Group = Atom | NonAtom;
 
 type CharInfoMap = Record<
     string,
