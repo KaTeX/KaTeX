@@ -178,8 +178,8 @@ export const makeOrd = function<NODETYPE extends "spacing" | "mathord" | "textor
     const {font, fontFamily, fontWeight, fontShape} = options;
 
     // Math mode or Old font (i.e. \rm)
-    const useMathFont = mode === "math" || (mode === "text" && !!font);
-    const fontOrFamily = useMathFont ? font : fontFamily;
+    const useFont = mode === "math" || (mode === "text" && !!font);
+    const fontOrFamily = useFont ? font : fontFamily;
     let wideFontName: FontName | "" = "";
     let wideFontClass = "";
     if (text.charCodeAt(0) === 0xD835) {
@@ -197,7 +197,7 @@ export const makeOrd = function<NODETYPE extends "spacing" | "mathord" | "textor
             const fontData = boldSymbol(text, mode, type);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
-        } else if (useMathFont) {
+        } else if (useFont) {
             fontName = fontMap[font].fontName;
             fontClasses = [font];
         } else {
