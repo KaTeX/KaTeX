@@ -52,7 +52,7 @@
     position: relative;
 }
 
-@media only screen and (max-width: 735px) {
+@media only screen and (width <= 735px) {
     .showcaseSection .logos .imgbox {
         width: 104px;   /* 64px for img + 20*2 for padding */
         height: 104px;  /* 64px for img + 20*2 for padding */
@@ -69,7 +69,7 @@
 }
 
 /* Add special CSS for supported.md rendered on mobile */
-@media screen and (max-width: 480px) {
+@media screen and (width <= 480px) {
     /* We have two styles for very narrow screens.
     * We apply the hopscotch style to headless tables. It breaks
     * tables down so that each cell acts like a <div>
@@ -162,20 +162,4 @@
     #unit-blocks td:nth-of-type(3)::before { content: "scriptscript:"; }
     #unit-blocks td:nth-of-type(4)::before { content: "huge:"; }
     #unit-blocks td { background-color: #fff; }
-}
-
-/* stylelint-disable block-no-empty */
-@media only screen and (min-device-width: 360px) and (max-device-width: 736px) {
-}
-
-@media only screen and (min-width: 1024px) {
-}
-
-@media only screen and (max-width: 1023px) {
-}
-
-@media only screen and (min-width: 1400px) {
-}
-
-@media only screen and (min-width: 1500px) {
 }

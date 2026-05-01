@@ -311,7 +311,7 @@ main.options-collapsed #sidebar-resizer::before {
     display: none;
 }
 
-@media (max-width: 900px) {
+@media (width <= 900px) {
     main {
         grid-template-columns: 1fr;
         grid-template-rows:
@@ -336,8 +336,7 @@ main.options-collapsed #sidebar-resizer::before {
         display: flex;
         flex-wrap: wrap;
         align-content: flex-start;
-        column-gap: 0.8rem;
-        row-gap: 0.65rem;
+        gap: 0.65rem 0.8rem;
         max-height: var(--mobile-options-height);
     }
 

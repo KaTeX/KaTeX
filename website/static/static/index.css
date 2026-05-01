@@ -80,9 +80,7 @@ textarea {
 }
 
 .demo {
-    display: -ms-flexbox;
     display: flex;
-    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     box-shadow: 0 0 10px rgb(0 0 0 / 30%);
     font-size: 22px;
@@ -90,7 +88,6 @@ textarea {
 }
 
 .maximized .demo {
-    -ms-flex-direction: column;
     flex-direction: column;
     position: fixed;
     top: 0;
@@ -117,9 +114,7 @@ textarea {
 
 .demo-left {
     background: #444;
-    display: -ms-flexbox;
     display: flex;
-    -ms-flex-direction: column;
     flex-direction: column;
 }
 
@@ -130,7 +125,6 @@ textarea {
     color: #fff;
     font: 14px Menlo, monospace;
     padding: 10px;
-    -ms-flex-positive: 1;
     flex-grow: 1;
 }
 
@@ -294,17 +288,15 @@ textarea {
     height: 150px;
 }
 
-@media only screen and (min-width: 736px) {
+@media only screen and (width >= 736px) {
     .demo-left,
     .demo-right {
-        -ms-flex-preferred-size: 0;
         flex-basis: 0;
-        -ms-flex-positive: 1;
         flex-grow: 1;
     }
 }
 
-@media only screen and (max-width: 735px) {
+@media only screen and (width <= 735px) {
     .cta a {
         display: block;
         margin-bottom: 10px;
