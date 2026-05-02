@@ -24,3 +24,6 @@ export type BreakToken = "]" | "}" | "\\endgroup" | "$" | "\\)" | "\\\\" | "\\en
     "EOF";
 
 export type DelimiterSize = 1 | 2 | 3 | 4;
+
+export type Slice1<S extends string> =
+    S extends `${string}${infer Rest}` ? Rest : "";

@@ -9,7 +9,7 @@ import * as mml from "../buildMathML";
 
 import type Options from "../Options";
 import type {ParseNode} from "../parseNode";
-import type {MathFont} from "../types/fonts";
+import type {Slice1} from "../types";
 
 const htmlBuilder = (group: ParseNode<"font">, options: Options) => {
     const font = group.font;
@@ -29,6 +29,12 @@ const fontAliases: Record<string, string> = {
     "\\frak": "\\mathfrak",
     "\\bm": "\\boldsymbol",
 };
+
+type OldFontCommands = "\\rm" | "\\sf" | "\\tt" | "\\bf" | "\\it" | "\\cal";
+type FontCommands =
+    "\\mathrm" | "\\mathit" | "\\mathbf" | "\\mathnormal" | "\\mathsfit" |
+    "\\mathbb" | "\\mathcal" | "\\mathfrak" | "\\mathscr" | "\\mathsf" |
+    "\\mathtt";
 
 defineFunction({
     type: "font",
@@ -56,7 +62,7 @@ defineFunction({
         return {
             type: "font",
             mode: parser.mode,
-            font: func.slice(1) as Exclude<MathFont, "">,
+            font: func.slice(1) as Slice1<FontCommands>,
             body,
         };
     },
@@ -106,7 +112,7 @@ defineFunction({
         return {
             type: "font",
             mode: mode,
-            font: `math${funcName.slice(1)}` as Exclude<MathFont, "">,
+            font: `math${funcName.slice(1) as Slice1<OldFontCommands>}`,
             body: {
                 type: "ordgroup",
                 mode: parser.mode,
