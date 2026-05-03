@@ -6,7 +6,6 @@
     "rules": {
         "at-rule-no-vendor-prefix": null,
         "font-family-name-quotes": "always-where-required",
-        "indentation": 4,
         "number-max-precision": 6,
         "property-no-vendor-prefix": null,
         "selector-class-pattern": null,
