@@ -784,7 +784,7 @@ defineSymbol(text, main, mathord, "h", "\u210E");
 // Mathematical Alphanumeric Symbols.
 // Some editors do not deal well with wide characters. So don't write the
 // string into this file. Instead, create the string from the surrogate pair.
-let wideChar = "";
+let wideChar;
 for (let i = 0; i < letters.length; i++) {
     const ch = letters.charAt(i);
 

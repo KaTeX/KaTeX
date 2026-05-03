@@ -14,8 +14,8 @@ scripts.forEach(function(script) {
                               display ? "equation" : "inline-equation");
     try {
         katex.render(script.text, katexElement, {displayMode: display});
+        // eslint-disable-next-line no-unused-vars
     } catch (err) {
-        //console.error(err); linter doesn't like this
         katexElement.textContent = script.text;
     }
     script.parentNode.replaceChild(katexElement, script);

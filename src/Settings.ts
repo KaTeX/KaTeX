@@ -94,7 +94,7 @@ type SchemaMetadata<K extends keyof SettingsOptions> = {
      * more information. Signature varies per setting (e.g. parseFloat,
      * or (def, defs) => defs.push(def) for macros).
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // @typescript-eslint/no-explicit-any
     cliProcessor?: (...args: any[]) => SettingsValue;
 };
 

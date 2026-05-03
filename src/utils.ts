@@ -70,7 +70,6 @@ export const protocolFromUrl = (url: string): string | null => {
     // Check for possible leading protocol.
     // https://url.spec.whatwg.org/#url-parsing strips leading whitespace
     // (U+20) or C0 control (U+00-U+1F) characters.
-    // eslint-disable-next-line no-control-regex
     const protocol = /^[\x00-\x20]*([^\\/#?]*?)(:|&#0*58|&#x0*3a|&colon)/i
     .exec(url);
     if (!protocol) {

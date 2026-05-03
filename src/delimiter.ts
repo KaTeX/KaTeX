@@ -506,9 +506,9 @@ export const makeSqrtImage = function(
 
     // Create a span containing an SVG image of a sqrt symbol.
     let span;
-    let spanHeight = 0;
-    let texHeight = 0;
-    let viewBoxHeight = 0;
+    let spanHeight;
+    let texHeight;
+    let viewBoxHeight;
     let advanceWidth;
 
     // We create viewBoxes with 80 units of "padding" above each surd.

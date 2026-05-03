@@ -129,6 +129,7 @@ function isDockerDesktop() {
     try {
         const operatingSystem = cmd("docker", "info", "-f", "{{.OperatingSystem}}");
         return /Docker Desktop/i.test(operatingSystem);
+        // eslint-disable-next-line no-unused-vars
     } catch (e) {
         return false;
     }
@@ -191,6 +192,7 @@ function guessDockerIPs() {
         }
         katexIP = katexIP || config[1];
         return;
+        // eslint-disable-next-line no-unused-vars
     } catch (e) {
         // Apparently no boot2docker, continue
     }
