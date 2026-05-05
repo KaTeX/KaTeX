@@ -14,8 +14,9 @@ scripts.forEach(function(script) {
                               display ? "equation" : "inline-equation");
     try {
         katex.render(script.text, katexElement, {displayMode: display});
-        // eslint-disable-next-line no-unused-vars
     } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err);
         katexElement.textContent = script.text;
     }
     script.parentNode.replaceChild(katexElement, script);

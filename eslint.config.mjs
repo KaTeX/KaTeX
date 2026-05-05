@@ -138,6 +138,7 @@ export default defineConfig([globalIgnores([
                 ([key]) => [key, "off"])),
             ...Object.fromEntries(Object.entries(globals.jest).map(
                 ([key]) => [key, "off"])),
+            console: "readonly",
         },
     },
 
