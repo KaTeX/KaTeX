@@ -53,7 +53,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"op"> = (grp, options) => {
     let base;
     // Italic correction from the symbol glyph, captured before the symbol
     // may be wrapped in a vlist (for \oiint/\oiiint).  Stays 0 for non-symbol ops.
-    let symbolItalic = 0;
+    let symbolItalic;
     if (group.symbol) {
         // If this is a symbol, create the symbol.
         const fontName = large ? "Size2-Regular" : "Size1-Regular";

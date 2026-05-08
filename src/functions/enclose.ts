@@ -22,7 +22,7 @@ const htmlBuilder: HtmlBuilder<"enclose"> = (group, options) => {
     const label = group.label.slice(1);
     let scale = options.sizeMultiplier;
     let img;
-    let imgShift = 0;
+    let imgShift;
 
     // In the LaTeX cancel package, line geometry is slightly different
     // depending on whether the subject is wider than it is tall, or vice versa.
@@ -76,8 +76,8 @@ const htmlBuilder: HtmlBuilder<"enclose"> = (group, options) => {
         }
 
         // Add vertical padding
-        let topPad = 0;
-        let bottomPad = 0;
+        let topPad;
+        let bottomPad;
         let ruleThickness = 0;
         // ref: cancel package: \advance\totalheight2\p@ % "+2"
         if (/box/.test(label)) {
@@ -165,7 +165,7 @@ const htmlBuilder: HtmlBuilder<"enclose"> = (group, options) => {
 };
 
 const mathmlBuilder: MathMLBuilder<"enclose"> = (group, options) => {
-    let fboxsep = 0;
+    let fboxsep;
     const node = new MathNode(
         group.label.includes("colorbox") ? "mpadded" : "menclose",
         [mml.buildGroup(group.body, options)]

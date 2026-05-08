@@ -168,7 +168,7 @@ function parseArray(
     // Test for \hline at the top of the array.
     hLinesBeforeRow.push(getHLines(parser));
 
-    while (true) {  // eslint-disable-line no-constant-condition
+    while (true) {
         // Parse each cell in its own group (namespace)
         const cellBody = parser.parseExpression(false, singleRow ? "\\end" : "\\\\");
         parser.gullet.endGroup();

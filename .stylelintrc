@@ -1,7 +1,8 @@
 {
     "extends": "stylelint-config-standard",
     "plugins": [
-        "stylelint-scss"
+        "stylelint-scss",
+        "@stylistic/stylelint-plugin"
     ],
     "rules": {
         "at-rule-no-vendor-prefix": null,
@@ -13,7 +14,8 @@
         "value-keyword-case": ["lower", {"camelCaseSvgKeywords": true}],
         "at-rule-no-unknown": null,
         "scss/at-rule-no-unknown": true,
-        "annotation-no-unknown": null
+        "annotation-no-unknown": null,
+        "@stylistic/indentation": 4
     },
     "overrides": [
       {
