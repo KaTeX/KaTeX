@@ -49,7 +49,7 @@ $display-margin: 1em 0 !default;
         /* Accessibility hack to only show to screen readers
          Found at: http://a11yproject.com/posts/how-to-hide-content/ */
         position: absolute;
-        clip: rect(1px, 1px, 1px, 1px);
+        clip-path: inset(50%);
         padding: 0;
         border: 0;
         height: 1px;
@@ -349,7 +349,9 @@ $display-margin: 1em 0 !default;
         > .root {
             /* These values are taken from the definition of `\r@@t`,
              `\mkern 5mu` and `\mkern -10mu`. */
+            /* stylelint-disable-next-line declaration-property-value-no-unknown */
             margin-left: calc(5*$mu);
+            /* stylelint-disable-next-line declaration-property-value-no-unknown */
             margin-right: calc(-10*$mu);
         }
     }

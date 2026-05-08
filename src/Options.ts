@@ -6,8 +6,8 @@
  */
 
 import {getGlobalMetrics} from "./fontMetrics";
-import type {FontMetrics} from "./fontMetrics";
 import type {StyleInterface} from "./Style";
+import type {FontMetrics, MathFont, TextFont, FontWeight, FontShape} from "./types/fonts";
 
 const sizeStyleMap = [
     // Each element contains [textsize, scriptsize, scriptscriptsize].
@@ -35,18 +35,14 @@ const sizeAtStyle = function(size: number, style: StyleInterface): number {
     return style.size < 2 ? size : sizeStyleMap[size - 1][style.size - 1];
 };
 
-// In these types, "" (empty string) means "no change".
-export type FontWeight = "textbf" | "textmd" | "";
-export type FontShape = "textit" | "textup" | "";
-
 export type OptionsData = {
     style: StyleInterface;
     color?: string | undefined;
     size?: number;
     textSize?: number;
     phantom?: boolean;
-    font?: string;
-    fontFamily?: string;
+    font?: MathFont;
+    fontFamily?: TextFont;
     fontWeight?: FontWeight;
     fontShape?: FontShape;
     sizeMultiplier?: number;
@@ -70,8 +66,8 @@ class Options {
     // A font family applies to a group of fonts (i.e. SansSerif), while a font
     // represents a specific font (i.e. SansSerif Bold).
     // See: https://tex.stackexchange.com/questions/22350/difference-between-textrm-and-mathrm
-    font: string;
-    fontFamily: string;
+    font: MathFont;
+    fontFamily: TextFont;
     fontWeight: FontWeight;
     fontShape: FontShape;
     sizeMultiplier: number;
@@ -92,8 +88,8 @@ class Options {
         this.phantom = !!data.phantom;
         this.font = data.font || "";
         this.fontFamily = data.fontFamily || "";
-        this.fontWeight = data.fontWeight || '';
-        this.fontShape = data.fontShape || '';
+        this.fontWeight = data.fontWeight || "";
+        this.fontShape = data.fontShape || "";
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
         this.maxSize = data.maxSize;
         this.minRuleThickness = data.minRuleThickness;
@@ -171,8 +167,11 @@ class Options {
     havingBaseStyle(style: StyleInterface): Options {
         style = style || this.style.text();
         const wantSize = sizeAtStyle(Options.BASESIZE, style);
-        if (this.size === wantSize && this.textSize === Options.BASESIZE
-            && this.style === style) {
+        if (
+            this.size === wantSize &&
+            this.textSize === Options.BASESIZE &&
+            this.style === style
+        ) {
             return this;
         } else {
             return this.extend({
@@ -191,14 +190,14 @@ class Options {
         switch (this.style.id) {
             case 4:
             case 5:
-                size = 3;  // normalsize in scriptstyle
+                size = 3; // normalsize in scriptstyle
                 break;
             case 6:
             case 7:
-                size = 1;  // normalsize in scriptscriptstyle
+                size = 1; // normalsize in scriptscriptstyle
                 break;
             default:
-                size = 6;  // normalsize in textstyle or displaystyle
+                size = 6; // normalsize in textstyle or displaystyle
         }
         return this.extend({
             style: this.style.text(),
@@ -228,20 +227,15 @@ class Options {
      * Creates a new options object with the given math font or old text font.
      * @type {[type]}
      */
-    withFont(font: string): Options {
-        return this.extend({
-            font,
-        });
+    withFont(font: MathFont): Options {
+        return this.extend({font});
     }
 
     /**
      * Create a new options objects with the given fontFamily.
      */
-    withTextFontFamily(fontFamily: string): Options {
-        return this.extend({
-            fontFamily,
-            font: "",
-        });
+    withTextFontFamily(fontFamily: TextFont): Options {
+        return this.extend({fontFamily, font: ""});
     }
 
     /**
@@ -270,7 +264,11 @@ class Options {
      */
     sizingClasses(oldOptions: Options): Array<string> {
         if (oldOptions.size !== this.size) {
-            return ["sizing", "reset-size" + oldOptions.size, "size" + this.size];
+            return [
+                "sizing",
+                "reset-size" + oldOptions.size,
+                "size" + this.size,
+            ];
         } else {
             return [];
         }
@@ -282,7 +280,11 @@ class Options {
      */
     baseSizingClasses(): Array<string> {
         if (this.size !== Options.BASESIZE) {
-            return ["sizing", "reset-size" + this.size, "size" + Options.BASESIZE];
+            return [
+                "sizing",
+                "reset-size" + this.size,
+                "size" + Options.BASESIZE,
+            ];
         } else {
             return [];
         }
@@ -297,7 +299,6 @@ class Options {
         }
         return this._fontMetrics;
     }
-
 
     /**
      * Gets the CSS color of the current options object

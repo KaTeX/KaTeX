@@ -13,11 +13,18 @@ import {DocumentFragment} from "./tree";
 
 import type Options from "./Options";
 import type {ParseNode} from "./parseNode";
-import type {CharacterMetrics} from "./fontMetrics";
-import type {FontVariant, Mode} from "./types";
+import type {Mode} from "./types";
 import type {documentFragment as HtmlDocumentFragment} from "./domTree";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
 import type {Measurement} from "./units";
+import type {
+    CharacterMetrics,
+    FontName,
+    FontShape,
+    FontVariant,
+    FontWeight,
+    TextFont,
+} from "./types/fonts";
 
 /**
  * Looks up the given symbol in fontMetrics, after applying any symbol
@@ -25,8 +32,7 @@ import type {Measurement} from "./units";
  */
 const lookupSymbol = function(
     value: string,
-    // TODO(#963): Use a union type for this.
-    fontName: string,
+    fontName: FontName,
     mode: Mode,
 ): {
     value: string;
@@ -58,7 +64,7 @@ const lookupSymbol = function(
  */
 export const makeSymbol = function(
     value: string,
-    fontName: string,
+    fontName: FontName,
     mode: Mode,
     options?: Options,
     classes?: string[],
@@ -132,18 +138,18 @@ export const mathsym = function(
  * depending on the symbol.  Use this function instead of fontMap for font
  * "boldsymbol".
  */
-const boldsymbol = function(
+const boldSymbol = function(
     value: string,
     mode: Mode,
-    options: Options,
-    classes: string[],
     type: "mathord" | "textord",
 ): {
-    fontName: string;
-    fontClass: string;
+    fontName: "Math-BoldItalic" | "Main-Bold";
+    fontClass: "boldsymbol" | "mathbf";
 } {
-    if (type !== "textord" &&
-        lookupSymbol(value, "Math-BoldItalic", mode).metrics) {
+    if (
+        type !== "textord" &&
+        lookupSymbol(value, "Math-BoldItalic", mode).metrics
+    ) {
         return {
             fontName: "Math-BoldItalic",
             fontClass: "boldsymbol",
@@ -168,13 +174,13 @@ export const makeOrd = function<NODETYPE extends "spacing" | "mathord" | "textor
 ): HtmlDocumentFragment | SymbolNode {
     const mode = group.mode;
     const text = group.text;
-
     const classes = ["mord"];
+    const {font, fontFamily, fontWeight, fontShape} = options;
 
     // Math mode or Old font (i.e. \rm)
-    const isFont = mode === "math" || (mode === "text" && options.font);
-    const fontOrFamily = isFont ? options.font : options.fontFamily;
-    let wideFontName = "";
+    const useFont = mode === "math" || (mode === "text" && !!font);
+    const fontOrFamily = useFont ? font : fontFamily;
+    let wideFontName: FontName | "" = "";
     let wideFontClass = "";
     if (text.charCodeAt(0) === 0xD835) {
         const wideCharData = wideCharacterFont(text);
@@ -188,16 +194,19 @@ export const makeOrd = function<NODETYPE extends "spacing" | "mathord" | "textor
         let fontName;
         let fontClasses;
         if (fontOrFamily === "boldsymbol") {
-            const fontData = boldsymbol(text, mode, options, classes, type);
+            const fontData = boldSymbol(text, mode, type);
             fontName = fontData.fontName;
             fontClasses = [fontData.fontClass];
-        } else if (isFont) {
-            fontName = fontMap[fontOrFamily].fontName;
-            fontClasses = [fontOrFamily];
+        } else if (useFont) {
+            fontName = fontMap[font].fontName;
+            fontClasses = [font];
         } else {
-            fontName = retrieveTextFontName(fontOrFamily, options.fontWeight,
-                                            options.fontShape);
-            fontClasses = [fontOrFamily, options.fontWeight, options.fontShape];
+            fontName = retrieveTextFontName(
+                fontFamily,
+                fontWeight,
+                fontShape,
+            );
+            fontClasses = [fontFamily, fontWeight, fontShape];
         }
 
         if (lookupSymbol(text, fontName, mode).metrics) {
@@ -222,24 +231,21 @@ export const makeOrd = function<NODETYPE extends "spacing" | "mathord" | "textor
     } else if (type === "textord") {
         const font = symbols[mode][text] && symbols[mode][text].font;
         if (font === "ams") {
-            const fontName = retrieveTextFontName("amsrm", options.fontWeight,
-                  options.fontShape);
+            const fontName = retrieveTextFontName("amsrm", fontWeight, fontShape);
             return makeSymbol(
                 text, fontName, mode, options,
-                classes.concat("amsrm", options.fontWeight, options.fontShape));
+                classes.concat("amsrm", fontWeight, fontShape));
         } else if (font === "main" || !font) {
-            const fontName = retrieveTextFontName("textrm", options.fontWeight,
-                  options.fontShape);
+            const fontName = retrieveTextFontName("textrm", fontWeight, fontShape);
             return makeSymbol(
                 text, fontName, mode, options,
-                classes.concat(options.fontWeight, options.fontShape));
+                classes.concat(fontWeight, fontShape));
         } else { // fonts added by plugins
-            const fontName = retrieveTextFontName(font, options.fontWeight,
-                  options.fontShape);
+            const fontName = retrieveTextFontName(font, fontWeight, fontShape);
             // We add font name as a css class
             return makeSymbol(
                 text, fontName, mode, options,
-                classes.concat(fontName, options.fontWeight, options.fontShape));
+                classes.concat(fontName, fontWeight, fontShape));
         }
     } else {
         throw new Error("unexpected type: " + type + " in makeOrd");
@@ -644,12 +650,14 @@ export const makeGlue = (measurement: Measurement, options: Options): DomSpan =>
 };
 
 // Takes font options, and returns the appropriate fontLookup name
-const retrieveTextFontName = function(
-    fontFamily: string,
-    fontWeight: string,
-    fontShape: string,
-): string {
-    let baseFontName = "";
+const retrieveTextFontName = (
+    fontFamily: TextFont,
+    fontWeight: FontWeight,
+    fontShape: FontShape,
+): FontName => {
+    let baseFontName: "AMS" | "Main" | "SansSerif" | "Typewriter" | TextFont;
+    let fontStylesName: "BoldItalic" | "Bold" | "Italic" | "Regular";
+
     switch (fontFamily) {
         case "amsrm":
             baseFontName = "AMS";
@@ -667,18 +675,17 @@ const retrieveTextFontName = function(
             baseFontName = fontFamily; // use fonts added by a plugin
     }
 
-    let fontStylesName;
     if (fontWeight === "textbf" && fontShape === "textit") {
         fontStylesName = "BoldItalic";
     } else if (fontWeight === "textbf") {
         fontStylesName = "Bold";
-    } else if (fontWeight === "textit") {
+    } else if (fontShape === "textit") {
         fontStylesName = "Italic";
     } else {
         fontStylesName = "Regular";
     }
 
-    return `${baseFontName}-${fontStylesName}`;
+    return `${baseFontName}-${fontStylesName}` as FontName;
 };
 
 /**
@@ -689,7 +696,7 @@ const retrieveTextFontName = function(
 // A map between tex font commands an MathML mathvariant attribute values
 export const fontMap: Record<string, {
     variant: FontVariant;
-    fontName: string;
+    fontName: FontName;
 }> = {
     // styles
     "mathbf": {

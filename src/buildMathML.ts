@@ -15,7 +15,8 @@ import type Options from "./Options";
 import type {AnyParseNode, SymbolParseNode} from "./parseNode";
 import type {DomSpan, HtmlDomNode} from "./domTree";
 import type {MathDomNode} from "./mathMLTree";
-import type {FontVariant, Mode} from "./types";
+import type {Mode} from "./types";
+import type {FontVariant, MathFont} from "./types/fonts";
 
 const noVariantSymbols = new Set(["\\imath", "\\jmath"]);
 const rowLikeTypes = new Set(["mrow", "mtable"]);
@@ -52,13 +53,28 @@ export const makeRow = function(body: MathDomNode[]): MathDomNode {
     }
 };
 
+const mathFontVariants: Partial<
+    Record<MathFont, FontVariant | ((group: SymbolParseNode) => FontVariant)>
+> = {
+    mathit: "italic",
+    boldsymbol: (group) => (group.type === "textord" ? "bold" : "bold-italic"),
+    mathbf: "bold",
+    mathbb: "double-struck",
+    mathsfit: "sans-serif-italic",
+    mathfrak: "fraktur",
+    mathscr: "script",
+    mathcal: "script",
+    mathsf: "sans-serif",
+    mathtt: "monospace",
+};
+
 /**
  * Returns the math variant as a string or null if none is required.
  */
-export const getVariant = function(
+export const getVariant = (
     group: SymbolParseNode,
     options: Options,
-): FontVariant | null | undefined {
+): FontVariant | null | undefined => {
     // Handle \text... font specifiers as best we can.
     // MathML has a limited list of allowable mathvariant specifiers; see
     // https://www.w3.org/TR/MathML3/chapter3.html#presm.commatt
@@ -90,25 +106,12 @@ export const getVariant = function(
     }
 
     const mode = group.mode;
-    if (font === "mathit") {
-        return "italic";
-    } else if (font === "boldsymbol") {
-        return group.type === "textord" ? "bold" : "bold-italic";
-    } else if (font === "mathbf") {
-        return "bold";
-    } else if (font === "mathbb") {
-        return "double-struck";
-    } else if (font === "mathsfit") {
-        return "sans-serif-italic";
-    } else if (font === "mathfrak") {
-        return "fraktur";
-    } else if (font === "mathscr" || font === "mathcal") {
-        // MathML makes no distinction between script and calligraphic
-        return "script";
-    } else if (font === "mathsf") {
-        return "sans-serif";
-    } else if (font === "mathtt") {
-        return "monospace";
+    const mathVariant = mathFontVariants[font];
+
+    if (mathVariant) {
+        return typeof mathVariant === "function"
+            ? mathVariant(group)
+            : mathVariant;
     }
 
     let text = group.text;

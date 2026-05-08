@@ -1,8 +1,9 @@
 import {NON_ATOMS} from "./atoms";
+import type {Atom} from "./atoms";
 import type SourceLocation from "./SourceLocation";
 import type {AlignSpec, ColSeparationType} from "./environments/array";
-import type {Atom} from "./atoms";
-import type {Mode, StyleStr} from "./types";
+import type {DelimiterSize, Mode, StyleStr} from "./types";
+import type {MathFont} from "./types/fonts";
 import type {Token} from "./Token";
 import type {Measurement} from "./units";
 export type NodeType = keyof ParseNodeTypes;
@@ -231,7 +232,7 @@ type ParseNodeTypes = {
         type: "delimsizing";
         mode: Mode;
         loc?: SourceLocation | null | undefined;
-        size: 1 | 2 | 3 | 4;
+        size: DelimiterSize;
         mclass: "mopen" | "mclose" | "mrel" | "mord";
         delim: string;
     };
@@ -255,7 +256,7 @@ type ParseNodeTypes = {
         type: "font";
         mode: Mode;
         loc?: SourceLocation | null | undefined;
-        font: string;
+        font: Exclude<MathFont, "">;
         body: AnyParseNode;
     };
     "genfrac": {

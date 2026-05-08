@@ -23,19 +23,7 @@ export type StyleStr = "text" | "display" | "script" | "scriptscript";
 export type BreakToken = "]" | "}" | "\\endgroup" | "$" | "\\)" | "\\\\" | "\\end" |
     "EOF";
 
-// Math font variants.
-export type FontVariant = "bold" | "bold-italic" | "bold-sans-serif" |
-    "double-struck" | "fraktur" | "italic" | "monospace" | "normal" | "sans-serif" |
-    "sans-serif-bold-italic" | "sans-serif-italic" | "script";
+export type DelimiterSize = 1 | 2 | 3 | 4;
 
-export type FontName =
-    | "Main-Bold"
-    | "Math-Italic"
-    | "Main-BoldItalic"
-    | "Script-Regular"
-    | "Fraktur-Regular"
-    | "AMS-Regular"
-    | "SansSerif-Regular"
-    | "SansSerif-Bold"
-    | "SansSerif-Italic"
-    | "Typewriter-Regular";
+export type Slice1<S extends string> =
+    S extends `${string}${infer Rest}` ? Rest : "";

@@ -1,4 +1,5 @@
 import defineFunction, {ordargument} from "../defineFunction";
+import type {TextFont} from "../types/fonts";
 import {makeSpan} from "../buildCommon";
 
 import * as html from "../buildHTML";
@@ -7,9 +8,12 @@ import type Options from "../Options";
 import type {ParseNode} from "../parseNode";
 
 // Non-mathy text, possibly in a font
-const textFontFamilies: Record<string, string | undefined> = {
-    "\\text": undefined, "\\textrm": "textrm", "\\textsf": "textsf",
-    "\\texttt": "texttt", "\\textnormal": "textrm",
+const textFontFamilies: Record<string, TextFont | undefined> = {
+    "\\text": undefined,
+    "\\textrm": "textrm",
+    "\\textsf": "textsf",
+    "\\texttt": "texttt",
+    "\\textnormal": "textrm",
 };
 
 const textFontWeights: Record<string, "textbf" | "textmd"> = {

@@ -1,6 +1,12 @@
 import {supportedCodepoint} from "./unicodeScripts";
 
 import type {Mode} from "./types";
+import type {CharacterMetrics, CharacterMetricsTuple, FontMetrics} from "./types/fonts";
+// This map contains a mapping from font name and character code to character
+// metrics, including height, depth, italic correction, and skew (kern from the
+// character to the corresponding \skewchar)
+// This map is generated via `make metrics`. It should not be changed manually.
+import metricMap from "./fontMetricsData";
 
 /**
  * This file contains metrics regarding fonts and individual symbols. The sigma
@@ -91,12 +97,6 @@ const sigmasAndXis: Record<string, [number, number, number]> = {
     fboxrule: [0.04, 0.04, 0.04], // 0.4 pt / ptPerEm
 };
 
-// This map contains a mapping from font name and character code to character
-// metrics, including height, depth, italic correction, and skew (kern from the
-// character to the corresponding \skewchar)
-// This map is generated via `make metrics`. It should not be changed manually.
-import metricMap from "./fontMetricsData";
-
 // These are very rough approximations.  We default to Times New Roman which
 // should have Latin-1 and Cyrillic characters, but may not depending on the
 // operating system.  The metrics do not account for extra height from the
@@ -180,23 +180,14 @@ const extraCharacterMap: Record<string, string> = {
     'я': 'r',
 };
 
-export type CharacterMetrics = {
-    depth: number;
-    height: number;
-    italic: number;
-    skew: number;
-    width: number;
-};
-
-export type MetricMap = {
-    [key: string]: [number, number, number, number, number];
-};
-
 /**
  * This function adds new font metrics to default metricMap
  * It can also override existing metrics
  */
-export function setFontMetrics(fontName: string, metrics: MetricMap) {
+export function setFontMetrics(
+    fontName: string,
+    metrics: {[key: string]: CharacterMetricsTuple}
+) {
     metricMap[fontName] = metrics;
 }
 
@@ -248,10 +239,6 @@ export function getCharacterMetrics(
 }
 
 type FontSizeIndex = 0 | 1 | 2;
-export type FontMetrics = {
-    cssEmPerMu: number;
-    [key: string]: number;
-};
 const fontMetricsBySizeIndex: Partial<Record<FontSizeIndex, FontMetrics>> = {};
 
 /**

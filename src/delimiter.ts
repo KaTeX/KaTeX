@@ -32,11 +32,11 @@ import {makeEm} from "./units";
 import fontMetricsData from "./fontMetricsData";
 
 import type Options from "./Options";
-import type {CharacterMetrics} from "./fontMetrics";
 import type {HtmlDomNode, DomSpan, SvgSpan} from "./domTree";
-import type {Mode} from "./types";
+import type {DelimiterSize, Mode} from "./types";
 import type {StyleInterface} from "./Style";
 import type {VListElem} from "./buildCommon";
+import type {CharacterMetrics, FontName} from "./types/fonts";
 
 type StackedDelimiterFont = "Size1-Regular" | "Size4-Regular";
 
@@ -125,12 +125,11 @@ const makeSmallDelim = function(
  */
 const mathrmSize = function(
     value: string,
-    size: number,
+    size: DelimiterSize,
     mode: Mode,
     options: Options,
 ): SymbolNode {
-    return makeSymbol(value, "Size" + size + "-Regular",
-        mode, options);
+    return makeSymbol(value, `Size${size}-Regular`, mode, options);
 };
 
 /**
@@ -138,7 +137,7 @@ const mathrmSize = function(
  * Size3, or Size4 fonts. It is always rendered in textstyle.
  */
 const makeLargeDelim = function(delim: string,
-    size: number,
+    size: DelimiterSize,
     center: boolean,
     options: Options,
     mode: Mode,
@@ -507,9 +506,9 @@ export const makeSqrtImage = function(
 
     // Create a span containing an SVG image of a sqrt symbol.
     let span;
-    let spanHeight = 0;
-    let texHeight = 0;
-    let viewBoxHeight = 0;
+    let spanHeight;
+    let texHeight;
+    let viewBoxHeight;
     let advanceWidth;
 
     // We create viewBoxes with 80 units of "padding" above each surd.
@@ -608,7 +607,7 @@ export const sizeToMaxHeight = [0, 1.2, 1.8, 2.4, 3.0];
  */
 export const makeSizedDelim = function(
     delim: string,
-    size: number,
+    size: DelimiterSize,
     options: Options,
     mode: Mode,
     classes: string[],
@@ -621,12 +620,17 @@ export const makeSizedDelim = function(
     }
 
     // Sized delimiters are never centered.
-    if (stackLargeDelimiters.has(delim) ||
-        stackNeverDelimiters.has(delim)) {
+    if (stackLargeDelimiters.has(delim) || stackNeverDelimiters.has(delim)) {
         return makeLargeDelim(delim, size, false, options, mode, classes);
     } else if (stackAlwaysDelimiters.has(delim)) {
         return makeStackedDelim(
-            delim, sizeToMaxHeight[size], false, options, mode, classes);
+            delim,
+            sizeToMaxHeight[size],
+            false,
+            options,
+            mode,
+            classes,
+        );
     } else {
         throw new ParseError("Illegal delimiter: '" + delim + "'");
     }
