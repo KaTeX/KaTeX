@@ -49,6 +49,10 @@ jobs:
         env:
           YARN_ENABLE_SCRIPTS: 0
 
+      - name: Install ImageMagick
+        if: matrix.browser == 'safari'
+        run: brew install imagemagick
+
       - name: Enable SafariDriver
         if: matrix.browser == 'safari'
         run: sudo safaridriver --enable
