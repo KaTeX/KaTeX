@@ -46,26 +46,4 @@ for browserTag in "firefox:128.0-20260222" "chromium:145.0-20260222"; do
     cleanup
 done
 
-if [[ $BROWSERSTACK_USER ]]; then
-    echo "Creating screenshots for Safari..."
-    yarn node "$(dirname "$0")"/screenshotter.js \
-            --browser=safari --browserstack --selenium-capabilities '{
-                "browserName": "Safari",
-                "browser_version": "13.1",
-                "os": "OS X",
-                "os_version": "Catalina"
-            }' "$@"
-    rc=$?
-    if [ $rc -eq 0 ]; then
-        res="Done"
-    elif [ $rc -eq 3 ]; then
-        res="Screenshots mismatched"
-        status=1
-    else
-        res="Failed (exit code $rc)"
-        status=1
-    fi
-    echo "${res} for safari"
-fi
-
 exit ${status}

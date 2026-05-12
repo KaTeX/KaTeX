@@ -23,8 +23,6 @@ const istanbulLibCoverage = require('istanbul-lib-coverage');
 const istanbulLibReport = require('istanbul-lib-report');
 const istanbulReports = require('istanbul-reports');
 
-const browserstack = require('browserstack-local');
-
 const webpack = require('webpack');
 const WebpackDevServer = require("webpack-dev-server");
 const webpackConfig = require("../../webpack.dev")[0];
@@ -71,9 +69,6 @@ const opts = program
         "Retry this many times before reporting failure", 5, parseInt)
     .option("--wait <secs>",
         "Wait this many seconds between page load and screenshot", parseFloat)
-    .option("--browserstack", "Use Browserstack. The username and access key"
-        + " should be set as environment variable BROWSERSTACK_USER and"
-        + " BROWSERSTACK_ACCESS_KEY")
     .parse(process.argv)
     .opts();
 
@@ -96,24 +91,6 @@ let seleniumPort = opts.seleniumPort;
 let katexURL = opts.katexUrl;
 let katexIP = opts.katexIp;
 let katexPort = opts.katexPort;
-
-let bsLocal;
-if (opts.browserstack) {
-    // https://www.browserstack.com/automate/node
-    if (!seleniumURL) {
-        seleniumURL = "http://hub-cloud.browserstack.com/wd/hub";
-    }
-    // https://www.browserstack.com/local-testing/automate#test-localhost-websites
-    if (!katexIP && opts.browser === "safari") {
-        katexIP = "bs-local.com";
-    }
-    opts.seleniumCapabilities = Object.assign({
-        resolution: "1280x1024",
-        "browserstack.user": process.env.BROWSERSTACK_USER,
-        "browserstack.key": process.env.BROWSERSTACK_ACCESS_KEY,
-        "browserstack.local": true,
-    }, opts.seleniumCapabilities);
-}
 
 //////////////////////////////////////////////////////////////////////
 // Work out connection to selenium docker container
@@ -239,9 +216,6 @@ if (seleniumURL) {
     if (opts.seleniumProxy) {
         driver = await getProxyDriver();
     } else {
-        if (opts.browserstack) {
-            await startBrowserstackLocal();
-        }
         if (seleniumIP) {
             await pRetry(tryConnect, {
                 retries: 50,
@@ -258,10 +232,7 @@ if (seleniumURL) {
 
     await driver.quit();
     await devServer.stop();
-    if (bsLocal) {
-        const bsLocalStop = util.promisify(bsLocal.stop);
-        await bsLocalStop();
-    }
+
     process.exit(exitStatus);
 })().catch(err => {
     console.error(err);
@@ -301,24 +272,6 @@ async function startServer() {
     const compiler = webpack(webpackConfig);
     devServer = new WebpackDevServer(config, compiler);
     await devServer.start(katexPort);
-}
-
-// Start Browserstack Local connection
-async function startBrowserstackLocal() {
-    // unique identifier for the session
-    const localIdentifier = process.env.CIRCLE_BUILD_NUM || "p" + katexPort;
-    opts.seleniumCapabilities["browserstack.localIdentifier"] = localIdentifier;
-
-    bsLocal = new browserstack.Local();
-    await new Promise((resolve, reject) => {
-        bsLocal.start({localIdentifier}, err => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve();
-            }
-        });
-    });
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -370,7 +323,6 @@ function buildDriver() {
 async function getProxyDriver() {
     const {body} = await got.post(opts.seleniumProxy, {
         json: {
-            browserstack: opts.browserstack,
             capabilities: opts.seleniumCapabilities,
             seleniumURL,
         },
