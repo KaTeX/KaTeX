@@ -21,7 +21,7 @@ jobs:
             os: ubuntu-latest
             image: selenium/standalone-firefox:128.0-20260222
           - browser: safari
-            os: macos-26.1
+            os: macos-latest
       fail-fast: false
     runs-on: ${{ matrix.os }}
     services:
