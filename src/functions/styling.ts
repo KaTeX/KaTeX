@@ -50,13 +50,19 @@ defineFunction({
     htmlBuilder(group, options) {
         // Style changes are handled in the TeXbook on pg. 442, Rule 3.
         const newStyle = styleMap[group.style];
-        const newOptions = options.havingStyle(newStyle).withFont('');
+        let newOptions = options.havingStyle(newStyle);
+        if (group.resetFont) {
+            newOptions = newOptions.withFont('');
+        }
         return sizingGroup(group.body, newOptions, options);
     },
     mathmlBuilder(group, options) {
         // Figure out what style we're changing to.
         const newStyle = styleMap[group.style];
-        const newOptions = options.havingStyle(newStyle);
+        let newOptions = options.havingStyle(newStyle);
+        if (group.resetFont) {
+            newOptions = newOptions.withFont('');
+        }
 
         const inner = mml.buildExpression(group.body, newOptions);
 

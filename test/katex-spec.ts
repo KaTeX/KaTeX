@@ -703,6 +703,21 @@ describe("A genfrac builder", function() {
         expect`x_{y_{\dfrac{a}{b}}}`
             .toBuildLike`x_{y_{\displaystyle\frac{a}{b}}}`;
     });
+
+    it("should preserve math font in forced-style fractions", function() {
+        const expressions = [
+            r`\mathsf{\dfrac{ABC123}{xyz456}}`,
+            r`\mathsf{\tfrac{ABC123}{xyz456}}`,
+            r`\mathsf{\cfrac{ABC123}{xyz456}}`,
+            r`\mathsf{\genfrac{}{}{0.8pt}{0}{ABC123}{xyz456}}`,
+        ];
+
+        for (const expression of expressions) {
+            const markup = katex.renderToString(expression);
+            expect(markup).toMatch(/<span class="mord mathsf(?: mtight)?">ABC123<\/span>/);
+            expect(markup).toMatch(/<span class="mord mathsf(?: mtight)?">xyz456<\/span>/);
+        }
+    });
 });
 
 describe("A infix builder", function() {
@@ -1648,6 +1663,58 @@ describe("A style change parser", function() {
 
         expect(displayBody).toHaveLength(2);
         expect(displayBody[0].text).toEqual("e");
+    });
+
+    it("should preserve math font across style changes", function() {
+        const styles = [
+            r`\displaystyle`,
+            r`\textstyle`,
+            r`\scriptstyle`,
+            r`\scriptscriptstyle`,
+        ];
+
+        for (const style of styles) {
+            const markup = katex.renderToString(`\\mathsf{x + ${style} y}`);
+            expect(markup).toMatch(/<span class="mord mathsf[^"]*"[^>]*>y<\/span>/);
+        }
+    });
+
+    it("should reset math font when switching from text to math", function() {
+        for (const expression of [r`\text{\sf $x$}`, r`\textsf{$x$}`]) {
+            const markup = katex.renderToString(expression);
+            expect(markup).toMatch(/<span class="mord mathnormal">x<\/span>/);
+            expect(markup).not.toMatch(/<span class="mord mathsf(?: mtight)?">x<\/span>/);
+            expect(markup).not.toContain("textsf\">x</span>");
+        }
+    });
+
+    it("should preserve text font after switching back from math to text", function() {
+        const markup = katex.renderToString(r`\textsf{$\text{x}$}`);
+        expect(markup).toContain("<span class=\"mord textsf\">x</span>");
+        expect(markup).not.toMatch(/<span class="mord mathnormal">x<\/span>/);
+        expect(markup).not.toMatch(/<span class="mord mathsf(?: mtight)?">x<\/span>/);
+    });
+
+    it("should reset math font in array style wrappers", function() {
+        for (const expression of [
+            r`\mathsf{\begin{matrix}x\end{matrix}}`,
+            r`\mathsf{\begin{array}{c}x\end{array}}`,
+        ]) {
+            const markup = katex.renderToString(expression);
+            expect(markup).toMatch(/<span class="mord mathnormal">x<\/span>/);
+            expect(markup).not.toMatch(/<span class="mord mathsf(?: mtight)?">x<\/span>/);
+        }
+    });
+
+    it("should reset math font in CD style wrappers", function() {
+        const cdMarkup = katex.renderToString(
+            r`\mathsf{\begin{CD}A @>x>> B\end{CD}}`,
+            new Settings({displayMode: true}),
+        );
+        expect(cdMarkup).toMatch(/<span class="mord mathnormal">A<\/span>/);
+        expect(cdMarkup).toMatch(/<span class="mord mathnormal"[^>]*>B<\/span>/);
+        expect(cdMarkup).toMatch(/<span class="mord mathnormal mtight">x<\/span>/);
+        expect(cdMarkup).not.toMatch(/<span class="mord mathsf(?: mtight)?">[ABx]<\/span>/);
     });
 });
 

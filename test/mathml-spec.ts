@@ -157,6 +157,78 @@ describe("A MathML builder", function() {
             .toMatchSnapshot();
     });
 
+    it("should preserve math font across style changes", () => {
+        const styles = [
+            "\\displaystyle",
+            "\\textstyle",
+            "\\scriptstyle",
+            "\\scriptscriptstyle",
+        ];
+
+        for (const style of styles) {
+            const mathml = getMathML(`\\mathsf{x ${style} y}`);
+            expect(mathml).toContain("<mi mathvariant=\"sans-serif\">x</mi>");
+            expect(mathml).toContain("<mi mathvariant=\"sans-serif\">y</mi>");
+        }
+    });
+
+    it("should preserve math font in forced-style fractions", () => {
+        const expressions = [
+            "\\mathsf{\\dfrac{ABC123}{xyz456}}",
+            "\\mathsf{\\tfrac{ABC123}{xyz456}}",
+            "\\mathsf{\\cfrac{ABC123}{xyz456}}",
+            "\\mathsf{\\genfrac{}{}{0.8pt}{0}{ABC123}{xyz456}}",
+        ];
+
+        for (const expression of expressions) {
+            const mathml = getMathML(expression);
+            expect(mathml).toContain("<mi mathvariant=\"sans-serif\">A</mi>");
+            expect(mathml).toContain("<mn mathvariant=\"sans-serif\">123</mn>");
+            expect(mathml).toContain("<mi mathvariant=\"sans-serif\">x</mi>");
+            expect(mathml).toContain("<mn mathvariant=\"sans-serif\">456</mn>");
+        }
+    });
+
+    it("should reset math font when switching from text to math", () => {
+        for (const expression of ["\\text{\\sf $x$}", "\\textsf{$x$}"]) {
+            const mathml = getMathML(expression);
+            expect(mathml).toContain("<mi>x</mi>");
+            expect(mathml).not.toContain("<mi mathvariant=\"sans-serif\">x</mi>");
+            expect(mathml).not.toContain("<mtext>x</mtext>");
+        }
+    });
+
+    it("should preserve text font after switching back from math to text", () => {
+        const mathml = getMathML("\\textsf{$\\text{x}$}");
+        expect(mathml).toContain("<mtext mathvariant=\"sans-serif\">x</mtext>");
+        expect(mathml).not.toContain("<mi>x</mi>");
+        expect(mathml).not.toContain("<mi mathvariant=\"sans-serif\">x</mi>");
+    });
+
+    it("should reset math font in array style wrappers", () => {
+        for (const expression of [
+            "\\mathsf{\\begin{matrix}x\\end{matrix}}",
+            "\\mathsf{\\begin{array}{c}x\\end{array}}",
+        ]) {
+            const mathml = getMathML(expression);
+            expect(mathml).toContain("<mi>x</mi>");
+            expect(mathml).not.toContain("<mi mathvariant=\"sans-serif\">x</mi>");
+        }
+    });
+
+    it("should reset math font in CD style wrappers", () => {
+        const cdMathml = getMathML(
+            "\\mathsf{\\begin{CD}A @>x>> B\\end{CD}}",
+            new Settings({displayMode: true}),
+        );
+        expect(cdMathml).toContain("<mi>A</mi>");
+        expect(cdMathml).toContain("<mi>B</mi>");
+        expect(cdMathml).toContain("<mi>x</mi>");
+        expect(cdMathml).not.toContain("<mi mathvariant=\"sans-serif\">A</mi>");
+        expect(cdMathml).not.toContain("<mi mathvariant=\"sans-serif\">B</mi>");
+        expect(cdMathml).not.toContain("<mi mathvariant=\"sans-serif\">x</mi>");
+    });
+
     it('\\html@mathml makes clean symbols', () => {
         expect(getMathML("\\copyright\\neq\\notin\u2258\\KaTeX"))
             .toMatchSnapshot();
