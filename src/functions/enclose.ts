@@ -223,7 +223,7 @@ defineFunction({
     props: {
         numArgs: 2,
         allowedInText: true,
-        argTypes: ["color", "text"],
+        argTypes: ["color", "hbox"],
     },
     handler({parser, funcName}, args, optArgs) {
         const color = assertNodeType(args[0], "color-token").color;
@@ -246,7 +246,7 @@ defineFunction({
     props: {
         numArgs: 3,
         allowedInText: true,
-        argTypes: ["color", "color", "text"],
+        argTypes: ["color", "color", "hbox"],
     },
     handler({parser, funcName}, args, optArgs) {
         const borderColor = assertNodeType(args[0], "color-token").color;

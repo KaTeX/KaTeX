@@ -1722,11 +1722,30 @@ describe("A style change parser", function() {
             r`\mathsf{\text{x}}`,
             r`\mathsf{\raisebox{2pt}{x}}`,
             r`\mathsf{\fbox{x}}`,
+            r`\mathsf{\colorbox{red}{x}}`,
+            r`\mathsf{\fcolorbox{blue}{red}{x}}`,
+            r`\mathsf{\angl{x}}`,
             r`\mathsf{\hbox{x}}`,
         ]) {
             const markup = katex.renderToString(expression);
             expect(markup).toMatch(/<span class="mord(?: text)?">x<\/span>/);
             expect(markup).not.toMatch(/<span class="mord mathsf(?: mtight)?">x<\/span>/);
+        }
+    });
+
+    it("should reset hbox math to textstyle", function() {
+        const scriptMarkup = katex.renderToString(r`\scriptstyle x`);
+        expect(scriptMarkup).toMatch(/<span class="mord mathnormal mtight[^"]*">x<\/span>/);
+
+        for (const expression of [
+            r`\scriptstyle \hbox{$x$}`,
+            r`\scriptstyle \fbox{$x$}`,
+            r`\scriptstyle \colorbox{red}{$x$}`,
+            r`\scriptstyle \fcolorbox{blue}{red}{$x$}`,
+        ]) {
+            const markup = katex.renderToString(expression);
+            expect(markup).toMatch(/<span class="mord mathnormal[^"]*">x<\/span>/);
+            expect(markup).not.toMatch(/<span class="mord mathnormal mtight[^"]*">x<\/span>/);
         }
     });
 });

@@ -234,11 +234,31 @@ describe("A MathML builder", function() {
             "\\mathsf{\\text{x}}",
             "\\mathsf{\\raisebox{2pt}{x}}",
             "\\mathsf{\\fbox{x}}",
+            "\\mathsf{\\colorbox{red}{x}}",
+            "\\mathsf{\\fcolorbox{blue}{red}{x}}",
+            "\\mathsf{\\angl{x}}",
             "\\mathsf{\\hbox{x}}",
         ]) {
             const mathml = getMathML(expression);
             expect(mathml).toContain("<mtext>x</mtext>");
             expect(mathml).not.toContain("<mtext mathvariant=\"sans-serif\">x</mtext>");
+        }
+    });
+
+    it("should reset hbox math to textstyle", () => {
+        const scriptMathml = getMathML("\\scriptstyle x");
+        expect(scriptMathml).toContain("<mstyle scriptlevel=\"1\"");
+
+        for (const expression of [
+            "\\scriptstyle \\hbox{$x$}",
+            "\\scriptstyle \\fbox{$x$}",
+            "\\scriptstyle \\colorbox{red}{$x$}",
+            "\\scriptstyle \\fcolorbox{blue}{red}{$x$}",
+        ]) {
+            const mathml = getMathML(expression);
+            expect(mathml).toContain("<mstyle scriptlevel=\"1\"");
+            expect(mathml).toContain("<mstyle scriptlevel=\"0\"");
+            expect(mathml).toContain("<mi>x</mi>");
         }
     });
 
