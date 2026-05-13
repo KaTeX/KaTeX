@@ -183,6 +183,7 @@ function parseArray(
                 type: "styling",
                 mode: parser.mode,
                 style,
+                resetFont: true,
                 body: [cell],
             };
         }
