@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.46](https://github.com/KaTeX/KaTeX/compare/v0.16.45...v0.16.46) (2026-05-13)
+
+
+### Bug Fixes
+
+* preserve math font in some styling commands ([#4214](https://github.com/KaTeX/KaTeX/issues/4214)) ([e9ee046](https://github.com/KaTeX/KaTeX/commit/e9ee0464ddb31da9bf9649eeb70e52236e7a974a)), closes [#4213](https://github.com/KaTeX/KaTeX/issues/4213)
+
 ## [0.16.45](https://github.com/KaTeX/KaTeX/compare/v0.16.44...v0.16.45) (2026-04-05)
 
 
