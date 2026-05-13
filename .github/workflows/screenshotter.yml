@@ -3,13 +3,12 @@ name: Screenshotter
 on:
   push:
     branches: [ main ]
-  pull_request_target:
+  pull_request:
     branches: [ main ]
   workflow_dispatch:
 
 jobs:
   screenshotter:
-    if: github.event_name != 'pull_request_target' || contains(github.event.pull_request.labels.*.name, 'safe to test')
     strategy:
       matrix:
         browser: [chrome, firefox, safari]
@@ -32,7 +31,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: ${{ github.event_name == 'pull_request_target' && format('refs/pull/{0}/merge', github.event.pull_request.number) || '' }}
           persist-credentials: false
 
       - name: Enable Corepack
