@@ -1716,6 +1716,19 @@ describe("A style change parser", function() {
         expect(cdMarkup).toMatch(/<span class="mord mathnormal mtight">x<\/span>/);
         expect(cdMarkup).not.toMatch(/<span class="mord mathsf(?: mtight)?">[ABx]<\/span>/);
     });
+
+    it("should not leak math font into hbox/text contexts", function() {
+        for (const expression of [
+            r`\mathsf{\text{x}}`,
+            r`\mathsf{\raisebox{2pt}{x}}`,
+            r`\mathsf{\fbox{x}}`,
+            r`\mathsf{\hbox{x}}`,
+        ]) {
+            const markup = katex.renderToString(expression);
+            expect(markup).toMatch(/<span class="mord(?: text)?">x<\/span>/);
+            expect(markup).not.toMatch(/<span class="mord mathsf(?: mtight)?">x<\/span>/);
+        }
+    });
 });
 
 describe("A font parser", function() {

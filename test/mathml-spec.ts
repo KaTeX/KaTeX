@@ -229,6 +229,19 @@ describe("A MathML builder", function() {
         expect(cdMathml).not.toContain("<mi mathvariant=\"sans-serif\">x</mi>");
     });
 
+    it("should not leak math font into hbox/text contexts", () => {
+        for (const expression of [
+            "\\mathsf{\\text{x}}",
+            "\\mathsf{\\raisebox{2pt}{x}}",
+            "\\mathsf{\\fbox{x}}",
+            "\\mathsf{\\hbox{x}}",
+        ]) {
+            const mathml = getMathML(expression);
+            expect(mathml).toContain("<mtext>x</mtext>");
+            expect(mathml).not.toContain("<mtext mathvariant=\"sans-serif\">x</mtext>");
+        }
+    });
+
     it('\\html@mathml makes clean symbols', () => {
         expect(getMathML("\\copyright\\neq\\notin\u2258\\KaTeX"))
             .toMatchSnapshot();

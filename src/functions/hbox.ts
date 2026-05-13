@@ -27,12 +27,12 @@ defineFunction({
         };
     },
     htmlBuilder(group, options) {
-        const elements = html.buildExpression(group.body, options, false);
+        const elements = html.buildExpression(group.body, options.withFont(''), false);
         return makeFragment(elements);
     },
     mathmlBuilder(group, options) {
         return new MathNode(
-          "mrow", mml.buildExpression(group.body, options)
+          "mrow", mml.buildExpression(group.body, options.withFont(''))
         );
     },
 });
