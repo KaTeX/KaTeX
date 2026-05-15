@@ -21,6 +21,7 @@ jobs:
             image: selenium/standalone-firefox:128.0-20260222
           - browser: safari
             os: macos-26
+            image: '' # no Selenium container needed on macOS
       fail-fast: false
     runs-on: ${{ matrix.os }}
     services:

@@ -492,6 +492,9 @@ async function takeScreenshot(key) {
             await driver.executeScript(
                     "handle_search_string(" +
                     JSON.stringify("?" + itm.query) + ");");
+            await driver.executeAsyncScript(
+                "var callback = arguments[arguments.length - 1]; " +
+                "load_fonts_and_images(callback);");
         } else {
             if (opts.coverage) {
                 // collect coverage before reloading
