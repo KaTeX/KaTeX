@@ -886,9 +886,13 @@ exports[`A MathML builder should use <menclose> for colorbox 1`] = `
                voffset="3pt"
                mathbackground="red"
       >
-        <mtext>
-          b
-        </mtext>
+        <mstyle scriptlevel="0"
+                displaystyle="false"
+        >
+          <mtext>
+            b
+          </mtext>
+        </mstyle>
       </mpadded>
     </mrow>
     <annotation encoding="application/x-tex">

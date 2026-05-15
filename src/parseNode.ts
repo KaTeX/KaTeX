@@ -123,6 +123,7 @@ type ParseNodeTypes = {
         mode: Mode;
         loc?: SourceLocation | null | undefined;
         style: StyleStr;
+        resetFont?: boolean;
         body: AnyParseNode[];
     };
     "supsub": {

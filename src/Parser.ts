@@ -580,13 +580,15 @@ export default class Parser {
                 return this.parseArgumentGroup(optional, type);
             case "hbox": {
                 // hbox argument type wraps the argument in the equivalent of
-                // \hbox, which is like \text but switching to \textstyle size.
+                // \hbox, which is like \text but switching to \textstyle size
+                // and resetting math font.
                 const group = this.parseArgumentGroup(optional, "text");
                 return group != null ? {
                     type: "styling",
                     mode: group.mode,
                     body: [group],
                     style: "text", // simulate \textstyle
+                    resetFont: true,
                 } : null;
             }
             case "raw": {

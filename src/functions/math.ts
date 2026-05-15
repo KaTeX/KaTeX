@@ -21,6 +21,7 @@ defineFunction({
             type: "styling",
             mode: parser.mode,
             style: "text",
+            resetFont: true,
             body,
         };
     },
