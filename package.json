@@ -155,6 +155,7 @@
     "build": "rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c --failAfterWarnings && webpack && node update-sri.js package dist/README.md",
     "build:fonts": "dockers/fonts/buildFonts.sh",
     "build:metrics": "dockers/fonts/buildMetrics.sh",
+    "prepare": "node -e \"process.env.INIT_CWD !== process.cwd() && process.exit(1)\" || npm run build",
     "watch": "yarn build --watch",
     "postversion": "yarn dist && node update-sri.js package README.md contrib/*/README.md docs/*.md website/pages/index.html",
     "semantic-release": "semantic-release",
