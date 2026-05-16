@@ -50,30 +50,12 @@ defineFunction({
                 };
                 break;
             case "\\htmlData": {
-                // Split on unescaped commas only (\\, → literal comma).
-                // Manual parse avoids negative lookbehind compatibility issues.
-                const data = [];
-                let current = "";
-                let escaped = false;
-                for (const char of value) {
-                    if (escaped) {
-                        current += char;
-                        escaped = false;
-                    } else if (char === "\\") {
-                        escaped = true;
-                    } else if (char === ",") {
-                        data.push(current);
-                        current = "";
-                    } else {
-                        current += char;
-                    }
-                }
-                // Emit a dangling backslash literally rather than dropping it
-                if (escaped) {
-                    current += "\\";
-                }
-                data.push(current);
-
+                // Split on unescaped commas using negative lookbehind.
+                // Escaped commas (\,) become literal commas in the value.
+                // Negative lookbehind is well-supported in modern browsers
+                // (Chrome 62+, Firefox 78+, Safari 16.4+, Node 8.10+).
+                const data = value.split(/(?<!\\),/)
+                    .map(s => s.replace(/\\,/g, ","));
                 for (const item of data) {
                     if (item.length === 0) {
                         continue;
@@ -84,7 +66,6 @@ defineFunction({
                             ` missing equals sign`);
                     }
                     const key = item.slice(0, firstEquals).trim();
-                    // The parser already consumed \, → ,, no replace needed
                     const val = item.slice(firstEquals + 1);
                     attributes["data-" + key] = val;
                 }

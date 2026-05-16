@@ -2378,6 +2378,28 @@ describe("The \\htmlData macro", function() {
         expect(built[0].attributes["data-foo"]).toEqual(" bar ");
     });
 
+    it("should handle multiple key=value pairs correctly", () => {
+        const built = getBuilt(
+            "\\htmlData{foo=a, bar=b}{x}",
+            trustNonStrictSettings);
+        expect(built[0].attributes["data-foo"]).toEqual("a");
+        expect(built[0].attributes["data-bar"]).toEqual("b");
+    });
+
+    it("should handle spaces between key=value pairs", () => {
+        const built = getBuilt(
+            "\\htmlData{foo=a, bar=b}{x}",
+            trustNonStrictSettings);
+        expect(built[0].attributes["data-foo"]).toEqual("a");
+        expect(built[0].attributes["data-bar"]).toEqual("b");
+    });
+
+    it("should skip empty items from trailing data separators", () => {
+        expect("\\htmlData{foo=a,}{x}").toBuild(trustNonStrictSettings);
+        expect("\\htmlData{foo=a,,bar=b}{x}")
+            .toBuild(trustNonStrictSettings);
+    });
+
     it("should throw Error if an argument contains no equals signs", () => {
         try {
             katex.renderToString(
