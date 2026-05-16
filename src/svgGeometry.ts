@@ -507,8 +507,8 @@ M500 241 v40 H399408 v-40z M500 435 v40 H400000 v-40z`,
 export const tallDelim = function(label: string, midHeight: number): string {
     switch (label) {
         case "lbrack":
-            return `M403 1759 V84 H666 V0 H319 V1759 v${midHeight} v1759 h347 v-84
-H403z M403 1759 V0 H319 V1759 v${midHeight} v1759 h84z`;
+            return `M403 1759 V84 H666 V0 H319 V1759 v${midHeight} v1759 v84 h347 v-84
+H403z M403 1759 V0 H319 V1759 v${midHeight} v1759 v84 h84z`;
         case "rbrack":
             return `M347 1759 V0 H0 V84 H263 V1759 v${midHeight} v1759 H0 v84 H347z
 M347 1759 V0 H263 V1759 v${midHeight} v1759 h84z`;
