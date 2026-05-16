@@ -50,8 +50,8 @@ defineFunction({
                 };
                 break;
             case "\\htmlData": {
-                // Split on unescaped commas only (\\, → literal comma)
-                // Manual parse avoids negative lookbehind compatibility issues
+                // Split on unescaped commas only (\\, → literal comma).
+                // Manual parse avoids negative lookbehind compatibility issues.
                 const data = [];
                 let current = "";
                 let escaped = false;
@@ -68,11 +68,15 @@ defineFunction({
                         current += char;
                     }
                 }
+                // Emit a dangling backslash literally rather than dropping it
+                if (escaped) {
+                    current += "\\";
+                }
                 data.push(current);
 
                 for (const item of data) {
                     if (item.length === 0) {
-                        continue; // Skip trailing/empty entries
+                        continue;
                     }
                     const firstEquals = item.indexOf("=");
                     if (firstEquals < 0) {
@@ -80,7 +84,8 @@ defineFunction({
                             ` missing equals sign`);
                     }
                     const key = item.slice(0, firstEquals).trim();
-                    const val = item.slice(firstEquals + 1).replace(/\\,/g, ",");
+                    // The parser already consumed \, → ,, no replace needed
+                    const val = item.slice(firstEquals + 1);
                     attributes["data-" + key] = val;
                 }
 
