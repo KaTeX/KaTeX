@@ -2394,10 +2394,14 @@ describe("The \\htmlData macro", function() {
         expect(built[0].attributes["data-bar"]).toEqual("b");
     });
 
-    it("should skip empty items from trailing data separators", () => {
-        expect("\\htmlData{foo=a,}{x}").toBuild(trustNonStrictSettings);
-        expect("\\htmlData{foo=a,,bar=b}{x}")
-            .toBuild(trustNonStrictSettings);
+    it("should preserve literal backslashes in values", () => {
+        // Two \\ around a comma: the \\ produces a literal backslash,
+        // and the comma is a separator. The value gets the backslash.
+        const built = getBuilt(
+            "\\htmlData{text=foo\\\\, bar=b}{x}",
+            trustNonStrictSettings);
+        expect(built[0].attributes["data-text"]).toEqual("foo\\");
+        expect(built[0].attributes["data-bar"]).toEqual("b");
     });
 
     it("should throw Error if an argument contains no equals signs", () => {

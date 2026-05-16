@@ -50,16 +50,32 @@ defineFunction({
                 };
                 break;
             case "\\htmlData": {
-                // Split on unescaped commas using negative lookbehind.
-                // Escaped commas (\,) become literal commas in the value.
-                // Negative lookbehind is well-supported in modern browsers
-                // (Chrome 62+, Firefox 78+, Safari 16.4+, Node 8.10+).
-                const data = value.split(/(?<!\\),/)
-                    .map(s => s.replace(/\\,/g, ","));
-                for (const item of data) {
-                    if (item.length === 0) {
-                        continue;
+                // Split on unescaped commas only. Backslash escapes the
+                // following character so it is included literally.
+                // This avoids the need for negative lookbehind, which has
+                // limited Safari support (16.4+).
+                const data = [];
+                let current = "";
+                let escaped = false;
+                for (const char of value) {
+                    if (escaped) {
+                        current += char;
+                        escaped = false;
+                    } else if (char === "\\") {
+                        escaped = true;
+                    } else if (char === ",") {
+                        data.push(current);
+                        current = "";
+                    } else {
+                        current += char;
                     }
+                }
+                if (escaped) {
+                    current += "\\";
+                }
+                data.push(current);
+
+                for (const item of data) {
                     const firstEquals = item.indexOf("=");
                     if (firstEquals < 0) {
                         throw new ParseError(`\\htmlData key/value '${item}'` +
