@@ -52,8 +52,6 @@ defineFunction({
             case "\\htmlData": {
                 // Split on unescaped commas only. Backslash escapes the
                 // following character so it is included literally.
-                // This avoids the need for negative lookbehind, which has
-                // limited Safari support (16.4+).
                 const data = [];
                 let current = "";
                 let escaped = false;
