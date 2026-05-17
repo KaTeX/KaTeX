@@ -50,17 +50,38 @@ defineFunction({
                 };
                 break;
             case "\\htmlData": {
-                const data = value.split(",");
-                for (let i = 0; i < data.length; i++) {
-                    const item = data[i];
+                // Split on unescaped commas only. Backslash escapes the
+                // following character so it is included literally.
+                const data = [];
+                let current = "";
+                let escaped = false;
+                for (const char of value) {
+                    if (escaped) {
+                        current += char;
+                        escaped = false;
+                    } else if (char === "\\") {
+                        escaped = true;
+                    } else if (char === ",") {
+                        data.push(current);
+                        current = "";
+                    } else {
+                        current += char;
+                    }
+                }
+                if (escaped) {
+                    current += "\\";
+                }
+                data.push(current);
+
+                for (const item of data) {
                     const firstEquals = item.indexOf("=");
                     if (firstEquals < 0) {
                         throw new ParseError(`\\htmlData key/value '${item}'` +
                             ` missing equals sign`);
                     }
-                    const key = item.slice(0, firstEquals);
-                    const value = item.slice(firstEquals + 1);
-                    attributes["data-" + key.trim()] = value;
+                    const key = item.slice(0, firstEquals).trim();
+                    const val = item.slice(firstEquals + 1);
+                    attributes["data-" + key] = val;
                 }
 
                 trustContext = {
