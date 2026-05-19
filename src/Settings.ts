@@ -294,6 +294,13 @@ export const SETTINGS_SCHEMA: Schema = {
         type: "boolean",
         cli: false,
     },
+    siunitx: {
+        type: "string",
+        default: "",
+        description: "Default \\sisetup options that are applied at the start " +
+            "of each render.",
+        cli: false,
+    },
 };
 
 function getImplicitDefault(type: "boolean"): boolean;
@@ -372,6 +379,7 @@ export default class Settings {
     maxSize!: number;
     maxExpand!: number;
     globalGroup!: boolean;
+    siunitx!: string;
 
     constructor(options: SettingsOptions = {}) {
         // allow null options

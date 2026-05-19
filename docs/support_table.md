@@ -87,7 +87,7 @@ $\gdef\VERT{|}$
 |\amalg|$\amalg$||
 |\And|$\And$||
 |\and|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
-|\ang|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
+|\ang|$30° 15′ 5″$|`\ang{30;15;5}` (siunitx-compatible)|
 |\angl|$a_{\angl n}$||
 |\angln|$a_\angln$||
 |\angle|$\angle$||
@@ -213,6 +213,8 @@ $\gdef\VERT{|}$
 |\C|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
 |\cal|$\cal AaBb123$|`\cal AaBb123`|
 |\cancel|$\cancel{5}$|`\cancel{5}`|
+|\complexnum|$1 + i$|`\complexnum{1+i}` (siunitx-compatible)|
+|\complexqty|$1 + i\,\Omega$|`\complexqty{1+i}{\ohm}` (siunitx-compatible)|
 |\cancelto|<span style="color:firebrick;">Not supported</span>||
 |\Cap|$\Cap$||
 |\cap|$\cap$||
@@ -340,6 +342,7 @@ use `\ce` instead|
 |\displaystyle|$\displaystyle\sum_0^n$|`\displaystyle\sum_0^n`|
 |\div|$\div$||
 |\divideontimes|$\divideontimes$||
+|\duration|$8\text{ h }33\text{ min }36\text{ s}$|`\duration{8;33;36}` (siunitx-compatible)|
 |\dot|$\dot x$|`\dot x`|
 |\Doteq|$\Doteq$||
 |\doteq|$\doteq$||
@@ -758,6 +761,10 @@ use `\ce` instead|
 |\notag|$$\begin{align}a&=b+c\notag\\d+e&=f\end{align}$$|`\begin{align}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \notag\\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{align}`|
 |\notin|$\notin$||
 |\notni|$\notni$||
+|\num|$12 345.67$|`\num{12345.67}` (siunitx-compatible)|
+|\numlist|$1, 2, 3$|`\numlist{1;2;3}` (siunitx-compatible)|
+|\numproduct|$2 × 3 × 4$|`\numproduct{2;3;4}` (siunitx-compatible)|
+|\numrange|$1–5$|`\numrange{1}{5}` (siunitx-compatible)|
 |\nparallel|$\nparallel$||
 |\nprec|$\nprec$||
 |\npreceq|$\npreceq$||
@@ -879,6 +886,10 @@ use `\ce` instead|
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\Q|<span style="color:firebrick;">Not supported</span>|See `\Bbb{Q}`|
+|\qty|$5.0 kg$|`\qty{5.0}{\kg}` (siunitx-compatible)|
+|\qtylist|$1, 2, and 3 m$|`\qtylist{1;2;3}{\m}` (siunitx-compatible)|
+|\qtyproduct|$2 × 3 × 4 m$|`\qtyproduct{2;3;4}{\m}` (siunitx-compatible)|
+|\qtyrange|$2–8 s$|`\qtyrange{2}{8}{\s}` (siunitx-compatible)|
 |\qquad|$a\qquad\qquad{b}$|`a\qquad\qquad{b}`|
 |\quad|$a\quad\quad{b}$|`a\quad\quad{b}`|
 |\R|$\R$||
@@ -967,8 +978,11 @@ use `\ce` instead|
 |\shoveleft|<span style="color:firebrick;">Not supported</span>||
 |\shoveright|<span style="color:firebrick;">Not supported</span>||
 |\sideset|<span style="color:firebrick;">Not supported</span>||
+|\SI|$12.3 m$|`\SI{12.3}{\m}` (siunitx-compatible)|
+|\SIrange|$1–10 m$|`\SIrange{1}{10}{\m}` (siunitx-compatible)|
 |\Sigma|$\Sigma$||
 |\sigma|$\sigma$||
+|\si|$km/s$|`\si{\km\per\s}` (siunitx-compatible)|
 |\sim|$\sim$||
 |\simcolon|$\simcolon$||
 |\simcoloncolon|$\simcoloncolon$||
@@ -976,6 +990,7 @@ use `\ce` instead|
 |\sin|$\sin$||
 |\sinh|$\sinh$||
 |\sixptsize|$\sixptsize sixptsize$|`\sixptsize sixptsize`|
+|\sisetup||`\sisetup{group-separator={,}}` (siunitx-compatible)|
 |\sh|$\sh$||
 |\skew|<span style="color:firebrick;">Not supported</span>||
 |\skip|<span style="color:firebrick;">Not supported</span>||
@@ -1143,6 +1158,7 @@ use `\ce` instead|
 |\underrightarrow|$\underrightarrow{AB}$|`\underrightarrow{AB}`|
 |\underset|$\underset{!}{=}$|`\underset{!}{=}`|
 |\unicode|<span style="color:firebrick;">Not supported</span>||
+|\unit|$km/s$|`\unit{\km\per\s}` (siunitx-compatible)|
 |\unlhd|$\unlhd$||
 |\unrhd|$\unrhd$||
 |\up|<span style="color:firebrick;">Not supported</span>||

@@ -45,6 +45,9 @@ Try out KaTeX [on the demo page](https://katex.org/#demo)!
     <!-- To automatically render math in text elements, include the auto-render extension: -->
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.47/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"
         onload="renderMathInElement(document.body);"></script>
+
+    <!-- To enable siunitx commands (\num, \si, \qty, ...), include the siunitx extension: -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.45/dist/contrib/siunitx.min.js" crossorigin="anonymous"></script>
   </head>
   ...
 </html>

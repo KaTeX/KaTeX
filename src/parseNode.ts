@@ -431,6 +431,109 @@ type ParseNodeTypes = {
         width: Measurement;
         height: Measurement;
     };
+    "siunitx": {
+        type: "siunitx";
+        mode: Mode;
+        loc?: SourceLocation | null | undefined;
+        command: "\\num" | "\\numlist" | "\\numproduct" | "\\duration" |
+            "\\complexnum" |
+            "\\si" | "\\unit" |
+            "\\SI" | "\\qty" | "\\complexqty" |
+            "\\qtylist" | "\\qtyproduct" | "\\ang" |
+            "\\sisetup" | "\\numrange" | "\\SIrange" | "\\qtyrange" |
+            "\\DeclareSIUnit" | "\\DeclareSIPrefix" |
+            "\\DeclareSIPower" | "\\DeclareSIQualifier";
+        options: {
+            "detect-all": boolean;
+            "separate-uncertainty": boolean;
+            "group-digits": boolean;
+            "group-separator": string;
+            "group-minimum-digits": number;
+            "input-open-uncertainty": string;
+            "input-close-uncertainty": string;
+            "input-uncertainty-signs": string[];
+            "input-uncertainty-divider": string;
+            "input-digits": string[];
+            "input-decimal-markers": string[];
+            "output-decimal-marker": string;
+            "exponent-product": string;
+            "retain-explicit-decimal-marker": boolean;
+            "retain-explicit-plus": boolean;
+            "retain-zero-uncertainty": boolean;
+            "retain-negative-zero": boolean;
+            "evaluate-expression": boolean;
+            "expression": string;
+            "exponent-mode":
+                "input" | "fixed" | "engineering" | "scientific" | "threshold";
+            "fixed-exponent": number;
+            "scientific-notation": "auto" | "fixed" | "engineering";
+            "per-mode":
+                "power" | "power-positive-first" | "symbol" |
+                "repeated-symbol" | "single-symbol" | "fraction" |
+                "reciprocal";
+            "display-per-mode":
+                "auto" | "power" | "power-positive-first" | "symbol" |
+                "repeated-symbol" | "single-symbol" | "fraction";
+            "inline-per-mode":
+                "auto" | "power" | "power-positive-first" | "symbol" |
+                "repeated-symbol" | "single-symbol" | "fraction";
+            "per-symbol": string;
+            "fraction-command": string;
+            "bracket-unit-denominator": boolean;
+            "sticky-per": boolean;
+            "per-symbol-script-correction": string;
+            "multi-part-units": "brackets" | "single";
+            "inter-unit-product": string;
+            "number-unit-separator": string;
+            "range-units": "single" | "repeat" | "bracket";
+            "range-phrase": string;
+            "forbid-literal-units": boolean;
+            "list-separator": string;
+            "list-pair-separator": string;
+            "list-final-separator": string;
+            "product-mode": "symbol" | "phrase";
+            "product-units": "single" | "repeat" | "bracket" | "power" |
+                "bracket-power";
+            "product-symbol": string;
+            "product-phrase": string;
+            "list-units": "single" | "repeat" | "bracket";
+            "complex-mode": "input" | "cartesian" | "polar";
+            "complex-root-position": "before-number" | "after-number";
+            "complex-angle-unit": "degrees" | "radians";
+            "complex-symbol-degree": string;
+            "complex-phase-command": string;
+            "input-complex-root": string;
+            "output-complex-root": string;
+            "print-complex-unity": boolean;
+            "round-mode": "off" | "places";
+            "round-precision": number;
+            "angle-mode": "input" | "arc" | "decimal";
+            "fill-angle-degrees": boolean;
+            "fill-angle-minutes": boolean;
+            "fill-angle-seconds": boolean;
+            "duration-mode": "input" | "component" | "decimal";
+            "duration-separator": string;
+            "fill-duration-hours": boolean;
+            "fill-duration-minutes": boolean;
+            "fill-duration-seconds": boolean;
+            "duration-unit-hour": string;
+            "duration-unit-minute": string;
+            "duration-unit-second": string;
+            "parse-numbers": boolean;
+            "parse-units": boolean;
+            "qualifier-mode": "subscript" | "bracket";
+            "qualifier-phrase": string;
+            "power-half-as-sqrt": boolean;
+            "prefix-mode": "input" | "combine-exponent" | "extract-exponent";
+            "extract-mass-in-kilograms": boolean;
+        };
+        number?: string;
+        numberB?: string;
+        unit?: string;
+        angle?: string;
+        body?: AnyParseNode[];
+        optionKeys?: string[];
+    };
     "sizing": {
         type: "sizing";
         mode: Mode;

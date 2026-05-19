@@ -35,6 +35,10 @@
       "require": "./dist/contrib/render-a11y-string.js",
       "import": "./dist/contrib/render-a11y-string.mjs"
     },
+    "./contrib/siunitx": {
+      "require": "./dist/contrib/siunitx.js",
+      "import": "./dist/contrib/siunitx.mjs"
+    },
     "./*": "./*"
   },
   "homepage": "https://katex.org",

@@ -11,8 +11,11 @@ import ParseError from "./src/ParseError";
 import Settings, {SETTINGS_SCHEMA} from "./src/Settings";
 
 import {buildTree, buildHTMLTree} from "./src/buildTree";
+import * as html from "./src/buildHTML";
+import * as mml from "./src/buildMathML";
 import parseTree from "./src/parseTree";
 import {makeSpan} from "./src/buildCommon";
+import {MathNode} from "./src/mathMLTree";
 import {
     Span,
     Anchor,
@@ -152,6 +155,19 @@ const __domTree = {
     LineNode,
 };
 
+// Internal bridge used only by the bundled siunitx contrib extension.
+// This is intentionally exposed so contrib/siunitx can register against the
+// same core function registry instance, but it is NOT a supported extension API.
+// Treat as unstable internals; shape/behavior may change without notice.
+const __siunitxInternals = {
+    defineFunction,
+    makeSpan,
+    MathNode,
+    html,
+    mml,
+    ParseError,
+};
+
 // ESM exports
 export {
     version,
@@ -166,6 +182,7 @@ export {
     defineSymbol as __defineSymbol,
     defineFunction as __defineFunction,
     defineMacro as __defineMacro,
+    __siunitxInternals,
     __domTree,
 };
 
@@ -239,6 +256,14 @@ export default {
      * adds a new macro to builtin macro list
      */
     __defineMacro: defineMacro,
+    /**
+     * Internal bridge for bundled contrib/siunitx registration.
+     *
+     * NOTE: This is unstable and not a general-purpose extension point.
+     * It exists as an implementation detail so the siunitx contrib package can
+     * access core internals in the same module instance.
+     */
+    __siunitxInternals,
     /**
      * Expose the dom tree node types, which can be useful for type checking nodes.
      *

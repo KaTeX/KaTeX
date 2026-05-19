@@ -3060,6 +3060,14 @@ describe("A parser error", function() {
             expect(e.position).toEqual(5);
         }
     });
+
+    it("should explain siunitx option requires loading contrib extension", function() {
+        expect(() => {
+            parseTree(r`\sqrt{2}`, new Settings({siunitx: "group-separator={,}"}));
+        }).toThrow(
+            "The `siunitx` option requires loading `katex/contrib/siunitx` first.",
+        );
+    });
 });
 
 describe("An optional argument parser", function() {
