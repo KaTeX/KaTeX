@@ -46,6 +46,7 @@ export const buildTree = function(
         const mathMLNode = buildMathML(tree, expression, options,
             settings.displayMode, false);
         const htmlNode = buildHTML(tree, options);
+        htmlNode.setAttribute("aria-hidden", "true");
         katexNode = makeSpan(["katex"], [mathMLNode, htmlNode]);
     }
 
