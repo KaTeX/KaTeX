@@ -5,7 +5,7 @@ import {makeSpan} from "../buildCommon";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 import type Options from "../Options";
-import type {ParseNode} from "../parseNode";
+import type {ParseNode} from "../types/nodes";
 
 // Non-mathy text, possibly in a font
 const textFontFamilies: Record<string, TextFont | undefined> = {

@@ -37,7 +37,7 @@ defineFunctionBuilders({
             // things has an entry in the symbols table, so these will be turned
             // into appropriate outputs.
             if (group.mode === "text") {
-                const ord = makeOrd(group, options, "textord");
+                const ord = makeOrd(group, options);
                 ord.classes.push(className);
                 return ord;
             } else {

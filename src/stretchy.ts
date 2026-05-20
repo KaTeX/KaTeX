@@ -10,7 +10,7 @@ import {MathNode, TextNode} from "./mathMLTree";
 import {makeEm} from "./units";
 
 import type Options from "./Options";
-import type {ParseNode} from "./parseNode";
+import type {ParseNode} from "./types/nodes";
 import type {DomSpan, HtmlDomNode, SvgSpan} from "./domTree";
 
 const stretchyCodePoint: Record<string, string> = {

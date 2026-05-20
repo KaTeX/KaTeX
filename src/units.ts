@@ -5,6 +5,7 @@
 
 import ParseError from "./ParseError";
 import Options from "./Options";
+import type {Measurement} from "./types";
 
 // This table gives the number of TeX pts in one of each *absolute* TeX unit.
 // Thus, multiplying a length by this number converts the length from units
@@ -34,8 +35,6 @@ const relativeUnit = {
     "em": true,
     "mu": true,
 };
-
-export type Measurement = { number: number, unit: string };
 
 /**
  * Determine whether the specified unit (either a string defining the unit

@@ -10,9 +10,9 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type Options from "../Options";
-import type {AnyParseNode, ParseNode, SymbolParseNode} from "../parseNode";
 import type {FunctionContext} from "../defineFunction";
 import type {HtmlDomNode} from "../domTree";
+import type {AnyParseNode, ParseNode, SymbolParseNode} from "../types/nodes";
 
 // Extra data needed for the delimiter handler down below
 const delimiterSizes: Record<string, {
@@ -174,7 +174,7 @@ defineFunction({
             type: "leftright-right",
             mode: context.parser.mode,
             delim: checkDelimiter(args[0], context).text,
-            color: color as string | null | undefined, // undefined if not set via \color
+            color: color, // undefined if not set via \color
         };
     },
 });

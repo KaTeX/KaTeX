@@ -14,7 +14,7 @@ import * as op from "./op";
 import * as operatorname from "./operatorname";
 
 import type Options from "../Options";
-import type {ParseNode} from "../parseNode";
+import type {ParseNode} from "../types/nodes";
 import type {HtmlBuilder} from "../defineFunction";
 import type {MathNodeType} from "../mathMLTree";
 

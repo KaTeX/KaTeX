@@ -10,9 +10,9 @@ import {makeEm} from "../units";
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
-import type {ParseNode, AnyParseNode} from "../parseNode";
 import type {HtmlBuilderSupSub, MathMLBuilder} from "../defineFunction";
 import type {HtmlDomNode} from "../domTree";
+import type {AnyParseNode, ParseNode} from "../types/nodes";
 
 const getBaseSymbol = (group: HtmlDomNode): SymbolNode | undefined => {
     if (group instanceof SymbolNode) {
@@ -100,7 +100,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
             width = svgData.vec[1];
         } else {
             accent = makeOrd({type: "textord", mode: group.mode, text: group.label},
-                options, "textord");
+                options);
             accent = assertSymbolDomNode(accent);
             // Remove the italic correction of the accent, because it only serves to
             // shift the accent over to a place we don't want.

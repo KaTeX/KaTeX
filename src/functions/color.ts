@@ -2,7 +2,7 @@ import defineFunction, {ordargument} from "../defineFunction";
 import {makeFragment} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
 import {assertNodeType} from "../parseNode";
-import type {AnyParseNode} from "../parseNode";
+import type {AnyParseNode} from "../types/nodes";
 import type {HtmlBuilder, MathMLBuilder} from "../defineFunction";
 
 import * as html from "../buildHTML";

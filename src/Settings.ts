@@ -8,7 +8,7 @@ import {protocolFromUrl} from "./utils";
 import ParseError from "./ParseError";
 import {Token} from "./Token";
 
-import type {AnyParseNode} from "./parseNode";
+import type {AnyParseNode} from "./types/nodes";
 import type {MacroMap} from "./defineMacro";
 
 export type StrictFunction =

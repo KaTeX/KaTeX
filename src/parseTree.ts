@@ -1,14 +1,9 @@
-/**
- * Provides a single function for parsing an expression using a Parser
- * TODO(emily): Remove this
- */
-
 import Parser from "./Parser";
 import ParseError from "./ParseError";
 import {Token} from "./Token";
 
 import type Settings from "./Settings";
-import type {AnyParseNode} from "./parseNode";
+import type {AnyParseNode} from "./types/nodes";
 
 /**
  * Parses an expression using a Parser, then returns the parsed result.

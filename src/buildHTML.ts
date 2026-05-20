@@ -8,15 +8,16 @@
 import ParseError from "./ParseError";
 import Style from "./Style";
 import {makeGlue, makeSpan, tryCombineChars} from "./buildCommon";
-import {Span, Anchor} from "./domTree";
+import type {DomSpan, HtmlDomNode} from "./domTree";
+import {Anchor, Span} from "./domTree";
 import {makeEm} from "./units";
 import {spacings, tightSpacings} from "./spacingData";
 import {_htmlGroupBuilders as groupBuilders} from "./defineFunction";
 import {DocumentFragment} from "./tree";
 
 import type Options from "./Options";
-import type {AnyParseNode} from "./parseNode";
-import type {HtmlDomNode, DomSpan} from "./domTree";
+import type {AnyParseNode} from "./types/nodes";
+import type {Side} from "./types";
 
 // Binary atoms (first class `mbin`) change into ordinary atoms (`mord`)
 // depending on their surroundings. See TeXbook pg. 442-446, Rules 5 and 6,
@@ -34,8 +35,6 @@ const styleMap = {
     "script": Style.SCRIPT,
     "scriptscript": Style.SCRIPTSCRIPT,
 };
-
-type Side = "left" | "right";
 
 const DomEnum = {
     mord: "mord",

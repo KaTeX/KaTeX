@@ -1,7 +1,8 @@
 /**
  * Describes spaces between different classes of atoms.
  */
-import type {Measurement} from "./units";
+
+import type {Measurement} from "./types";
 
 const thinspace: Measurement = {
     number: 3,

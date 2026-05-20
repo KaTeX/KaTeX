@@ -6,7 +6,7 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type Options from "../Options";
-import type {ParseNode} from "../parseNode";
+import type {ParseNode} from "../types/nodes";
 
 const chooseMathStyle = (group: ParseNode<"mathchoice">, options: Options) => {
     switch (options.style.size) {

@@ -15,8 +15,8 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type Parser from "../Parser";
-import type {ParseNode, AnyParseNode} from "../parseNode";
 import type {StyleStr, Mode} from "../types";
+import type {AnyParseNode, ParseNode} from "../types/nodes";
 import type {HtmlBuilder, MathMLBuilder} from "../defineFunction";
 import type {HtmlDomNode} from "../domTree";
 
@@ -703,7 +703,6 @@ const alignedHandler = function(context: EnvContextLike, args: AnyParseNode[]) {
         validateAmsEnvironmentContext(context);
     }
     const cols: AlignSpec[] = [];
-    const separationType: ColSeparationType = context.envName.includes("at") ? "alignat" : "align";
     const isSplit = context.envName === "split";
     const res = parseArray(context.parser,
         {
@@ -711,7 +710,7 @@ const alignedHandler = function(context: EnvContextLike, args: AnyParseNode[]) {
             addJot: true,
             autoTag: isSplit ? undefined : getAutoTag(context.envName),
             emptySingleRow: true,
-            colSeparationType: separationType,
+            colSeparationType: context.envName.includes("at") ? "alignat" : "align",
             maxNumCols: isSplit ? 2 : undefined,
             leqno: context.parser.settings.leqno,
         },
@@ -893,8 +892,7 @@ defineEnvironment({
                 payload.cols = [{type: "align", align: colAlign}];
             }
         }
-        const res: ParseNode<"array"> =
-            parseArray(context.parser, payload, dCellStyle(context.envName));
+        const res = parseArray(context.parser, payload, dCellStyle(context.envName));
         // Populate cols with the correct number of column alignment specs.
         const numCols = Math.max(0, ...res.body.map(row => row.length));
         res.cols = new Array(numCols).fill(
@@ -1006,8 +1004,7 @@ defineEnvironment({
                 postgap: 0,
             }],
         };
-        const res: ParseNode<"array"> =
-            parseArray(context.parser, payload, dCellStyle(context.envName));
+        const res = parseArray(context.parser, payload, dCellStyle(context.envName));
         return {
             type: "leftright",
             mode: context.mode,

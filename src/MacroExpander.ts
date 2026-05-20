@@ -119,7 +119,7 @@ export default class MacroExpander implements MacroContextInterface {
      * Find an macro argument without expanding tokens and append the array of
      * tokens to the token stack. Uses Token as a container for the result.
      */
-    scanArgument(isOptional: boolean): Token | null | undefined {
+    scanArgument(isOptional: boolean): Token | null {
         let start;
         let end;
         let tokens;

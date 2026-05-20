@@ -8,7 +8,8 @@ import ParseError from "../ParseError";
 import {makeEm} from "../units";
 
 import type Parser from "../Parser";
-import type {ParseNode, AnyParseNode} from "../parseNode";
+import type {AnyParseNode, ParseNode} from "../types/nodes";
+import type {Side} from "../types";
 
 const cdArrowFunctionName: Record<string, string> = {
     ">": "\\\\cdrightarrow",
@@ -254,7 +255,7 @@ defineFunction({
         return {
             type: "cdlabel",
             mode: parser.mode,
-            side: funcName.slice(4),
+            side: funcName.slice(4) as Side,
             label: args[0],
         };
     },

@@ -25,8 +25,8 @@ export default class SourceLocation {
      * - Otherwise, returns null.
      */
     static range(
-        first?: {loc?: SourceLocation | null | undefined},
-        second?: {loc?: SourceLocation | null | undefined},
+        first: {loc?: SourceLocation | null},
+        second?: {loc?: SourceLocation | null},
     ): SourceLocation | null | undefined {
         if (!second) {
             return first && first.loc;

@@ -3,7 +3,7 @@ import ParseError from "../ParseError";
 import {assertNodeType} from "../parseNode";
 import environments from "../environments";
 
-import type {ParseNode} from "../parseNode";
+import type {ParseNode} from "../types/nodes";
 
 // Environment delimiters. HTML/MathML rendering is defined in the corresponding
 // defineEnvironment definitions.
