@@ -14,8 +14,9 @@ import {unicodeSubRegEx, uSubsAndSups} from "./unicodeSupOrSub";
 import {Token} from "./Token";
 
 // Pre-evaluate both modules as unicodeSymbols require String.normalize()
-import unicodeAccents from "./unicodeAccents";
-import unicodeSymbols from "./unicodeSymbols";
+import unicodeAccents from /*preval*/ "./unicodeAccents";
+import unicodeSymbols from /*preval*/ "./unicodeSymbols";
+
 import type {ArgType, BreakToken, Mode} from "./types";
 import type {AnyParseNode, NodeType, ParseNode, SymbolParseNode, UnsupportedCmdParseNode} from "./types/nodes";
 import type {FunctionContext, FunctionSpec} from "./defineFunction";
