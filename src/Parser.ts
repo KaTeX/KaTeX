@@ -514,7 +514,7 @@ export default class Parser {
      */
     parseArguments(
         func: string,   // Should look like "\name" or "\begin{name}".
-        funcData: FunctionSpec | EnvSpec<NodeType>,
+        funcData: FunctionSpec<NodeType> | EnvSpec<NodeType>,
     ): {
         args: AnyParseNode[];
         optArgs: (AnyParseNode | null)[];
