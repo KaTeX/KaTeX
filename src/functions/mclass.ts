@@ -8,7 +8,7 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type Options from "../Options";
-import type {MathClass} from "../types";
+import type {MathClass, Slice5} from "../types";
 
 function htmlBuilder(group: ParseNode<"mclass">, options: Options) {
     const elements = html.buildExpression(group.body, options, true);
@@ -54,13 +54,17 @@ function mathmlBuilder(group: ParseNode<"mclass">, options: Options) {
     return node;
 }
 
+type MathClassCommand =
+    "\\mathord" | "\\mathbin" | "\\mathrel" | "\\mathopen" |
+    "\\mathclose" | "\\mathpunct" | "\\mathinner";
+
 // Math class commands except \mathop
 defineFunction({
     type: "mclass",
     names: [
         "\\mathord", "\\mathbin", "\\mathrel", "\\mathopen",
         "\\mathclose", "\\mathpunct", "\\mathinner",
-    ],
+    ] satisfies MathClassCommand[],
     props: {
         numArgs: 1,
         primitive: true,
@@ -70,7 +74,7 @@ defineFunction({
         return {
             type: "mclass",
             mode: parser.mode,
-            mclass: "m" + funcName.slice(5) as MathClass,
+            mclass: `m${funcName.slice(5) as Slice5<MathClassCommand>}`,
             body: ordargument(body),
             isCharacterBox: isCharacterBox(body),
         };
@@ -86,7 +90,7 @@ export const binrelClass = (arg: AnyParseNode): MathClass => {
     // atom type directly.
     const atom = (arg.type === "ordgroup" && arg.body.length ? arg.body[0] : arg);
     if (atom.type === "atom" && (atom.family === "bin" || atom.family === "rel")) {
-        return "m" + atom.family as MathClass;
+        return `m${atom.family}`;
     } else {
         return "mord";
     }

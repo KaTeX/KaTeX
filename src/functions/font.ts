@@ -34,6 +34,8 @@ type FontCommands =
     "\\mathbb" | "\\mathcal" | "\\mathfrak" | "\\mathscr" | "\\mathsf" |
     "\\mathtt";
 
+type OldFontCommands = "\\rm" | "\\sf" | "\\tt" | "\\bf" | "\\it" | "\\cal";
+
 defineFunction({
     type: "font",
     names: [
@@ -98,7 +100,7 @@ defineFunction({
 // Old font changing functions
 defineFunction({
     type: "font",
-    names: ["\\rm", "\\sf", "\\tt", "\\bf", "\\it", "\\cal"],
+    names: ["\\rm", "\\sf", "\\tt", "\\bf", "\\it", "\\cal"] satisfies OldFontCommands[],
     props: {
         numArgs: 0,
         allowedInText: true,
@@ -110,7 +112,7 @@ defineFunction({
         return {
             type: "font",
             mode: mode,
-            font: `math${funcName.slice(1)}` as ParseNode<"font">["font"],
+            font: `math${funcName.slice(1) as Slice1<OldFontCommands>}` as const,
             body: {
                 type: "ordgroup",
                 mode: parser.mode,

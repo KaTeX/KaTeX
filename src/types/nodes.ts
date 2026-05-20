@@ -13,7 +13,7 @@ export type NodeType = AnyParseNode["type"];
 export type ParseNode<T extends NodeType> = ParseNodeMap[T];
 
 export type AnyParseNode =
-    ArrayNode
+    | ArrayNode
     | CommutativeDiagramLabelNode
     | CommutativeDiagramLabelParentNode
     | ColorNode

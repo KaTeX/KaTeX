@@ -170,6 +170,7 @@ export const makeOrd = function(
     group: ParseNode<"spacing"> | ParseNode<"mathord"> | ParseNode<"textord">,
     options: Options,
 ): HtmlDocumentFragment | SymbolNode {
+    // Spacing nodes are rendered as textord.
     const type: "mathord" | "textord" = group.type === "mathord" ? "mathord" : "textord";
     const mode = group.mode;
     const text = group.text;

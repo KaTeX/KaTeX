@@ -174,7 +174,7 @@ defineFunction({
             type: "leftright-right",
             mode: context.parser.mode,
             delim: checkDelimiter(args[0], context).text,
-            color: color, // undefined if not set via \color
+            color, // undefined if not set via \color
         };
     },
 });
