@@ -1,9 +1,8 @@
 import {_htmlGroupBuilders, _mathmlGroupBuilders} from "./defineFunction";
 
 import type Parser from "./Parser";
-import type {AnyParseNode} from "./parseNode";
+import type {AnyParseNode, NodeType} from "./types/nodes";
 import type {ArgType, Mode} from "./types";
-import type {NodeType} from "./parseNode";
 import type {HtmlBuilder, MathMLBuilder} from "./defineFunction";
 
 /**

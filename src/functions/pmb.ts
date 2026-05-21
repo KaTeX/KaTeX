@@ -5,7 +5,7 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 import {binrelClass} from "./mclass";
 
-import type {ParseNode} from "../parseNode";
+import type {ParseNode} from "../types/nodes";
 
 // \pmb is a simulation of bold font.
 // The version of \pmb in ambsy.sty works by typesetting three copies

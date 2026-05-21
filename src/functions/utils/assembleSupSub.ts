@@ -4,7 +4,7 @@ import {isCharacterBox} from "../../utils";
 import type {StyleInterface} from "../../Style";
 import type Options from "../../Options";
 import type {DomSpan, SymbolNode} from "../../domTree";
-import type {AnyParseNode} from "../../parseNode";
+import type {AnyParseNode} from "../../types/nodes";
 import {makeEm} from "../../units";
 
 // For an operator with limits, assemble the base, sup, and sub into a span.

@@ -2,7 +2,7 @@ import defineFunction, {normalizeArgument} from "../defineFunction";
 import {makeLineSpan, makeSpan, makeVList} from "../buildCommon";
 import {makeCustomSizedDelim} from "../delimiter";
 import {MathNode, TextNode} from "../mathMLTree";
-import type {ParseNode} from "../parseNode";
+import type {ParseNode} from "../types/nodes";
 import Style from "../Style";
 import {assertNodeType} from "../parseNode";
 import * as html from "../buildHTML";

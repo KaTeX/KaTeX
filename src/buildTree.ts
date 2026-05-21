@@ -5,7 +5,7 @@ import Options from "./Options";
 import Settings from "./Settings";
 import Style from "./Style";
 
-import type {AnyParseNode} from "./parseNode";
+import type {AnyParseNode} from "./types/nodes";
 import type {DomSpan} from "./domTree";
 
 const optionsFromSettings = function(settings: Settings) {

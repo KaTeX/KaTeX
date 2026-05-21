@@ -12,11 +12,11 @@ import {_mathmlGroupBuilders as groupBuilders} from "./defineFunction";
 import {MathNode, TextNode} from "./mathMLTree";
 
 import type Options from "./Options";
-import type {AnyParseNode, SymbolParseNode} from "./parseNode";
 import type {DomSpan, HtmlDomNode} from "./domTree";
 import type {MathDomNode} from "./mathMLTree";
 import type {Mode} from "./types";
 import type {FontVariant, MathFont} from "./types/fonts";
+import type {AnyParseNode, SymbolParseNode} from "./types/nodes";
 
 const noVariantSymbols = new Set(["\\imath", "\\jmath"]);
 const rowLikeTypes = new Set(["mrow", "mtable"]);

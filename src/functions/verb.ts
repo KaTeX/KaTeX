@@ -3,7 +3,7 @@ import {makeSpan, makeSymbol, tryCombineChars} from "../buildCommon";
 import {MathNode, TextNode} from "../mathMLTree";
 import ParseError from "../ParseError";
 
-import type {ParseNode} from "../parseNode";
+import type {ParseNode} from "../types/nodes";
 
 defineFunction({
     type: "verb",

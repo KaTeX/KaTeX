@@ -8,7 +8,7 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type Options from "../Options";
-import type {ParseNode} from "../parseNode";
+import type {ParseNode} from "../types/nodes";
 import type {Slice1} from "../types";
 
 const htmlBuilder = (group: ParseNode<"font">, options: Options) => {
@@ -29,11 +29,12 @@ const fontAliases = {
     "\\frak": "\\mathfrak",
 } as const;
 
-type OldFontCommands = "\\rm" | "\\sf" | "\\tt" | "\\bf" | "\\it" | "\\cal";
 type FontCommands =
     "\\mathrm" | "\\mathit" | "\\mathbf" | "\\mathnormal" | "\\mathsfit" |
     "\\mathbb" | "\\mathcal" | "\\mathfrak" | "\\mathscr" | "\\mathsf" |
     "\\mathtt";
+
+type OldFontCommands = "\\rm" | "\\sf" | "\\tt" | "\\bf" | "\\it" | "\\cal";
 
 defineFunction({
     type: "font",
@@ -99,7 +100,7 @@ defineFunction({
 // Old font changing functions
 defineFunction({
     type: "font",
-    names: ["\\rm", "\\sf", "\\tt", "\\bf", "\\it", "\\cal"],
+    names: ["\\rm", "\\sf", "\\tt", "\\bf", "\\it", "\\cal"] satisfies OldFontCommands[],
     props: {
         numArgs: 0,
         allowedInText: true,
@@ -111,7 +112,7 @@ defineFunction({
         return {
             type: "font",
             mode: mode,
-            font: `math${funcName.slice(1) as Slice1<OldFontCommands>}`,
+            font: `math${funcName.slice(1) as Slice1<OldFontCommands>}` as const,
             body: {
                 type: "ordgroup",
                 mode: parser.mode,

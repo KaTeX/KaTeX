@@ -12,11 +12,10 @@ import {calculateSize, makeEm} from "./units";
 import {DocumentFragment} from "./tree";
 
 import type Options from "./Options";
-import type {ParseNode} from "./parseNode";
-import type {Mode} from "./types";
+import type {Measurement, Mode} from "./types";
+import type {ParseNode} from "./types/nodes";
 import type {documentFragment as HtmlDocumentFragment} from "./domTree";
 import type {HtmlDomNode, DomSpan, SvgSpan, CssStyle} from "./domTree";
-import type {Measurement} from "./units";
 import type {
     CharacterMetrics,
     FontName,
@@ -167,11 +166,12 @@ const boldSymbol = function(
 /**
  * Makes either a mathord or textord in the correct font and color.
  */
-export const makeOrd = function<NODETYPE extends "spacing" | "mathord" | "textord">(
-    group: ParseNode<NODETYPE>,
+export const makeOrd = function(
+    group: ParseNode<"spacing"> | ParseNode<"mathord"> | ParseNode<"textord">,
     options: Options,
-    type: "mathord" | "textord",
 ): HtmlDocumentFragment | SymbolNode {
+    // Spacing nodes are rendered as textord.
+    const type: "mathord" | "textord" = group.type === "mathord" ? "mathord" : "textord";
     const mode = group.mode;
     const text = group.text;
     const classes = ["mord"];

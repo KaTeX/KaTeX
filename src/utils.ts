@@ -3,7 +3,7 @@
  * files.
  */
 
-import type {AnyParseNode} from "./parseNode";
+import type {AnyParseNode} from "./types/nodes";
 
 // hyphenate and escape adapted from Facebook's React under Apache 2 license
 const uppercase = /([A-Z])/g;

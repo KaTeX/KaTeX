@@ -27,3 +27,15 @@ export type DelimiterSize = 1 | 2 | 3 | 4;
 
 export type Slice1<S extends string> =
     S extends `${string}${infer Rest}` ? Rest : "";
+
+export type Slice4<S extends string> =
+    S extends `${string}${string}${string}${string}${infer Rest}` ? Rest : "";
+
+export type Slice5<S extends string> =
+    S extends `${string}${string}${string}${string}${string}${infer Rest}` ? Rest : "";
+
+export type Measurement = {number: number, unit: string};
+
+export type MathClass = "mord" | "mop" | "mbin" | "mrel" | "mopen" | "mclose" | "mpunct" | "minner";
+
+export type Side = "left" | "right";

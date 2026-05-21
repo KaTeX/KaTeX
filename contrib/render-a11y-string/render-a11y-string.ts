@@ -15,7 +15,7 @@
  */
 
 import {isAtom, type Atom} from "../../src/atoms";
-import type {AnyParseNode} from "../../src/parseNode";
+import type {AnyParseNode} from "../../src/types/nodes";
 import type {SettingsOptions} from "../../src/Settings";
 import katex from "katex";
 const stringMap: Record<string, string> = {

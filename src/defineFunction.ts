@@ -1,8 +1,7 @@
 import type Parser from "./Parser";
-import type {ParseNode, AnyParseNode, NodeType, UnsupportedCmdParseNode}
-    from "./parseNode";
 import type Options from "./Options";
 import type {ArgType, BreakToken} from "./types";
+import type {AnyParseNode, NodeType, ParseNode, UnsupportedCmdParseNode} from "./types/nodes";
 import type {HtmlDomNode} from "./domTree";
 import type {Token} from "./Token";
 import type {MathDomNode} from "./mathMLTree";
@@ -18,7 +17,7 @@ export type FunctionContext = {
 export type FunctionHandler<NODETYPE extends NodeType> = (
     context: FunctionContext,
     args: AnyParseNode[],
-    optArgs: (AnyParseNode | null | undefined)[],
+    optArgs: (AnyParseNode | null)[],
 ) => UnsupportedCmdParseNode | ParseNode<NODETYPE>;
 // Note: reverse the order of the return type union will cause a flow error.
 // See https://github.com/facebook/flow/issues/3663.
@@ -114,22 +113,6 @@ export type FunctionSpec<NODETYPE extends NodeType> = {
     numOptionalArgs: number;
     infix: boolean;
     primitive: boolean;
-
-    // FLOW TYPE NOTES: Doing either one of the following two
-    //
-    // - removing the NODETYPE type parameter in FunctionSpec above;
-    // - using ?FunctionHandler<NODETYPE> below;
-    //
-    // results in a confusing flow typing error:
-    //   "string literal `styling`. This type is incompatible with..."
-    // pointing to the definition of `defineFunction` and finishing with
-    //   "some incompatible instantiation of `NODETYPE`"
-    //
-    // Having FunctionSpec<NODETYPE> above and FunctionHandler<*> below seems to
-    // circumvent this error. This is not harmful for catching errors since
-    // _functions is typed FunctionSpec<*> (it stores all TeX function specs).
-
-    // Must be specified unless it's handled directly in the parser.
     handler: FunctionHandler<NodeType> | null | undefined;
 };
 

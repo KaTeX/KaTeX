@@ -8,7 +8,8 @@ import ParseError from "../ParseError";
 import {makeEm} from "../units";
 
 import type Parser from "../Parser";
-import type {ParseNode, AnyParseNode} from "../parseNode";
+import type {AnyParseNode, ParseNode} from "../types/nodes";
+import type {Slice4} from "../types";
 
 const cdArrowFunctionName: Record<string, string> = {
     ">": "\\\\cdrightarrow",
@@ -244,9 +245,11 @@ export function parseCD(parser: Parser): ParseNode<"array"> {
 // We don't need any such functions for horizontal arrows because we can reuse
 // the functionality that already exists for extensible arrows.
 
+type CDLabelFunctionName = "\\\\cdleft" | "\\\\cdright";
+
 defineFunction({
     type: "cdlabel",
-    names: ["\\\\cdleft", "\\\\cdright"],
+    names: ["\\\\cdleft", "\\\\cdright"] satisfies CDLabelFunctionName[],
     props: {
         numArgs: 1,
     },
@@ -254,7 +257,7 @@ defineFunction({
         return {
             type: "cdlabel",
             mode: parser.mode,
-            side: funcName.slice(4),
+            side: funcName.slice(4) as Slice4<CDLabelFunctionName>,
             label: args[0],
         };
     },

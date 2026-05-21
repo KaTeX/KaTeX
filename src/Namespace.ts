@@ -82,7 +82,7 @@ export default class Namespace<Value> {
      * to `false` in JavaScript.  Use `if (namespace.get(...) != null)` or
      * `if (namespace.has(...))`.
      */
-    get(name: string): Value | null | undefined {
+    get(name: string): Value | undefined {
         if (this.current.hasOwnProperty(name)) {
             return this.current[name];
         } else {

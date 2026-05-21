@@ -4,7 +4,7 @@ import {MathNode} from "../mathMLTree";
 
 import * as mml from "../buildMathML";
 
-import type {ParseNode} from "../parseNode";
+import type {ParseNode} from "../types/nodes";
 
 // "mathord" and "textord" ParseNodes created in Parser.js from symbol Groups in
 // src/symbols.js.
@@ -18,7 +18,7 @@ const defaultVariant: Record<string, string> = {
 defineFunctionBuilders({
     type: "mathord",
     htmlBuilder(group, options) {
-        return makeOrd(group, options, "mathord");
+        return makeOrd(group, options);
     },
     mathmlBuilder(group: ParseNode<"mathord">, options) {
         const node = new MathNode(
@@ -36,7 +36,7 @@ defineFunctionBuilders({
 defineFunctionBuilders({
     type: "textord",
     htmlBuilder(group, options) {
-        return makeOrd(group, options, "textord");
+        return makeOrd(group, options);
     },
     mathmlBuilder(group: ParseNode<"textord">, options) {
         const text = mml.makeText(group.text, group.mode, options);

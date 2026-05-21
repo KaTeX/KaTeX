@@ -7,7 +7,7 @@ import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
 
 import type Options from "../Options";
-import type {AnyParseNode} from "../parseNode";
+import type {AnyParseNode} from "../types/nodes";
 import type {HtmlBuilder} from "../defineFunction";
 import type {documentFragment as HtmlDocumentFragment} from "../domTree";
 
