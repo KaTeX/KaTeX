@@ -54,12 +54,11 @@ defineFunction({
         // Font Shapes
         "\\textit", "\\textup", "\\emph",
     ],
-    props: {
-        numArgs: 1,
-        argTypes: ["text"],
-        allowedInArgument: true,
-        allowedInText: true,
-    },
+    numArgs: 1,
+    argTypes: ["text"],
+    allowedInArgument: true,
+    allowedInText: true,
+
     handler({parser, funcName}, args) {
         const body = args[0];
         return {
@@ -69,6 +68,7 @@ defineFunction({
             font: funcName,
         };
     },
+
     htmlBuilder(group, options) {
         const newOptions = optionsWithFont(group, options);
         const inner = html.buildExpression(group.body, newOptions, true);

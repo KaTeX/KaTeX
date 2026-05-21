@@ -10,11 +10,10 @@ import type {AnyTrustContext} from "../Settings";
 defineFunction({
     type: "html",
     names: ["\\htmlClass", "\\htmlId", "\\htmlStyle", "\\htmlData"],
-    props: {
-        numArgs: 2,
-        argTypes: ["raw", "original"],
-        allowedInText: true,
-    },
+    numArgs: 2,
+    argTypes: ["raw", "original"],
+    allowedInText: true,
+
     handler: ({parser, funcName, token}, args) => {
         const value = assertNodeType(args[0], "raw").string;
         const body = args[1];
@@ -83,6 +82,7 @@ defineFunction({
             body: ordargument(body),
         };
     },
+
     htmlBuilder: (group, options) => {
         const elements = html.buildExpression(group.body, options, false);
 

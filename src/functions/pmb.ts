@@ -15,10 +15,9 @@ import type {ParseNode} from "../types/nodes";
 defineFunction({
     type: "pmb",
     names: ["\\pmb"],
-    props: {
-        numArgs: 1,
-        allowedInText: true,
-    },
+    numArgs: 1,
+    allowedInText: true,
+
     handler({parser}, args) {
         return {
             type: "pmb",
@@ -27,6 +26,7 @@ defineFunction({
             body: ordargument(args[0]),
         };
     },
+
     htmlBuilder(group: ParseNode<"pmb">, options) {
         const elements = html.buildExpression(group.body, options, true);
         const node = makeSpan([group.mclass], elements, options);

@@ -11,11 +11,10 @@ import * as mml from "../buildMathML";
 defineFunction({
     type: "raisebox",
     names: ["\\raisebox"],
-    props: {
-        numArgs: 2,
-        argTypes: ["size", "hbox"],
-        allowedInText: true,
-    },
+    numArgs: 2,
+    argTypes: ["size", "hbox"],
+    allowedInText: true,
+
     handler({parser}, args) {
         const amount = assertNodeType(args[0], "size").value;
         const body = args[1];
@@ -26,6 +25,7 @@ defineFunction({
             body,
         };
     },
+
     htmlBuilder(group, options) {
         const body = html.buildGroup(group.body, options);
         const dy = calculateSize(group.dy, options);

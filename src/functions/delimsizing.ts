@@ -92,10 +92,9 @@ defineFunction({
         "\\bigm", "\\Bigm", "\\biggm", "\\Biggm",
         "\\big",  "\\Big",  "\\bigg",  "\\Bigg",
     ],
-    props: {
-        numArgs: 1,
-        argTypes: ["primitive"],
-    },
+    numArgs: 1,
+    argTypes: ["primitive"],
+
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
 
@@ -107,6 +106,7 @@ defineFunction({
             delim: delim.text,
         };
     },
+
     htmlBuilder: (group, options) => {
         if (group.delim === ".") {
             // Empty delimiters still count as elements, even though they don't
@@ -157,10 +157,9 @@ function assertParsed(group: ParseNode<"leftright">) {
 defineFunction({
     type: "leftright-right",
     names: ["\\right"],
-    props: {
-        numArgs: 1,
-        primitive: true,
-    },
+    numArgs: 1,
+    primitive: true,
+
     handler: (context, args) => {
         // \left case below triggers parsing of \right in
         //   `const right = parser.parseFunction();`
@@ -183,10 +182,9 @@ defineFunction({
 defineFunction({
     type: "leftright",
     names: ["\\left"],
-    props: {
-        numArgs: 1,
-        primitive: true,
-    },
+    numArgs: 1,
+    primitive: true,
+
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
 
@@ -208,6 +206,7 @@ defineFunction({
             rightColor: right.color,
         };
     },
+
     htmlBuilder: (group, options) => {
         assertParsed(group);
         // Build the inner expression
@@ -312,10 +311,9 @@ defineFunction({
 defineFunction({
     type: "middle",
     names: ["\\middle"],
-    props: {
-        numArgs: 1,
-        primitive: true,
-    },
+    numArgs: 1,
+    primitive: true,
+
     handler: (context, args) => {
         const delim = checkDelimiter(args[0], context);
         if (!context.parser.leftrightDepth) {
@@ -328,6 +326,7 @@ defineFunction({
             delim: delim.text,
         };
     },
+
     htmlBuilder: (group, options) => {
         let middleDelim;
         if (group.delim === ".") {

@@ -10,10 +10,9 @@ import type {ParseNode} from "../types/nodes";
 defineFunction({
     type: "environment",
     names: ["\\begin", "\\end"],
-    props: {
-        numArgs: 1,
-        argTypes: ["text"],
-    },
+    numArgs: 1,
+    argTypes: ["text"],
+
     handler({parser, funcName}, args) {
         const nameGroup = args[0];
         if (nameGroup.type !== "ordgroup") {

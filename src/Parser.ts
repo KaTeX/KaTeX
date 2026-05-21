@@ -477,7 +477,7 @@ export default class Parser {
         } else if (this.mode === "text" && !funcData.allowedInText) {
             throw new ParseError(
                 "Can't use function '" + func + "' in text mode", token);
-        } else if (this.mode === "math" && !funcData.allowedInMath) {
+        } else if (this.mode === "math" && funcData.allowedInMath === false) {
             throw new ParseError(
                 "Can't use function '" + func + "' in math mode", token);
         }
@@ -520,7 +520,8 @@ export default class Parser {
         args: AnyParseNode[];
         optArgs: (AnyParseNode | null)[];
     } {
-        const totalArgs = funcData.numArgs + funcData.numOptionalArgs;
+        const numOptionalArgs = funcData.numOptionalArgs ?? 0;
+        const totalArgs = funcData.numArgs + numOptionalArgs;
         if (totalArgs === 0) {
             return {args: [], optArgs: []};
         }
@@ -530,7 +531,7 @@ export default class Parser {
 
         for (let i = 0; i < totalArgs; i++) {
             let argType = funcData.argTypes?.[i];
-            const isOptional = i < funcData.numOptionalArgs;
+            const isOptional = i < numOptionalArgs;
 
             if (("primitive" in funcData && funcData.primitive && argType == null) ||
                 // \sqrt expands into primitive if optional argument doesn't exist

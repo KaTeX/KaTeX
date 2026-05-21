@@ -36,11 +36,10 @@ const mathmlBuilder: MathMLBuilder<"color"> = (group, options) => {
 defineFunction({
     type: "color",
     names: ["\\textcolor"],
-    props: {
-        numArgs: 2,
-        allowedInText: true,
-        argTypes: ["color", "original"],
-    },
+    numArgs: 2,
+    allowedInText: true,
+    argTypes: ["color", "original"],
+
     handler({parser}, args) {
         const color = assertNodeType(args[0], "color-token").color;
         const body = args[1];
@@ -51,6 +50,7 @@ defineFunction({
             body: (ordargument(body) as AnyParseNode[]),
         };
     },
+
     htmlBuilder,
     mathmlBuilder,
 });
@@ -58,11 +58,10 @@ defineFunction({
 defineFunction({
     type: "color",
     names: ["\\color"],
-    props: {
-        numArgs: 1,
-        allowedInText: true,
-        argTypes: ["color"],
-    },
+    numArgs: 1,
+    allowedInText: true,
+    argTypes: ["color"],
+
     handler({parser, breakOnTokenText}, args) {
         const color = assertNodeType(args[0], "color-token").color;
 
@@ -82,6 +81,4 @@ defineFunction({
             body,
         };
     },
-    htmlBuilder,
-    mathmlBuilder,
 });

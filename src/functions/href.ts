@@ -10,11 +10,10 @@ import type {ParseNode} from "../types/nodes";
 defineFunction({
     type: "href",
     names: ["\\href"],
-    props: {
-        numArgs: 2,
-        argTypes: ["url", "original"],
-        allowedInText: true,
-    },
+    numArgs: 2,
+    argTypes: ["url", "original"],
+    allowedInText: true,
+
     handler: ({parser}, args) => {
         const body = args[1];
         const href = assertNodeType(args[0], "url").url;
@@ -33,6 +32,7 @@ defineFunction({
             body: ordargument(body),
         };
     },
+
     htmlBuilder: (group, options) => {
         const elements = html.buildExpression(group.body, options, false);
         return makeAnchor(group.href, [], elements, options);
@@ -50,11 +50,10 @@ defineFunction({
 defineFunction({
     type: "href",
     names: ["\\url"],
-    props: {
-        numArgs: 1,
-        argTypes: ["url"],
-        allowedInText: true,
-    },
+    numArgs: 1,
+    argTypes: ["url"],
+    allowedInText: true,
+
     handler: ({parser}, args) => {
         const href = assertNodeType(args[0], "url").url;
 

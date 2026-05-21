@@ -7,11 +7,10 @@ import * as mml from "../buildMathML";
 defineFunction({
     type: "htmlmathml",
     names: ["\\html@mathml"],
-    props: {
-        numArgs: 2,
-        allowedInArgument: true,
-        allowedInText: true,
-    },
+    numArgs: 2,
+    allowedInArgument: true,
+    allowedInText: true,
+
     handler: ({parser}, args) => {
         return {
             type: "htmlmathml",
@@ -20,6 +19,7 @@ defineFunction({
             mathml: ordargument(args[1]),
         };
     },
+
     htmlBuilder: (group, options) => {
         const elements = html.buildExpression(
             group.html,

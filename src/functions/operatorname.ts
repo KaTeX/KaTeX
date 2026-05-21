@@ -139,9 +139,8 @@ const mathmlBuilder: MathMLBuilder<"operatorname"> = (group, options) => {
 defineFunction({
     type: "operatorname",
     names: ["\\operatorname@", "\\operatornamewithlimits"],
-    props: {
-        numArgs: 1,
-    },
+    numArgs: 1,
+
     handler: ({parser, funcName}, args) => {
         const body = args[0];
         return {
@@ -153,6 +152,7 @@ defineFunction({
             parentIsSupSub: false,
         };
     },
+
     htmlBuilder,
     mathmlBuilder,
 });

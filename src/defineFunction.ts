@@ -33,88 +33,103 @@ export type MathMLBuilder<NODETYPE extends NodeType> =
 export type HtmlBuilderSupSub<NODETYPE extends NodeType> =
     (group: ParseNode<"supsub"> | ParseNode<NODETYPE>, options: Options) => HtmlDomNode;
 
-export type FunctionPropSpec = {
-    // The number of arguments the function takes.
-    numArgs: number;
-
-    // An array corresponding to each argument of the function, giving the
-    // type of argument that should be parsed. Its length should be equal
-    // to `numOptionalArgs + numArgs`, and types for optional arguments
-    // should appear before types for mandatory arguments.
-    argTypes?: ArgType[];
-
-    // Whether it expands to a single token or a braced group of tokens.
-    // If it's grouped, it can be used as an argument to primitive commands,
-    // such as \sqrt (without the optional argument) and super/subscript.
-    allowedInArgument?: boolean;
-
-    // Whether or not the function is allowed inside text mode
-    // (default false)
-    allowedInText?: boolean;
-
-    // Whether or not the function is allowed inside text mode
-    // (default true)
-    allowedInMath?: boolean;
-
-    // (optional) The number of optional arguments the function
-    // should parse. If the optional arguments aren't found,
-    // `null` will be passed to the handler in their place.
-    // (default 0)
-    numOptionalArgs?: number;
-
-    // Must be true if the function is an infix operator.
-    infix?: boolean;
-
-    // Whether or not the function is a TeX primitive.
-    primitive?: boolean;
-};
-
-type FunctionDefSpec<NODETYPE extends NodeType> = {
-    // Unique string to differentiate parse nodes.
-    // Also determines the type of the value returned by `handler`.
+/**
+ * Parser-facing function spec.  Optional properties should use the defaults
+ * documented below.
+ */
+export type FunctionSpec<NODETYPE extends NodeType> = {
+    /**
+     * Unique string to differentiate parse nodes.
+     * Also determines the type of the value returned by `handler`.
+     */
     type: NODETYPE;
 
-    // The first argument to defineFunction is a single name or a list of names.
-    // All functions named in such a list will share a single implementation.
-    names: Array<string>;
+    /** The number of arguments the function takes. */
+    numArgs: number;
 
-    // Properties that control how the functions are parsed.
-    props: FunctionPropSpec;
+    /**
+     * An array corresponding to each argument of the function, giving the
+     * type of argument that should be parsed. Its length should be equal
+     * to `numOptionalArgs + numArgs`, and types for optional arguments
+     * should appear before types for mandatory arguments.
+     */
+    argTypes?: ArgType[];
 
-    // The handler is called to handle these functions and their arguments and
-    // returns a `ParseNode`.
+    /**
+     * Whether it expands to a single token or a braced group of tokens.
+     * If it's grouped, it can be used as an argument to primitive commands,
+     * such as \sqrt (without the optional argument) and super/subscript.
+     * (default false)
+     */
+    allowedInArgument?: boolean;
+
+    /**
+     * Whether or not the function is allowed inside text mode
+     * (default false)
+     */
+    allowedInText?: boolean;
+
+    /**
+     * Whether or not the function is allowed inside math mode
+     * (default true)
+     */
+    allowedInMath?: boolean;
+
+    /**
+     * The number of optional arguments the function should parse. If the
+     * optional arguments aren't found, `null` will be passed to the handler in
+     * their place.
+     * (default 0)
+     */
+    numOptionalArgs?: number;
+
+    /** Must be true if the function is an infix operator. */
+    infix?: boolean;
+
+    /** Whether or not the function is a TeX primitive. */
+    primitive?: boolean;
+
+    /**
+     * The handler is called to handle these functions and their arguments and
+     * returns a `ParseNode`.  It must be specified unless it's handled directly
+     * in the parser.
+     */
     handler: FunctionHandler<NODETYPE> | null | undefined;
+};
 
-    // This function returns an object representing the DOM structure to be
-    // created when rendering the defined LaTeX function.
-    // This should not modify the `ParseNode`.
+/**
+ * Builder fields consumed during registration.  These are stored separately in
+ * `_htmlGroupBuilders` and `_mathmlGroupBuilders`, and are not used by Parser.
+ */
+export type FunctionBuilders<NODETYPE extends NodeType> = {
+    /**
+     * This function returns an object representing the DOM structure to be
+     * created when rendering the defined LaTeX function.
+     * This should not modify the `ParseNode`.
+     */
     htmlBuilder?: HtmlBuilder<NODETYPE>;
 
-    // This function returns an object representing the MathML structure to be
-    // created when rendering the defined LaTeX function.
-    // This should not modify the `ParseNode`.
+    /**
+     * This function returns an object representing the MathML structure to be
+     * created when rendering the defined LaTeX function.
+     * This should not modify the `ParseNode`.
+     */
     mathmlBuilder?: MathMLBuilder<NODETYPE>;
 };
 
 /**
- * Final function spec for use at parse time.
- * This is almost identical to `FunctionPropSpec`, except it
- * 1. includes the function handler, and
- * 2. requires all arguments except argTypes.
- * It is generated by `defineFunction()` below.
+ * Full registration spec passed to `defineFunction`.  It combines the
+ * parser-facing fields with optional builder fields and the names being
+ * registered.
  */
-export type FunctionSpec<NODETYPE extends NodeType> = {
-    type: NODETYPE; // Need to use the type to avoid error. See NOTES below.
-    numArgs: number;
-    argTypes?: ArgType[];
-    allowedInArgument: boolean;
-    allowedInText: boolean;
-    allowedInMath: boolean;
-    numOptionalArgs: number;
-    infix: boolean;
-    primitive: boolean;
-    handler: FunctionHandler<NodeType> | null | undefined;
-};
+type FunctionDefSpec<NODETYPE extends NodeType> =
+    FunctionSpec<NODETYPE> & FunctionBuilders<NODETYPE> & {
+        /**
+         * The first argument to defineFunction is a single name or a list of names.
+         * All functions named in such a list will share a single implementation.
+         */
+        names: Array<string>;
+    };
 
 /**
  * All registered functions.
@@ -142,30 +157,14 @@ export const _htmlGroupBuilders: Record<string, HtmlBuilder<any>> = {};
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const _mathmlGroupBuilders: Record<string, MathMLBuilder<any>> = {};
 
-export default function defineFunction<NODETYPE extends NodeType>({
-    type,
-    names,
-    props,
-    handler,
-    htmlBuilder,
-    mathmlBuilder,
-}: FunctionDefSpec<NODETYPE>) {
-    // Set default values of functions
-    const data = {
-        type,
-        numArgs: props.numArgs,
-        argTypes: props.argTypes,
-        allowedInArgument: !!props.allowedInArgument,
-        allowedInText: !!props.allowedInText,
-        allowedInMath: (props.allowedInMath === undefined)
-            ? true
-            : props.allowedInMath,
-        numOptionalArgs: props.numOptionalArgs || 0,
-        infix: !!props.infix,
-        primitive: !!props.primitive,
-        handler,
-    };
+export default function defineFunction<NODETYPE extends NodeType>(
+    data: FunctionDefSpec<NODETYPE>,
+) {
+    const {type, names, htmlBuilder, mathmlBuilder} = data;
     for (let i = 0; i < names.length; ++i) {
+        // To avoid destructuring and rebuilding an object,
+        // we store the entire FunctionDefSpec object,
+        // even though Parser only needs the FunctionSpec fields.
         _functions[names[i]] = data;
     }
     if (type) {
@@ -190,14 +189,12 @@ export function defineFunctionBuilders<NODETYPE extends NodeType>({
     htmlBuilder?: HtmlBuilder<NODETYPE>;
     mathmlBuilder: MathMLBuilder<NODETYPE>;
 }) {
-    defineFunction({
-        type,
-        names: [],
-        props: {numArgs: 0},
-        handler() { throw new Error('Should never be called.'); },
-        htmlBuilder,
-        mathmlBuilder,
-    });
+    if (htmlBuilder) {
+        _htmlGroupBuilders[type] = htmlBuilder;
+    }
+    if (mathmlBuilder) {
+        _mathmlGroupBuilders[type] = mathmlBuilder;
+    }
 }
 
 export const normalizeArgument = function(arg: AnyParseNode): AnyParseNode {

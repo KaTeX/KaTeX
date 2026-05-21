@@ -223,9 +223,8 @@ defineFunction({
         "\\Overrightarrow", "\\overleftrightarrow", "\\overgroup",
         "\\overlinesegment", "\\overleftharpoon", "\\overrightharpoon",
     ],
-    props: {
-        numArgs: 1,
-    },
+    numArgs: 1,
+
     handler: (context, args) => {
         const base = normalizeArgument(args[0]);
 
@@ -244,6 +243,7 @@ defineFunction({
             base: base,
         };
     },
+
     htmlBuilder,
     mathmlBuilder,
 });
@@ -255,12 +255,11 @@ defineFunction({
         "\\'", "\\`", "\\^", "\\~", "\\=", "\\u", "\\.", '\\"',
         "\\c", "\\r", "\\H", "\\v", "\\textcircled",
     ],
-    props: {
-        numArgs: 1,
-        allowedInText: true,
-        allowedInMath: true, // unless in strict mode
-        argTypes: ["primitive"],
-    },
+    numArgs: 1,
+    allowedInText: true,
+    allowedInMath: true, // unless in strict mode
+    argTypes: ["primitive"],
+
     handler: (context, args) => {
         const base = args[0];
         let mode = context.parser.mode;
@@ -280,6 +279,4 @@ defineFunction({
             base: base,
         };
     },
-    htmlBuilder,
-    mathmlBuilder,
 });

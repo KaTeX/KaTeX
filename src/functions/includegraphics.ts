@@ -33,12 +33,11 @@ const sizeData = function(str: string): Measurement {
 defineFunction({
     type: "includegraphics",
     names: ["\\includegraphics"],
-    props: {
-        numArgs: 1,
-        numOptionalArgs: 1,
-        argTypes: ["raw", "url"],
-        allowedInText: false,
-    },
+    numArgs: 1,
+    numOptionalArgs: 1,
+    argTypes: ["raw", "url"],
+    allowedInText: false,
+
     handler: ({parser}, args, optArgs) => {
         let width = {number: 0, unit: "em"};
         let height = {number: 0.9, unit: "em"};    // sorta character sized.
@@ -101,6 +100,7 @@ defineFunction({
             src: src,
         };
     },
+
     htmlBuilder: (group, options) => {
         const height = calculateSize(group.height, options);
         let depth = 0;

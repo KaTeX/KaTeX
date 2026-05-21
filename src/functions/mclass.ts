@@ -65,10 +65,8 @@ defineFunction({
         "\\mathord", "\\mathbin", "\\mathrel", "\\mathopen",
         "\\mathclose", "\\mathpunct", "\\mathinner",
     ] satisfies MathClassCommand[],
-    props: {
-        numArgs: 1,
-        primitive: true,
-    },
+    numArgs: 1,
+    primitive: true,
     handler({parser, funcName}, args) {
         const body = args[0];
         return {
@@ -79,6 +77,7 @@ defineFunction({
             isCharacterBox: isCharacterBox(body),
         };
     },
+
     htmlBuilder,
     mathmlBuilder,
 });
@@ -101,9 +100,8 @@ export const binrelClass = (arg: AnyParseNode): MathClass => {
 defineFunction({
     type: "mclass",
     names: ["\\@binrel"],
-    props: {
-        numArgs: 2,
-    },
+    numArgs: 2,
+
     handler({parser}, args) {
         return {
             type: "mclass",
@@ -119,9 +117,8 @@ defineFunction({
 defineFunction({
     type: "mclass",
     names: ["\\stackrel", "\\overset", "\\underset"],
-    props: {
-        numArgs: 2,
-    },
+    numArgs: 2,
+
     handler({parser, funcName}, args) {
         const baseArg = args[1];
         const shiftedArg = args[0];
@@ -157,6 +154,4 @@ defineFunction({
             isCharacterBox: isCharacterBox(supsub),
         };
     },
-    htmlBuilder,
-    mathmlBuilder,
 });

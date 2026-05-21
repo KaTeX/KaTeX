@@ -220,11 +220,10 @@ const mathmlBuilder: MathMLBuilder<"enclose"> = (group, options) => {
 defineFunction({
     type: "enclose",
     names: ["\\colorbox"],
-    props: {
-        numArgs: 2,
-        allowedInText: true,
-        argTypes: ["color", "hbox"],
-    },
+    numArgs: 2,
+    allowedInText: true,
+    argTypes: ["color", "hbox"],
+
     handler({parser, funcName}, args, optArgs) {
         const color = assertNodeType(args[0], "color-token").color;
         const body = args[1];
@@ -236,6 +235,7 @@ defineFunction({
             body,
         };
     },
+
     htmlBuilder,
     mathmlBuilder,
 });
@@ -243,11 +243,10 @@ defineFunction({
 defineFunction({
     type: "enclose",
     names: ["\\fcolorbox"],
-    props: {
-        numArgs: 3,
-        allowedInText: true,
-        argTypes: ["color", "color", "hbox"],
-    },
+    numArgs: 3,
+    allowedInText: true,
+    argTypes: ["color", "color", "hbox"],
+
     handler({parser, funcName}, args, optArgs) {
         const borderColor = assertNodeType(args[0], "color-token").color;
         const backgroundColor = assertNodeType(args[1], "color-token").color;
@@ -261,18 +260,15 @@ defineFunction({
             body,
         };
     },
-    htmlBuilder,
-    mathmlBuilder,
 });
 
 defineFunction({
     type: "enclose",
     names: ["\\fbox"],
-    props: {
-        numArgs: 1,
-        argTypes: ["hbox"],
-        allowedInText: true,
-    },
+    numArgs: 1,
+    argTypes: ["hbox"],
+    allowedInText: true,
+
     handler({parser}, args) {
         return {
             type: "enclose",
@@ -286,9 +282,8 @@ defineFunction({
 defineFunction({
     type: "enclose",
     names: ["\\cancel", "\\bcancel", "\\xcancel", "\\phase"],
-    props: {
-        numArgs: 1,
-    },
+    numArgs: 1,
+
     handler({parser, funcName}, args) {
         const body = args[0];
         return {
@@ -298,17 +293,14 @@ defineFunction({
             body,
         };
     },
-    htmlBuilder,
-    mathmlBuilder,
 });
 
 defineFunction({
     type: "enclose",
     names: ["\\sout"],
-    props: {
-        numArgs: 1,
-        allowedInText: true,
-    },
+    numArgs: 1,
+    allowedInText: true,
+
     handler({parser, funcName}, args) {
         if (parser.mode === "math") {
             parser.settings.reportNonstrict("mathVsSout",
@@ -322,18 +314,15 @@ defineFunction({
             body,
         };
     },
-    htmlBuilder,
-    mathmlBuilder,
 });
 
 defineFunction({
     type: "enclose",
     names: ["\\angl"],
-    props: {
-        numArgs: 1,
-        argTypes: ["hbox"],
-        allowedInText: false,
-    },
+    numArgs: 1,
+    argTypes: ["hbox"],
+    allowedInText: false,
+
     handler({parser}, args) {
         return {
             type: "enclose",

@@ -49,10 +49,9 @@ defineFunction({
         // aliases, except \bm defined below
         "\\Bbb", "\\bold", "\\frak",
     ] satisfies (FontCommands | keyof typeof fontAliases)[],
-    props: {
-        numArgs: 1,
-        allowedInArgument: true,
-    },
+    numArgs: 1,
+    allowedInArgument: true,
+
     handler: ({parser, funcName}, args) => {
         const body = normalizeArgument(args[0]);
         let func = funcName;
@@ -66,6 +65,7 @@ defineFunction({
             body,
         };
     },
+
     htmlBuilder,
     mathmlBuilder,
 });
@@ -73,9 +73,8 @@ defineFunction({
 defineFunction({
     type: "mclass",
     names: ["\\boldsymbol", "\\bm"],
-    props: {
-        numArgs: 1,
-    },
+    numArgs: 1,
+
     handler: ({parser}, args) => {
         const body = args[0];
         // amsbsy.sty's \boldsymbol uses \binrel spacing to inherit the
@@ -101,10 +100,8 @@ defineFunction({
 defineFunction({
     type: "font",
     names: ["\\rm", "\\sf", "\\tt", "\\bf", "\\it", "\\cal"] satisfies OldFontCommands[],
-    props: {
-        numArgs: 0,
-        allowedInText: true,
-    },
+    numArgs: 0,
+    allowedInText: true,
     handler: ({parser, funcName, breakOnTokenText}, args) => {
         const {mode} = parser;
         const body = parser.parseExpression(true, breakOnTokenText);
@@ -120,6 +117,4 @@ defineFunction({
             },
         };
     },
-    htmlBuilder,
-    mathmlBuilder,
 });

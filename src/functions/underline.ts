@@ -8,10 +8,9 @@ import * as mml from "../buildMathML";
 defineFunction({
     type: "underline",
     names: ["\\underline"],
-    props: {
-        numArgs: 1,
-        allowedInText: true,
-    },
+    numArgs: 1,
+    allowedInText: true,
+
     handler({parser}, args) {
         return {
             type: "underline",
@@ -19,6 +18,7 @@ defineFunction({
             body: args[0],
         };
     },
+
     htmlBuilder(group, options) {
         // Underlines are handled in the TeXbook pg 443, Rule 10.
         // Build the inner group.

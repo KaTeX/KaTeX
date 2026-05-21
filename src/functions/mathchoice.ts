@@ -21,10 +21,9 @@ const chooseMathStyle = (group: ParseNode<"mathchoice">, options: Options) => {
 defineFunction({
     type: "mathchoice",
     names: ["\\mathchoice"],
-    props: {
-        numArgs: 4,
-        primitive: true,
-    },
+    numArgs: 4,
+    primitive: true,
+
     handler: ({parser}, args) => {
         return {
             type: "mathchoice",
@@ -35,6 +34,7 @@ defineFunction({
             scriptscript: ordargument(args[3]),
         };
     },
+
     htmlBuilder: (group, options) => {
         const body = chooseMathStyle(group, options);
         const elements = html.buildExpression(

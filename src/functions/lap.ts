@@ -10,10 +10,9 @@ import * as mml from "../buildMathML";
 defineFunction({
     type: "lap",
     names: ["\\mathllap", "\\mathrlap", "\\mathclap"],
-    props: {
-        numArgs: 1,
-        allowedInText: true,
-    },
+    numArgs: 1,
+    allowedInText: true,
+
     handler: ({parser, funcName}, args) => {
         const body = args[0];
         return {
@@ -23,6 +22,7 @@ defineFunction({
             body,
         };
     },
+
     htmlBuilder: (group, options) => {
         // mathllap, mathrlap, mathclap
         let inner;

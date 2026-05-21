@@ -5,11 +5,10 @@ import ParseError from "../ParseError";
 defineFunction({
     type: "styling",
     names: ["\\(", "$"],
-    props: {
-        numArgs: 0,
-        allowedInText: true,
-        allowedInMath: false,
-    },
+    numArgs: 0,
+    allowedInText: true,
+    allowedInMath: false,
+
     handler({funcName, parser}, args) {
         const outerMode = parser.mode;
         parser.switchMode("math");
@@ -31,11 +30,10 @@ defineFunction({
 defineFunction({
     type: "text", // Doesn't matter what this is.
     names: ["\\)", "\\]"],
-    props: {
-        numArgs: 0,
-        allowedInText: true,
-        allowedInMath: false,
-    },
+    numArgs: 0,
+    allowedInText: true,
+    allowedInMath: false,
+
     handler(context, args) {
         throw new ParseError(`Mismatched ${context.funcName}`);
     },
