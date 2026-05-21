@@ -83,7 +83,7 @@ export default class Namespace<Value> {
      * `if (namespace.has(...))`.
      */
     get(name: string): Value | undefined {
-        if (name in this.current) {
+        if (this.current.hasOwnProperty(name)) {
             return this.current[name];
         } else {
             return this.builtins[name];
