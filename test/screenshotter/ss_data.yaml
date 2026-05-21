@@ -124,7 +124,12 @@ DelimiterSizing: |
         a & b & c\\
         a & b & c\\
         a & b & c\\
-    \end{pmatrix}\; \Braket{ ϕ | \frac{∂^2}{∂ t^2} | ψ } \\
+    \end{pmatrix}\; \begin{bmatrix}
+        a & b & c\\
+        a & b & c\\
+        a & b & c\\
+    \end{bmatrix} \\
+    \Braket{ ϕ | \frac{∂^2}{∂ t^2} | ψ } \\
 DisplayMode:
     tex: \sum_{i=0}^\infty \frac{1}{i}
     pre: pre

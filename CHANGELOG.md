@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.16.47](https://github.com/KaTeX/KaTeX/compare/v0.16.46...v0.16.47) (2026-05-16)
+
+
+### Bug Fixes
+
+* correct size of `[` big delimiter ([#4217](https://github.com/KaTeX/KaTeX/issues/4217)) ([7ba0027](https://github.com/KaTeX/KaTeX/commit/7ba0027d2f04abddd3b215362f867ab8260b09d7)), closes [#4215](https://github.com/KaTeX/KaTeX/issues/4215)
+
 ## [0.16.46](https://github.com/KaTeX/KaTeX/compare/v0.16.45...v0.16.46) (2026-05-13)
 
 
