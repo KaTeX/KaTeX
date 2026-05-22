@@ -12,6 +12,7 @@ import * as mml from "../buildMathML";
 import type Options from "../Options";
 import type {FunctionContext} from "../defineFunction";
 import type {HtmlDomNode} from "../domTree";
+import type {DelimiterSize, MathClass} from "../types";
 import type {AnyParseNode, ParseNode, SymbolParseNode} from "../types/nodes";
 
 // Extra data needed for the delimiter handler down below
@@ -33,8 +34,8 @@ const delimiterSizes = {
     "\\bigg" : {mclass: "mord",     size: 3},
     "\\Bigg" : {mclass: "mord",     size: 4},
 } as const satisfies Record<string, {
-    mclass: "mopen" | "mclose" | "mrel" | "mord";
-    size: 1 | 2 | 3 | 4;
+    mclass: MathClass;
+    size: DelimiterSize;
 }>;
 
 const delimiters = new Set([
