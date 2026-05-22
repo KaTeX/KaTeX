@@ -245,17 +245,15 @@ export function parseCD(parser: Parser): ParseNode<"array"> {
 // We don't need any such functions for horizontal arrows because we can reuse
 // the functionality that already exists for extensible arrows.
 
-type CDLabelFunctionName = "\\\\cdleft" | "\\\\cdright";
-
 defineFunction({
     type: "cdlabel",
-    names: ["\\\\cdleft", "\\\\cdright"] satisfies CDLabelFunctionName[],
+    names: ["\\\\cdleft", "\\\\cdright"],
     numArgs: 1,
     handler({parser, funcName}, args) {
         return {
             type: "cdlabel",
             mode: parser.mode,
-            side: funcName.slice(4) as Slice4<CDLabelFunctionName>,
+            side: funcName.slice(4) as Slice4<typeof funcName>,
             label: args[0],
         };
     },

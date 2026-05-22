@@ -29,13 +29,6 @@ const fontAliases = {
     "\\frak": "\\mathfrak",
 } as const;
 
-type FontCommands =
-    "\\mathrm" | "\\mathit" | "\\mathbf" | "\\mathnormal" | "\\mathsfit" |
-    "\\mathbb" | "\\mathcal" | "\\mathfrak" | "\\mathscr" | "\\mathsf" |
-    "\\mathtt";
-
-type OldFontCommands = "\\rm" | "\\sf" | "\\tt" | "\\bf" | "\\it" | "\\cal";
-
 defineFunction({
     type: "font",
     names: [
@@ -48,20 +41,19 @@ defineFunction({
 
         // aliases, except \bm defined below
         "\\Bbb", "\\bold", "\\frak",
-    ] satisfies (FontCommands | keyof typeof fontAliases)[],
+    ],
     numArgs: 1,
     allowedInArgument: true,
 
     handler: ({parser, funcName}, args) => {
         const body = normalizeArgument(args[0]);
-        let func = funcName;
-        if (func in fontAliases) {
-            func = fontAliases[func as keyof typeof fontAliases];
-        }
+        const func = funcName in fontAliases
+            ? fontAliases[funcName as keyof typeof fontAliases]
+            : funcName as Exclude<typeof funcName, keyof typeof fontAliases>;
         return {
             type: "font",
             mode: parser.mode,
-            font: func.slice(1) as Slice1<FontCommands>,
+            font: func.slice(1) as Slice1<typeof func>,
             body,
         };
     },
@@ -99,7 +91,7 @@ defineFunction({
 // Old font changing functions
 defineFunction({
     type: "font",
-    names: ["\\rm", "\\sf", "\\tt", "\\bf", "\\it", "\\cal"] satisfies OldFontCommands[],
+    names: ["\\rm", "\\sf", "\\tt", "\\bf", "\\it", "\\cal"],
     numArgs: 0,
     allowedInText: true,
     handler: ({parser, funcName, breakOnTokenText}, args) => {
@@ -109,7 +101,7 @@ defineFunction({
         return {
             type: "font",
             mode: mode,
-            font: `math${funcName.slice(1) as Slice1<OldFontCommands>}` as const,
+            font: `math${funcName.slice(1) as Slice1<typeof funcName>}` as const,
             body: {
                 type: "ordgroup",
                 mode: parser.mode,

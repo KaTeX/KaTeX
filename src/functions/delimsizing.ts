@@ -15,10 +15,7 @@ import type {HtmlDomNode} from "../domTree";
 import type {AnyParseNode, ParseNode, SymbolParseNode} from "../types/nodes";
 
 // Extra data needed for the delimiter handler down below
-const delimiterSizes: Record<string, {
-    mclass: "mopen" | "mclose" | "mrel" | "mord";
-    size: 1 | 2 | 3 | 4;
-}> = {
+const delimiterSizes = {
     "\\bigl" : {mclass: "mopen",    size: 1},
     "\\Bigl" : {mclass: "mopen",    size: 2},
     "\\biggl": {mclass: "mopen",    size: 3},
@@ -35,7 +32,10 @@ const delimiterSizes: Record<string, {
     "\\Big"  : {mclass: "mord",     size: 2},
     "\\bigg" : {mclass: "mord",     size: 3},
     "\\Bigg" : {mclass: "mord",     size: 4},
-};
+} as const satisfies Record<string, {
+    mclass: "mopen" | "mclose" | "mrel" | "mord";
+    size: 1 | 2 | 3 | 4;
+}>;
 
 const delimiters = new Set([
     "(", "\\lparen", ")", "\\rparen",

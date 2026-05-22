@@ -43,7 +43,7 @@ export function sizingGroup(
 const sizeFuncs = [
     "\\tiny", "\\sixptsize", "\\scriptsize", "\\footnotesize", "\\small",
     "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
-];
+] as const;
 
 export const htmlBuilder: HtmlBuilder<"sizing"> = (group, options) => {
     // Handle sizing operators like \Huge. Real TeX doesn't actually allow

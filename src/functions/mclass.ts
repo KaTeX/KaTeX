@@ -54,17 +54,13 @@ function mathmlBuilder(group: ParseNode<"mclass">, options: Options) {
     return node;
 }
 
-type MathClassCommand =
-    "\\mathord" | "\\mathbin" | "\\mathrel" | "\\mathopen" |
-    "\\mathclose" | "\\mathpunct" | "\\mathinner";
-
 // Math class commands except \mathop
 defineFunction({
     type: "mclass",
     names: [
         "\\mathord", "\\mathbin", "\\mathrel", "\\mathopen",
         "\\mathclose", "\\mathpunct", "\\mathinner",
-    ] satisfies MathClassCommand[],
+    ],
     numArgs: 1,
     primitive: true,
     handler({parser, funcName}, args) {
@@ -72,7 +68,7 @@ defineFunction({
         return {
             type: "mclass",
             mode: parser.mode,
-            mclass: `m${funcName.slice(5) as Slice5<MathClassCommand>}`,
+            mclass: `m${funcName.slice(5) as Slice5<typeof funcName>}`,
             body: ordargument(body),
             isCharacterBox: isCharacterBox(body),
         };
