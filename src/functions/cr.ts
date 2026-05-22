@@ -14,7 +14,6 @@ defineFunction({
     numOptionalArgs: 0,
     allowedInText: true,
 
-
     handler({parser}, args, optArgs) {
         const size = parser.gullet.future().text === "[" ?
             parser.parseSizeGroup(true) : null;
@@ -44,7 +43,6 @@ defineFunction({
         }
         return span;
     },
-
 
     mathmlBuilder(group, options) {
         const node = new MathNode("mspace");

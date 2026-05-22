@@ -474,9 +474,11 @@ export default class Parser {
             throw new ParseError(
                 "Got function '" + func + "' with no arguments" +
                 (name ? " as " + name : ""), token);
+        // Treat undefined allowedInText as false.
         } else if (this.mode === "text" && !funcData.allowedInText) {
             throw new ParseError(
                 "Can't use function '" + func + "' in text mode", token);
+        // Treat undefined allowedInMath as true.
         } else if (this.mode === "math" && funcData.allowedInMath === false) {
             throw new ParseError(
                 "Can't use function '" + func + "' in math mode", token);
