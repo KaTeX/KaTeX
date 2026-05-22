@@ -8,10 +8,9 @@ import {assertNodeType} from "../parseNode";
 defineFunction({
     type: "textord",
     names: ["\\@char"],
-    props: {
-        numArgs: 1,
-        allowedInText: true,
-    },
+    numArgs: 1,
+    allowedInText: true,
+
     handler({parser}, args) {
         const arg = assertNodeType(args[0], "ordgroup");
         const group = arg.body;

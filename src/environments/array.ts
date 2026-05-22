@@ -1121,11 +1121,10 @@ defineMacro("\\notag", "\\nonumber");
 defineFunction({
     type: "text", // Doesn't matter what this is.
     names: ["\\hline", "\\hdashline"],
-    props: {
-        numArgs: 0,
-        allowedInText: true,
-        allowedInMath: true,
-    },
+    numArgs: 0,
+    allowedInText: true,
+    allowedInMath: true,
+
     handler(context, args) {
         throw new ParseError(
             `${context.funcName} valid only within array environment`);

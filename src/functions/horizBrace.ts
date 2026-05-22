@@ -117,9 +117,8 @@ const mathmlBuilder: MathMLBuilder<"horizBrace"> = (group, options) => {
 defineFunction({
     type: "horizBrace",
     names: ["\\overbrace", "\\underbrace", "\\overbracket", "\\underbracket"],
-    props: {
-        numArgs: 1,
-    },
+    numArgs: 1,
+
     handler({parser, funcName}, args) {
         return {
             type: "horizBrace",
@@ -129,6 +128,7 @@ defineFunction({
             base: args[0],
         };
     },
+
     htmlBuilder,
     mathmlBuilder,
 });

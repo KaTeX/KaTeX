@@ -10,11 +10,9 @@ import {assertNodeType} from "../parseNode";
 defineFunction({
     type: "cr",
     names: ["\\\\"],
-    props: {
-        numArgs: 0,
-        numOptionalArgs: 0,
-        allowedInText: true,
-    },
+    numArgs: 0,
+    numOptionalArgs: 0,
+    allowedInText: true,
 
     handler({parser}, args, optArgs) {
         const size = parser.gullet.future().text === "[" ?

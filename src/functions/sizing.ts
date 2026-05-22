@@ -43,7 +43,7 @@ export function sizingGroup(
 const sizeFuncs = [
     "\\tiny", "\\sixptsize", "\\scriptsize", "\\footnotesize", "\\small",
     "\\normalsize", "\\large", "\\Large", "\\LARGE", "\\huge", "\\Huge",
-];
+] as const;
 
 export const htmlBuilder: HtmlBuilder<"sizing"> = (group, options) => {
     // Handle sizing operators like \Huge. Real TeX doesn't actually allow
@@ -56,10 +56,9 @@ export const htmlBuilder: HtmlBuilder<"sizing"> = (group, options) => {
 defineFunction({
     type: "sizing",
     names: sizeFuncs,
-    props: {
-        numArgs: 0,
-        allowedInText: true,
-    },
+    numArgs: 0,
+    allowedInText: true,
+
     handler: ({breakOnTokenText, funcName, parser}, args) => {
         const body = parser.parseExpression(false, breakOnTokenText);
 
@@ -71,6 +70,7 @@ defineFunction({
             body,
         };
     },
+
     htmlBuilder,
     mathmlBuilder: (group, options) => {
         const newOptions = options.havingSize(group.size);

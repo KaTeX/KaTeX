@@ -29,13 +29,6 @@ const fontAliases = {
     "\\frak": "\\mathfrak",
 } as const;
 
-type FontCommands =
-    "\\mathrm" | "\\mathit" | "\\mathbf" | "\\mathnormal" | "\\mathsfit" |
-    "\\mathbb" | "\\mathcal" | "\\mathfrak" | "\\mathscr" | "\\mathsf" |
-    "\\mathtt";
-
-type OldFontCommands = "\\rm" | "\\sf" | "\\tt" | "\\bf" | "\\it" | "\\cal";
-
 defineFunction({
     type: "font",
     names: [
@@ -48,24 +41,23 @@ defineFunction({
 
         // aliases, except \bm defined below
         "\\Bbb", "\\bold", "\\frak",
-    ] satisfies (FontCommands | keyof typeof fontAliases)[],
-    props: {
-        numArgs: 1,
-        allowedInArgument: true,
-    },
+    ],
+    numArgs: 1,
+    allowedInArgument: true,
+
     handler: ({parser, funcName}, args) => {
         const body = normalizeArgument(args[0]);
-        let func = funcName;
-        if (func in fontAliases) {
-            func = fontAliases[func as keyof typeof fontAliases];
-        }
+        const func = funcName in fontAliases
+            ? fontAliases[funcName as keyof typeof fontAliases]
+            : funcName as Exclude<typeof funcName, keyof typeof fontAliases>;
         return {
             type: "font",
             mode: parser.mode,
-            font: func.slice(1) as Slice1<FontCommands>,
+            font: func.slice(1) as Slice1<typeof func>,
             body,
         };
     },
+
     htmlBuilder,
     mathmlBuilder,
 });
@@ -73,9 +65,8 @@ defineFunction({
 defineFunction({
     type: "mclass",
     names: ["\\boldsymbol", "\\bm"],
-    props: {
-        numArgs: 1,
-    },
+    numArgs: 1,
+
     handler: ({parser}, args) => {
         const body = args[0];
         // amsbsy.sty's \boldsymbol uses \binrel spacing to inherit the
@@ -100,11 +91,9 @@ defineFunction({
 // Old font changing functions
 defineFunction({
     type: "font",
-    names: ["\\rm", "\\sf", "\\tt", "\\bf", "\\it", "\\cal"] satisfies OldFontCommands[],
-    props: {
-        numArgs: 0,
-        allowedInText: true,
-    },
+    names: ["\\rm", "\\sf", "\\tt", "\\bf", "\\it", "\\cal"],
+    numArgs: 0,
+    allowedInText: true,
     handler: ({parser, funcName, breakOnTokenText}, args) => {
         const {mode} = parser;
         const body = parser.parseExpression(true, breakOnTokenText);
@@ -112,7 +101,7 @@ defineFunction({
         return {
             type: "font",
             mode: mode,
-            font: `math${funcName.slice(1) as Slice1<OldFontCommands>}` as const,
+            font: `math${funcName.slice(1) as Slice1<typeof funcName>}` as const,
             body: {
                 type: "ordgroup",
                 mode: parser.mode,
@@ -120,6 +109,4 @@ defineFunction({
             },
         };
     },
-    htmlBuilder,
-    mathmlBuilder,
 });

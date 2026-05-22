@@ -10,11 +10,10 @@ import * as mml from "../buildMathML";
 defineFunction({
     type: "vcenter",
     names: ["\\vcenter"],
-    props: {
-        numArgs: 1,
-        argTypes: ["original"], // In LaTeX, \vcenter can act only on a box.
-        allowedInText: false,
-    },
+    numArgs: 1,
+    argTypes: ["original"], // In LaTeX, \vcenter can act only on a box.
+    allowedInText: false,
+
     handler({parser}, args) {
         return {
             type: "vcenter",
@@ -22,6 +21,7 @@ defineFunction({
             body: args[0],
         };
     },
+
     htmlBuilder(group, options) {
         const body = html.buildGroup(group.body, options);
         const axisHeight = options.fontMetrics().axisHeight;

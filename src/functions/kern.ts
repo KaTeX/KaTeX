@@ -11,12 +11,11 @@ import {assertNodeType} from "../parseNode";
 defineFunction({
     type: "kern",
     names: ["\\kern", "\\mkern", "\\hskip", "\\mskip"],
-    props: {
-        numArgs: 1,
-        argTypes: ["size"],
-        primitive: true,
-        allowedInText: true,
-    },
+    numArgs: 1,
+    argTypes: ["size"],
+    primitive: true,
+    allowedInText: true,
+
     handler({parser, funcName}, args) {
         const size = assertNodeType(args[0], "size");
         if (parser.settings.strict) {
@@ -45,6 +44,7 @@ defineFunction({
             dimension: size.value,
         };
     },
+
     htmlBuilder(group, options) {
         return makeGlue(group.dimension, options);
     },

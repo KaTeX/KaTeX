@@ -245,22 +245,19 @@ export function parseCD(parser: Parser): ParseNode<"array"> {
 // We don't need any such functions for horizontal arrows because we can reuse
 // the functionality that already exists for extensible arrows.
 
-type CDLabelFunctionName = "\\\\cdleft" | "\\\\cdright";
-
 defineFunction({
     type: "cdlabel",
-    names: ["\\\\cdleft", "\\\\cdright"] satisfies CDLabelFunctionName[],
-    props: {
-        numArgs: 1,
-    },
+    names: ["\\\\cdleft", "\\\\cdright"],
+    numArgs: 1,
     handler({parser, funcName}, args) {
         return {
             type: "cdlabel",
             mode: parser.mode,
-            side: funcName.slice(4) as Slice4<CDLabelFunctionName>,
+            side: funcName.slice(4) as Slice4<typeof funcName>,
             label: args[0],
         };
     },
+
     htmlBuilder(group, options) {
         const newOptions = options.havingStyle(options.style.sup());
         const label = wrapFragment(
@@ -294,9 +291,8 @@ defineFunction({
 defineFunction({
     type: "cdlabelparent",
     names: ["\\\\cdparent"],
-    props: {
-        numArgs: 1,
-    },
+    numArgs: 1,
+
     handler({parser}, args) {
         return {
             type: "cdlabelparent",
@@ -304,6 +300,7 @@ defineFunction({
             fragment: args[0],
         };
     },
+
     htmlBuilder(group, options) {
         // Wrap the vertical arrow and its labels.
         // The parent gets position: relative. The child gets position: absolute.

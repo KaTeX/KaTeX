@@ -239,10 +239,9 @@ defineFunction({
         "\\\\atopfrac", // can’t be entered directly
         "\\\\bracefrac", "\\\\brackfrac",   // ditto
     ],
-    props: {
-        numArgs: 2,
-        allowedInArgument: true,
-    },
+    numArgs: 2,
+    allowedInArgument: true,
+
     handler: ({parser, funcName}, args) => {
         const numer = args[0];
         const denom = args[1];
@@ -302,6 +301,7 @@ defineFunction({
         }, style);
     },
 
+
     htmlBuilder,
     mathmlBuilder,
 });
@@ -311,10 +311,9 @@ defineFunction({
 defineFunction({
     type: "infix",
     names: ["\\over", "\\choose", "\\atop", "\\brace", "\\brack"],
-    props: {
-        numArgs: 0,
-        infix: true,
-    },
+    numArgs: 0,
+    infix: true,
+
     handler({parser, funcName, token}) {
         let replaceWith;
         switch (funcName) {
@@ -359,11 +358,10 @@ const delimFromValue = function(delimString: string): string | null {
 defineFunction({
     type: "genfrac",
     names: ["\\genfrac"],
-    props: {
-        numArgs: 6,
-        allowedInArgument: true,
-        argTypes: ["math", "math", "size", "text", "math", "math"],
-    },
+    numArgs: 6,
+    allowedInArgument: true,
+    argTypes: ["math", "math", "size", "text", "math", "math"],
+
     handler({parser}, args) {
         const numer = args[4];
         const denom = args[5];
@@ -420,11 +418,10 @@ defineFunction({
 defineFunction({
     type: "infix",
     names: ["\\above"],
-    props: {
-        numArgs: 1,
-        argTypes: ["size"],
-        infix: true,
-    },
+    numArgs: 1,
+    argTypes: ["size"],
+    infix: true,
+
     handler({parser, funcName, token}, args) {
         return {
             type: "infix",
@@ -439,10 +436,9 @@ defineFunction({
 defineFunction({
     type: "genfrac",
     names: ["\\\\abovefrac"],
-    props: {
-        numArgs: 3,
-        argTypes: ["math", "size", "math"],
-    },
+    numArgs: 3,
+    argTypes: ["math", "size", "math"],
+
     handler: ({parser, funcName}, args) => {
         const numer = args[0];
         const barSize = assertNodeType(args[1], "infix").size;

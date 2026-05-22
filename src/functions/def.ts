@@ -62,10 +62,9 @@ defineFunction({
         "\\global", "\\long",
         "\\\\globallong", // can’t be entered directly
     ],
-    props: {
-        numArgs: 0,
-        allowedInText: true,
-    },
+    numArgs: 0,
+    allowedInText: true,
+
     handler({parser, funcName}) {
         parser.consumeSpaces();
         const token = parser.fetch();
@@ -87,11 +86,10 @@ defineFunction({
 defineFunction({
     type: "internal",
     names: ["\\def", "\\gdef", "\\edef", "\\xdef"],
-    props: {
-        numArgs: 0,
-        allowedInText: true,
-        primitive: true,
-    },
+    numArgs: 0,
+    allowedInText: true,
+    primitive: true,
+
     handler({parser, funcName}) {
         let tok = parser.gullet.popToken();
         const name = tok.text;
@@ -168,11 +166,10 @@ defineFunction({
         "\\let",
         "\\\\globallet", // can’t be entered directly
     ],
-    props: {
-        numArgs: 0,
-        allowedInText: true,
-        primitive: true,
-    },
+    numArgs: 0,
+    allowedInText: true,
+    primitive: true,
+
     handler({parser, funcName}) {
         const name = checkControlSequence(parser.gullet.popToken());
         parser.gullet.consumeSpaces();
@@ -192,11 +189,10 @@ defineFunction({
         "\\futurelet",
         "\\\\globalfuture", // can’t be entered directly
     ],
-    props: {
-        numArgs: 0,
-        allowedInText: true,
-        primitive: true,
-    },
+    numArgs: 0,
+    allowedInText: true,
+    primitive: true,
+
     handler({parser, funcName}) {
         const name = checkControlSequence(parser.gullet.popToken());
         const middle = parser.gullet.popToken();
