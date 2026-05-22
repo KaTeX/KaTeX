@@ -7,15 +7,18 @@ import type {Token} from "./Token";
 import type {MathDomNode} from "./mathMLTree";
 
 /** Context provided to function handlers for error messages. */
-export type FunctionContext = {
-    funcName: string;
+export type FunctionContext<FUNCNAME extends string = string> = {
+    funcName: FUNCNAME;
     parser: Parser;
     token?: Token;
     breakOnTokenText?: BreakToken;
 };
 
-export type FunctionHandler<NODETYPE extends NodeType> = (
-    context: FunctionContext,
+export type FunctionHandler<
+    NODETYPE extends NodeType,
+    FUNCNAME extends string = string,
+> = (
+    context: FunctionContext<FUNCNAME>,
     args: AnyParseNode[],
     optArgs: (AnyParseNode | null)[],
 ) => UnsupportedCmdParseNode | ParseNode<NODETYPE>;
@@ -37,7 +40,10 @@ export type HtmlBuilderSupSub<NODETYPE extends NodeType> =
  * Parser-facing function spec.  Optional properties should use the defaults
  * documented below.
  */
-export type FunctionSpec<NODETYPE extends NodeType> = {
+export type FunctionSpec<
+    NODETYPE extends NodeType,
+    FUNCNAME extends string = string,
+> = {
     /**
      * Unique string to differentiate parse nodes.
      * Also determines the type of the value returned by `handler`.
@@ -94,7 +100,7 @@ export type FunctionSpec<NODETYPE extends NodeType> = {
      * returns a `ParseNode`.  It must be specified unless it's handled directly
      * in the parser.
      */
-    handler: FunctionHandler<NODETYPE> | null | undefined;
+    handler: FunctionHandler<NODETYPE, FUNCNAME> | null | undefined;
 };
 
 /**
@@ -122,13 +128,16 @@ export type FunctionBuilders<NODETYPE extends NodeType> = {
  * parser-facing fields with optional builder fields and the names being
  * registered.
  */
-type FunctionDefSpec<NODETYPE extends NodeType> =
-    FunctionSpec<NODETYPE> & FunctionBuilders<NODETYPE> & {
+type FunctionDefSpec<
+    NODETYPE extends NodeType,
+    NAMES extends readonly string[],
+> =
+    FunctionSpec<NODETYPE, NAMES[number]> & FunctionBuilders<NODETYPE> & {
         /**
          * The first argument to defineFunction is a single name or a list of names.
          * All functions named in such a list will share a single implementation.
          */
-        names: Array<string>;
+        names: NAMES;
     };
 
 /**
@@ -157,8 +166,11 @@ export const _htmlGroupBuilders: Record<string, HtmlBuilder<any>> = {};
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const _mathmlGroupBuilders: Record<string, MathMLBuilder<any>> = {};
 
-export default function defineFunction<NODETYPE extends NodeType>(
-    data: FunctionDefSpec<NODETYPE>,
+export default function defineFunction<
+    NODETYPE extends NodeType,
+    const NAMES extends readonly string[],
+>(
+    data: FunctionDefSpec<NODETYPE, NAMES>,
 ) {
     const {type, names, htmlBuilder, mathmlBuilder} = data;
     for (let i = 0; i < names.length; ++i) {

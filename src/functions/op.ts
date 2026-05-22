@@ -203,7 +203,7 @@ defineFunction({
     numArgs: 0,
 
     handler: ({parser, funcName}, args) => {
-        let fName = funcName;
+        let fName: string = funcName;
         if (fName.length === 1) {
             fName = singleCharBigOps[fName];
         }
@@ -307,7 +307,7 @@ defineFunction({
     allowedInArgument: true,
 
     handler({parser, funcName}) {
-        let fName = funcName;
+        let fName: string = funcName;
         if (fName.length === 1) {
             fName = singleCharIntegrals[fName];
         }
