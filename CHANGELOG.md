@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+# [0.17.0](https://github.com/KaTeX/KaTeX/compare/v0.16.47...v0.17.0) (2026-05-22)
+
+
+### Performance Improvements
+
+* simplify `defineFunction` to avoid destructuring, improve typing ([#4222](https://github.com/KaTeX/KaTeX/issues/4222)) ([fb604e6](https://github.com/KaTeX/KaTeX/commit/fb604e6ba63e99809e242d37f9c8359209d55431))
+
+
+### BREAKING CHANGES
+
+* The internal API for `__defineFunction` changed: you should no longer wrap properties in `props`.
+
 ## [0.16.47](https://github.com/KaTeX/KaTeX/compare/v0.16.46...v0.16.47) (2026-05-16)
 
 
