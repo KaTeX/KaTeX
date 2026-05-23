@@ -127,7 +127,7 @@ infrastructure. There are two ways to get a release:
 
 Each release ships pre-built `katex.tar.gz` and `katex.zip` archives.
 Download one from the [KaTeX releases page](https://github.com/KaTeX/KaTeX/releases) —
-look under **Assets** for `katex.tar.gz` or `katex.zip`, **not** the
+look under **Assets** for `katex.tar.gz` or `katex.zip`, *not* the
 auto-generated "Source code" download, which only contains the repo
 source tree without the built files.
 
@@ -173,7 +173,7 @@ yarn add katex
 After installing, the files you want for hosting live under
 `node_modules/katex/dist/` — same layout as the `katex/` folder above.
 
-> The npm package also ships the un-built source (`node_modules/katex/src/`,
+> The npm package also ships the unbuilt TypeScript source (`node_modules/katex/src/`,
 > `node_modules/katex/contrib/`, `node_modules/katex/katex.ts`) for
 > bundler users. Do not link those from your HTML — only the files
 > under `dist/` are meant to be served as-is.
@@ -223,7 +223,7 @@ updating is a drop-in replace. To update:
 1. Get the new release files:
    - **Archive:** download a fresh `katex.tar.gz` (or `katex.zip`) and
      extract it.
-   - **npm:** run `npm update katex` (or `yarn upgrade katex`). The new
+   - **npm:** run `npm install katex@latest` (or `yarn upgrade katex@latest`). The new
      files appear in `node_modules/katex/dist/`.
 2. Replace the `katex/` directory on your web server with the new
    files — extracted from the archive, or copied from
