@@ -29,7 +29,7 @@ for browserTag in "firefox:128.0-20260222" "chromium:145.0-20260222"; do
     echo "Container ${container:0:12} started"
 
     echo "Creating screenshots for ${browser}..."
-    yarn node "$(dirname "$0")"/screenshotter.js \
+    node "$(dirname "$0")"/screenshotter.js \
             --browser="${browser}" --container="${container}" \
             "$@"
     rc=$?

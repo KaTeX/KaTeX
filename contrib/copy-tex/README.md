@@ -24,7 +24,7 @@ included in the page.
 (Note that, as of KaTeX 0.16.0, there is no longer a corresponding CSS file.)
 
 See [index.html](index.html) for an example.
-(To run this example from a clone of the repository, run `yarn start`
+(To run this example from a clone of the repository, run `pnpm start`
 in the root KaTeX directory, and then visit
 http://localhost:7936/contrib/copy-tex/index.html
 with your web browser.)

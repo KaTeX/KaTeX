@@ -11,10 +11,5 @@
     "fs-extra": "^10.0.0",
     "netlify": "^8.0.0",
     "react": "^16.8.4"
-  },
-  "dependenciesMeta": {
-    "docusaurus": {
-      "unplugged": true
-    }
   }
 }

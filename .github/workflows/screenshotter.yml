@@ -40,13 +40,11 @@ jobs:
       - name: Use Node.js 24.14.1
         uses: actions/setup-node@v6
         with:
-          node-version: '24.14.1' # Avoid Node 24.15.0 Yarn PnP EBADF regression.
-          cache: yarn
+          node-version: '24'
+          cache: pnpm
 
       - name: Install dependencies
-        run: yarn --immutable
-        env:
-          YARN_ENABLE_SCRIPTS: 0
+        run: pnpm install --frozen-lockfile
 
       - name: Install ImageMagick
         if: matrix.browser == 'safari'
@@ -73,13 +71,13 @@ jobs:
             -w /code \
             -e CI=true \
             node:24 \
-            /bin/bash -c 'corepack enable && yarn node dockers/screenshotter/screenshotter.js -b ${{ matrix.browser }} --verify --diff --new --katex-ip $HOSTNAME --selenium-ip selenium'
+            /bin/bash -c 'corepack enable && node dockers/screenshotter/screenshotter.js -b ${{ matrix.browser }} --verify --diff --new --katex-ip $HOSTNAME --selenium-ip selenium'
           echo "::$TOKEN::"
         timeout-minutes: 10
 
       - name: Run screenshotter (macOS)
         if: matrix.browser == 'safari'
-        run: yarn node dockers/screenshotter/screenshotter.js -b safari --verify --diff --new --wait 0.3
+        run: node dockers/screenshotter/screenshotter.js -b safari --verify --diff --new --wait 0.3
         timeout-minutes: 10
 
       - name: Print Selenium Docker logs

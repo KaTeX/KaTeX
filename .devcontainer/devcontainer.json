@@ -1,13 +1,13 @@
 {
   "name": "KaTeX Codespaces",
-  "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:14",
-  "extensions": [
-    "dbaeumer.vscode-eslint",
-    "stylelint.vscode-stylelint",
-    "arcanis.vscode-zipfs"
-  ],
-  "settings": { 
-    "terminal.integrated.shell.linux": "/bin/bash"
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "stylelint.vscode-stylelint"
+      ]
+    }
   },
-  "postCreateCommand": "CI=true yarn install"
+  "postCreateCommand": "corepack enable && pnpm install",
 }
