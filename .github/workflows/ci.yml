@@ -56,8 +56,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     environment: release
-    concurrency: release
     needs: test
+    concurrency:
+      group: release
+      cancel-in-progress: false
 
     steps:
     - uses: actions/checkout@v6
