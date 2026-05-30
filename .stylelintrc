@@ -1,8 +1,28 @@
 {
     "extends": "stylelint-config-standard",
+    "plugins": [
+        "stylelint-scss",
+        "@stylistic/stylelint-plugin"
+    ],
     "rules": {
-        "indentation": 4,
+        "at-rule-no-vendor-prefix": null,
+        "font-family-name-quotes": "always-where-required",
+        "number-max-precision": 6,
+        "property-no-vendor-prefix": null,
+        "selector-class-pattern": null,
+        "value-no-vendor-prefix": null,
+        "value-keyword-case": ["lower", {"camelCaseSvgKeywords": true}],
+        "at-rule-no-unknown": null,
+        "scss/at-rule-no-unknown": true,
+        "annotation-no-unknown": null,
+        "@stylistic/indentation": 4
     },
+    "overrides": [
+      {
+        "files": ["**/*.scss"],
+        "customSyntax": "postcss-scss"
+      }
+    ],
     "ignoreFiles": [
         "**/*.min.css"
     ]

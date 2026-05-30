@@ -1,7 +1,7 @@
 #!/bin/sh
 # Generates fontMetricsData.js
 PERL="perl"
-PYTHON=`python2 --version >/dev/null 2>&1 && echo python2 || echo python`
+PYTHON="python3"
 
-cd src/metrics
+cd "$(dirname "$0")/../../src/metrics"
 $PERL ./mapping.pl | $PYTHON ./extract_tfms.py | $PYTHON ./extract_ttfs.py | $PYTHON ./format_json.py --width > ../fontMetricsData.js

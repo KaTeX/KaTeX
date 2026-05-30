@@ -17,7 +17,6 @@ fs.copySync('../dist/katex.min.css', 'static/static/katex.min.css');
 fs.copySync('../dist/fonts', 'static/static/fonts');
 
 // copy local built KaTeX extensions
-fs.copySync('../dist/contrib/copy-tex.min.css', 'static/static/copy-tex.min.css');
 fs.copySync('../dist/contrib/copy-tex.min.js', 'static/static/copy-tex.min.js');
 fs.copySync('../dist/contrib/mhchem.min.js', 'static/static/mhchem.min.js');
 

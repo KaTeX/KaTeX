@@ -15,7 +15,8 @@ scripts.forEach(function(script) {
     try {
         katex.render(script.text, katexElement, {displayMode: display});
     } catch (err) {
-        //console.error(err); linter doesn't like this
+        // eslint-disable-next-line no-console
+        console.error(err);
         katexElement.textContent = script.text;
     }
     script.parentNode.replaceChild(katexElement, script);

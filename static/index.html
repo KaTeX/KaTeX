@@ -1,17 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>KaTeX Test</title>
         <script defer src="/main.js" type="text/javascript"></script>
     </head>
     <body>
-        <textarea id="input" rows="5">
+        <main>
+            <div id="options-panel">
+                <div id="options-toolbar">
+                    <button
+                        id="toggle-options"
+                        type="button"
+                        aria-controls="options-container"
+                        aria-expanded="true"
+                        aria-label="Hide options"
+                    >
+                        <img src="gear.svg" alt="">
+                    </button>
+                    <h2 id="options-heading">KaTeX options</h2>
+                </div>
+                <div id="options-container">
+                    <div class="option-row option-row-check">
+                        <label for="displayMode">displayMode</label>
+                        <input type="checkbox" id="displayMode" checked>
+                    </div>
+                    <div class="option-row option-row-check">
+                        <label for="leqno">leqno</label>
+                        <input type="checkbox" id="leqno">
+                    </div>
+                    <div class="option-row option-row-check">
+                        <label for="fleqn">fleqn</label>
+                        <input type="checkbox" id="fleqn">
+                    </div>
+                    <div class="option-row option-row-check">
+                        <label for="throwOnError">throwOnError</label>
+                        <input type="checkbox" id="throwOnError" checked>
+                    </div>
+                    <div class="option-row option-row-check">
+                        <label for="trust">trust</label>
+                        <input type="checkbox" id="trust" checked>
+                    </div>
+                    <div class="option-row option-row-stacked">
+                        <label for="strict">strict</label>
+                        <select id="strict">
+                            <option value="error">error</option>
+                            <option value="warn" selected>warn</option>
+                            <option value="ignore">ignore</option>
+                        </select>
+                    </div>
+                    <div class="option-row option-row-stacked">
+                        <label for="output">output</label>
+                        <select id="output">
+                            <option value="htmlAndMathml" selected>
+                                htmlAndMathml
+                            </option>
+                            <option value="html">html</option>
+                            <option value="mathml">mathml</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="macros">macros</label>
+                        <textarea id="macros" placeholder="JSON">
+{
+    "\\f": "#1f(#2)"
+}</textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="before">before</label>
+                        <textarea
+                            id="before"
+                            placeholder="Lorem ipsum"
+                        ></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="after">after</label>
+                        <textarea
+                            id="after"
+                            placeholder="Lorem ipsum"
+                        ></textarea>
+                    </div>
+                </div>
+            </div>
+            <div
+                id="sidebar-resizer"
+                role="separator"
+                aria-label="Resize options panel"
+                aria-orientation="vertical"
+                tabindex="0"
+            ></div>
+            <textarea id="input" rows="5">
 \left( x \right) \left( x^2 \right) % comment
 \left( \frac{a}{b} \right) \left( \frac{a^2}{b} \right)
 \left( \dfrac{a}{b} \right) \left( \dfrac{a^2}{b} \right)
-        </textarea>
-        <div id="math"></div>
-        <input id="permalink" type="button" value="permalink">
+</textarea>
+            <div id="math-container">
+                <div id="render-error" role="alert" aria-live="polite"></div>
+                <span id="before-content"></span>
+                <span id="math"></span>
+                <span id="after-content"></span>
+            </div>
+        </main>
     </body>
 </html>

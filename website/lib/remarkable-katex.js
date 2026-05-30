@@ -1,6 +1,6 @@
 // https://github.com/bradhowes/remarkable-katex/blob/master/index.js
 // Modified here to require("../..") instead of require("katex")
-// and add options {trust: true, strict: false}.
+// and add options {trust: true, strict: false, macros}.
 
 /* MIT License
 
@@ -25,63 +25,70 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+"use strict";
+
+const macros = {};  // allow sharing macros within a page
+
 /**
  * Plugin for Remarkable Markdown processor which transforms $..$ and $$..$$ sequences into math HTML using the
  * Katex package.
  */
-module.exports = (md, options) => {
+const rkatex = (md, options) => {
+  const backslash = '\\';
   const dollar = '$';
   const opts = options || {};
   const delimiter = opts.delimiter || dollar;
-  if (delimiter.length !== 1) throw 'invalid delimiter';
-  const katex = require("../../");
+  if (delimiter.length !== 1) { throw new Error('invalid delimiter'); }
+
+  const katex = require("../..");
 
   /**
    * Render the contents as KaTeX
    */
   const renderKatex = (source, displayMode) => katex.renderToString(source,
-    {displayMode: displayMode, throwOnError: false,
-     trust: true, strict: false});
+                                                                    {displayMode: displayMode,
+                                                                     throwOnError: false,
+                                                                     trust: true, strict: false, macros});
 
   /**
    * Parse '$$' as a block. Based off of similar method in remarkable.
    */
   const parseBlockKatex = (state, startLine, endLine) => {
-    let haveEndMarker = false,
-        pos = state.bMarks[startLine] + state.tShift[startLine],
-        max = state.eMarks[startLine];
+    let haveEndMarker = false;
+    let pos = state.bMarks[startLine] + state.tShift[startLine];
+    let max = state.eMarks[startLine];
 
-    if (pos + 1 > max) return false;
+    if (pos + 1 > max) { return false; }
 
     const marker = state.src.charAt(pos);
-    if (marker !== delimiter) return false;
+    if (marker !== delimiter) { return false; }
 
     // scan marker length
-    const mem = pos;
+    let mem = pos;
     pos = state.skipChars(pos, marker);
     let len = pos - mem;
 
-    if (len != 2) return false;
+    if (len !== 2) { return false; }
 
     // search end of block
     let nextLine = startLine;
 
     for (;;) {
       ++nextLine;
-      if (nextLine >= endLine) break;
+      if (nextLine >= endLine) { break; }
 
       pos = mem = state.bMarks[nextLine] + state.tShift[nextLine];
       max = state.eMarks[nextLine];
 
-      if (pos < max && state.tShift[nextLine] < state.blkIndent) break;
-      if (state.src.charAt(pos) !== delimiter) continue;
-      if (state.tShift[nextLine] - state.blkIndent >= 4) continue;
+      if (pos < max && state.tShift[nextLine] < state.blkIndent) { break; }
+      if (state.src.charAt(pos) !== delimiter) { continue; }
+      if (state.tShift[nextLine] - state.blkIndent >= 4) { continue; }
 
       pos = state.skipChars(pos, marker);
-      if (pos - mem < len) continue;
+      if (pos - mem < len) { continue; }
 
       pos = state.skipSpaces(pos);
-      if (pos < max) continue;
+      if (pos < max) { continue; }
 
       haveEndMarker = true;
       break;
@@ -103,37 +110,35 @@ module.exports = (md, options) => {
    * Look for '$' or '$$' spans in Markdown text. Based off of the 'fenced' parser in remarkable.
    */
   const parseInlineKatex = (state, silent) => {
-    const start = state.pos, max = state.posMax;
-    let pos = start, marker;
+    const start = state.pos;
+    const max = state.posMax;
+    let pos = start;
 
     // Unexpected starting character
-    if (state.src.charAt(pos) !== delimiter) return false;
+    if (state.src.charAt(pos) !== delimiter) { return false; }
 
     ++pos;
-    while (pos < max && state.src.charAt(pos) === delimiter) ++pos;
+    while (pos < max && state.src.charAt(pos) === delimiter) { ++pos; }
 
     // Capture the length of the starting delimiter -- closing one must match in size
-    marker = state.src.slice(start, pos);
-    if (marker.length > 2) return false;
+    const marker = state.src.slice(start, pos);
+    if (marker.length > 2) { return false; }
 
-    let spanStart = pos;
+    const spanStart = pos;
     let escapedDepth = 0;
     while (pos < max) {
-      let char = state.src.charAt(pos);
-      if (char === '{') {
+      const char = state.src.charAt(pos);
+      if (char === '{' && (pos == 0 || state.src.charAt(pos - 1) != backslash)) {
         escapedDepth += 1;
-      }
-      else if (char === '}') {
+      } else if (char === '}' && (pos == 0 || state.src.charAt(pos - 1) != backslash)) {
         escapedDepth -= 1;
-        if (escapedDepth < 0) return false;
-      }
-      else if (char === delimiter && escapedDepth == 0) {
-        let matchStart = pos;
+        if (escapedDepth < 0) { return false; }
+      } else if (char === delimiter && escapedDepth === 0) {
+        const matchStart = pos;
         let matchEnd = pos + 1;
-        while (matchEnd < max && state.src.charAt(matchEnd) === delimiter)
-          ++matchEnd;
+        while (matchEnd < max && state.src.charAt(matchEnd) === delimiter) { ++matchEnd; }
 
-        if (matchEnd - matchStart == marker.length) {
+        if (matchEnd - matchStart === marker.length) {
           if (!silent) {
             const content = state.src.slice(spanStart, matchStart)
                 .replace(/[ \n]+/g, ' ')
@@ -147,7 +152,7 @@ module.exports = (md, options) => {
       pos += 1;
     }
 
-    if (! silent) state.pending += marker;
+    if (!silent) { state.pending += marker; }
     state.pos += marker.length;
 
     return true;
@@ -158,3 +163,5 @@ module.exports = (md, options) => {
   md.renderer.rules.katex = (tokens, idx) => renderKatex(tokens[idx].content, tokens[idx].block);
   md.renderer.rules.katex.delimiter = delimiter;
 };
+
+module.exports = rkatex;

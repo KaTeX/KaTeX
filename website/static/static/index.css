@@ -1,5 +1,5 @@
 body {
-    font: 16px/1.4 "Lato", "Helvetica Neue", Arial, Helvetica, sans-serif;
+    font: 16px/1.4 Lato, Helvetica Neue, Arial, Helvetica, sans-serif;
     margin: 0;
 }
 
@@ -76,21 +76,18 @@ textarea {
 }
 
 .header .cta a:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgb(255 255 255 / 10%);
 }
 
 .demo {
-    display: -ms-flexbox;
     display: flex;
-    -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgb(0 0 0 / 30%);
     font-size: 22px;
     margin: 50px 0 0;
 }
 
 .maximized .demo {
-    -ms-flex-direction: column;
     flex-direction: column;
     position: fixed;
     top: 0;
@@ -117,9 +114,7 @@ textarea {
 
 .demo-left {
     background: #444;
-    display: -ms-flexbox;
     display: flex;
-    -ms-flex-direction: column;
     flex-direction: column;
 }
 
@@ -130,7 +125,6 @@ textarea {
     color: #fff;
     font: 14px Menlo, monospace;
     padding: 10px;
-    -ms-flex-positive: 1;
     flex-grow: 1;
 }
 
@@ -158,7 +152,7 @@ textarea {
 
 .main {
     background: #fff2e7;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgb(0 0 0 / 30%);
     min-height: 400px;
     position: relative;
     padding: 30px 15px;
@@ -209,10 +203,10 @@ textarea {
 }
 
 .main .comparison {
-    background-image: url(../img/katex-comparison.gif);
+    background-image: url("../img/katex-comparison.gif");
     background-position: 50% 50%;
     background-size: cover;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgb(0 0 0 / 30%);
     padding-top: 42%;
     width: 100%;
 }
@@ -228,7 +222,7 @@ textarea {
 }
 
 .main .cta a:hover {
-    background: rgba(50, 152, 148, 0.1);
+    background: rgb(50 152 148 / 10%);
 }
 
 .footer {
@@ -267,7 +261,7 @@ textarea {
 
 #options-panel {
     background: #fafafa;
-    box-shadow: 3px 0 3px rgba(50, 50, 50, 0.3);
+    box-shadow: 3px 0 3px rgb(50 50 50 / 30%);
     position: fixed;
     top: 0;
     bottom: 0;
@@ -294,17 +288,15 @@ textarea {
     height: 150px;
 }
 
-@media only screen and (min-width: 736px) {
+@media only screen and (width >= 736px) {
     .demo-left,
     .demo-right {
-        -ms-flex-preferred-size: 0;
         flex-basis: 0;
-        -ms-flex-positive: 1;
         flex-grow: 1;
     }
 }
 
-@media only screen and (max-width: 735px) {
+@media only screen and (width <= 735px) {
     .cta a {
         display: block;
         margin-bottom: 10px;

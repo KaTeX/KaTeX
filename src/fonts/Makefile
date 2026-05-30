@@ -42,7 +42,7 @@ config: $(CUSTOM).pl
 
 blacker: $(MFTRACE_MODIFIED)
 $(MFTRACE_MODIFIED):
-	$(PERL) makeBlacker 15 # values between 10 and 30 seem best
+	$(PERL) -I. makeBlacker 15 # values between 10 and 30 seem best
 
 pfa: $(MFTRACE_MODIFIED)
 	@echo "cmr10"
@@ -109,7 +109,7 @@ pfa: $(MFTRACE_MODIFIED)
 ff: pfa
 	mkdir -p ff otf
 	rm -f ff/* otf/*
-	$(PERL) makeFF
+	$(PERL) -I. makeFF
 
 .PHONY: fonts
 fonts: ff
@@ -123,9 +123,9 @@ fonts: ff
 		\
 		echo "Hinting $$file"; \
 		if echo "$$file" | $(GREP) -q -e "Size[1-4]" -e "Typewriter"; then \
-			$(TTFAUTOHINT) --windows-compatibility --symbol ttf/$$file.ttf ttf/$$file.ttf.hinted; \
+			$(TTFAUTOHINT) -f none -S --windows-compatibility --symbol ttf/$$file.ttf ttf/$$file.ttf.hinted; \
 		else \
-			$(TTFAUTOHINT) --windows-compatibility ttf/$$file.ttf ttf/$$file.ttf.hinted; \
+			$(TTFAUTOHINT) -f none -S --windows-compatibility ttf/$$file.ttf ttf/$$file.ttf.hinted; \
 		fi; \
 		mv ttf/$$file.ttf.hinted ttf/$$file.ttf; \
 		\

@@ -1,8 +1,0 @@
-**/node_modules/*
-**/flow-typed/*
-dist/*
-website/build/*
-website/lib/remarkable-katex.js
-**/*.min.js
-contrib/mhchem/*
-coverage/*

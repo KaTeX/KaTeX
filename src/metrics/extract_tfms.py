@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import collections
 import json
@@ -74,8 +74,8 @@ def main():
 
     families = collections.defaultdict(dict)
 
-    for family, chars in mapping.iteritems():
-        for char, char_data in chars.iteritems():
+    for family, chars in mapping.items():
+        for char, char_data in chars.items():
             char_num = int(char)
 
             font = char_data['font']

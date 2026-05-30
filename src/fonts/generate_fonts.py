@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import sys
 import os
@@ -9,19 +9,18 @@ from fontTools.misc.timeTools import timestampNow
 sfnt.USE_ZOPFLI = True
 
 if len(sys.argv) < 2:
-    print "Usage: %s <font file>" % sys.argv[0]
+    print("Usage: %s <font file>" % sys.argv[0])
     sys.exit(1)
 
 font_file = sys.argv[1]
 font_name = os.path.splitext(os.path.basename(font_file))[0]
 
-# now or SOURCE_DATE_EPOCH, if present
-timestamp = timestampNow()
 
 font = TTFont(font_file, recalcBBoxes=False, recalcTimestamp=False)
 
-font['head'].created = timestamp
-font['head'].modified = timestamp
+# fix timestamp to the epoch
+font['head'].created = 0
+font['head'].modified = 0
 
 # remove fontforge timestamps
 if 'FFTM' in font:
@@ -35,8 +34,6 @@ if 'GDEF' in font:
 # https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6cmap.html
 font['name'].names = [record for record in font['name'].names if record.platformID != 1]
 font['cmap'].tables = [table for table in font['cmap'].tables if table.platformID != 1]
-
-font['name'].setName(unicode('Version ' + str(timestamp)), 5, 3, 1, 1033)
 
 # fix OS/2 and hhea metrics
 glyf = font['glyf']

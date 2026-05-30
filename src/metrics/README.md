@@ -17,7 +17,7 @@ There are several requirements for generating the metrics used by KaTeX.
 
 Once you have these things, run the following command from the root directory:
 
-    sh ./docker/fonts/buildMetrics.sh
+    sh ./dockers/fonts/buildMetrics.sh
 
 which should generate new metrics and place them into `fontMetricsData.json`.
 You're done!

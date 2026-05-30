@@ -2,33 +2,28 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v6
       with:
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v2
-      with:
-        node-version: '12'
+    - name: Enable Corepack
+      run: corepack enable
 
-    - name: Cache dependencies
-      uses: actions/cache@v2
+    - name: Use Node.js 24.14.1
+      uses: actions/setup-node@v6
       with:
-        path: |
-          .yarn/cache
-          .pnp.js
-        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
-        restore-keys: |
-          yarn-deps-v1-
+        node-version: '24.14.1' # Avoid Node 24.15.0 Yarn PnP EBADF regression.
+        cache: yarn
 
     - name: Install dependencies
       run: yarn --immutable
@@ -38,15 +33,21 @@ jobs:
     - name: Lint code
       run: yarn test:lint
 
-    - name: Run Flow
-      run: yarn test:flow
+    - name: Run TypeScript typecheck
+      run: yarn test:ts
       if: always()
 
     - name: Run Jest tests
       run: yarn test:jest --coverage
       if: always()
 
-    - uses: codecov/codecov-action@v1
+    - name: Build
+      run: yarn build
+
+    - name: Verify built bundle
+      run: yarn test:build
+
+    - uses: codecov/codecov-action@v6
       with:
         directory: ./coverage/
       timeout-minutes: 3
@@ -59,25 +60,23 @@ jobs:
     needs: test
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v6
       with:
         persist-credentials: false
         fetch-depth: 0
 
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v2
-      with:
-        node-version: '12'
+    - name: Enable Corepack
+      run: corepack enable
 
-    - name: Cache dependencies
-      uses: actions/cache@v2
+    - name: Use Node.js 24.14.1
+      uses: actions/setup-node@v6
       with:
-        path: |
-          .yarn/cache
-          .pnp.js
-        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
-        restore-keys: |
-          yarn-deps-v1-
+        node-version: '24.14.1' # Avoid Node 24.15.0 Yarn PnP EBADF regression.
+
+    - name: Install dependencies
+      run: yarn --immutable
+      env:
+        YARN_ENABLE_SCRIPTS: 0 # disable postinstall scripts
     - name: Run semantic-release
       run: yarn run semantic-release --debug
       env:

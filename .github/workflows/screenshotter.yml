@@ -2,93 +2,104 @@ name: Screenshotter
 
 on:
   push:
-    branches: [ master ]
-  pull_request_target:
-    branches: [ master ]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   screenshotter:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         browser: [chrome, firefox, safari]
         include:
-        - browser: chrome
-          image: selenium/standalone-chrome:3.141.59-20210311
-        - browser: firefox
-          image: selenium/standalone-firefox:3.141.59-20210311
-        - browser: safari
-          image: ylemkimon/selenium-proxy:latest
-          browserstack:
-            browserName: safari
-            browser_version: 13.1
-            os: OS X
-            os_version: Catalina
+          - browser: chrome
+            os: ubuntu-latest
+            image: selenium/standalone-chromium:145.0-20260222
+          - browser: firefox
+            os: ubuntu-latest
+            image: selenium/standalone-firefox:128.0-20260222
+          - browser: safari
+            os: macos-26
+            image: '' # no Selenium container needed on macOS
       fail-fast: false
+    runs-on: ${{ matrix.os }}
     services:
       selenium:
         image: ${{ matrix.image }}
-        env:
-          # secrets are not supported in matrix, so put it here and limit to browserstack job
-          BROWSERSTACK_USER: ${{ matrix.browserstack && secrets.BROWSERSTACK_USER }}
-          BROWSERSTACK_ACCESS_KEY: ${{ matrix.browserstack && secrets.BROWSERSTACK_ACCESS_KEY }}
+        options: --shm-size=2g
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        ref: ${{ github.event_name == 'pull_request_target' && format('refs/pull/{0}/merge', github.event.pull_request.number) || '' }}
-        persist-credentials: false # do not persist credentials
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
-    - name: Use Node.js 14
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
+      - name: Enable Corepack
+        run: corepack enable
 
-    - name: Restore cached dependencies # restore only to prevent cache poisoning
-      uses: ylemkimon/cache-restore@v2
-      with:
-        path: |
-          .yarn/cache
-          .pnp.js
-        key: yarn-deps-v1-${{ hashFiles('yarn.lock') }}
-        restore-keys: |
-          yarn-deps-v1-
+      - name: Use Node.js 24.14.1
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24.14.1' # Avoid Node 24.15.0 Yarn PnP EBADF regression.
+          cache: yarn
 
-    - name: Run screenshotter
-      run: |
-        TOKEN="$(cat /proc/sys/kernel/random/uuid | sha256sum | head -c 64)"
-        echo "::add-mask::$TOKEN"
-        echo "TOKEN=$TOKEN" >> $GITHUB_ENV
-        echo "::stop-commands::$TOKEN" # stop processing workflow commands
+      - name: Install dependencies
+        run: yarn --immutable
+        env:
+          YARN_ENABLE_SCRIPTS: 0
 
-        # run in Docker container
-        # mount .git readonly to prevent modification
-        docker run --rm \
-          --network ${{ job.services.selenium.network }} \
-          -v "$PWD:/code" \
-          -v "$PWD/.git:/code/.git:ro" \
-          -w /code \
-          -e YARN_ENABLE_SCRIPTS=0 \
-          -e CI=true \
-          node:14 \
-          /bin/bash -c 'yarn --immutable && yarn node dockers/screenshotter/screenshotter.js -b ${{ matrix.browser }} --verify --diff --new --katex-ip $HOSTNAME ${{ matrix.browserstack && format('--selenium-proxy http://selenium:4445/build --browserstack --selenium-capabilities ''\''''{0}''\', toJson(matrix.browserstack)) || '--selenium-ip selenium' }}'
-        echo "::$TOKEN::"
-      timeout-minutes: 10
+      - name: Install ImageMagick
+        if: matrix.browser == 'safari'
+        run: brew install imagemagick
 
-    - name: Print Selenium Docker logs
-      if: always()
-      run: |
-        echo "::stop-commands::$TOKEN" # stop processing workflow commands
-        docker logs ${{ job.services.selenium.id }}
-        echo "::$TOKEN::"
+      - name: Enable SafariDriver
+        if: matrix.browser == 'safari'
+        run: sudo safaridriver --enable
 
-    - uses: actions/upload-artifact@v2
-      if: failure()
-      with:
-        name: new-${{ matrix.browser }}
-        path: test/screenshotter/new
-    - uses: actions/upload-artifact@v2
-      if: failure()
-      with:
-        name: diff-${{ matrix.browser }}
-        path: test/screenshotter/diff
+      - name: Run screenshotter (Chromium & Firefox)
+        if: matrix.browser != 'safari'
+        run: |
+          TOKEN="$(cat /proc/sys/kernel/random/uuid | sha256sum | head -c 64)"
+          echo "::add-mask::$TOKEN"
+          echo "TOKEN=$TOKEN" >> $GITHUB_ENV
+          echo "::stop-commands::$TOKEN"
+
+          # run in Docker container
+          # mount .git readonly to prevent modification
+          docker run --rm \
+            --network ${{ job.services.selenium.network }} \
+            -v "$PWD:/code" \
+            -v "$PWD/.git:/code/.git:ro" \
+            -w /code \
+            -e CI=true \
+            node:24 \
+            /bin/bash -c 'corepack enable && yarn node dockers/screenshotter/screenshotter.js -b ${{ matrix.browser }} --verify --diff --new --katex-ip $HOSTNAME --selenium-ip selenium'
+          echo "::$TOKEN::"
+        timeout-minutes: 10
+
+      - name: Run screenshotter (macOS)
+        if: matrix.browser == 'safari'
+        run: yarn node dockers/screenshotter/screenshotter.js -b safari --verify --diff --new --wait 0.3
+        timeout-minutes: 10
+
+      - name: Print Selenium Docker logs
+        if: always() && matrix.browser != 'safari'
+        run: |
+          echo "::stop-commands::$TOKEN"
+          docker logs ${{ job.services.selenium.id }}
+          echo "::$TOKEN::"
+
+      - name: Print SafariDriver logs
+        if: always() && matrix.browser == 'safari'
+        run: log show --predicate 'process == "safaridriver" OR process == "Safari"' --last 10m --style compact
+
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: new-${{ matrix.browser }}
+          path: test/screenshotter/new
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: diff-${{ matrix.browser }}
+          path: test/screenshotter/diff

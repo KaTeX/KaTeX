@@ -18,4 +18,10 @@ with untrusted inputs; refer to [Options](options.md) for more details.
 The error message thrown by KaTeX may contain unescaped LaTeX source code.
 See [Handling Errors](error.md) for more details.
 
-> If you discovered a security issue, please let us know via https://hackerone.com/khanacademy
+## Reporting a Vulnerability
+
+If you have discovered a potential security issue with KaTeX:
+
+1. Please report the issue privately by [opening a GitHub security advisory](https://github.com/KaTeX/KaTeX/security) or by emailing [katex-security@mit.edu](mailto:katex-security@mit.edu).
+2. We will evaluate the vulnerability and, if necessary, release a fix and security advisory. We will credit you in the report, and invite you to collaborate on the solution and/or its evaluation.
+3. Please do not disclose the vulnerability publicly until after a fix has been released.

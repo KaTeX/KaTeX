@@ -1,40 +1,41 @@
-// @flow
 const path = require('path');
-// $FlowIgnore
 const TerserPlugin = require('terser-webpack-plugin');
-// $FlowIgnore
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
 const {version} = require("./package.json");
 
-// $FlowIgnore
-const browserslist = require('browserslist')();
-// $FlowIgnore
+const browserslist = /** @type {string[]} */ (require('browserslist')());
 const caniuse = require('caniuse-lite');
 
 // from the least supported to the most supported
 const fonts = ['woff2', 'woff', 'ttf'];
 
-/*::
-type Target = {|
-    name: string, // the name of output JS/CSS
-    entry: string, // the path to the entry point
-    library?: string // the name of the exported module
-|};
-*/
+/**
+ * @typedef {{
+ *   name: string,
+ *   entry: string,
+ *   library?: string,
+ * }} Target
+ */
 
 /**
  * List of targets to build
  */
-const targets /*: Array<Target> */ = [
+/** @type {Target[]} */
+const targets = [
     {
         name: 'katex',
         entry: './katex.webpack.js',
         library: 'katex',
     },
     {
+        name: 'katex-swap',
+        entry: './src/styles/katex-swap.scss',
+    },
+    {
         name: 'contrib/auto-render',
-        entry: './contrib/auto-render/auto-render.js',
+        entry: './contrib/auto-render/auto-render.ts',
         library: 'renderMathInElement',
     },
     {
@@ -43,7 +44,7 @@ const targets /*: Array<Target> */ = [
     },
     {
         name: 'contrib/copy-tex',
-        entry: './contrib/copy-tex/copy-tex.webpack.js',
+        entry: './contrib/copy-tex/copy-tex.ts',
     },
     {
         name: 'contrib/mathtex-script-type',
@@ -51,38 +52,40 @@ const targets /*: Array<Target> */ = [
     },
     {
         name: 'contrib/render-a11y-string',
-        entry: './contrib/render-a11y-string/render-a11y-string.js',
+        entry: './contrib/render-a11y-string/render-a11y-string.ts',
     },
 ];
 
 /**
  * Create a webpack config for given target
+ * @param {Target} target
+ * @param {boolean} dev
+ * @param {boolean} minimize
+ * @returns {object}
  */
-function createConfig(target /*: Target */, dev /*: boolean */,
-        minimize /*: boolean */) /*: Object */ {
-    const cssLoaders /*: Array<Object> */ = [{
+function createConfig(target, dev, minimize) {
+    /** @type {Array<any>} */
+    const cssLoaders = [{
         loader: 'css-loader',
         options: {importLoaders: 1},
     }, {
         loader: 'postcss-loader',
-        // $FlowIgnore
         options: {postcssOptions: {plugins: [require('postcss-preset-env')()]}},
     }];
     if (minimize) {
-        // $FlowIgnore
         cssLoaders[1].options.postcssOptions.plugins.push(require('cssnano')());
     }
 
-    const lessOptions = {modifyVars: {
-        version: `"${version}"`,
-    }};
+    let sassVariables = `$version: "${version}";\n`;
 
     // use only necessary fonts, overridable by environment variables
     let isCovered = false;
     for (const font of fonts) {
-        const override = process.env[`USE_${font.toUpperCase()}`];
+        const override = /** @type {string | undefined} */
+            (process.env[`USE_${font.toUpperCase()}`]);
+        /** @type {boolean} */
         const useFont = override === "true" || override !== "false" && !isCovered;
-        lessOptions.modifyVars[`use-${font}`] = useFont;
+        sassVariables += (`$use-${font}: ${useFont.toString()};\n`);
 
         const support = caniuse.feature(caniuse.features[font]).stats;
         isCovered = isCovered || useFont && browserslist.every(browser => {
@@ -117,6 +120,11 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                     use: 'babel-loader',
                 },
                 {
+                    test: /\.ts?$/,
+                    exclude: /node_modules/,
+                    use: 'babel-loader',
+                },
+                {
                     test: /\.css$/,
                     use: [
                         dev ? 'style-loader' : MiniCssExtractPlugin.loader,
@@ -124,29 +132,36 @@ function createConfig(target /*: Target */, dev /*: boolean */,
                     ],
                 },
                 {
-                    test: /\.less$/,
+                    test: /\.scss$/,
                     use: [
                         dev ? 'style-loader' : MiniCssExtractPlugin.loader,
                         ...cssLoaders,
                         {
-                            loader: 'less-loader',
-                            options: {lessOptions},
+                            loader: 'sass-loader',
+                            options: {
+                                sassOptions: {
+                                    style: 'expanded',
+                                },
+                                additionalData: sassVariables,
+                            },
                         },
                     ],
                 },
                 {
                     test: /\.(ttf|woff|woff2)$/,
-                    use: [{
-                        loader: 'file-loader',
-                        options: {
-                            name: 'fonts/[name].[ext]',
-                        },
-                    }],
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'fonts/[name][ext][query]',
+                    },
                 },
             ],
         },
+        resolve: {
+            extensions: ['.ts', '.js'],
+        },
         externals: 'katex',
         plugins: [
+            !dev && new RemoveEmptyScriptsPlugin(),
             !dev && new MiniCssExtractPlugin({
                 filename: minimize ? '[name].min.css' : '[name].css',
             }),

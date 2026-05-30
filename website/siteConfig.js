@@ -16,6 +16,11 @@ const users = [
         infoLink: 'https://www.khanacademy.org/',
     },
     {
+        caption: 'BearBei 貝貝',
+        image: 'https://bearbei.com/pic/3D/%E8%B2%9D%E8%B2%9D.png',
+        infoLink: 'https://bearbei.com',
+    },
+    {
         caption: 'CindyJS',
         image: 'https://cindyjs.org/assets/img/logo.png',
         infoLink: 'https://cindyjs.org/',
@@ -26,6 +31,11 @@ const users = [
         infoLink: 'https://cocalc.com/',
     },
     {
+        caption: 'Doctave',
+        image: 'https://www.doctave.com/assets/img/katex-integration-logo.webp',
+        infoLink: 'https://www.doctave.com/',
+    },
+    {
         caption: 'Dropbox Paper',
         image: 'https://aem.dropbox.com/cms/content/dam/dropbox/www/en-us/branding/app-paper-ios@2x.png',
         infoLink: 'https://paper.dropbox.com/',
@@ -34,6 +44,11 @@ const users = [
         caption: 'Editor.md',
         image: 'https://pandao.github.io/editor.md/images/logos/editormd-logo-180x180.png',
         infoLink: 'https://pandao.github.io/editor.md/en.html',
+    },
+    {
+        caption: 'Educase Tools',
+        image: 'https://images.educasetools.com/educase-logos/educase-primary-transparent-logo.png',
+        infoLink: 'https://www.educasetools.com',
     },
     {
         caption: 'Expii',
@@ -52,7 +67,7 @@ const users = [
     },
     {
         caption: 'Gitter',
-        image: 'https://assets.gitlab-static.net/uploads/-/system/project/avatar/3601513/gitter_logo.png',
+        image: 'https://blog.gitter.im/content/images/2016/01/gitter-logo.png',
         infoLink: 'https://gitter.im/',
     },
     {
@@ -87,13 +102,18 @@ const users = [
     },
     {
         caption: 'Messenger',
-        image: 'https://en.facebookbrand.com/wp-content/uploads/2016/09/messenger_icon2.png',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/b/be/Facebook_Messenger_logo_2020.svg',
         infoLink: 'https://www.messenger.com/',
     },
     {
+        caption: 'MintApps',
+        image: '/img/mintapps_logo.png',
+        infoLink: 'https://mintapps.org',
+    },
+    {
         caption: 'MonsterWriter',
-        image: 'https://www.monsterwriter.app/assets/logo.png',
-        infoLink: 'https://www.monsterwriter.app/',
+        image: 'https://www.monsterwriter.com/assets/logo-200.png',
+        infoLink: 'https://www.monsterwriter.com/',
     },
     {
         caption: 'namu.wiki',
@@ -121,9 +141,24 @@ const users = [
         infoLink: 'https://rocket.chat/',
     },
     {
+        caption: 'Slab',
+        image: '/img/slab-logo.png',
+        infoLink: 'https://slab.com/',
+    },
+    {
         caption: 'Slides',
-        image: 'https://s3.amazonaws.com/uploads.uservoice.com/logo/design_setting/116173/original/slides-symbol-150x150.png',
+        image: 'https://static.slid.es/logo/slides-logo-495x479.png',
         infoLink: 'https://slides.com/',
+    },
+    {
+        caption: 'SnapXam',
+        image: 'https://www.snapxam.com/assets/images/snapxam-logo2-transparent.png',
+        infoLink: 'https://www.snapxam.com',
+    },
+    {
+        caption: 'Snip',
+        image: '/img/snip.png',
+        infoLink: 'https://getsnip.io',
     },
     {
         caption: 'Spinning Numbers',
@@ -141,19 +176,29 @@ const users = [
         infoLink: 'https://kookma.github.io/TW-Tamasha/',
     },
     {
+        caption: 'Techambition',
+        image: '/img/techambition.png',
+        infoLink: 'https://techambition.com',
+    },
+    {
         caption: 'TiddlyWiki',
         image: '/img/tiddlywiki_logo.svg',
         infoLink: 'https://tiddlywiki.com/',
     },
     {
         caption: 'Tutti Quanti Shelf',
-        image: 'https://raw.githubusercontent.com/tonton-pixel/tutti-quanti-shelf/master/icons/icon.png',
-        infoLink: 'https://github.com/tonton-pixel/tutti-quanti-shelf/',
+        image: 'https://codeberg.org/tonton-pixel/tutti-quanti-shelf/media/branch/master/icons/icon-256.png',
+        infoLink: 'https://codeberg.org/tonton-pixel/tutti-quanti-shelf',
     },
     {
         caption: 'Vade Mecum Shelf',
         image: '/img/vade_mecum_shelf_logo.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
+    },
+    {
+        caption: 'zzllrr Mather',
+        image: 'https://github.com/zzllrr/mather/raw/master/img/logo.jpg',
+        infoLink: 'https://github.com/zzllrr/mather',
     },
 ];
 
