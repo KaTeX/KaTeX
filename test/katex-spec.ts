@@ -2525,14 +2525,19 @@ describe("A markup generator", function() {
         const markup = katex.renderToString("a+b", {
             outputSourceLocations: true,
         });
+        const htmlStart = markup.indexOf('<span class="katex-html"');
+        const mathmlMarkup = markup.slice(0, htmlStart);
+        const htmlMarkup = markup.slice(htmlStart);
 
         expect(markup).toContain("katex-mathml");
         expect(markup).toContain("katex-html");
-        expect(markup).toContain(
+        expect(mathmlMarkup).not.toContain("data-katex-source-start");
+        expect(mathmlMarkup).not.toContain("data-katex-source-end");
+        expect(htmlMarkup).toContain(
             'data-katex-source-start="0" data-katex-source-end="1"');
-        expect(markup).toContain(
+        expect(htmlMarkup).toContain(
             'data-katex-source-start="1" data-katex-source-end="2"');
-        expect(markup).toContain(
+        expect(htmlMarkup).toContain(
             'data-katex-source-start="2" data-katex-source-end="3"');
     });
 
