@@ -376,6 +376,7 @@ export class SymbolNode implements HtmlDomNode {
     width: number;
     maxFontSize: number;
     classes: string[];
+    attributes?: Record<string, string>;
     style: CssStyle;
 
     constructor(
@@ -419,6 +420,11 @@ export class SymbolNode implements HtmlDomNode {
         return this.classes.includes(className);
     }
 
+    setAttribute(attribute: string, value: string) {
+        this.attributes = this.attributes || {};
+        this.attributes[attribute] = value;
+    }
+
     /**
      * Creates a text node or span from a symbol node. Note that a span is only
      * created if it is needed.
@@ -440,6 +446,13 @@ export class SymbolNode implements HtmlDomNode {
         if (Object.keys(this.style).length > 0) {
             span = span || document.createElement("span");
             Object.assign(span.style, this.style);
+        }
+
+        if (this.attributes) {
+            for (const attr of Object.keys(this.attributes)) {
+                span = span || document.createElement("span");
+                span.setAttribute(attr, this.attributes[attr]);
+            }
         }
 
         if (span) {
@@ -477,6 +490,16 @@ export class SymbolNode implements HtmlDomNode {
         if (styles) {
             needsSpan = true;
             markup += " style=\"" + escape(styles) + "\"";
+        }
+
+        if (this.attributes) {
+            for (const attr of Object.keys(this.attributes)) {
+                if (invalidAttributeNameRegex.test(attr)) {
+                    throw new ParseError(`Invalid attribute name '${attr}'`);
+                }
+                needsSpan = true;
+                markup += ` ${attr}="${escape(this.attributes[attr])}"`;
+            }
         }
 
         const escaped = escape(this.text);

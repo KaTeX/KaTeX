@@ -81,6 +81,14 @@ export interface KatexOptions {
      */
     output?: "html" | "mathml" | "htmlAndMathml";
     /**
+     * If `true`, KaTeX will add `data-katex-source-start` and
+     * `data-katex-source-end` attributes to HTML output where a rendered node
+     * can be mapped back to an input source range.
+     *
+     * @default false
+     */
+    outputSourceLocations?: boolean;
+    /**
      * If `true`, display math has `\tag`s rendered on the left instead of the
      * right, like `\usepackage[leqno]{amsmath}` in LaTeX.
      *

@@ -251,6 +251,67 @@ export const makeNullDelimiter = function(
     return makeSpan(classes.concat(moreClasses));
 };
 
+const sourceStartAttribute = "data-katex-source-start";
+const sourceEndAttribute = "data-katex-source-end";
+
+type AttributedDomNode = HtmlDomNode & {
+    attributes?: Record<string, string>;
+    children?: ReadonlyArray<HtmlDomNode>;
+    setAttribute?: (attribute: string, value: string) => void;
+};
+
+const setSourceLocationAttributes = function(
+    node: HtmlDomNode,
+    start: number,
+    end: number,
+) {
+    const attributedNode = node as AttributedDomNode;
+    if (typeof attributedNode.setAttribute !== "function") {
+        return false;
+    }
+    attributedNode.setAttribute(sourceStartAttribute, String(start));
+    attributedNode.setAttribute(sourceEndAttribute, String(end));
+    return true;
+};
+
+/**
+ * When a builder node does not have its own parse-node location, merge child
+ * source locations so wrapper spans still act as useful click targets.
+ */
+const inheritSourceLocationRange = function(
+    node: HtmlDomNode,
+): [number, number] | null {
+    let minStart = Infinity;
+    let maxEnd = -Infinity;
+    const stack: HtmlDomNode[] = [node];
+
+    while (stack.length) {
+        const current = stack.pop() as AttributedDomNode | undefined;
+        if (!current) {
+            continue;
+        }
+
+        const start = current.attributes?.[sourceStartAttribute];
+        const end = current.attributes?.[sourceEndAttribute];
+        if (start != null) {
+            minStart = Math.min(minStart, +start);
+        }
+        if (end != null) {
+            maxEnd = Math.max(maxEnd, +end);
+        }
+
+        if (current.children) {
+            for (let i = current.children.length - 1; i >= 0; i--) {
+                stack.push(current.children[i]);
+            }
+        }
+    }
+
+    return minStart !== Infinity && maxEnd !== -Infinity
+        ? [minStart, maxEnd]
+        : null;
+};
+
 /**
  * buildGroup is the function that takes a group and calls the correct groupType
  * function for it. It also handles the interaction of size and style changes
@@ -281,6 +342,18 @@ export const buildGroup = function(
 
             groupNode.height *= multiplier;
             groupNode.depth *= multiplier;
+        }
+
+        if (options.sourceLocations) {
+            if (group.loc) {
+                setSourceLocationAttributes(
+                    groupNode, group.loc.start, group.loc.end);
+            } else {
+                const range = inheritSourceLocationRange(groupNode);
+                if (range) {
+                    setSourceLocationAttributes(groupNode, range[0], range[1]);
+                }
+            }
         }
 
         return groupNode;

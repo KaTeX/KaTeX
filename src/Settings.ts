@@ -207,6 +207,10 @@ export const SETTINGS_SCHEMA: Schema = {
         description: "Determines the markup language of the output.",
         cli: "-F, --format <type>",
     },
+    outputSourceLocations: {
+        type: "boolean",
+        description: "Add source-location attributes to HTML output.",
+    },
     leqno: {
         type: "boolean",
         description: "Render display math in leqno style (left-justified tags).",
@@ -360,6 +364,7 @@ function applySetting<K extends keyof SettingsOptions>(
 export default class Settings {
     displayMode!: boolean;
     output!: "html" | "mathml" | "htmlAndMathml";
+    outputSourceLocations!: boolean;
     leqno!: boolean;
     fleqn!: boolean;
     throwOnError!: boolean;
