@@ -283,7 +283,8 @@ const inheritSourceLocationRange = function(
 ): [number, number] | null {
     let minStart = Infinity;
     let maxEnd = -Infinity;
-    const stack: HtmlDomNode[] = [node];
+    const children = (node as AttributedDomNode).children;
+    const stack: HtmlDomNode[] = children ? [...children] : [];
 
     while (stack.length) {
         const current = stack.pop() as AttributedDomNode | undefined;

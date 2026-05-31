@@ -2521,6 +2521,21 @@ describe("A markup generator", function() {
             'data-katex-source-start="2" data-katex-source-end="3"');
     });
 
+    it("emits source-location attributes in default HTML output", function() {
+        const markup = katex.renderToString("a+b", {
+            outputSourceLocations: true,
+        });
+
+        expect(markup).toContain("katex-mathml");
+        expect(markup).toContain("katex-html");
+        expect(markup).toContain(
+            'data-katex-source-start="0" data-katex-source-end="1"');
+        expect(markup).toContain(
+            'data-katex-source-start="1" data-katex-source-end="2"');
+        expect(markup).toContain(
+            'data-katex-source-start="2" data-katex-source-end="3"');
+    });
+
     it("inherits source-location attributes for grouped HTML output", function() {
         const markup = katex.renderToString(String.raw`\frac{a}{b}`, {
             output: "html",
