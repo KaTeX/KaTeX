@@ -21,8 +21,17 @@ yarn add katex
 yarn global add katex
 ```
 
+### pnpm
+Install with `pnpm`:
+
+```bash
+pnpm add katex
+# or globally
+pnpm add -g katex
+```
+
 ### Building from Source
-To build you will need Git, Node.js 18 or later, [corepack](https://nodejs.org/api/corepack.html) enabled.
+To build you will need Git, Node.js 22.13 or later, and [corepack](https://nodejs.org/api/corepack.html) enabled.
 
 Clone a copy of the GitHub source repository:
 ```bash

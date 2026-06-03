@@ -122,6 +122,8 @@ If you can, please test your changes in as many browsers as possible.
 KaTeX is built using webpack with configuration `webpack.config.js`. Run
 `corepack enable` (if you haven't already) and `pnpm build` to build the project.
 
+Run `rm -f .pnp.cjs .pnp.loader.mjs website/.pnp.cjs website/.pnp.loader.mjs` to remove `yarn` leftovers.
+
 ## Style guide
 
 Code
