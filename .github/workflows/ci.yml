@@ -19,33 +19,31 @@ jobs:
     - name: Enable Corepack
       run: corepack enable
 
-    - name: Use Node.js 24.14.1
+    - name: Use Node.js 24
       uses: actions/setup-node@v6
       with:
-        node-version: '24.14.1' # Avoid Node 24.15.0 Yarn PnP EBADF regression.
-        cache: yarn
+        node-version: '24'
+        cache: pnpm
 
     - name: Install dependencies
-      run: yarn --immutable
-      env:
-        YARN_ENABLE_SCRIPTS: 0 # disable postinstall scripts
+      run: pnpm install --frozen-lockfile
 
     - name: Lint code
-      run: yarn test:lint
+      run: pnpm test:lint
 
     - name: Run TypeScript typecheck
-      run: yarn test:ts
+      run: pnpm test:ts
       if: always()
 
     - name: Run Jest tests
-      run: yarn test:jest --coverage
+      run: pnpm test:jest --coverage
       if: always()
 
     - name: Build
-      run: yarn build
+      run: pnpm build
 
     - name: Verify built bundle
-      run: yarn test:build
+      run: pnpm test:build
 
     - uses: codecov/codecov-action@v6
       with:
@@ -70,17 +68,16 @@ jobs:
     - name: Enable Corepack
       run: corepack enable
 
-    - name: Use Node.js 24.14.1
+    - name: Use Node.js 24
       uses: actions/setup-node@v6
       with:
-        node-version: '24.14.1' # Avoid Node 24.15.0 Yarn PnP EBADF regression.
+        node-version: '24'
 
     - name: Install dependencies
-      run: yarn --immutable
-      env:
-        YARN_ENABLE_SCRIPTS: 0 # disable postinstall scripts
+      run: pnpm install --frozen-lockfile
+
     - name: Run semantic-release
-      run: yarn run semantic-release --debug
+      run: pnpm run semantic-release --debug
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

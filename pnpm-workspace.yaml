@@ -1,0 +1,4 @@
+allowBuilds:
+  '@parcel/watcher': true
+  husky: true
+  unrs-resolver: true

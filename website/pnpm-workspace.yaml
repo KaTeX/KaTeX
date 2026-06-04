@@ -1,0 +1,7 @@
+allowBuilds:
+  core-js: true
+  fast-folder-size: true
+  gifsicle: true
+  highlight.js: true
+  jpegtran-bin: true
+  optipng-bin: true

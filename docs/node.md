@@ -21,8 +21,17 @@ yarn add katex
 yarn global add katex
 ```
 
+### pnpm
+Install with `pnpm`:
+
+```bash
+pnpm add katex
+# or globally
+pnpm add -g katex
+```
+
 ### Building from Source
-To build you will need Git, Node.js 10 or later, and Yarn.
+To build you will need Git, Node.js 22.13 or later, and [corepack](https://nodejs.org/api/corepack.html) enabled.
 
 Clone a copy of the GitHub source repository:
 ```bash
@@ -30,16 +39,17 @@ git clone https://github.com/KaTeX/KaTeX.git
 cd KaTeX
 ```
 
-Then install dependencies and run `build` script:
+Then enable corepack, install dependencies and run `build` script:
 ```bash
-yarn
-yarn build
+corepack enable
+pnpm install
+pnpm build
 ```
 
 It will automatically transpile code and include only necessary fonts for
 target environments specified by [Browserslist config](https://github.com/browserslist/browserslist#environment-variables).
 For example, if you are making a web app for a kiosk with Chrome 68, run
-`BROWSERSLIST="Chrome 68" yarn build` and it will produce build with no
+`BROWSERSLIST="Chrome 68" pnpm build` and it will produce build with no
 transpilation, as it fully supports ES6, and only include WOFF2 fonts.
 
 You can override included fonts using environment variables. Set `USE_(FONT NAME)`
@@ -49,7 +59,7 @@ or excluded, respectively.`
 If you'd like to use the built KaTeX in other projects, install the package by
 specifying the path:
 ```bash
-yarn add /path/to/KaTeX
+pnpm add /path/to/KaTeX
 # or using npm
 npm install /path/to/KaTeX
 ```
