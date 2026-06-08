@@ -45,7 +45,7 @@ jobs:
     - name: Verify built bundle
       run: pnpm test:build
 
-    - uses: codecov/codecov-action@v6
+    - uses: codecov/codecov-action@v7
       with:
         directory: ./coverage/
       timeout-minutes: 3
