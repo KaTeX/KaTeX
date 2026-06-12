@@ -173,7 +173,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
     }
 
     const accentWrap =
-        makeSpan(["mord", "accent"], [accentBody], options);
+        makeSpan(["mord", "katex-accent"], [accentBody], options);
 
     if (supSubGroup) {
         // Here, we replace the "base" child of the supsub with our newly

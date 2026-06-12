@@ -59,12 +59,12 @@ $display-margin: 1em 0 !default;
 
     .katex-html {
         /* \newline is an empty block at top level, between .base elements */
-        > .newline {
+        > .katex-newline {
             display: block;
         }
     }
 
-    .base {
+    .katex-base {
         position: relative;
         display: inline-block;
         white-space: nowrap;
@@ -73,7 +73,7 @@ $display-margin: 1em 0 !default;
         width: min-content;
     }
 
-    .strut {
+    .katex-strut {
         display: inline-block;
     }
 
@@ -242,19 +242,13 @@ $display-margin: 1em 0 !default;
         min-width: 2px;
     }
 
-    .vbox {
+    .katex-vbox {
         display: inline-flex;
         flex-direction: column;
         align-items: baseline;
     }
 
-    .hbox {
-        display: inline-flex;
-        flex-direction: row;
-        width: 100%;
-    }
-
-    .thinbox {
+    .katex-thinbox {
         display: inline-flex;
         flex-direction: row;
         width: 0;
@@ -279,11 +273,11 @@ $display-margin: 1em 0 !default;
 
     // Prevent Chrome from disappearing frac-lines, rules, etc.
     .mfrac .frac-line,
-    .overline .overline-line,
-    .underline .underline-line,
-    .hline,
+    .katex-overline .overline-line,
+    .katex-underline .underline-line,
+    .katex-hline,
     .hdashline,
-    .rule {
+    .katex-rule {
         min-height: 1px;
     }
 
@@ -291,7 +285,7 @@ $display-margin: 1em 0 !default;
         display: inline-block;
     }
 
-    .smash {
+    .katex-smash {
         display: inline;
         line-height: 0;
     }
@@ -302,38 +296,38 @@ $display-margin: 1em 0 !default;
         width: 0;
         position: relative;
 
-        > .inner {
+        > .katex-inner {
             position: absolute;
         }
 
-        > .fix {
+        > .katex-fix {
             display: inline-block;
         }
     }
 
-    .llap > .inner {
+    .llap > .katex-inner {
         right: 0;
     }
 
-    .rlap > .inner,
-    .clap > .inner {
+    .rlap > .katex-inner,
+    .clap > .katex-inner {
         left: 0;
     }
 
-    .clap > .inner > span {
+    .clap > .katex-inner > span {
         margin-left: -50%;
         margin-right: 50%;
     }
 
-    .rule {
+    .katex-rule {
         display: inline-block;
         border: solid 0;
         position: relative;
     }
 
-    .overline .overline-line,
-    .underline .underline-line,
-    .hline {
+    .katex-overline .overline-line,
+    .katex-underline .underline-line,
+    .katex-hline {
         display: inline-block;
         width: 100%;
         border-bottom-style: solid;
@@ -346,7 +340,7 @@ $display-margin: 1em 0 !default;
     }
 
     .sqrt {
-        > .root {
+        > .katex-root {
             /* These values are taken from the definition of `\r@@t`,
              `\mkern 5mu` and `\mkern -10mu`. */
             /* stylelint-disable-next-line declaration-property-value-no-unknown */
@@ -356,7 +350,7 @@ $display-margin: 1em 0 !default;
         }
     }
 
-    .sizing,
+    .katex-sizing,
     .fontsize-ensurer {
         $sizes: 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.2, 1.44, 1.728, 2.074, 2.488;
 
@@ -414,7 +408,7 @@ $display-margin: 1em 0 !default;
         }
     }
 
-    .accent {
+    .katex-accent {
         > .vlist-t {
             text-align: center;
         }
@@ -430,7 +424,7 @@ $display-margin: 1em 0 !default;
         }
     }
 
-    .overlay {
+    .katex-overlay {
         display: block;
     }
 
@@ -503,7 +497,7 @@ $display-margin: 1em 0 !default;
     }
 
     // Define CSS for image whose width will match its span width.
-    .stretchy {
+    .katex-stretchy {
         width: 100%;
         display: block;
         position: relative;
@@ -591,7 +585,7 @@ $display-margin: 1em 0 !default;
         margin-right: -0.2em;   // Apply negative margin to correct for 0.2em padding
     }                           // inside the \cancel group.
 
-    .sout {
+    .katex-sout {
         border-bottom-style: solid;
         border-bottom-width: 0.08em;
     }
@@ -656,7 +650,7 @@ $display-margin: 1em 0 !default;
             display: block;
             position: relative;
 
-            > .tag {
+            > .katex-tag {
                 position: absolute;
                 right: 0;
             }
@@ -665,7 +659,7 @@ $display-margin: 1em 0 !default;
 }
 
 // Left-justified tags (default is right-justified)
-.katex-display.leqno > .katex > .katex-html > .tag {
+.katex-display.leqno > .katex > .katex-html > .katex-tag {
     left: 0;
     right: auto;
 }

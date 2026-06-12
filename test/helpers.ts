@@ -90,7 +90,7 @@ export function getBuilt(expr: any, settings: any = new Settings()): any {
     const children = [];
     for (let i = 0; i < builtHTML.children.length; i++) {
         children.push(...builtHTML.children[i].children.filter(
-            (node: {classes: string[]}) => !node.classes.includes("strut")));
+            (node: {classes: string[]}) => !node.classes.includes("katex-strut")));
     }
     return children;
 }

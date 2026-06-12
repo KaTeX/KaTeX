@@ -40,7 +40,7 @@ anywhere in the document:
 </style>
 <span class="katex">
   <span class="katex-mathml">The KaTeX stylesheet is not loaded!</span>
-  <span class="katex-version rule">KaTeX stylesheet version: </span>
+  <span class="katex-version katex-rule">KaTeX stylesheet version: </span>
 </span>
 ```
 
@@ -65,7 +65,7 @@ To allow line breaks in display equations (unlike LaTeX):
 ```css
 .katex-display > .katex { white-space: normal }
 /* Add space between broken lines: */
-.katex-display > .base { margin: 0.25em 0 }
+.katex-display > .katex-base { margin: 0.25em 0 }
 /* Compensate by reducing space around display math */
 .katex-display { margin: 0.5em 0; }
 ```
