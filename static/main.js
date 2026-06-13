@@ -345,7 +345,6 @@ function init() {
     }
 
     for (const id of Object.keys(options)) {
-
         const element = document.getElementById(id);
         if (!element) {
             continue;
