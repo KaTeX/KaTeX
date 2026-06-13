@@ -22,7 +22,7 @@ export function assertNodeType<NODETYPE extends NodeType>(
  * Returns the node more strictly typed iff it is of the given type. Otherwise,
  * returns null.
  */
-export function assertSymbolNodeType(node: AnyParseNode | null | undefined): SymbolParseNode {
+export function assertSymbolNodeType(node: AnyParseNode): SymbolParseNode {
     const typedNode = checkSymbolNodeType(node);
     if (!typedNode) {
         throw new Error(
@@ -36,8 +36,8 @@ export function assertSymbolNodeType(node: AnyParseNode | null | undefined): Sym
  * Returns the node more strictly typed if it is of the given type. Otherwise,
  * returns null.
  */
-export function checkSymbolNodeType(node: AnyParseNode | null | undefined): SymbolParseNode | null | undefined {
-    if (node && (node.type === "atom" || NON_ATOMS.hasOwnProperty(node.type))) {
+export function checkSymbolNodeType(node: AnyParseNode): SymbolParseNode | null {
+    if (node.type === "atom" || node.type in NON_ATOMS) {
         return node as SymbolParseNode;
     }
     return null;

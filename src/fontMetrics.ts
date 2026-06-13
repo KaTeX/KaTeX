@@ -258,7 +258,7 @@ export function getGlobalMetrics(size: number): FontMetrics {
             cssEmPerMu: sigmasAndXis.quad[sizeIndex] / 18,
         };
         for (const key in sigmasAndXis) {
-            if (sigmasAndXis.hasOwnProperty(key)) {
+            if (Object.hasOwn(sigmasAndXis, key)) {
                 metrics[key] = sigmasAndXis[key][sizeIndex];
             }
         }

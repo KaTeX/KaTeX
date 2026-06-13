@@ -24,7 +24,7 @@ const {program} = require("commander");
 program.version(version);
 
 for (const prop in katex.SETTINGS_SCHEMA) {
-    if (katex.SETTINGS_SCHEMA.hasOwnProperty(prop)) {
+    if (Object.hasOwn(katex.SETTINGS_SCHEMA, prop)) {
         const opt = katex.SETTINGS_SCHEMA[prop];
         if (opt.cli !== false) {
             program.option(opt.cli || "--" + prop, opt.cliDescription ||

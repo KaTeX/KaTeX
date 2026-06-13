@@ -15,11 +15,11 @@ export class ConsoleWarning extends Error {
 }
 
 /**
- * Return the first raw string if x is tagged literal. Otherwise return x.
+ * Return the first raw string if x is tagged literal. Otherwise, return x.
  */
-export const r = (x: any): any =>
-    x != null && Object.prototype.hasOwnProperty.call(x, 'raw')
-    ? (x as {raw: string[]}).raw[0] : x;
+// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
+export const r = (x: TemplateStringsArray | string | String): string =>
+    typeof x === "object" && "raw" in x ? x.raw[0] : String(x);
 
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.

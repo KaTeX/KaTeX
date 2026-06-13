@@ -15,24 +15,22 @@ const querystring = require("querystring");
 const queryKeys = [
     "tex", "pre", "post", "display", "noThrow", "errorColor", "styles",
 ];
-let dict = fs.readFileSync(require.resolve("./ss_data.yaml"));
-dict = jsyaml.load(dict);
-for (const key in dict) {
-    if (dict.hasOwnProperty(key)) {
-        let itm = dict[key];
-        if (typeof itm === "string") {
-            itm = dict[key] = {tex: itm};
+const dict = jsyaml.load(fs.readFileSync(require.resolve("./ss_data.yaml")));
+
+for (const [key, value] of Object.entries(dict)) {
+    let item = value;
+    if (typeof item === "string") {
+        item = dict[key] = {tex: item};
+    }
+    const query = {};
+    for (const key of queryKeys) {
+        if (key in item) {
+            query[key] = item[key];
         }
-        const query = {};
-        queryKeys.forEach(function(key) {
-            if (itm.hasOwnProperty(key)) {
-                query[key] = itm[key];
-            }
-        });
-        itm.query = querystring.stringify(query);
-        if (itm.macros) {
-            itm.query += "&" + querystring.stringify(itm.macros);
-        }
+    }
+    item.query = querystring.stringify(query);
+    if (item.macros) {
+        item.query += "&" + querystring.stringify(item.macros);
     }
 }
 module.exports = dict;

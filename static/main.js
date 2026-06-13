@@ -344,10 +344,7 @@ function init() {
         input.value = permalinkData.code;
     }
 
-    for (const id in options) {
-        if (!options.hasOwnProperty(id)) {
-            continue;
-        }
+    for (const id of Object.keys(options)) {
 
         const element = document.getElementById(id);
         if (!element) {

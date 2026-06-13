@@ -4,7 +4,7 @@ const data = require("./screenshotter/ss_data.js");
 
 describe("Screenshotter item", function() {
     for (const key in data) {
-        if (data.hasOwnProperty(key)) {
+        if (Object.hasOwn(data, key)) {
             const item = data[key];
             it(`"${item.tex}" should build successfully`, function() {
                 expect(item.tex).toBuild({

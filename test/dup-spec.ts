@@ -3,12 +3,12 @@ import macros from '../src/macros';
 
 describe("Symbols and macros", () => {
     for (const macro in macros) {
-        if (!macros.hasOwnProperty(macro)) {
+        if (!Object.hasOwn(macros, macro)) {
             continue;
         }
         it(`macro ${macro} should not shadow a symbol`, () => {
             for (const kind in symbols) {
-                if (!symbols.hasOwnProperty(kind)) {
+                if (!Object.hasOwn(symbols, kind)) {
                     continue;
                 }
                 const mode = kind as keyof typeof symbols;
