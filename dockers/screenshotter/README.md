@@ -29,7 +29,7 @@ For Chrome, simply replace both occurrences of `firefox` with `chrome`.
 
 For WebKit:
 
-    container=$(docker run -d -P ghcr.io/katex/katex-webkit:1.0)
+    container=$(docker run -d -P ghcr.io/katex/katex-webkit:1.2)
     port=$(docker port ${container} 4444 | head -1 | sed 's/.*://')
     node dockers/screenshotter/screenshotter.js -b safari \
         --selenium-url http://localhost:${port} \

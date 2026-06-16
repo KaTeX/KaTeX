@@ -32,8 +32,7 @@ for browserTag in "firefox:128.0-20260222" "chromium:145.0-20260222" "webkit:1.2
         [[ ${container} ]] || continue
         echo "Container ${container:0:12} started"
         port=$(docker port "${container}" 4444 | head -1 | sed 's/.*://')
-        sleep 20
-        extra_args="--selenium-url http://localhost:${port}"
+        extra_args="--selenium-url http://localhost:${port} --wait 0.5"
     else
         image=selenium/standalone-${browserTag}
         echo "Starting container for ${image}"
@@ -47,7 +46,6 @@ for browserTag in "firefox:128.0-20260222" "chromium:145.0-20260222" "webkit:1.2
     echo "Creating screenshots for ${browser}..."
     node "$(dirname "$0")"/screenshotter.js \
             --browser="${browser}" \
-            --wait 0.5 \
             ${extra_args} \
             "$@"
     rc=$?

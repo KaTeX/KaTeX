@@ -224,11 +224,21 @@ if (seleniumURL) {
     if (opts.seleniumProxy) {
         driver = await getProxyDriver();
     } else {
-        if (seleniumIP && !opts.seleniumUrl) {
+        if (seleniumURL) {
+            const urlObj = new URL(seleniumURL);
+            if (!seleniumIP) {
+                seleniumIP = urlObj.hostname;
+            }
+            seleniumPort = parseInt(urlObj.port, 10) || seleniumPort;
             await pRetry(tryConnect, {
                 retries: 50,
                 minTimeout: 100,
-                // Keep retry intervals short (else can appear to hang).
+                factor: 1,
+            });
+        } else if (seleniumIP) {
+            await pRetry(tryConnect, {
+                retries: 50,
+                minTimeout: 100,
                 factor: 1,
             });
         }
@@ -307,6 +317,7 @@ let driver;
 let driverReady = false;
 function buildDriver() {
     const builder = new selenium.Builder().forBrowser(opts.browser);
+    const capabilities = {};
     if (opts.browser === "firefox") {
         const ffOptions = new firefox.Options();
         ffOptions.setPreference(
@@ -319,14 +330,16 @@ function buildDriver() {
         builder.setChromeOptions(chrOptions);
     } else if (opts.browser === "safari" || opts.browser === "webkit") {
         // WebKitGTK's WebKitWebDriver uses "MiniBrowser" as browserName
-        builder.withCapabilities({browserName: "MiniBrowser"});
+        capabilities.browserName = "MiniBrowser";
     }
     if (seleniumURL) {
         builder.usingServer(seleniumURL);
     }
-    if (opts.seleniumCapabilities) {
+    if (opts.seleniumCapabilities || Object.keys(capabilities).length > 0) {
         // TODO: withCapabilities is deprecated
-        builder.withCapabilities(opts.seleniumCapabilities);
+        builder.withCapabilities(
+            Object.assign(capabilities, opts.seleniumCapabilities)
+        );
     }
     return builder.build();
 }
