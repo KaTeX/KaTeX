@@ -13,7 +13,8 @@ cleanup() {
 container=
 trap cleanup EXIT
 status=0
-for browserTag in "firefox:128.0-20260222" "chromium:145.0-20260222"; do
+#use webkit:1.2 for x86_64 and webkit:1.1 for arm
+for browserTag in "firefox:128.0-20260222" "chromium:145.0-20260222" "webkit:1.2"; do
     browser=${browserTag%:*}
     # We use Chromium so it works on all architectures.
     # We hack the name because old images were for chrome
@@ -21,16 +22,33 @@ for browserTag in "firefox:128.0-20260222" "chromium:145.0-20260222"; do
     if [ "${browser}" = "chromium" ]; then
         browser="chrome"
     fi
-    image=selenium/standalone-${browserTag}
-    echo "Starting container for ${image}"
+
     #https://github.com/SeleniumHQ/docker-selenium#--shm-size2g
-    container=$(docker run -d --shm-size=2g -P ${image})
-    [[ ${container} ]] || continue
-    echo "Container ${container:0:12} started"
+    if [ "${browser}" = "webkit" ]; then
+        image=ghcr.io/katex/katex-webkit:${browserTag#*:}
+        browser="safari"
+        echo "Starting container for ${image}"
+        container=$(docker run -d --shm-size=2g -P ${image})
+        [[ ${container} ]] || continue
+        echo "Container ${container:0:12} started"
+        port=$(docker port "${container}" 4444 | head -1 | sed 's/.*://')
+        sleep 20
+        extra_args="--selenium-url http://localhost:${port}"
+    else
+        image=selenium/standalone-${browserTag}
+        echo "Starting container for ${image}"
+        container=$(docker run -d --shm-size=2g -P ${image})
+        [[ ${container} ]] || continue
+        echo "Container ${container:0:12} started"
+        sleep 5
+        extra_args="--container=${container}"
+    fi
 
     echo "Creating screenshots for ${browser}..."
     node "$(dirname "$0")"/screenshotter.js \
-            --browser="${browser}" --container="${container}" \
+            --browser="${browser}" \
+            --wait 0.5 \
+            ${extra_args} \
             "$@"
     rc=$?
     if [ $rc -eq 0 ]; then

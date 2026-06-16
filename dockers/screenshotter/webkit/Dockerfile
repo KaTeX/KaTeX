@@ -1,5 +1,6 @@
 FROM ubuntu:24.04
 LABEL authors="Grigoriy Reshetniak"
+LABEL org.opencontainers.image.source=https://github.com/KaTeX/KaTeX
 RUN apt-get update && apt-get install -y --no-install-recommends \
     webkit2gtk-driver libwebkit2gtk-4.1-0 \
     xvfb dbus-x11 \

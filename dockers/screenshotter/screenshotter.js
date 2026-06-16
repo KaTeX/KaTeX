@@ -180,13 +180,17 @@ function guessDockerIPs() {
     }
     // Native Docker on Linux or remote Docker daemon or similar
     // https://docs.docker.com/engine/tutorials/networkingcontainers/
-    const gatewayIP = cmd("docker", "inspect", // using default bridge network
-        "-f", "{{.NetworkSettings.Networks.bridge.Gateway}}", opts.container)
-      || cmd("docker", "inspect", // using own network
-        "-f", "{{range .NetworkSettings.Networks}}{{.Gateway}}{{end}}",
-        opts.container);
-    seleniumIP = seleniumIP || gatewayIP;
-    katexIP = katexIP || gatewayIP;
+    if (opts.container) {
+        const gatewayIP = cmd("docker", "inspect", // using default bridge network
+            "-f", "{{.NetworkSettings.Networks.bridge.Gateway}}", opts.container)
+            || cmd("docker", "inspect", // using own network
+                "-f", "{{range .NetworkSettings.Networks}}{{.Gateway}}{{end}}",
+                opts.container);
+        seleniumIP = seleniumIP || gatewayIP;
+        katexIP = katexIP || gatewayIP;
+    } else {
+        katexIP = katexIP || "172.17.0.1";
+    }
 }
 
 if (!seleniumURL && opts.container) {
@@ -199,6 +203,10 @@ if (!seleniumURL && opts.container) {
     if (!seleniumIP) {
         seleniumIP = seleniumEndpoint.host;
     }
+}
+// When using --selenium-url directly, guess katexIP if not provided
+if (seleniumURL && !katexIP && !katexURL && !opts.container) {
+    guessDockerIPs();
 }
 if (!seleniumURL && seleniumIP) {
     seleniumURL = "http://" + seleniumIP + ":" + seleniumPort + "/wd/hub";
@@ -216,7 +224,7 @@ if (seleniumURL) {
     if (opts.seleniumProxy) {
         driver = await getProxyDriver();
     } else {
-        if (seleniumIP) {
+        if (seleniumIP && !opts.seleniumUrl) {
             await pRetry(tryConnect, {
                 retries: 50,
                 minTimeout: 100,
@@ -309,6 +317,9 @@ function buildDriver() {
         // https://stackoverflow.com/questions/48450594/selenium-timed-out-receiving-message-from-renderer
         const chrOptions = new chrome.Options().addArguments("--disable-gpu");
         builder.setChromeOptions(chrOptions);
+    } else if (opts.browser === "safari" || opts.browser === "webkit") {
+        // WebKitGTK's WebKitWebDriver uses "MiniBrowser" as browserName
+        builder.withCapabilities({browserName: "MiniBrowser"});
     }
     if (seleniumURL) {
         builder.usingServer(seleniumURL);

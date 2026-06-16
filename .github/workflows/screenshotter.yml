@@ -14,16 +14,13 @@ jobs:
         browser: [chrome, firefox, safari]
         include:
           - browser: chrome
-            os: ubuntu-latest
             image: selenium/standalone-chromium:145.0-20260222
           - browser: firefox
-            os: ubuntu-latest
             image: selenium/standalone-firefox:128.0-20260222
           - browser: safari
-            os: macos-26
-            image: '' # no Selenium container needed on macOS
+            image: ghcr.io/katex/katex-webkit:1.2
       fail-fast: false
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     services:
       selenium:
         image: ${{ matrix.image }}
@@ -46,21 +43,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install ImageMagick
-        if: matrix.browser == 'safari'
-        run: brew install imagemagick
-
-      - name: Enable SafariDriver
-        if: matrix.browser == 'safari'
-        run: sudo safaridriver --enable
-
-      - name: Run screenshotter (Chromium & Firefox)
-        if: matrix.browser != 'safari'
+      - name: Run screenshotter
         run: |
           TOKEN="$(cat /proc/sys/kernel/random/uuid | sha256sum | head -c 64)"
           echo "::add-mask::$TOKEN"
           echo "TOKEN=$TOKEN" >> $GITHUB_ENV
           echo "::stop-commands::$TOKEN"
+          SELENIUM_IP=$(docker inspect ${{ job.services.selenium.id }} --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}')
+          
+          if [ "${{ matrix.browser }}" = "safari" ]; then
+            SELENIUM_ARGS="--selenium-url http://$SELENIUM_IP:4444 --selenium-ip $SELENIUM_IP"
+          else
+            SELENIUM_ARGS="--selenium-ip selenium"
+          fi
 
           # run in Docker container
           # mount .git readonly to prevent modification
@@ -71,25 +66,16 @@ jobs:
             -w /code \
             -e CI=true \
             node:24 \
-            /bin/bash -c 'corepack enable && node dockers/screenshotter/screenshotter.js -b ${{ matrix.browser }} --verify --diff --new --katex-ip $HOSTNAME --selenium-ip selenium'
+            /bin/bash -c "corepack enable && node dockers/screenshotter/screenshotter.js -b ${{ matrix.browser }} --verify --diff --new --katex-ip \$HOSTNAME $SELENIUM_ARGS"
           echo "::$TOKEN::"
-        timeout-minutes: 10
-
-      - name: Run screenshotter (macOS)
-        if: matrix.browser == 'safari'
-        run: node dockers/screenshotter/screenshotter.js -b safari --verify --diff --new --wait 0.3
-        timeout-minutes: 10
+        timeout-minutes: 12
 
       - name: Print Selenium Docker logs
-        if: always() && matrix.browser != 'safari'
+        if: always()
         run: |
           echo "::stop-commands::$TOKEN"
           docker logs ${{ job.services.selenium.id }}
           echo "::$TOKEN::"
-
-      - name: Print SafariDriver logs
-        if: always() && matrix.browser == 'safari'
-        run: log show --predicate 'process == "safaridriver" OR process == "Safari"' --last 10m --style compact
 
       - uses: actions/upload-artifact@v7
         if: failure()
