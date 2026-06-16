@@ -18,7 +18,7 @@ jobs:
           - browser: firefox
             image: selenium/standalone-firefox:128.0-20260222
           - browser: safari
-            image: ghcr.io/katex/katex-webkit:1.2
+            image: ghcr.io/katex/katex-webkit:2.0
       fail-fast: false
     runs-on: ubuntu-latest
     services:

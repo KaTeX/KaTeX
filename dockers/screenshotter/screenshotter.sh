@@ -13,8 +13,7 @@ cleanup() {
 container=
 trap cleanup EXIT
 status=0
-#use webkit:1.2 for x86_64 and webkit:1.1 for arm
-for browserTag in "firefox:128.0-20260222" "chromium:145.0-20260222" "webkit:1.2"; do
+for browserTag in "firefox:128.0-20260222" "chromium:145.0-20260222" "webkit:2.0"; do
     browser=${browserTag%:*}
     # We use Chromium so it works on all architectures.
     # We hack the name because old images were for chrome
