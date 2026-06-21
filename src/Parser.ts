@@ -843,7 +843,7 @@ export default class Parser {
             result = this.parseFunction(breakOnTokenText, name) ||
                 this.parseSymbol();
             if (result == null && text[0] === "\\" &&
-                    !Object.hasOwn(implicitCommands, text)) {
+                    !Object.prototype.hasOwnProperty.call(implicitCommands, text)) {
                 if (this.settings.throwOnError) {
                     throw new ParseError(
                         "Undefined control sequence: " + text, firstToken);
@@ -939,7 +939,7 @@ export default class Parser {
         }
         // At this point, we should have a symbol, possibly with accents.
         // First expand any accented base symbol according to unicodeSymbols.
-        if (Object.hasOwn(unicodeSymbols, text[0]) &&
+        if (Object.prototype.hasOwnProperty.call(unicodeSymbols, text[0]) &&
             !symbols[this.mode][text[0]]) {
             // This behavior is not strict (XeTeX-compatible) in math mode.
             if (this.settings.strict && this.mode === "math") {

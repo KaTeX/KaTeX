@@ -1,4 +1,4 @@
-import {NON_ATOMS} from "./atoms";
+import {NonAtoms} from "./atoms";
 import type {AnyParseNode, NodeType, ParseNode, SymbolParseNode} from "./types/nodes";
 
 /**
@@ -37,7 +37,7 @@ export function assertSymbolNodeType(node: AnyParseNode): SymbolParseNode {
  * returns null.
  */
 export function checkSymbolNodeType(node: AnyParseNode): SymbolParseNode | null {
-    if (node.type === "atom" || node.type in NON_ATOMS) {
+    if (node.type === "atom" || NonAtoms.has(node.type)) {
         return node as SymbolParseNode;
     }
     return null;

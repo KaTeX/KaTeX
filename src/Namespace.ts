@@ -1,4 +1,3 @@
-
 /**
  * A `Namespace` refers to a space of nameable things like macros or lengths,
  * which can be `set` either globally or local to a nested group, using an
@@ -42,14 +41,12 @@ export default class Namespace<Value> {
             throw new ParseError("Unbalanced namespace destruction: attempt " +
                 "to pop global namespace; please report this as a bug");
         }
-        const undefs = this.undefStack.pop();
-        for (const undef in undefs) {
-            if (Object.hasOwn(undefs, undef)) {
-                if (undefs[undef] === undefined) {
-                    delete this.current[undef];
-                } else {
-                    this.current[undef] = undefs[undef];
-                }
+        const undefs = this.undefStack.pop()!;
+        for (const key of Object.keys(undefs)) {
+            if (undefs[key] === undefined) {
+                delete this.current[key];
+            } else {
+                this.current[key] = undefs[key];
             }
         }
     }
@@ -69,8 +66,8 @@ export default class Namespace<Value> {
      * `get(name) != null`.
      */
     has(name: string): boolean {
-        return Object.hasOwn(this.current, name) ||
-            Object.hasOwn(this.builtins, name);
+        return Object.prototype.hasOwnProperty.call(this.current, name) ||
+            Object.prototype.hasOwnProperty.call(this.builtins, name);
     }
 
     /**
@@ -82,7 +79,7 @@ export default class Namespace<Value> {
      * `if (namespace.has(...))`.
      */
     get(name: string): Value | undefined {
-        if (Object.hasOwn(this.current, name)) {
+        if (Object.prototype.hasOwnProperty.call(this.current, name)) {
             return this.current[name];
         } else {
             return this.builtins[name];
@@ -113,7 +110,7 @@ export default class Namespace<Value> {
             // unless an undo is already in place, in which case that older
             // value is the correct one.
             const top = this.undefStack[this.undefStack.length - 1];
-            if (top && !Object.hasOwn(top, name)) {
+            if (top && !Object.prototype.hasOwnProperty.call(top, name)) {
                 top[name] = this.current[name];
             }
         }

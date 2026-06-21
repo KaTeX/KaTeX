@@ -32,7 +32,7 @@ export const makeText = function(
 ): TextNode {
     if (symbols[mode][text] && symbols[mode][text].replace &&
         text.charCodeAt(0) !== 0xD835 &&
-        !(Object.hasOwn(ligatures, text) &&
+        !(Object.prototype.hasOwnProperty.call(ligatures, text) &&
           (options?.fontFamily?.slice(4, 6) === "tt" ||
            options?.font?.slice(4, 6) === "tt"))) {
         text = symbols[mode][text].replace!;

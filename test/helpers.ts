@@ -17,9 +17,13 @@ export class ConsoleWarning extends Error {
 /**
  * Return the first raw string if x is tagged literal. Otherwise, return x.
  */
+export function r(x: TemplateStringsArray | string): string;
 // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
-export const r = (x: TemplateStringsArray | string | String): string =>
-    typeof x === "object" && "raw" in x ? x.raw[0] : String(x);
+export function r(x: String): String;
+// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
+export function r(x: TemplateStringsArray | string | String): string | String {
+    return typeof x === "object" && "raw" in x ? x.raw[0] : x;
+}
 
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.

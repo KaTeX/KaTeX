@@ -92,9 +92,9 @@ defineFunction({
         }
 
         const span = makeSpan(classes, elements, options);
-        for (const attr in group.attributes) {
-            if (attr !== "class" && Object.hasOwn(group.attributes, attr)) {
-                span.setAttribute(attr, group.attributes[attr]);
+        for (const [attr, value] of Object.entries(group.attributes)) {
+            if (attr !== "class") {
+                span.setAttribute(attr, value);
             }
         }
         return span;
