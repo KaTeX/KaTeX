@@ -49,9 +49,23 @@ defineFunction({
                 };
                 break;
             case "\\htmlData": {
-                const data = value.split(/(?<!\\),/);
+                // Split on commas, treating `\,` as an escaped comma.
+                const data: string[] = [];
+                let current = "";
+                for (let i = 0; i < value.length; i++) {
+                    if (value[i] === "\\" && value[i + 1] === ",") {
+                        current += ",";
+                        i++;
+                    } else if (value[i] === ",") {
+                        data.push(current);
+                        current = "";
+                    } else {
+                        current += value[i];
+                    }
+                }
+                data.push(current);
                 for (let i = 0; i < data.length; i++) {
-                    const item = data[i].replace(/\\,/g, ",");
+                    const item = data[i];
                     const firstEquals = item.indexOf("=");
                     if (firstEquals < 0) {
                         throw new ParseError(`\\htmlData key/value '${item}'` +

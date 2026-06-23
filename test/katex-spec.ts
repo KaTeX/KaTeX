@@ -2384,6 +2384,13 @@ describe("The \\htmlData macro", function() {
         expect(built[0].attributes["data-annotation_text"]).toEqual("[a,b]");
     });
 
+    it("should split on unescaped commas while preserving escaped ones", () => {
+        const built = getBuilt(
+            "\\htmlData{foo=a\\,b, bar=c}{x}", trustNonStrictSettings);
+        expect(built[0].attributes["data-foo"]).toEqual("a,b");
+        expect(built[0].attributes["data-bar"]).toEqual("c");
+    });
+
     it("should throw Error if an argument contains no equals signs", () => {
         try {
             katex.renderToString(
