@@ -369,3 +369,60 @@ describe("Parse adjacent text nodes", function() {
         expect(el).toStrictEqual(el2);
     });
 });
+
+describe("Markdown <em> recovery (#4234)", function() {
+    const delimiters = [{left: "\\(", right: "\\)", display: false}];
+
+    // Markdown preprocessors such as rustdoc render `\(...\)` math by turning
+    // the `_..._` subscripts into <em> tags, dropping the underscores and
+    // splitting the delimiters across DOM nodes. Swapping each <em> tag back
+    // for a literal underscore reproduces the original, un-corrupted math.
+    const combinedHtml = "<p>\\( " +
+        "\\frac{\\partial \\mathbb{E^Q} [\\bar{C}<em>t] }{\\partial \\xi} = " +
+        "\\frac{Nd}{10000} ( Q(m</em>{a.e.}) V(m_t) + I_{pa} X_{pa} " +
+        "V(m_{a.e.}) ) = \\frac{Nd}{10000} ( Q(m_{a.e.}) V(m_t) + I_{pa} " +
+        "X_{pa} V(m_{a.e.}) ) \\)</p>";
+
+    const splitFirstHtml = "<p>\\( " +
+        "\\frac{\\partial \\mathbb{E^Q} [\\bar{C}<em>t] }{\\partial \\xi} = " +
+        "\\frac{Nd}{10000} ( Q(m</em>{a.e.}) V(m_t) + I_{pa} X_{pa} " +
+        "V(m_{a.e.}) ) \\)</p>";
+
+    const renderHtml = function(html: string) {
+        const el = document.createElement("div");
+        el.innerHTML = html;
+        renderMathInElement(el, {delimiters});
+        return el;
+    };
+
+    it("recovers math whose delimiters are split by an <em>", function() {
+        const withEm = renderHtml(combinedHtml);
+        const restored = renderHtml(combinedHtml.replace(/<\/?em>/g, "_"));
+        expect(withEm.querySelector(".katex")).not.toBeNull();
+        expect(withEm.innerHTML).toEqual(restored.innerHTML);
+    });
+
+    it("recovers a single line split by an <em>", function() {
+        const withEm = renderHtml(splitFirstHtml);
+        const restored = renderHtml(splitFirstHtml.replace(/<\/?em>/g, "_"));
+        expect(withEm.querySelector(".katex")).not.toBeNull();
+        expect(withEm.innerHTML).toEqual(restored.innerHTML);
+    });
+
+    it("leaves <em> tags outside math untouched", function() {
+        const el = document.createElement("div");
+        el.innerHTML = "Hello <em>world</em>!";
+        const original = el.innerHTML;
+        renderMathInElement(el, {delimiters});
+        expect(el.querySelector(".katex")).toBeNull();
+        expect(el.innerHTML).toEqual(original);
+    });
+
+    it("renders complete math inside an <em>", function() {
+        const el = document.createElement("div");
+        el.innerHTML = "see <em>\\(x^2\\)</em> here";
+        renderMathInElement(el, {delimiters});
+        expect(el.querySelector("em .katex")).not.toBeNull();
+        expect(el.textContent).not.toContain("_");
+    });
+});

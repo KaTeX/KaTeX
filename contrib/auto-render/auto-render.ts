@@ -82,20 +82,39 @@ const renderElem = function(
         const childNode = elem.childNodes[i];
         if (childNode.nodeType === 3) {
             // Text node
-            // Concatenate all sibling text nodes.
-            // Webkit browsers split very large text nodes into smaller ones,
-            // so the delimiters may be split across different nodes.
+            // Concatenate adjacent sibling text nodes. WebKit browsers split
+            // very large text nodes into smaller ones, so the delimiters may
+            // be split across different nodes.
+            // Markdown preprocessors such as rustdoc also split math by
+            // turning `_..._` subscripts into <em> tags; absorb those and
+            // restore the underscores so the delimiters reunite.
             let textContentConcat = childNode.textContent ?? "";
             let sibling = childNode.nextSibling;
             let nSiblings = 0;
-            while (sibling && (sibling.nodeType === Node.TEXT_NODE)) {
-                textContentConcat += sibling.textContent ?? "";
+            while (sibling) {
+                if (sibling.nodeType === Node.TEXT_NODE) {
+                    textContentConcat += sibling.textContent ?? "";
+                } else if (sibling.nodeType === Node.ELEMENT_NODE &&
+                        sibling.nodeName.toLowerCase() === "em") {
+                    const emText = sibling.textContent ?? "";
+                    const emHasDelimiter = optionsCopy.delimiters.some(
+                        (d) => emText.includes(d.left) ||
+                            emText.includes(d.right));
+                    // Leave the <em> for normal recursion when it holds its
+                    // own delimiters, so emphasized math keeps rendering.
+                    if (emHasDelimiter) {
+                        break;
+                    }
+                    textContentConcat += "_" + emText + "_";
+                } else {
+                    break;
+                }
                 sibling = sibling.nextSibling;
                 nSiblings++;
             }
             const frag = renderMathInText(textContentConcat, optionsCopy);
             if (frag) {
-                // Remove extra text nodes
+                // Remove the consumed sibling nodes
                 for (let j = 0; j < nSiblings; j++) {
                     childNode.nextSibling!.remove();
                 }

@@ -135,3 +135,23 @@ instead taken from the `display` key of the corresponding entry in the
 The same `options.macros` object (which defaults to an empty object `{}`)
 is passed into several calls to `katex.render`, so that consecutive equations
 can build up shared macros by `\gdef`.
+
+## Markdown preprocessors
+Some Markdown preprocessors run before KaTeX and rewrite the math text. A common
+example is rustdoc: an underscore subscript such as `\(\bar{C}_t\)` is treated
+as Markdown emphasis, so the underscores are dropped and the content between
+them becomes an `<em>` tag (`\(\bar{C}<em>t\)</em>`). This splits the `\(` and
+`\)` delimiters across separate DOM nodes, and a longer expression that uses
+two underscores can leave the whole formula unrendered (see
+[issue #4234](https://github.com/KaTeX/KaTeX/issues/4234)).
+
+To handle this case, auto-render absorbs an adjacent `<em>` tag while scanning a
+run of text for delimiters and restores the surrounding underscores, so the
+delimiters reunite and the math renders as written. An `<em>` that contains a
+complete delimiter of its own is left untouched and rendered by the normal
+recursion, so intentionally emphasized math still works.
+
+This is a best-effort recovery for underscore emphasis. If you emphasize text
+with asterisks (`*...*`) inside a formula, the resulting `<em>` is still
+restored with underscores; in that case escape the markers (for example, write
+`\_` instead of `_`) or keep each formula in its own `\(...\)` span.
