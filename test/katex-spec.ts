@@ -2378,6 +2378,12 @@ describe("The \\htmlData macro", function() {
         expect(built[0].attributes["data-foo"]).toEqual(" bar ");
     });
 
+    it("should allow escaped commas in value", () => {
+        const built = getBuilt(
+            "\\htmlData{annotation_text=[a\\,b]}{x}", trustNonStrictSettings);
+        expect(built[0].attributes["data-annotation_text"]).toEqual("[a,b]");
+    });
+
     it("should throw Error if an argument contains no equals signs", () => {
         try {
             katex.renderToString(

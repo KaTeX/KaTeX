@@ -49,9 +49,9 @@ defineFunction({
                 };
                 break;
             case "\\htmlData": {
-                const data = value.split(",");
+                const data = value.split(/(?<!\\),/);
                 for (let i = 0; i < data.length; i++) {
-                    const item = data[i];
+                    const item = data[i].replace(/\\,/g, ",");
                     const firstEquals = item.indexOf("=");
                     if (firstEquals < 0) {
                         throw new ParseError(`\\htmlData key/value '${item}'` +
