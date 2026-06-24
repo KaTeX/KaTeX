@@ -49,7 +49,29 @@ defineFunction({
                 };
                 break;
             case "\\htmlData": {
-                const data = value.split(",");
+                // Split on commas at brace depth 0 so that users can wrap
+                // values containing literal commas in braces, e.g.
+                //   \htmlData{annotation_text={[a,b]}}{[a, b]}
+                const data = [];
+                let current = "";
+                let depth = 0;
+                for (let i = 0; i < value.length; i++) {
+                    const ch = value[i];
+                    if (ch === "{") {
+                        current += ch;
+                        depth++;
+                    } else if (ch === "}") {
+                        depth--;
+                        current += ch;
+                    } else if (ch === "," && depth === 0) {
+                        data.push(current);
+                        current = "";
+                    } else {
+                        current += ch;
+                    }
+                }
+                data.push(current);
+
                 for (let i = 0; i < data.length; i++) {
                     const item = data[i];
                     const firstEquals = item.indexOf("=");
@@ -59,7 +81,23 @@ defineFunction({
                     }
                     const key = item.slice(0, firstEquals);
                     const value = item.slice(firstEquals + 1);
-                    attributes["data-" + key.trim()] = value;
+                    // Strip outer braces from the value if they enclose
+                    // the entire value (used for grouping to protect commas).
+                    let trimmed = value;
+                    if (value.length > 1 && value[0] === "{" &&
+                            value[value.length - 1] === "}") {
+                        let d = 0;
+                        let balanced = true;
+                        for (let j = 1; j < value.length - 1; j++) {
+                            if (value[j] === "{") { d++; }
+                            else if (value[j] === "}") { d--; }
+                            if (d < 0) { balanced = false; break; }
+                        }
+                        if (balanced && d === 0) {
+                            trimmed = value.slice(1, -1);
+                        }
+                    }
+                    attributes["data-" + key.trim()] = trimmed;
                 }
 
                 trustContext = {

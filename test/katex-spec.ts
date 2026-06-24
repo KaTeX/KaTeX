@@ -2378,6 +2378,38 @@ describe("The \\htmlData macro", function() {
         expect(built[0].attributes["data-foo"]).toEqual(" bar ");
     });
 
+    it("should handle values with commas wrapped in braces", () => {
+        const built = getBuilt(
+            "\\htmlData{annotation_text={[a,b]}}{x}",
+            trustNonStrictSettings);
+        expect(built[0].attributes["data-annotation_text"])
+            .toEqual("[a,b]");
+    });
+
+    it("should handle multiple pairs where one has brace-wrapped value", () => {
+        const built = getBuilt(
+            "\\htmlData{foo={a,b}, bar=c}{x}",
+            trustNonStrictSettings);
+        expect(built[0].attributes["data-foo"]).toEqual("a,b");
+        expect(built[0].attributes["data-bar"]).toEqual("c");
+    });
+
+    it("should handle nested braces in values", () => {
+        const built = getBuilt(
+            "\\htmlData{foo={a,{b,c},d}}{x}",
+            trustNonStrictSettings);
+        expect(built[0].attributes["data-foo"]).toEqual("a,{b,c},d");
+    });
+
+    it("should not strip braces when inner content is unbalanced", () => {
+        const built = getBuilt(
+            "\\htmlData{foo={a}{b}}{x}", trustNonStrictSettings);
+        // The value starts with { and ends with }, but inner braces
+        // are not balanced (depth goes negative), so outer braces
+        // are preserved as-is.
+        expect(built[0].attributes["data-foo"]).toEqual("{a}{b}");
+    });
+
     it("should throw Error if an argument contains no equals signs", () => {
         try {
             katex.renderToString(
