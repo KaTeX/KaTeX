@@ -2378,17 +2378,23 @@ describe("The \\htmlData macro", function() {
         expect(built[0].attributes["data-foo"]).toEqual(" bar ");
     });
 
-    it("should allow escaped commas in value", () => {
+    it("should allow commas in value escaped as {,}", () => {
         const built = getBuilt(
-            "\\htmlData{annotation_text=[a\\,b]}{x}", trustNonStrictSettings);
+            "\\htmlData{annotation_text=[a{,}b]}{x}", trustNonStrictSettings);
         expect(built[0].attributes["data-annotation_text"]).toEqual("[a,b]");
     });
 
     it("should split on unescaped commas while preserving escaped ones", () => {
         const built = getBuilt(
-            "\\htmlData{foo=a\\,b, bar=c}{x}", trustNonStrictSettings);
+            "\\htmlData{foo=a{,}b, bar=c}{x}", trustNonStrictSettings);
         expect(built[0].attributes["data-foo"]).toEqual("a,b");
         expect(built[0].attributes["data-bar"]).toEqual("c");
+    });
+
+    it("should allow multiple escaped commas in one value", () => {
+        const built = getBuilt(
+            "\\htmlData{list=a{,}b{,}c}{x}", trustNonStrictSettings);
+        expect(built[0].attributes["data-list"]).toEqual("a,b,c");
     });
 
     it("should throw Error if an argument contains no equals signs", () => {

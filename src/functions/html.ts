@@ -49,13 +49,17 @@ defineFunction({
                 };
                 break;
             case "\\htmlData": {
-                // Split on commas, treating `\,` as an escaped comma.
+                // Split on commas, treating `{,}` as an escaped comma. Braces
+                // are used for the escape because a backslash escape such as
+                // `\,` is a macro (here, a thin space) that gets expanded away
+                // before this raw argument is ever read.
                 const data: string[] = [];
                 let current = "";
                 for (let i = 0; i < value.length; i++) {
-                    if (value[i] === "\\" && value[i + 1] === ",") {
+                    if (value[i] === "{" && value[i + 1] === "," &&
+                            value[i + 2] === "}") {
                         current += ",";
-                        i++;
+                        i += 2;
                     } else if (value[i] === ",") {
                         data.push(current);
                         current = "";
