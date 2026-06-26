@@ -53,13 +53,13 @@ defineFunction({
                 // are used for the escape because a backslash escape such as
                 // `\,` is a macro (here, a thin space) that gets expanded away
                 // before this raw argument is ever read.
+                const ESCAPED_COMMA = "{,}";
                 const data: string[] = [];
                 let current = "";
                 for (let i = 0; i < value.length; i++) {
-                    if (value[i] === "{" && value[i + 1] === "," &&
-                            value[i + 2] === "}") {
+                    if (value.startsWith(ESCAPED_COMMA, i)) {
                         current += ",";
-                        i += 2;
+                        i += ESCAPED_COMMA.length - 1;
                     } else if (value[i] === ",") {
                         data.push(current);
                         current = "";
