@@ -257,10 +257,8 @@ export function getGlobalMetrics(size: number): FontMetrics {
         const metrics: FontMetrics = fontMetricsBySizeIndex[sizeIndex] = {
             cssEmPerMu: sigmasAndXis.quad[sizeIndex] / 18,
         };
-        for (const key in sigmasAndXis) {
-            if (sigmasAndXis.hasOwnProperty(key)) {
-                metrics[key] = sigmasAndXis[key][sizeIndex];
-            }
+        for (const key of Object.keys(sigmasAndXis)) {
+            metrics[key] = sigmasAndXis[key][sizeIndex];
         }
     }
     return fontMetricsBySizeIndex[sizeIndex]!;
