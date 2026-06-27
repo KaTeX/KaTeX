@@ -49,10 +49,9 @@ defineFunction({
                 };
                 break;
             case "\\htmlData": {
-                // Split on commas, treating `{,}` as an escaped comma. Braces
-                // are used for the escape because a backslash escape such as
-                // `\,` is a macro (here, a thin space) that gets expanded away
-                // before this raw argument is ever read.
+                // `{,}` escapes a literal comma. Braces are used rather than a
+                // backslash because `\,` is a macro (a thin space) that expands
+                // away before this raw argument is ever read.
                 const ESCAPED_COMMA = "{,}";
                 const data: string[] = [];
                 let current = "";
