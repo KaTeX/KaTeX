@@ -4,30 +4,30 @@
  * pull in `isAtom` without dragging in the ~870-line symbol tables.
  */
 
-// Some of these have a "-token" suffix since these are also used as `ParseNode`
-// types for raw text tokens, and we want to avoid conflicts with higher-level
-// `ParseNode` types. These `ParseNode`s are constructed within `Parser` by
-// looking up the `symbols` map.
-export const ATOMS = {
-    "bin": 1,
-    "close": 1,
-    "inner": 1,
-    "open": 1,
-    "punct": 1,
-    "rel": 1,
-};
-export const NON_ATOMS = {
-    "accent-token": 1,
-    "mathord": 1,
-    "op-token": 1,
-    "spacing": 1,
-    "textord": 1,
-};
+const atomList = [
+    "bin",
+    "close",
+    "inner",
+    "open",
+    "punct",
+    "rel",
+] as const;
 
-export type Atom = keyof typeof ATOMS;
-export type NonAtom = keyof typeof NON_ATOMS;
+const nonAtomList = [
+    "accent-token",
+    "mathord",
+    "op-token",
+    "spacing",
+    "textord",
+] as const;
+
+const Atoms: ReadonlySet<string> = new Set(atomList);
+export const NonAtoms: ReadonlySet<string> = new Set(nonAtomList);
+
+export type Atom = typeof atomList[number];
+type NonAtom = typeof nonAtomList[number];
 export type Group = Atom | NonAtom;
 
 export function isAtom(value: string): value is Atom {
-    return value in ATOMS;
+    return Atoms.has(value);
 }

@@ -449,10 +449,10 @@ export default class MacroExpander implements MacroContextInterface {
      */
     isDefined(name: string): boolean {
         return this.macros.has(name) ||
-            functions.hasOwnProperty(name) ||
-            symbols.math.hasOwnProperty(name) ||
-            symbols.text.hasOwnProperty(name) ||
-            implicitCommands.hasOwnProperty(name);
+            Object.prototype.hasOwnProperty.call(functions, name) ||
+            Object.prototype.hasOwnProperty.call(symbols.math, name) ||
+            Object.prototype.hasOwnProperty.call(symbols.text, name) ||
+            Object.prototype.hasOwnProperty.call(implicitCommands, name);
     }
 
     /**
@@ -460,8 +460,11 @@ export default class MacroExpander implements MacroContextInterface {
      */
     isExpandable(name: string): boolean {
         const macro = this.macros.get(name);
-        return macro != null ? typeof macro === "string"
-                || typeof macro === "function" || !macro.unexpandable
-            : functions.hasOwnProperty(name) && !functions[name].primitive;
+        if (macro != null) {
+            return typeof macro === "string"
+                || typeof macro === "function"
+                || !macro.unexpandable;
+        }
+        return Object.prototype.hasOwnProperty.call(functions, name) && !functions[name].primitive;
     }
 }
