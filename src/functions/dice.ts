@@ -22,11 +22,15 @@ defineFunction({
         if (!['1', '2', '3', '4', '5', '6'].includes(value.string)) {
             throw new Error("Illegal value for \\epsdice.");
         }
+        const faceStr = face && assertNodeType(face, "raw").string;
+        if (faceStr !== null && faceStr !== "black") {
+            throw new ParseError(`Invalid face option '${faceStr}' for \\epsdice.`);
+        }
         return {
             type: "dice",
             mode: parser.mode,
             value: parseInt(value.string),
-            face: face && assertNodeType(face, "raw").string,
+            face: faceStr,
         };
     },
 
