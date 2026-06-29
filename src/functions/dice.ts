@@ -4,6 +4,7 @@ import {makeSymbol} from "../buildCommon";
 import * as mml from "../buildMathML";
 import {assertNodeType} from "../parseNode";
 import {MathNode} from "../mathMLTree";
+import ParseError from "../ParseError";
 
 const diceUnicode = ['\u2680', '\u2681', '\u2682',
     '\u2683', '\u2684', '\u2685'];
