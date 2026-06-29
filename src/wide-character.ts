@@ -110,7 +110,7 @@ const wideLatinLetterData = [
     italicSansSerif, italicSansSerif, // A-Z, a-z
     noFont, noFont,           // A-Z bold italic sans, a-z bold italic sans - no font
     monospace, monospace,     // A-Z, a-z
-] as const;
+] as const satisfies readonly WideChar[];
 
 const wideNumeralData = [
     boldUpright,      // 0-9
@@ -118,7 +118,7 @@ const wideNumeralData = [
     sansSerif,        // 0-9
     boldSansSerif,   // 0-9
     monospace,       // 0-9
-] as const;
+] as const satisfies readonly WideChar[];
 
 export const wideCharacterFont = (
     wideChar: string,
