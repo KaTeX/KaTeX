@@ -879,6 +879,9 @@ describe("A texvc builder", function() {
         expect`\real\rarr\plusmn\rArr\reals\Rarr\Reals\Rho`.toBuild();
         expect`\text{\sect}\sdot\sub\sube\supe`.toBuild();
         expect`\Tau\thetasym\weierp\Zeta`.toBuild();
+        expect`\epsdice{1}\epsdice{2}\epsdice{3}\epsdice{4}\epsdice{5}\epsdice{6}`.toBuild();
+        expect`\epsdice[black]{1}\epsdice[black]{2}\epsdice[black]{3}`.toBuild();
+        expect`\epsdice[black]{4}\epsdice[black]{5}\epsdice[black]{6}`.toBuild();
     });
 });
 

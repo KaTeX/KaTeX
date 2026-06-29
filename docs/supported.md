@@ -685,9 +685,13 @@ In cases where KaTeX fonts do not have a bold glyph, `\pmb` can simulate one. Fo
 |$\circledR$ `\circledR`|$\diamondsuit$ `\diamondsuit`|$\heartsuit$ `\heartsuit`
 |$\text{\textregistered}$ `\text{\textregistered}`|$\diamonds$ `\diamonds`|$\hearts$ `\hearts`
 |$\circledS$ `\circledS`|$\spadesuit$ `\spadesuit`|$\spades$ `\spades`
-|$\text{\textcircled a}$ `\text{\textcircled a}`|$\maltese$ `\maltese`|$\minuso$ `\minuso`|
+|$\text{\textcircled a}$ `\text{\textcircled a}`|$\maltese$ `\maltese`|$\minuso$ `\minuso`
+|$\epsdice{1}$ `\epsdice{1}`|$\epsdice{2}$ `\epsdice{2}`|$\epsdice{3}$ `\epsdice{3}`
+|$\epsdice{4}$ `\epsdice{4}`|$\epsdice{5}$ `\epsdice{5}`|$\epsdice{6}$ `\epsdice{6}`|
+|$\epsdice[black]{1}$ `\epsdice[black]{1}`|$\epsdice[black]{2}$ `\epsdice[black]{2}`|$\epsdice[black]{3}$ `\epsdice[black]{3}`
+|$\epsdice[black]{4}$ `\epsdice[black]{4}`|$\epsdice[black]{5}$ `\epsdice[black]{5}`|$\epsdice[black]{6}$ `\epsdice[black]{6}`|
 
-Direct Input: § ¶ $ £ ¥ ∇ ∞ · ∠ ∡ ∢ ♠ ♡ ♢ ♣ ♭ ♮ ♯ ✓ …  ⋮  ⋯  ⋱  !$ ‼ ⦵
+Direct Input: § ¶ $ £ ¥ ∇ ∞ · ∠ ∡ ∢ ♠ ♡ ♢ ♣ ♭ ♮ ♯ ✓ …  ⋮  ⋯  ⋱  !$ ‼ ⦵ ⚀ ⚁ ⚂ ⚃ ⚄ ⚅
 
 ## Units
 

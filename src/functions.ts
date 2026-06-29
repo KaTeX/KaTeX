@@ -16,6 +16,7 @@ import "./functions/color";
 import "./functions/cr";
 import "./functions/def";
 import "./functions/delimsizing";
+import "./functions/dice";
 import "./functions/enclose";
 import "./functions/environment";
 import "./functions/font";
