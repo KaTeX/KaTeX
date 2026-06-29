@@ -24,9 +24,9 @@ defineFunction({
             throw new Error("Illegal value for \\epsdice.");
         }
         const faceStr = face && assertNodeType(face, "raw").string;
-        if (faceStr !== null && faceStr !== "black") {
-            throw new ParseError(`Invalid face option '${faceStr}' for \\epsdice.`);
-        }
+        // if (faceStr !== null && faceStr !== "black") {
+        //     throw new ParseError(`Invalid face option '${faceStr}' for \\epsdice.`);
+        // }
         return {
             type: "dice",
             mode: parser.mode,
