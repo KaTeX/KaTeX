@@ -52,7 +52,7 @@ jobs:
           SELENIUM_IP=$(docker inspect ${{ job.services.selenium.id }} --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}')
           
           if [ "${{ matrix.browser }}" = "safari" ]; then
-            SELENIUM_ARGS="--selenium-url http://$SELENIUM_IP:4444 --selenium-ip $SELENIUM_IP"
+            SELENIUM_ARGS="--selenium-url http://$SELENIUM_IP:4444 --selenium-ip $SELENIUM_IP --wait 1.0"
           else
             SELENIUM_ARGS="--selenium-ip selenium"
           fi
