@@ -25,7 +25,7 @@ manually.  Example run for Firefox:
     docker stop ${container}
     docker rm ${container}
 
-For Chrome, simply replace both occurrences of `firefox` with `chrome`.
+For Chrome, replace both occurrences of `firefox` with `chrome` with appropriate version.
 
 For WebKit:
 

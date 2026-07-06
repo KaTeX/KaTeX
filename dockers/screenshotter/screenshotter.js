@@ -72,6 +72,13 @@ const opts = program
     .parse(process.argv)
     .opts();
 
+
+// WebKit (safari) needs extra settle time for glyph rasterization to be
+// deterministic; default to 0.5s there unless the user overrode --wait.
+if (opts.wait === undefined) {
+    opts.wait = (opts.browser === "safari" || opts.browser === "webkit") ? 0.5 : 0;
+}
+
 let listOfCases;
 if (opts.include) {
     listOfCases = opts.include.split(",");
@@ -230,12 +237,8 @@ if (seleniumURL) {
                 seleniumIP = urlObj.hostname;
             }
             seleniumPort = parseInt(urlObj.port, 10) || seleniumPort;
-            await pRetry(tryConnect, {
-                retries: 50,
-                minTimeout: 100,
-                factor: 1,
-            });
-        } else if (seleniumIP) {
+        }
+        if (seleniumURL || seleniumIP) {
             await pRetry(tryConnect, {
                 retries: 50,
                 minTimeout: 100,

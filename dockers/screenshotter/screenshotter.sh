@@ -31,7 +31,7 @@ for browserTag in "firefox:128.0-20260222" "chromium:145.0-20260222" "webkit:2.0
         [[ ${container} ]] || continue
         echo "Container ${container:0:12} started"
         port=$(docker port "${container}" 4444 | head -1 | sed 's/.*://')
-        extra_args="--selenium-url http://localhost:${port} --wait 0.5"
+        extra_args="--selenium-url http://localhost:${port}"
     else
         image=selenium/standalone-${browserTag}
         echo "Starting container for ${image}"

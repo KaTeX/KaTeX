@@ -58,6 +58,10 @@
         load_font("Mincho");
         load_font("Batang");
 
+        if (document.fonts && document.fonts.ready) {
+          results.push(document.fonts.ready);
+        }
+
         for (var i = 0; i < document.images.length; i++) {
           var img = document.images[i];
           results.push(new Promise(function (done, error) {
@@ -68,6 +72,9 @@
               img.addEventListener('error', error);
             }
           }));
+          if (img.decode) {
+            results.push(img.decode().catch(function() {}));
+          }
         };
 
         Promise.all(results).then(callback)
