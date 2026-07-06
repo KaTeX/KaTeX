@@ -83,10 +83,8 @@ export class MathNode implements MathDomNode {
         const node = document.createElementNS(
             "http://www.w3.org/1998/Math/MathML", this.type);
 
-        for (const attr in this.attributes) {
-            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                node.setAttribute(attr, this.attributes[attr]);
-            }
+        for (const [attr, value] of Object.entries(this.attributes)) {
+            node.setAttribute(attr, value);
         }
 
         if (this.classes.length > 0) {
@@ -118,12 +116,10 @@ export class MathNode implements MathDomNode {
         let markup = "<" + this.type;
 
         // Add the attributes
-        for (const attr in this.attributes) {
-            if (Object.prototype.hasOwnProperty.call(this.attributes, attr)) {
-                markup += " " + attr + "=\"";
-                markup += escape(this.attributes[attr]);
-                markup += "\"";
-            }
+        for (const [attr, value] of Object.entries(this.attributes)) {
+            markup += " " + attr + "=\"";
+            markup += escape(value);
+            markup += "\"";
         }
 
         if (this.classes.length > 0) {

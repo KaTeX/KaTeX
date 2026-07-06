@@ -434,16 +434,9 @@ async function findHostIP() {
     // Next, enumerate all network addresses
     const ips = [];
     const devs = os.networkInterfaces();
-    for (const dev in devs) {
-        if (devs.hasOwnProperty(dev)) {
-            const addrs = devs[dev];
-            for (let i = 0; i < addrs.length; ++i) {
-                let addr = addrs[i].address;
-                if (/:/.test(addr)) {
-                    addr = "[" + addr + "]";
-                }
-                ips.push(addr);
-            }
+    for (const addrs of Object.values(devs)) {
+        for (const {address} of addrs) {
+            ips.push(/:/.test(address) ? `[${address}]` : address);
         }
     }
     console.log("Looking for host IP among " + ips.join(", "));
