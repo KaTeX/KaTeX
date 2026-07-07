@@ -276,7 +276,7 @@ $display-margin: 1em 0 !default;
     .katex-overline .overline-line,
     .katex-underline .underline-line,
     .katex-hline,
-    .hdashline,
+    .katex-hdashline,
     .katex-rule {
         min-height: 1px;
     }
@@ -333,7 +333,7 @@ $display-margin: 1em 0 !default;
         border-bottom-style: solid;
     }
 
-    .hdashline {
+    .katex-hdashline {
         display: inline-block;
         width: 100%;
         border-bottom-style: dashed;

@@ -521,7 +521,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
     // Add \hline(s), if any.
     if (hlines.length > 0) {
         const line = makeLineSpan("katex-hline", options, ruleThickness);
-        const dashes = makeLineSpan("hdashline", options, ruleThickness);
+        const dashes = makeLineSpan("katex-hdashline", options, ruleThickness);
         const vListElems = [{type: "elem" as const, elem: tableBody, shift: 0}];
         while (hlines.length > 0) {
             const hline = hlines.pop()!;

@@ -65,7 +65,7 @@ To allow line breaks in display equations (unlike LaTeX):
 ```css
 .katex-display > .katex { white-space: normal }
 /* Add space between broken lines: */
-.katex-display > .katex-base { margin: 0.25em 0 }
+.katex-display > .katex > .katex-html > .katex-base { margin: 0.25em 0 }
 /* Compensate by reducing space around display math */
 .katex-display { margin: 0.5em 0; }
 ```
