@@ -152,7 +152,7 @@
     "clean-install": "pnpm clean && pnpm install",
     "start": "webpack serve --config webpack.dev.js",
     "analyze": "webpack --config webpack.analyze.js",
-    "build": "rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c --failAfterWarnings && webpack && node update-sri.js package dist/README.md",
+    "build": "NODE_ENV=production rimraf dist/ && mkdirp dist && cp README.md dist && rollup -c --failAfterWarnings && webpack && node update-sri.js package dist/README.md",
     "build:fonts": "dockers/fonts/buildFonts.sh",
     "build:metrics": "dockers/fonts/buildMetrics.sh",
     "watch": "pnpm build --watch",
