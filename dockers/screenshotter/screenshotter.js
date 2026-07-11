@@ -561,11 +561,12 @@ async function takeScreenshot(key) {
                 const ratio = diffPixels / totalPixels;
                 if (ratio <= opts.threshold) {
                     console.log(
-                        `* ok within threshold ${key}, ${diffPixels}pixels differ`);
+                        `* ok within threshold ${key},` +
+                        `${diffPixels} pixels differ`);
                     return;
                 }
                 console.log(
-                    `error ${key}, ${diffPixels}pixels differ` +
+                    `error ${key}, ${diffPixels} pixels differ` +
                     `, ${(ratio * 100).toFixed(2)}%`);
             } else {
                 console.log(`error ${key}, dimension mismatch`);
