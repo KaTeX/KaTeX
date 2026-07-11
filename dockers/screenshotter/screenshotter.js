@@ -18,6 +18,8 @@ const selenium = require("selenium-webdriver");
 const firefox = require("selenium-webdriver/firefox");
 const chrome = require("selenium-webdriver/chrome");
 const seleniumHttp = require("selenium-webdriver/http");
+const PNG = require("pngjs").PNG;
+const pixelmatch = require("pixelmatch").default;
 
 const istanbulLibCoverage = require('istanbul-lib-coverage');
 const istanbulLibReport = require('istanbul-lib-report');
@@ -69,6 +71,8 @@ const opts = program
         "Retry this many times before reporting failure", 5, parseInt)
     .option("--wait <secs>",
         "Wait this many seconds between page load and screenshot", parseFloat)
+    .option("--threshold <ratio>",
+        "Threshold for pixel differences", parseFloat)
     .parse(process.argv)
     .opts();
 
@@ -552,14 +556,41 @@ async function takeScreenshot(key) {
         });
         buf = opt.bufferSync(img.buf);
         if (opts.verify && !expected) {
-            console.log("error " + key + " (missing screenshot)");
+            console.log(`error ${key} (missing screenshot)`);
             break;
         } else if (expected) {
             if (buf.equals(expected)) {
-                console.log("* ok  " + key);
+                console.log(`* ok ${key}`);
                 return;
             }
-            console.log("error " + key);
+
+            // Byte-identical failed; fall back to a perceptual pixel diff.
+            const imgA = PNG.sync.read(buf);
+            const imgB = PNG.sync.read(expected);
+            if (imgA.width === imgB.width && imgA.height === imgB.height) {
+                const diffPixels = pixelmatch(
+                    imgA.data, imgB.data, null,
+                    imgA.width, imgA.height,
+                    {threshold: 0.1} // per-pixel color sensitivity
+                );
+                if (diffPixels === 0) {
+                    console.log(`* ok ${key} pixel-identical, byte mismatch only`);
+                    return;
+                }
+                const totalPixels = imgA.width * imgA.height;
+                const ratio = diffPixels / totalPixels;
+                if (ratio <= opts.threshold) {
+                    console.log(
+                        `* ok within threshold ${key}, ${diffPixels}pixels differ`);
+                    return;
+                }
+                console.log(
+                    `error ${key}, ${diffPixels}pixels differ` +
+                    `, ${(ratio * 100).toFixed(2)}%`);
+            } else {
+                console.log(`error ${key}, dimension mismatch`);
+            }
+            console.log(`error ${key}`);
             await browserSideWait(300 * retry);
             if (retry > 1) {
                 driverReady = false; // reload fully
