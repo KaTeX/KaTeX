@@ -149,6 +149,8 @@ exports[`A begin/end parser should grab \\arraystretch 1`] = `
 exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] = `
 [
   {
+    "attributes": {
+    },
     "classes": [
       "mord",
       "mathnormal"
@@ -192,6 +194,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     }
   },
   {
+    "attributes": {
+    },
     "classes": [
       "mord",
       "mathnormal"
@@ -230,6 +234,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
         },
         "children": [
           {
+            "attributes": {
+            },
             "classes": [
               "mrel",
               "mathbf"
@@ -280,6 +286,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     }
   },
   {
+    "attributes": {
+    },
     "classes": [
       "mord",
       "mathnormal"
@@ -318,6 +326,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
         },
         "children": [
           {
+            "attributes": {
+            },
             "classes": [
               "mord",
               "mathbf"
@@ -368,6 +378,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     }
   },
   {
+    "attributes": {
+    },
     "classes": [
       "mord",
       "mathnormal"
@@ -406,6 +418,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
         },
         "children": [
           {
+            "attributes": {
+            },
             "classes": [
               "mord",
               "mathbf"
@@ -456,6 +470,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     }
   },
   {
+    "attributes": {
+    },
     "classes": [
       "mord",
       "mathnormal"
@@ -479,6 +495,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
         },
         "children": [
           {
+            "attributes": {
+            },
             "classes": [
               "mord",
               "boldsymbol"
@@ -514,6 +532,8 @@ exports[`A font parser \\boldsymbol should inherit mbin/mrel from argument 1`] =
     }
   },
   {
+    "attributes": {
+    },
     "classes": [
       "mord",
       "mathnormal"
@@ -594,6 +614,8 @@ exports[`A parser that does not throw on unsupported commands should build katex
   },
   "children": [
     {
+      "attributes": {
+      },
       "classes": [
       ],
       "depth": 0,
@@ -635,6 +657,8 @@ exports[`An HTML extension builder should not affect spacing 1`] = `
     },
     "children": [
       {
+        "attributes": {
+        },
         "classes": [
           "mord",
           "mathnormal"
@@ -665,6 +689,8 @@ exports[`An HTML extension builder should not affect spacing 1`] = `
         }
       },
       {
+        "attributes": {
+        },
         "classes": [
           "mbin"
         ],
@@ -704,6 +730,8 @@ exports[`An HTML extension builder should not affect spacing 1`] = `
     }
   },
   {
+    "attributes": {
+    },
     "classes": [
       "mord",
       "mathnormal"
@@ -729,6 +757,8 @@ exports[`An HTML extension builder should render with trust and strict setting 1
     },
     "children": [
       {
+        "attributes": {
+        },
         "classes": [
           "mord",
           "mathnormal"
@@ -758,6 +788,8 @@ exports[`An HTML extension builder should render with trust and strict setting 1
     },
     "children": [
       {
+        "attributes": {
+        },
         "classes": [
           "mord",
           "mathnormal"
@@ -789,6 +821,8 @@ exports[`An HTML extension builder should render with trust and strict setting 1
     },
     "children": [
       {
+        "attributes": {
+        },
         "classes": [
           "mord",
           "mathnormal"
@@ -820,6 +854,8 @@ exports[`An HTML extension builder should render with trust and strict setting 1
     },
     "children": [
       {
+        "attributes": {
+        },
         "classes": [
           "mord",
           "mathnormal"
@@ -1010,6 +1046,8 @@ exports[`An includegraphics builder should not render without trust setting 1`] 
     },
     "children": [
       {
+        "attributes": {
+        },
         "classes": [
           "mord",
           "",
@@ -1383,6 +1421,8 @@ exports[`href and url commands should forbid relative URLs when trust option is 
 exports[`href and url commands should not affect spacing around 1`] = `
 [
   {
+    "attributes": {
+    },
     "classes": [
       "mord",
       "mathnormal"
@@ -1418,6 +1458,8 @@ exports[`href and url commands should not affect spacing around 1`] = `
     },
     "children": [
       {
+        "attributes": {
+        },
         "classes": [
           "mbin"
         ],
@@ -1447,6 +1489,8 @@ exports[`href and url commands should not affect spacing around 1`] = `
         }
       },
       {
+        "attributes": {
+        },
         "classes": [
           "mord",
           "mathnormal"

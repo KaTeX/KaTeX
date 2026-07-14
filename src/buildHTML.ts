@@ -264,27 +264,25 @@ const setSourceLocationAttributes = function(
     node: HtmlDomNode,
     start: number,
     end: number,
-) {
+): void {
     const attributedNode = node as AttributedDomNode;
-    if (typeof attributedNode.setAttribute !== "function") {
-        return false;
+    if (typeof attributedNode.setAttribute === "function") {
+        attributedNode.setAttribute(sourceStartAttribute, String(start));
+        attributedNode.setAttribute(sourceEndAttribute, String(end));
     }
-    attributedNode.setAttribute(sourceStartAttribute, String(start));
-    attributedNode.setAttribute(sourceEndAttribute, String(end));
-    return true;
 };
 
 /**
- * When a builder node does not have its own parse-node location, merge child
- * source locations so wrapper spans still act as useful click targets.
+ * When a builder node does not have its own parse-node location, merge the
+ * source locations already present on the node and its descendants so wrapper
+ * spans still act as useful click targets.
  */
 const inheritSourceLocationRange = function(
     node: HtmlDomNode,
 ): [number, number] | null {
     let minStart = Infinity;
     let maxEnd = -Infinity;
-    const children = (node as AttributedDomNode).children;
-    const stack: HtmlDomNode[] = children ? [...children] : [];
+    const stack: HtmlDomNode[] = [node];
 
     while (stack.length) {
         const current = stack.pop() as AttributedDomNode | undefined;

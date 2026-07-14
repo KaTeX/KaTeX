@@ -376,7 +376,7 @@ export class SymbolNode implements HtmlDomNode {
     width: number;
     maxFontSize: number;
     classes: string[];
-    attributes?: Record<string, string>;
+    attributes: Record<string, string>;
     style: CssStyle;
 
     constructor(
@@ -396,6 +396,7 @@ export class SymbolNode implements HtmlDomNode {
         this.skew = skew || 0;
         this.width = width || 0;
         this.classes = classes || [];
+        this.attributes = {};
         this.style = style || {};
         this.maxFontSize = 0;
 
@@ -421,7 +422,6 @@ export class SymbolNode implements HtmlDomNode {
     }
 
     setAttribute(attribute: string, value: string) {
-        this.attributes = this.attributes || {};
         this.attributes[attribute] = value;
     }
 
@@ -448,11 +448,9 @@ export class SymbolNode implements HtmlDomNode {
             Object.assign(span.style, this.style);
         }
 
-        if (this.attributes) {
-            for (const attr of Object.keys(this.attributes)) {
-                span = span || document.createElement("span");
-                span.setAttribute(attr, this.attributes[attr]);
-            }
+        for (const attr of Object.keys(this.attributes)) {
+            span = span || document.createElement("span");
+            span.setAttribute(attr, this.attributes[attr]);
         }
 
         if (span) {
@@ -492,14 +490,12 @@ export class SymbolNode implements HtmlDomNode {
             markup += " style=\"" + escape(styles) + "\"";
         }
 
-        if (this.attributes) {
-            for (const attr of Object.keys(this.attributes)) {
-                if (invalidAttributeNameRegex.test(attr)) {
-                    throw new ParseError(`Invalid attribute name '${attr}'`);
-                }
-                needsSpan = true;
-                markup += ` ${attr}="${escape(this.attributes[attr])}"`;
+        for (const attr of Object.keys(this.attributes)) {
+            if (invalidAttributeNameRegex.test(attr)) {
+                throw new ParseError(`Invalid attribute name '${attr}'`);
             }
+            needsSpan = true;
+            markup += ` ${attr}="${escape(this.attributes[attr])}"`;
         }
 
         const escaped = escape(this.text);
