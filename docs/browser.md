@@ -168,6 +168,8 @@ katex/
 npm install katex
 # or
 yarn add katex
+# or
+pnpm add katex
 ```
 
 After installing, the files you want for hosting live under

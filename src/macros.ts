@@ -14,7 +14,7 @@ import symbols from "./symbols";
 import {makeEm} from "./units";
 import ParseError from "./ParseError";
 
-import type {MacroContextInterface} from "./defineMacro";
+import type {MacroContextInterface, MacroExpansion} from "./defineMacro";
 
 //////////////////////////////////////////////////////////////////////
 // macro tools
@@ -916,7 +916,7 @@ defineMacro("\\ket", "\\mathinner{|{#1}\\rangle}");
 defineMacro("\\braket", "\\mathinner{\\langle{#1}\\rangle}");
 defineMacro("\\Bra", "\\left\\langle#1\\right|");
 defineMacro("\\Ket", "\\left|#1\\right\\rangle");
-const braketHelper = (one: boolean) => (context: MacroContextInterface) => {
+const braketHelper = (one: boolean) => (context: MacroContextInterface): MacroExpansion => {
     const left = context.consumeArg().tokens;
     const middle = context.consumeArg().tokens;
     const middleDouble = context.consumeArg().tokens;
@@ -924,7 +924,7 @@ const braketHelper = (one: boolean) => (context: MacroContextInterface) => {
     const oldMiddle = context.macros.get("|");
     const oldMiddleDouble = context.macros.get("\\|");
     context.macros.beginGroup();
-    const midMacro = (double: boolean) => (context: MacroContextInterface) => {
+    const midMacro = (double: boolean) => (context: MacroContextInterface): MacroExpansion => {
         if (one) {
             // Only modify the first instance of | or \|
             context.macros.set("|", oldMiddle);

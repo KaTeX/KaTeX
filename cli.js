@@ -2,7 +2,7 @@
 // Simple CLI for KaTeX.
 // Reads TeX from stdin, outputs HTML to stdout.
 // To run this from the repository, you must first build KaTeX by running
-// `yarn` and `yarn build`.
+// `pnpm install` and `pnpm build`.
 
 /* eslint no-console:0 */
 
@@ -12,7 +12,7 @@ try {
 } catch (e) {
     console.error(
         "KaTeX could not import, likely because dist/katex.js is missing.");
-    console.error("Please run 'yarn' and 'yarn build' before running");
+    console.error("Please run 'pnpm install' and 'pnpm build' before running");
     console.error("cli.js from the KaTeX repository.");
     console.error();
     throw e;
@@ -23,13 +23,10 @@ const fs = require("fs");
 const {program} = require("commander");
 program.version(version);
 
-for (const prop in katex.SETTINGS_SCHEMA) {
-    if (katex.SETTINGS_SCHEMA.hasOwnProperty(prop)) {
-        const opt = katex.SETTINGS_SCHEMA[prop];
-        if (opt.cli !== false) {
-            program.option(opt.cli || "--" + prop, opt.cliDescription ||
-                opt.description, opt.cliProcessor, opt.cliDefault);
-        }
+for (const [prop, opt] of Object.entries(katex.SETTINGS_SCHEMA)) {
+    if (opt.cli !== false) {
+        program.option(opt.cli || "--" + prop, opt.cliDescription ||
+            opt.description, opt.cliProcessor, opt.cliDefault);
     }
 }
 program.option("-f, --macro-file <path>",

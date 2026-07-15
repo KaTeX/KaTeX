@@ -1,9 +1,0 @@
-{
-  "javascript.validate.enable": false,
-  "eslint.nodePath": ".yarn/sdks",
-  "stylelint.stylelintPath": ".yarn/sdks/stylelint/lib/index.js",
-  "search.exclude": {
-    "**/.yarn": true,
-    "**/.pnp.*": true
-  }
-}
