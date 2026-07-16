@@ -125,7 +125,7 @@ export const htmlBuilder: HtmlBuilderSupSub<"accent"> = (grp, options) => {
         // Shift the accent over by the skew.
         let left = skew;
 
-        // CSS defines `.katex .accent .accent-body:not(.accent-full) { width: 0 }`
+        // CSS defines `.katex .katex-accent .accent-body:not(.accent-full) { width: 0 }`
         // so that the accent doesn't contribute to the bounding box.
         // We need to shift the character by its width (effectively half
         // its width) to compensate.

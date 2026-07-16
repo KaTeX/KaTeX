@@ -58,7 +58,7 @@ $display-margin: 1em 0 !default;
     }
 
     .katex-html {
-        /* \newline is an empty block at top level, between .base elements */
+        /* \newline is an empty block at top level, between .katex-base elements */
         > .katex-newline {
             display: block;
         }

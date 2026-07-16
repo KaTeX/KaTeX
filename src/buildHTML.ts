@@ -292,7 +292,7 @@ export const buildGroup = function(
 
 /**
  * Combine an array of HTML DOM nodes (e.g., the output of `buildExpression`)
- * into an unbreakable HTML node of class .base, with proper struts to
+ * into an unbreakable HTML node of class .katex-base, with proper struts to
  * guarantee correct vertical extent.  `buildHTML` calls this repeatedly to
  * make up the entire expression as a sequence of unbreakable units.
  */

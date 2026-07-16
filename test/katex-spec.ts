@@ -1361,6 +1361,13 @@ describe("A begin/end parser", function() {
         expect`\begin{matrix}\hdashline a&b\\ \hdashline c&d\end{matrix}`.toParse();
     });
 
+    it("should build hlines with prefixed classes", function() {
+        const markup = katex.renderToString(
+            r`\begin{matrix}\hline a\\ \hdashline b\end{matrix}`);
+        expect(markup).toContain("class=\"katex-hline\"");
+        expect(markup).toContain("class=\"katex-hdashline\"");
+    });
+
     it("should forbid hlines outside array environment", () => {
         expect`\hline`.not.toParse();
     });

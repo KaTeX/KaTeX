@@ -30,7 +30,7 @@ defineFunction({
             // ref: https://www.math.lsu.edu/~aperlis/publications/mathclap/
             inner = makeSpan(
                 [], [html.buildGroup(group.body, options)]);
-            // wrap, since CSS will center a .clap > .inner > span
+            // wrap, since CSS will center a .clap > .katex-inner > span
             inner = makeSpan(["katex-inner"], [inner], options);
         } else {
             inner = makeSpan(
