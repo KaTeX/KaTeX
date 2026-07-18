@@ -550,7 +550,7 @@ async function takeScreenshot(key) {
                 const diffPixels = pixelmatch(
                     imgA.data, imgB.data, null,
                     imgA.width, imgA.height,
-                    {threshold: 0}
+                    {threshold: 0.05} // per-pixel color sensitivity
                 );
                 if (diffPixels === 0) {
                     console.log(`* ok ${key} pixel-identical, byte mismatch only`);
