@@ -265,7 +265,7 @@ class Options {
     sizingClasses(oldOptions: Options): Array<string> {
         if (oldOptions.size !== this.size) {
             return [
-                "sizing",
+                "katex-sizing",
                 "reset-size" + oldOptions.size,
                 "size" + this.size,
             ];
@@ -281,7 +281,7 @@ class Options {
     baseSizingClasses(): Array<string> {
         if (this.size !== Options.BASESIZE) {
             return [
-                "sizing",
+                "katex-sizing",
                 "reset-size" + this.size,
                 "size" + Options.BASESIZE,
             ];

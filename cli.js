@@ -23,13 +23,10 @@ const fs = require("fs");
 const {program} = require("commander");
 program.version(version);
 
-for (const prop in katex.SETTINGS_SCHEMA) {
-    if (katex.SETTINGS_SCHEMA.hasOwnProperty(prop)) {
-        const opt = katex.SETTINGS_SCHEMA[prop];
-        if (opt.cli !== false) {
-            program.option(opt.cli || "--" + prop, opt.cliDescription ||
-                opt.description, opt.cliProcessor, opt.cliDefault);
-        }
+for (const [prop, opt] of Object.entries(katex.SETTINGS_SCHEMA)) {
+    if (opt.cli !== false) {
+        program.option(opt.cli || "--" + prop, opt.cliDescription ||
+            opt.description, opt.cliProcessor, opt.cliDefault);
     }
 }
 program.option("-f, --macro-file <path>",

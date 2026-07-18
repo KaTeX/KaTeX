@@ -15,11 +15,15 @@ export class ConsoleWarning extends Error {
 }
 
 /**
- * Return the first raw string if x is tagged literal. Otherwise return x.
+ * Return the first raw string if x is tagged literal. Otherwise, return x.
  */
-export const r = (x: any): any =>
-    x != null && Object.prototype.hasOwnProperty.call(x, 'raw')
-    ? (x as {raw: string[]}).raw[0] : x;
+export function r(x: TemplateStringsArray | string): string;
+// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
+export function r(x: String): String;
+// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
+export function r(x: TemplateStringsArray | string | String): string | String {
+    return typeof x === "object" && "raw" in x ? x.raw[0] : x;
+}
 
 /**
  * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
@@ -90,7 +94,7 @@ export function getBuilt(expr: any, settings: any = new Settings()): any {
     const children = [];
     for (let i = 0; i < builtHTML.children.length; i++) {
         children.push(...builtHTML.children[i].children.filter(
-            (node: {classes: string[]}) => !node.classes.includes("strut")));
+            (node: {classes: string[]}) => !node.classes.includes("katex-strut")));
     }
     return children;
 }

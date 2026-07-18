@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "types": "types/katex.d.ts",
@@ -109,6 +109,8 @@
     "mkdirp": "^1.0.4",
     "p-retry": "^4.6.2",
     "pako": "^2.0.4",
+    "pixelmatch": "^7.2.0",
+    "pngjs": "^7.0.0",
     "postcss": "^8.4.16",
     "postcss-loader": "^7.0.1",
     "postcss-preset-env": "^7.8.0",
