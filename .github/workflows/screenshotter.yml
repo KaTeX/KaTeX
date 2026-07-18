@@ -77,7 +77,7 @@ jobs:
 
       - name: Run screenshotter (macOS)
         if: matrix.browser == 'safari'
-        run: node dockers/screenshotter/screenshotter.js -b safari --verify --diff --new --wait 0.3 --threshold 0.001
+        run: node dockers/screenshotter/screenshotter.js -b safari --verify --diff --new --wait 0.3
         timeout-minutes: 10
 
       - name: Print Selenium Docker logs
