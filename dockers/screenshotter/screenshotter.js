@@ -542,24 +542,27 @@ async function takeScreenshot(key) {
                 return;
             }
 
+            let errorMessage = `error ${key}`;
             // Byte-identical failed; fall back to a perceptual pixel diff.
             if (opts.browser === "safari") {
                 const imgA = PNG.sync.read(buf);
                 const imgB = PNG.sync.read(expected);
-                if (imgA.width === imgB.width &&
-                    imgA.height === imgB.height &&
-                    pixelmatch(
+                if (imgA.width === imgB.width && imgA.height === imgB.height) {
+                    const diffPixels = pixelmatch(
                         imgA.data, imgB.data, null,
                         imgA.width, imgA.height,
                         {threshold: 0.05} // per-pixel color sensitivity
-                    ) === 0) {
-                    console.log(
-                        `* ok ${key}: byte mismatch, but perceptually equivalent`
                     );
-                    return;
+                    if (diffPixels === 0) {
+                        console.log(`* ok ${key}: byte mismatch,` +
+                            `but perceptually equivalent`);
+                        return;
+                    } else {
+                        errorMessage = `error ${key}: ${diffPixels} pixels differ`;
+                    }
                 }
             }
-            console.log(`error ${key}`);
+            console.log(errorMessage);
             await browserSideWait(300 * retry);
             if (retry > 1) {
                 driverReady = false; // reload fully
