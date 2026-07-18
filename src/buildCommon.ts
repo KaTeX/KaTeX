@@ -212,7 +212,7 @@ export const makeOrd = function(
         if (lookupSymbol(text, fontName, mode).metrics) {
             return makeSymbol(text, fontName, mode, options,
                 classes.concat(fontClasses));
-        } else if (ligatures.hasOwnProperty(text) &&
+        } else if (Object.prototype.hasOwnProperty.call(ligatures, text) &&
                    fontName.slice(0, 10) === "Typewriter") {
             // Deconstruct ligatures in monospace fonts (\texttt, \tt).
             const parts = [];
@@ -775,7 +775,7 @@ export const staticSvg = function(value: string, options: Options): SvgSpan {
         "viewBox": "0 0 " + 1000 * width + " " + 1000 * height,
         "preserveAspectRatio": "xMinYMin",
     });
-    const span = makeSvgSpan(["overlay"], [svgNode], options);
+    const span = makeSvgSpan(["katex-overlay"], [svgNode], options);
     span.height = height;
     span.style.height = makeEm(height);
     span.style.width = makeEm(width);
