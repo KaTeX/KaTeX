@@ -109,6 +109,8 @@
     "mkdirp": "^1.0.4",
     "p-retry": "^4.6.2",
     "pako": "^2.0.4",
+    "pixelmatch": "^7.2.0",
+    "pngjs": "^7.0.0",
     "postcss": "^8.4.16",
     "postcss-loader": "^7.0.1",
     "postcss-preset-env": "^7.8.0",
