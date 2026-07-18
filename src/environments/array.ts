@@ -520,8 +520,8 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
     // Add \hline(s), if any.
     if (hlines.length > 0) {
-        const line = makeLineSpan("hline", options, ruleThickness);
-        const dashes = makeLineSpan("hdashline", options, ruleThickness);
+        const line = makeLineSpan("katex-hline", options, ruleThickness);
+        const dashes = makeLineSpan("katex-hdashline", options, ruleThickness);
         const vListElems = [{type: "elem" as const, elem: tableBody, shift: 0}];
         while (hlines.length > 0) {
             const hline = hlines.pop()!;
@@ -546,7 +546,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             positionType: "individualShift",
             children: tagSpans,
         }, options);
-        const tagCol = makeSpan(["tag"], [eqnNumCol], options);
+        const tagCol = makeSpan(["katex-tag"], [eqnNumCol], options);
         return makeFragment([tableBody, tagCol]);
     }
 };

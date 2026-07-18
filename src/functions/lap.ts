@@ -30,13 +30,13 @@ defineFunction({
             // ref: https://www.math.lsu.edu/~aperlis/publications/mathclap/
             inner = makeSpan(
                 [], [html.buildGroup(group.body, options)]);
-            // wrap, since CSS will center a .clap > .inner > span
-            inner = makeSpan(["inner"], [inner], options);
+            // wrap, since CSS will center a .clap > .katex-inner > span
+            inner = makeSpan(["katex-inner"], [inner], options);
         } else {
             inner = makeSpan(
-                ["inner"], [html.buildGroup(group.body, options)]);
+                ["katex-inner"], [html.buildGroup(group.body, options)]);
         }
-        const fix = makeSpan(["fix"], []);
+        const fix = makeSpan(["katex-fix"], []);
         let node = makeSpan(
             [group.alignment], [inner, fix], options);
 
@@ -45,7 +45,7 @@ defineFunction({
         // Next, use a strut to set the height of the HTML bounding box.
         // Otherwise, a tall argument may be misplaced.
         // This code resolved issue #1153
-        const strut = makeSpan(["strut"]);
+        const strut = makeSpan(["katex-strut"]);
         strut.style.height = makeEm(node.height + node.depth);
         if (node.depth) {
             strut.style.verticalAlign = makeEm(-node.depth);
@@ -54,8 +54,8 @@ defineFunction({
 
         // Next, prevent vertical misplacement when next to something tall.
         // This code resolves issue #1234
-        node = makeSpan(["thinbox"], [node], options);
-        return makeSpan(["mord", "vbox"], [node], options);
+        node = makeSpan(["katex-thinbox"], [node], options);
+        return makeSpan(["mord", "katex-vbox"], [node], options);
     },
     mathmlBuilder: (group, options) => {
         // mathllap, mathrlap, mathclap
