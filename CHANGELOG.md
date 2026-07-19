@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.18.1](https://github.com/KaTeX/KaTeX/compare/v0.18.0...v0.18.1) (2026-07-19)
+
+
+### Bug Fixes
+
+* **htmlData:** allow escaped commas in \htmlData ([#4236](https://github.com/KaTeX/KaTeX/issues/4236)) ([87a2b30](https://github.com/KaTeX/KaTeX/commit/87a2b304aff601ad1c3d930d47d6833d123ad210)), closes [#4204](https://github.com/KaTeX/KaTeX/issues/4204) [#4218](https://github.com/KaTeX/KaTeX/issues/4218)
+
 # [0.18.0](https://github.com/KaTeX/KaTeX/compare/v0.17.0...v0.18.0) (2026-07-17)
 
 
