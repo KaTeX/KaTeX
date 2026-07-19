@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         persist-credentials: false # minimize exposure and prevent accidental pushes
 
@@ -45,7 +45,7 @@ jobs:
     - name: Verify built bundle
       run: pnpm test:build
 
-    - uses: codecov/codecov-action@v6
+    - uses: codecov/codecov-action@v7
       with:
         directory: ./coverage/
       timeout-minutes: 3
@@ -60,7 +60,7 @@ jobs:
       cancel-in-progress: false
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         persist-credentials: false
         fetch-depth: 0
