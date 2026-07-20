@@ -85,7 +85,7 @@
     "browserslist": "^4.21.3",
     "caniuse-lite": "^1.0.30001384",
     "css-loader": "^6.7.1",
-    "cssnano": "^5.1.13",
+    "cssnano": "^8.0.0",
     "eslint": "^10.0.3",
     "eslint-plugin-actions": "^2.0.0",
     "eslint-plugin-react": "^7.37.5",
