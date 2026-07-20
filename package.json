@@ -68,7 +68,7 @@
     "@babel/runtime": "^7.28.6",
     "@eslint/eslintrc": "^3.3.5",
     "@eslint/js": "^10.0.1",
-    "@rollup/plugin-babel": "^5.3.1",
+    "@rollup/plugin-babel": "^7.0.0",
     "@rollup/plugin-commonjs": "^28.0.9",
     "@rollup/plugin-typescript": "^12.3.0",
     "@semantic-release/changelog": "^6.0.1",
