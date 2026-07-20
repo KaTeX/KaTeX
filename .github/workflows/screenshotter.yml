@@ -38,7 +38,7 @@ jobs:
         run: corepack enable
 
       - name: Use Node.js 24
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '24'
           cache: pnpm
