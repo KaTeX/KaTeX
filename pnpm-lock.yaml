@@ -94,8 +94,8 @@ importers:
         specifier: ^1.0.30001384
         version: 1.0.30001793
       css-loader:
-        specifier: ^6.7.1
-        version: 6.11.0(webpack@5.107.2)
+        specifier: ^7.0.0
+        version: 7.1.4(webpack@5.107.2)
       cssnano:
         specifier: ^5.1.13
         version: 5.1.15(postcss@8.5.15)
@@ -2735,12 +2735,12 @@ packages:
     peerDependencies:
       postcss: ^8.4
 
-  css-loader@6.11.0:
-    resolution: {integrity: sha512-CTJ+AEQJjq5NzLga5pE39qdiSV56F8ywCIsqNIRF0r7BDgWsN25aazToqAFg7ZrtA/U016xudB3ffgweORxX7g==}
-    engines: {node: '>= 12.13.0'}
+  css-loader@7.1.4:
+    resolution: {integrity: sha512-vv3J9tlOl04WjiMvHQI/9tmIrCxVrj6PFbHemBB1iihpeRbi/I4h033eoFIhwxBBqLhI0KYFS7yvynBFhIZfTw==}
+    engines: {node: '>= 18.12.0'}
     peerDependencies:
-      '@rspack/core': 0.x || 1.x
-      webpack: ^5.0.0
+      '@rspack/core': 0.x || ^1.0.0 || ^2.0.0-0
+      webpack: ^5.27.0
     peerDependenciesMeta:
       '@rspack/core':
         optional: true
@@ -9411,7 +9411,7 @@ snapshots:
       postcss: 8.5.15
       postcss-selector-parser: 6.1.2
 
-  css-loader@6.11.0(webpack@5.107.2):
+  css-loader@7.1.4(webpack@5.107.2):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.15)
       postcss: 8.5.15
