@@ -7,15 +7,31 @@ title: Migration Guide
 
 KaTeX's internal CSS classes are now prefixed with `katex-`. If you apply custom
 styles or maintain allowlists (for example, in a content sanitizer) that target
-KaTeX's internal classes, you must update your selectors. For example:
+KaTeX's internal classes, you must update your selectors. The list of
+renamed classes is:
 
-|Before   |After          |
-|---------|---------------|
-|`.base`  |`.katex-base`  |
-|`.strut` |`.katex-strut` |
-|`.inner` |`.katex-inner` |
-|`.tag`   |`.katex-tag`   |
-|`.newline`|`.katex-newline`|
+|Before        |After               |
+|--------------|--------------------|
+|`.accent`     |`.katex-accent`     |
+|`.base`       |`.katex-base`       |
+|`.fix`        |`.katex-fix`        |
+|`.hdashline`  |`.katex-hdashline`  |
+|`.hline`      |`.katex-hline`      |
+|`.inner`      |`.katex-inner`      |
+|`.newline`    |`.katex-newline`    |
+|`.overlay`    |`.katex-overlay`    |
+|`.overline`   |`.katex-overline`   |
+|`.root`       |`.katex-root`       |
+|`.rule`       |`.katex-rule`       |
+|`.sizing`     |`.katex-sizing`     |
+|`.smash`      |`.katex-smash`      |
+|`.sout`       |`.katex-sout`       |
+|`.stretchy`   |`.katex-stretchy`   |
+|`.strut`      |`.katex-strut`      |
+|`.tag`        |`.katex-tag`        |
+|`.thinbox`    |`.katex-thinbox`    |
+|`.underline`  |`.katex-underline`  |
+|`.vbox`       |`.katex-vbox`       |
 
 ## v0.17.0
 
