@@ -3,6 +3,68 @@ id: migration
 title: Migration Guide
 ---
 
+## v0.18.0
+
+KaTeX's internal CSS classes are now prefixed with `katex-`. If you apply custom
+styles or maintain allowlists (for example, in a content sanitizer) that target
+KaTeX's internal classes, you must update your selectors. The list of
+renamed classes is:
+
+|Before        |After               |
+|--------------|--------------------|
+|`.accent`     |`.katex-accent`     |
+|`.base`       |`.katex-base`       |
+|`.fix`        |`.katex-fix`        |
+|`.hdashline`  |`.katex-hdashline`  |
+|`.hline`      |`.katex-hline`      |
+|`.inner`      |`.katex-inner`      |
+|`.newline`    |`.katex-newline`    |
+|`.overlay`    |`.katex-overlay`    |
+|`.overline`   |`.katex-overline`   |
+|`.root`       |`.katex-root`       |
+|`.rule`       |`.katex-rule`       |
+|`.sizing`     |`.katex-sizing`     |
+|`.smash`      |`.katex-smash`      |
+|`.sout`       |`.katex-sout`       |
+|`.stretchy`   |`.katex-stretchy`   |
+|`.strut`      |`.katex-strut`      |
+|`.tag`        |`.katex-tag`        |
+|`.thinbox`    |`.katex-thinbox`    |
+|`.underline`  |`.katex-underline`  |
+|`.vbox`       |`.katex-vbox`       |
+
+## v0.17.0
+
+The internal API for `__defineFunction` changed: properties should no longer be
+wrapped in `props`. Move the members of `props` up to the top level of the
+definition object. For example:
+
+```js
+// Before
+katex.__defineFunction({
+    type: "overline",
+    names: ["\\overline"],
+    props: {
+        numArgs: 1,
+    },
+    handler(context, args) { /* ... */ },
+});
+
+// After
+katex.__defineFunction({
+    type: "overline",
+    names: ["\\overline"],
+    numArgs: 1,
+    handler(context, args) { /* ... */ },
+});
+```
+
+## v0.16.0
+
+The `copy-tex` extension no longer has (or requires) a CSS file. Remove any
+import of `copy-tex.css`, such as `require('katex/dist/contrib/copy-tex.css')`
+or `<link>`s to it.
+
 ## v0.15.0
 
 `\relax` is now implemented as a function. It'll stop expansions and parsing,
