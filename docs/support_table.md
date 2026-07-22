@@ -376,6 +376,7 @@ use `\ce` instead|
 |\end|$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |\endgroup|${a\endgroup$|`{a\endgroup`|
 |\enspace|$a\enspace b$|`a\enspace b`|
+|\epsdice|$\epsdice{3} \epsdice[black]{3}$|`\epsdice{3} \epsdice[black]{3}`|
 |\Epsilon|$\Epsilon$||
 |\epsilon|$\epsilon$||
 |\eqalign|<span style="color:firebrick;">Not supported</span>||
