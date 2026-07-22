@@ -20,9 +20,21 @@ title: Browser
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.1/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"
         onload="renderMathInElement(document.body);"></script>
   </head>
-  ...
+  <body>
+    <p>Inline math: \(e^{i\pi} + 1 = 0\)</p>
+    <p>Display math:</p>
+    $$
+    \int_{-\infty}^{\infty} e^{-x^2} \, dx = \sqrt{\pi}
+    $$
+  </body>
 </html>
 ```
+
+These examples use the [default auto-render delimiters](autorender.md#usage)
+(`$$…$$` for display math and `\(...\)` for inline math). Single `$…$` is not
+enabled by default. To use other delimiters or environments, pass an `options`
+object to `renderMathInElement` as shown in the
+[auto-render documentation](autorender.md).
 
 ## Loading as Global
 If you include the `katex.js` directly, the `katex` object will be available as
