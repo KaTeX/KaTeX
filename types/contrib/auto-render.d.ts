@@ -18,10 +18,3 @@ export default function renderMathInElement(
     elem: HTMLElement,
     options?: RenderMathInElementOptions,
 ): void;
-
-declare global {
-    function renderMathInElement(
-        elem: HTMLElement,
-        options?: RenderMathInElementOptions,
-    ): void;
-}
