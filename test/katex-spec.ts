@@ -1023,20 +1023,33 @@ describe("A delimiter sizing parser", function() {
     const normalDelim = r`\bigl |`;
     const notDelim = r`\bigl x`;
     const bigDelim = r`\Biggr \langle`;
+    const bracedDelim = r`\bigl{|}`;
 
     it("should parse normal delimiters", function() {
         expect(normalDelim).toParse();
         expect(bigDelim).toParse();
     });
 
+    it("should accept a single braced delimiter", function() {
+        expect(bracedDelim).toParse();
+    });
+
     it("should not parse not-delimiters", function() {
         expect(notDelim).not.toParse();
+        expect(r`\bigl{x}`).not.toParse();
     });
 
     it("should produce a delimsizing", function() {
         const parse = getParsed(normalDelim)[0];
 
         expect(parse.type).toEqual("delimsizing");
+    });
+
+    it("should produce the same delim for braced and unbraced forms", function() {
+        const braced = getParsed(bracedDelim)[0];
+        const bare = getParsed(normalDelim)[0];
+
+        expect(braced.delim).toEqual(bare.delim);
     });
 
     it("should produce the correct direction delimiter", function() {
