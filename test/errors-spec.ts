@@ -78,6 +78,14 @@ describe("Parser:", function() {
                    "Mismatch: \\begin{pmatrix} matched by \\end{bmatrix}" +
                    " at position 24: …matrix}1&2\\\\3&4\\̲e̲n̲d̲{bmatrix}+5");
         });
+        it("reports environment names that aren't plain characters", function() {
+            expect`\begin{ma trix}x\end{ma trix}`.toFailWithParseError(
+                   "Invalid environment name at position 7:" +
+                   " \\begin{̲m̲a̲ ̲t̲r̲i̲x̲}̲x\\end{ma trix}");
+            expect`\begin{\text{a}}`.toFailWithParseError(
+                   "Invalid environment name at position 7:" +
+                   " \\begin{̲\\̲t̲e̲x̲t̲{̲a̲}̲}̲");
+        });
     });
 
     describe("#parseFunction", function() {

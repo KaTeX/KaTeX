@@ -3505,6 +3505,13 @@ describe("A parser that does not throw on unsupported commands", function() {
         it("in text boxes", function() {
             expect`\text{\error}`.toBuild(noThrowSettings);
         });
+
+        it("in environment names", function() {
+            expect`\begin{\pmatrix}`.toBuild(noThrowSettings);
+            expect`\begin{\error}`.toBuild(noThrowSettings);
+            expect`\begin{\error}x\end{\error}`.toBuild(noThrowSettings);
+            expect`\begin{matrix}a\end{\pmatrix}`.toBuild(noThrowSettings);
+        });
     });
 
     it("should produce color nodes with a color value given by errorColor", function() {
