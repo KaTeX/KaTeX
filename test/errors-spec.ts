@@ -282,6 +282,51 @@ describe("functions.js:", function() {
         });
     });
 
+    describe("\\char", function() {
+        it("rejects code points outside Unicode", function() {
+            expect`\char1114112`.toFailWithParseError(
+                   "\\@char with invalid code point 1114112");
+        });
+        it("rejects control characters", function() {
+            expect`\char0`.toFailWithParseError(
+                   "\\@char code point 0 is not allowed in the output");
+            expect`\char12`.toFailWithParseError(
+                   "\\@char code point 12 is not allowed in the output");
+            expect`\char31`.toFailWithParseError(
+                   "\\@char code point 31 is not allowed in the output");
+            expect`\char127`.toFailWithParseError(
+                   "\\@char code point 127 is not allowed in the output");
+            expect`\char128`.toFailWithParseError(
+                   "\\@char code point 128 is not allowed in the output");
+            expect`\char159`.toFailWithParseError(
+                   "\\@char code point 159 is not allowed in the output");
+        });
+        it("rejects surrogate code points", function() {
+            expect`\char55296`.toFailWithParseError(
+                   "\\@char code point 55296 is not allowed in the output");
+            expect`\char57343`.toFailWithParseError(
+                   "\\@char code point 57343 is not allowed in the output");
+        });
+        it("rejects noncharacters", function() {
+            expect`\char64976`.toFailWithParseError(
+                   "\\@char code point 64976 is not allowed in the output");
+            expect`\char65007`.toFailWithParseError(
+                   "\\@char code point 65007 is not allowed in the output");
+            expect`\char65534`.toFailWithParseError(
+                   "\\@char code point 65534 is not allowed in the output");
+            expect`\char65535`.toFailWithParseError(
+                   "\\@char code point 65535 is not allowed in the output");
+            expect`\char131070`.toFailWithParseError(
+                   "\\@char code point 131070 is not allowed in the output");
+            expect`\char1114110`.toFailWithParseError(
+                   "\\@char code point 1114110 is not allowed in the output");
+            // U+10FFFF is a real code point, so it must be rejected here and
+            // not by the range check above.
+            expect`\char1114111`.toFailWithParseError(
+                   "\\@char code point 1114111 is not allowed in the output");
+        });
+    });
+
 });
 
 describe("Lexer:", function() {

@@ -230,7 +230,7 @@ All unrecognized characters will be treated as if they appeared in text mode, an
 
 For Persian composite characters, a user-supplied [plug-in](https://github.com/HosseinAgha/persian-katex-plugin) is under development.
 
-Any character can be written with the `\char` function and the Unicode code in hex. For example `\char"263a` will render as $\char"263a$.
+Any character can be written with the `\char` function and the Unicode code in hex, except for surrogates, noncharacters, and control characters other than tab, line feed and carriage return. For example `\char"263a` will render as $\char"263a$.
 
 ## Layout
 
