@@ -80,11 +80,11 @@ describe("Parser:", function() {
         });
         it("reports environment names that aren't plain characters", function() {
             expect`\begin{ma trix}x\end{ma trix}`.toFailWithParseError(
-                   "Invalid environment name at position 7:" +
-                   " \\begin{̲m̲a̲ ̲t̲r̲i̲x̲}̲x\\end{ma trix}");
+                   "An environment name should be text characters" +
+                   " at position 7: \\begin{̲m̲a̲ ̲t̲r̲i̲x̲}̲x\\end{ma trix}");
             expect`\begin{\text{a}}`.toFailWithParseError(
-                   "Invalid environment name at position 7:" +
-                   " \\begin{̲\\̲t̲e̲x̲t̲{̲a̲}̲}̲");
+                   "An environment name should be text characters" +
+                   " at position 7: \\begin{̲\\̲t̲e̲x̲t̲{̲a̲}̲}̲");
         });
     });
 

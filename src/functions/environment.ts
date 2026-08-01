@@ -18,14 +18,12 @@ defineFunction({
         if (nameGroup.type !== "ordgroup") {
             throw new ParseError("Invalid environment name", nameGroup);
         }
-        // An environment name is plain characters. Anything else -- a macro,
-        // a space -- is user error, so report it as a ParseError rather than
-        // an assertion failure that would escape `throwOnError: false`.
         let envName = "";
         for (let i = 0; i < nameGroup.body.length; ++i) {
             const node = nameGroup.body[i];
             if (node.type !== "textord") {
-                throw new ParseError("Invalid environment name", nameGroup);
+                throw new ParseError(
+                    "An environment name should be text characters", nameGroup);
             }
             envName += node.text;
         }
