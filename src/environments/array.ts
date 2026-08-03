@@ -7,7 +7,7 @@ import defineMacro from "../defineMacro";
 import {MathNode} from "../mathMLTree";
 import ParseError from "../ParseError";
 import {assertNodeType, assertSymbolNodeType} from "../parseNode";
-import {checkSymbolNodeType} from "../parseNode";
+import {assertCharacterGroup, checkSymbolNodeType} from "../parseNode";
 import {Token} from "../Token";
 import {calculateSize, makeEm} from "../units";
 
@@ -734,12 +734,8 @@ const alignedHandler = function(context: EnvContextLike, args: AnyParseNode[]) {
         body: [],
     };
     if (args[0] && args[0].type === "ordgroup") {
-        let arg0 = "";
-        for (let i = 0; i < args[0].body.length; i++) {
-            const textord = assertNodeType(args[0].body[i], "textord");
-            arg0 += textord.text;
-        }
-        numMaths = Number(arg0);
+        numMaths = Number(
+            assertCharacterGroup(args[0], "Invalid number of columns"));
         numCols = numMaths * 2;
     }
     const isAligned = !numCols;

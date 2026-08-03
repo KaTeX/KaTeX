@@ -78,13 +78,24 @@ describe("Parser:", function() {
                    "Mismatch: \\begin{pmatrix} matched by \\end{bmatrix}" +
                    " at position 24: …matrix}1&2\\\\3&4\\̲e̲n̲d̲{bmatrix}+5");
         });
-        it("reports environment names that aren't plain characters", function() {
+        it("keeps spaces in an environment name", function() {
             expect`\begin{ma trix}x\end{ma trix}`.toFailWithParseError(
-                   "An environment name should be text characters" +
-                   " at position 7: \\begin{̲m̲a̲ ̲t̲r̲i̲x̲}̲x\\end{ma trix}");
+                   "No such environment: ma trix at position 7:" +
+                   " \\begin{̲m̲a̲ ̲t̲r̲i̲x̲}̲x\\end{ma trix}");
+        });
+        it("reports environment names that aren't plain characters", function() {
             expect`\begin{\text{a}}`.toFailWithParseError(
                    "An environment name should be text characters" +
                    " at position 7: \\begin{̲\\̲t̲e̲x̲t̲{̲a̲}̲}̲");
+            expect`\begin{ma~trix}x\end{ma~trix}`.toFailWithParseError(
+                   "An environment name should be text characters" +
+                   " at position 7: \\begin{̲m̲a̲~̲t̲r̲i̲x̲}̲x\\end{ma~trix}");
+        });
+        it("reports column counts that aren't plain characters", function() {
+            expect`\begin{alignedat}{\text{2}}a&b\end{alignedat}`
+                .toFailWithParseError(
+                   "Invalid number of columns at position 18:" +
+                   " …egin{alignedat}{̲\\̲t̲e̲x̲t̲{̲2̲}̲}̲a&b\\end{aligned…");
         });
     });
 

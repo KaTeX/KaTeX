@@ -3512,6 +3512,15 @@ describe("A parser that does not throw on unsupported commands", function() {
             expect`\begin{\error}x\end{\error}`.toBuild(noThrowSettings);
             expect`\begin{matrix}a\end{\pmatrix}`.toBuild(noThrowSettings);
         });
+
+        it("in a column count", function() {
+            expect`\begin{alignedat}{\error}a&b\end{alignedat}`
+                .toBuild(noThrowSettings);
+        });
+
+        it("in a \\@char argument", function() {
+            expect`\@char{\error}`.toBuild(noThrowSettings);
+        });
     });
 
     it("should produce color nodes with a color value given by errorColor", function() {
@@ -3851,6 +3860,15 @@ describe("A macro expander", function() {
         expect`\char'a`.not.toParse();
         expect`\char"g`.not.toParse();
         expect`\char"g`.not.toParse();
+    });
+
+    it("\\@char reports a non-character argument", () => {
+        expect`\@char{\text{2}}`.toFailWithParseError(
+               "\\@char has non-numeric argument at position 7:" +
+               " \\@char{̲\\̲t̲e̲x̲t̲{̲2̲}̲}̲");
+        // A space is part of an environment name but not of a code point, and
+        // in text mode it reaches the argument as a spacing node.
+        expect`\text{\@char{6 5}}`.not.toParse();
     });
 
     it("\\char escapes ~ correctly", () => {

@@ -1,6 +1,6 @@
 import defineFunction from "../defineFunction";
 import ParseError from "../ParseError";
-import {assertNodeType} from "../parseNode";
+import {assertCharacterGroup, assertNodeType} from "../parseNode";
 import environments from "../environments";
 
 import type {ParseNode} from "../types/nodes";
@@ -18,15 +18,8 @@ defineFunction({
         if (nameGroup.type !== "ordgroup") {
             throw new ParseError("Invalid environment name", nameGroup);
         }
-        let envName = "";
-        for (let i = 0; i < nameGroup.body.length; ++i) {
-            const node = nameGroup.body[i];
-            if (node.type !== "textord") {
-                throw new ParseError(
-                    "An environment name should be text characters", nameGroup);
-            }
-            envName += node.text;
-        }
+        const envName = assertCharacterGroup(
+            nameGroup, "An environment name should be text characters", true);
 
         if (funcName === "\\begin") {
             // begin...end is similar to left...right
