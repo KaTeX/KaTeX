@@ -19,7 +19,9 @@ defineFunction({
             throw new ParseError("Invalid environment name", nameGroup);
         }
         const envName = assertCharacterGroup(
-            nameGroup, "An environment name should be text characters", true);
+            nameGroup,
+            "Environment name should contain only text characters and spaces",
+            true);
 
         if (funcName === "\\begin") {
             // begin...end is similar to left...right

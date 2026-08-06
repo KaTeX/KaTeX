@@ -45,16 +45,9 @@ export function checkSymbolNodeType(node: AnyParseNode): SymbolParseNode | null 
 }
 
 /**
- * Returns the string spelled out by a group that should hold nothing but plain
- * characters, such as an environment name or a column count. Such a group is
- * user input rather than an internal invariant -- with `throwOnError: false` an
- * unsupported command in it parses to a "color" node -- so anything else in it
- * is reported as a ParseError instead of an assertion failure.
- *
- * A space parses to a spacing node rather than a textord, so callers that read
- * a name rather than a number pass allowSpaces: an environment may be defined
- * with a space in its name. Only a literal space is taken as one, so `~` and
- * `\ ` are rejected either way.
+ * Returns the string spelled out by a group of plain characters, throwing the
+ * given ParseError if the group holds anything else. With allowSpaces, a
+ * literal space counts as a character; `~` and `\ ` do not.
  */
 export function assertCharacterGroup(
     group: ParseNode<"ordgroup">,
