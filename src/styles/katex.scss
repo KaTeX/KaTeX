@@ -602,6 +602,11 @@ $display-margin: 1em 0 !default;
         padding: 0 0.03889em;             // pad 1mu left and right (in scriptstyle)
     }
 
+    .mapsfrom {
+        display: inline-block;
+        transform: scaleX(-1);
+    }
+
     .eqn-num::before {
         counter-increment: katexEqnNo;
         content: "(" counter(katexEqnNo) ")";
