@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.18.2](https://github.com/KaTeX/KaTeX/compare/v0.18.1...v0.18.2) (2026-08-08)
+
+
+### Bug Fixes
+
+* prevent prototype pollution in settings ([#4260](https://github.com/KaTeX/KaTeX/issues/4260)) ([0adf7e7](https://github.com/KaTeX/KaTeX/commit/0adf7e77db6915d991803b29699f82b1ccf8d4f4))
+
 ## [0.18.1](https://github.com/KaTeX/KaTeX/compare/v0.18.0...v0.18.1) (2026-07-19)
 
 
