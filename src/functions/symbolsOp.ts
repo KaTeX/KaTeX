@@ -10,11 +10,7 @@ defineFunctionBuilders({
     type: "atom",
     htmlBuilder(group, options) {
         return mathsym(
-            group.text,
-            group.mode,
-            options,
-            ["m" + group.family],
-        );
+            group.text, group.mode, options, ["m" + group.family]);
     },
     mathmlBuilder(group, options) {
         const node = new MathNode(

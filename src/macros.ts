@@ -811,6 +811,7 @@ defineMacro("\\rBrace", "\\html@mathml{" +
     "\\mathclose{]\\mkern-3.2mu\\}}}" +
     "{\\mathclose{\\char`\u2984}}");
 
+defineMacro("↤", "\\mapsfrom");
 defineMacro(
     "\\mapsfrom",
     "\\mathbin{\\html@mathml{\\reflectbox{$\\mapsto$}}{\\char`↤}}",

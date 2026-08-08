@@ -177,7 +177,6 @@ defineSymbol(math, main, rel, "\u2194", "\\leftrightarrow", true);
 defineSymbol(math, main, rel, "\u27f7", "\\longleftrightarrow", true);
 defineSymbol(math, main, rel, "\u21d4", "\\Leftrightarrow", true);
 defineSymbol(math, main, rel, "\u27fa", "\\Longleftrightarrow", true);
-defineSymbol(math, main, rel, "\u21a4", "\\mapsfrom", true);
 defineSymbol(math, main, rel, "\u21a6", "\\mapsto", true);
 defineSymbol(math, main, rel, "\u27fc", "\\longmapsto", true);
 defineSymbol(math, main, rel, "\u2197", "\\nearrow", true);

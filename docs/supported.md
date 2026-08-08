@@ -271,7 +271,7 @@ In display math, KaTeX does not insert automatic line breaks. It ignores display
 |$_u^o $ `_u^o `| $\underset{!}{=}$ `\underset{!}{=}` | $a+\left(\vcenter{\frac{\frac a b}c}\right)$ `a+\left(\vcenter{\hbox{$\frac{\frac a b}c$}}\right)`
 ||| $$\sum_{\substack{0<i<m\\0<j<n}}$$ `\sum_{\substack{0<i<m\\0<j<n}}`
 
-`\raisebox`, `\reflectbox`, and `\hbox` put their argument into text mode. To raise math, nest `$…$` delimiters inside the argument as shown above. 
+`\raisebox`, `\reflectbox` and `\hbox` put their argument into text mode. To use math inside these commands, nest `$…$` delimiters inside the argument as shown above. 
 
 `\vcenter` can be written without an `\hbox` if the `strict` rendering option is *false*. In that case, omit the nested `$…$` delimiters.
 
@@ -516,39 +516,39 @@ Direct Input: $∉ ∌ ∤ ∦ ≁ ≆ ≠ ≨ ≩ ≮ ≯ ≰ ≱ ⊀ ⊁ ⊈ �
 
 ### Arrows
 
-||                                               ||
-|:----------|:----------------------------------------------|:----------|
-|$\circlearrowleft$ `\circlearrowleft`| $\leftharpoonup$ `\leftharpoonup`             |$\rArr$ `\rArr`
-|$\circlearrowright$ `\circlearrowright`| $\leftleftarrows$ `\leftleftarrows`           |$\rarr$ `\rarr`
-|$\curvearrowleft$ `\curvearrowleft`| $\leftrightarrow$ `\leftrightarrow`           |$\restriction$ `\restriction`
-|$\curvearrowright$ `\curvearrowright`| $\Leftrightarrow$ `\Leftrightarrow`           |$\rightarrow$ `\rightarrow`
-|$\Darr$ `\Darr`| $\leftrightarrows$ `\leftrightarrows`         |$\Rightarrow$ `\Rightarrow`
-|$\dArr$ `\dArr`| $\leftrightharpoons$ `\leftrightharpoons`     |$\rightarrowtail$ `\rightarrowtail`
-|$\darr$ `\darr`| $\leftrightsquigarrow$ `\leftrightsquigarrow` |$\rightharpoondown$ `\rightharpoondown`
-|$\dashleftarrow$ `\dashleftarrow`| $\Lleftarrow$ `\Lleftarrow`                   |$\rightharpoonup$ `\rightharpoonup`
-|$\dashrightarrow$ `\dashrightarrow`| $\longleftarrow$ `\longleftarrow`             |$\rightleftarrows$ `\rightleftarrows`
-|$\downarrow$ `\downarrow`| $\Longleftarrow$ `\Longleftarrow`             |$\rightleftharpoons$ `\rightleftharpoons`
-|$\Downarrow$ `\Downarrow`| $\longleftrightarrow$ `\longleftrightarrow`   |$\rightrightarrows$ `\rightrightarrows`
-|$\downdownarrows$ `\downdownarrows`| $\Longleftrightarrow$ `\Longleftrightarrow`   |$\rightsquigarrow$ `\rightsquigarrow`
-|$\downharpoonleft$ `\downharpoonleft`| $\longmapsto$ `\longmapsto`                   |$\Rrightarrow$ `\Rrightarrow`
-|$\downharpoonright$ `\downharpoonright`| $\longrightarrow$ `\longrightarrow`           |$\Rsh$ `\Rsh`
-|$\gets$ `\gets`| $\Longrightarrow$ `\Longrightarrow`           |$\searrow$ `\searrow`
-|$\Harr$ `\Harr`| $\looparrowleft$ `\looparrowleft`             |$\swarrow$ `\swarrow`
-|$\hArr$ `\hArr`| $\looparrowright$ `\looparrowright`           |$\to$ `\to`
-|$\harr$ `\harr`| $\Lrarr$ `\Lrarr`                             |$\twoheadleftarrow$ `\twoheadleftarrow`
-|$\hookleftarrow$ `\hookleftarrow`| $\lrArr$ `\lrArr`                             |$\twoheadrightarrow$ `\twoheadrightarrow`
-|$\hookrightarrow$ `\hookrightarrow`| $\lrarr$ `\lrarr`                             |$\Uarr$ `\Uarr`
-|$\iff$ `\iff`| $\Lsh$ `\Lsh`                                 |$\uArr$ `\uArr`
-|$\impliedby$ `\impliedby`| $\mapsfrom$ `\mapsfrom`                       |$\mapsto$ `\mapsto`|$\uarr$ `\uarr`
-|$\implies$ `\implies`| $\nearrow$ `\nearrow`                         |$\uparrow$ `\uparrow`
-|$\Larr$ `\Larr`| $\nleftarrow$ `\nleftarrow`                   |$\Uparrow$ `\Uparrow`
-|$\lArr$ `\lArr`| $\nLeftarrow$ `\nLeftarrow`                   |$\updownarrow$ `\updownarrow`
-|$\larr$ `\larr`| $\nleftrightarrow$ `\nleftrightarrow`         |$\Updownarrow$ `\Updownarrow`
-|$\leadsto$ `\leadsto`| $\nLeftrightarrow$ `\nLeftrightarrow`         |$\upharpoonleft$ `\upharpoonleft`
-|$\leftarrow$ `\leftarrow`| $\nrightarrow$ `\nrightarrow`                 |$\upharpoonright$ `\upharpoonright`
-|$\Leftarrow$ `\Leftarrow`| $\nRightarrow$ `\nRightarrow`                 |$\upuparrows$ `\upuparrows`
-|$\leftarrowtail$ `\leftarrowtail`| $\nwarrow$ `\nwarrow`                         
-|$\leftharpoondown$ `\leftharpoondown`| $\Rarr$ `\Rarr`                               
+||||
+|:----------|:----------|:----------|
+|$\circlearrowleft$ `\circlearrowleft`|$\leftharpoonup$ `\leftharpoonup`|$\rArr$ `\rArr`
+|$\circlearrowright$ `\circlearrowright`|$\leftleftarrows$ `\leftleftarrows`|$\rarr$ `\rarr`
+|$\curvearrowleft$ `\curvearrowleft`|$\leftrightarrow$ `\leftrightarrow`|$\restriction$ `\restriction`
+|$\curvearrowright$ `\curvearrowright`|$\Leftrightarrow$ `\Leftrightarrow`|$\rightarrow$ `\rightarrow`
+|$\Darr$ `\Darr`|$\leftrightarrows$ `\leftrightarrows`|$\Rightarrow$ `\Rightarrow`
+|$\dArr$ `\dArr`|$\leftrightharpoons$ `\leftrightharpoons`|$\rightarrowtail$ `\rightarrowtail`
+|$\darr$ `\darr`|$\leftrightsquigarrow$ `\leftrightsquigarrow`|$\rightharpoondown$ `\rightharpoondown`
+|$\dashleftarrow$ `\dashleftarrow`|$\Lleftarrow$ `\Lleftarrow`|$\rightharpoonup$ `\rightharpoonup`
+|$\dashrightarrow$ `\dashrightarrow`|$\longleftarrow$ `\longleftarrow`|$\rightleftarrows$ `\rightleftarrows`
+|$\downarrow$ `\downarrow`|$\Longleftarrow$ `\Longleftarrow`|$\rightleftharpoons$ `\rightleftharpoons`
+|$\Downarrow$ `\Downarrow`|$\longleftrightarrow$ `\longleftrightarrow`|$\rightrightarrows$ `\rightrightarrows`
+|$\downdownarrows$ `\downdownarrows`|$\Longleftrightarrow$ `\Longleftrightarrow`|$\rightsquigarrow$ `\rightsquigarrow`
+|$\downharpoonleft$ `\downharpoonleft`|$\longmapsto$ `\longmapsto`|$\Rrightarrow$ `\Rrightarrow`
+|$\downharpoonright$ `\downharpoonright`|$\longrightarrow$ `\longrightarrow`|$\Rsh$ `\Rsh`
+|$\gets$ `\gets`|$\Longrightarrow$ `\Longrightarrow`|$\searrow$ `\searrow`
+|$\Harr$ `\Harr`|$\looparrowleft$ `\looparrowleft`|$\swarrow$ `\swarrow`
+|$\hArr$ `\hArr`|$\looparrowright$ `\looparrowright`|$\to$ `\to`
+|$\harr$ `\harr`|$\Lrarr$ `\Lrarr`|$\twoheadleftarrow$ `\twoheadleftarrow`
+|$\hookleftarrow$ `\hookleftarrow`|$\lrArr$ `\lrArr`|$\twoheadrightarrow$ `\twoheadrightarrow`
+|$\hookrightarrow$ `\hookrightarrow`|$\lrarr$ `\lrarr`|$\Uarr$ `\Uarr`
+|$\iff$ `\iff`|$\Lsh$ `\Lsh`|$\uArr$ `\uArr`
+|$\impliedby$ `\impliedby`|$\mapsto$ `\mapsto`|$\uarr$ `\uarr`
+|$\implies$ `\implies`|$\nearrow$ `\nearrow`|$\uparrow$ `\uparrow`
+|$\Larr$ `\Larr`|$\nleftarrow$ `\nleftarrow`|$\Uparrow$ `\Uparrow`
+|$\lArr$ `\lArr`|$\nLeftarrow$ `\nLeftarrow`|$\updownarrow$ `\updownarrow`
+|$\larr$ `\larr`|$\nleftrightarrow$ `\nleftrightarrow`|$\Updownarrow$ `\Updownarrow`
+|$\leadsto$ `\leadsto`|$\nLeftrightarrow$ `\nLeftrightarrow`|$\upharpoonleft$ `\upharpoonleft`
+|$\leftarrow$ `\leftarrow`|$\nrightarrow$ `\nrightarrow`|$\upharpoonright$ `\upharpoonright`
+|$\Leftarrow$ `\Leftarrow`|$\nRightarrow$ `\nRightarrow`|$\upuparrows$ `\upuparrows`
+|$\leftarrowtail$ `\leftarrowtail`|$\nwarrow$ `\nwarrow`|$\mapsfrom$ `\mapsfrom`
+|$\leftharpoondown$ `\leftharpoondown`|$\Rarr$ `\Rarr`
 
 Direct Input: $← ↑ → ↓ ↔ ↕ ↖ ↗ ↘ ↙ ↚ ↛ ↞ ↠ ↢ ↣ ↦ ↩ ↪ ↫ ↬ ↭ ↮ ↰ ↱↶ ↷ ↺ ↻ ↼ ↽ ↾ ↾ ↿ ⇀ ⇁ ⇂ ⇃ ⇄ ⇆ ⇇ ⇈ ⇉ ⇊ ⇋ ⇌⇍ ⇎ ⇏ ⇐ ⇑ ⇒ ⇓ ⇔ ⇕ ⇚ ⇛ ⇝ ⇠ ⇢ ⟵ ⟶ ⟷ ⟸ ⟹ ⟺ ⟼$ ↽
 

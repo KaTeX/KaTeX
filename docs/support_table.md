@@ -877,69 +877,69 @@ use `\ce` instead|
 
 ## QR
 
-|Symbol/Function |  Rendered   | Source or Comment                                                                                                 |
-|:---------------|:------------|:------------------------------------------------------------------------------------------------------------------|
-|\Q|<span style="color:firebrick;">Not supported</span>| See `\Bbb{Q}`                                                                                                     |
-|\qquad|$a\qquad\qquad{b}$| `a\qquad\qquad{b}`                                                                                                |
-|\quad|$a\quad\quad{b}$| `a\quad\quad{b}`                                                                                                  |
-|\R|$\R$|                                                                                                                   |
-|\r|$\text{\r{a}}$| `\text{\r{a}}`                                                                                                    |
-|\raise|<span style="color:firebrick;">Not supported</span>| see `\raisebox`                                                                                                   |
-|\raisebox|$h\raisebox{2pt}{ighe}r$| `h\raisebox{2pt}{$ighe$}r`                                                                                        |
-|\rang|$\langle A\rang$| `\langle A\rang`                                                                                                  |
-|\rangle|$\langle A\rangle$| `\langle A\rangle`                                                                                                |
-|\Rarr|$\Rarr$|                                                                                                                   |
-|\rArr|$\rArr$|                                                                                                                   |
-|\rarr|$\rarr$|                                                                                                                   |
-|\ratio|$\ratio$|                                                                                                                   |
-|\rBrace|$\rBrace$|                                                                                                                   |
-|\rbrace|$\rbrace$|                                                                                                                   |
-|\rbrack|$\rbrack$|                                                                                                                   |
-|{rcases}|$\begin{rcases}a&\text{if }b\\c&\text{if }d\end{rcases}$| `\begin{rcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{rcases}`|
-|\rceil|$\rceil$|                                                                                                                   |
-|\Re|$\Re$|                                                                                                                   |
-|\real|$\real$|                                                                                                                   |
-|\Reals|$\Reals$|                                                                                                                   |
-|\reals|$\reals$|                                                                                                                   |
-|\ref|<span style="color:firebrick;">Not supported</span>| [Issue #350](https://github.com/KaTeX/KaTeX/issues/350)                                                           |
-|\reflectbox|$\reflectbox{$x^2$}$||                                                                                                                   |
-|\relax||                                                                                                                   |
-|\renewcommand|$\def\hail{Hi!}\renewcommand\hail{\text{Ahoy!}} \hail$| `\def\hail{Hi!}`<br>`\renewcommand\hail{\text{Ahoy!}}`<br>`\hail`                                                 |
-|\renewenvironment|<span style="color:firebrick;">Not supported</span>|                                                                                                                   |
-|\require|<span style="color:firebrick;">Not supported</span>|                                                                                                                   |
-|\restriction|$\restriction$|                                                                                                                   |
-|\rfloor|$\rfloor$|                                                                                                                   |
-|\rgroup|$\rgroup$|                                                                                                                   |
-|\rhd|$\rhd$|                                                                                                                   |
-|\Rho|$\Rho$|                                                                                                                   |
-|\rho|$\rho$|                                                                                                                   |
-|\right|$\left.\dfrac a b\right)$| `\left.\dfrac a b\right)`                                                                                         |
-|\Rightarrow|$\Rightarrow$|                                                                                                                   |
-|\rightarrow|$\rightarrow$|                                                                                                                   |
-|\rightarrowtail|$\rightarrowtail$|                                                                                                                   |
-|\rightharpoondown|$\rightharpoondown$|                                                                                                                   |
-|\rightharpoonup|$\rightharpoonup$|                                                                                                                   |
-|\rightleftarrows|$\rightleftarrows$|                                                                                                                   |
-|\rightleftharpoons|$\rightleftharpoons$|                                                                                                                   |
-|\rightrightarrows|$\rightrightarrows$|                                                                                                                   |
-|\rightsquigarrow|$\rightsquigarrow$|                                                                                                                   |
-|\rightthreetimes|$\rightthreetimes$|                                                                                                                   |
-|\risingdotseq|$\risingdotseq$|                                                                                                                   |
-|\rlap|$\rlap{\,/}{=}$| `\rlap{\,/}{=}`                                                                                                   |
-|\rm|$\rm AaBb12$| `\rm AaBb12`                                                                                                      |
-|\rmoustache|$\rmoustache$|                                                                                                                   |
-|\root|<span style="color:firebrick;">Not supported</span>|                                                                                                                   |
-|\rotatebox|<span style="color:firebrick;">Not supported</span>| [Issue #681](https://github.com/KaTeX/KaTeX/issues/681)                                                           |
-|\rparen|$\rparen$|                                                                                                                   |
-|\rq|$\rq$|                                                                                                                   |
-|\rrbracket|$\rrbracket$|                                                                                                                   |
-|\Rrightarrow|$\Rrightarrow$|                                                                                                                   |
-|\Rsh|$\Rsh$|                                                                                                                   |
-|\rtimes|$\rtimes$|                                                                                                                   |
-|\Rule|<span style="color:firebrick;">Not supported</span>| see `\rule`                                                                                                       
-|\rule|$x\rule[6pt]{2ex}{1ex}x$| `x\rule[6pt]{2ex}{1ex}x`                                                                                          |
-|\rVert|$\rVert$|                                                                                                                   |
-|\rvert|$\rvert$|                                                                                                                   |
+|Symbol/Function |  Rendered   | Source or Comment|
+|:---------------|:------------|:-----------------|
+|\Q|<span style="color:firebrick;">Not supported</span>|See `\Bbb{Q}`|
+|\qquad|$a\qquad\qquad{b}$|`a\qquad\qquad{b}`|
+|\quad|$a\quad\quad{b}$|`a\quad\quad{b}`|
+|\R|$\R$||
+|\r|$\text{\r{a}}$|`\text{\r{a}}`|
+|\raise|<span style="color:firebrick;">Not supported</span>|see `\raisebox`|
+|\raisebox|$h\raisebox{2pt}{ighe}r$|`h\raisebox{2pt}{$ighe$}r`|
+|\rang|$\langle A\rang$|`\langle A\rang`|
+|\rangle|$\langle A\rangle$|`\langle A\rangle`|
+|\Rarr|$\Rarr$||
+|\rArr|$\rArr$||
+|\rarr|$\rarr$||
+|\ratio|$\ratio$||
+|\rBrace|$\rBrace$||
+|\rbrace|$\rbrace$||
+|\rbrack|$\rbrack$||
+|{rcases}|$\begin{rcases}a&\text{if }b\\c&\text{if }d\end{rcases}$|`\begin{rcases}`<br>&nbsp;&nbsp;&nbsp;`a &\text{if } b  \\`<br>&nbsp;&nbsp;&nbsp;`c &\text{if } d`<br>`\end{rcases}`|
+|\rceil|$\rceil$||
+|\Re|$\Re$||
+|\real|$\real$||
+|\Reals|$\Reals$||
+|\reals|$\reals$||
+|\ref|<span style="color:firebrick;">Not supported</span>|[Issue #350](https://github.com/KaTeX/KaTeX/issues/350)|
+|\reflectbox|$\reflectbox{$x^2$}$||
+|\relax|||
+|\renewcommand|$\def\hail{Hi!}\renewcommand\hail{\text{Ahoy!}} \hail$|`\def\hail{Hi!}`<br>`\renewcommand\hail{\text{Ahoy!}}`<br>`\hail`|
+|\renewenvironment|<span style="color:firebrick;">Not supported</span>||
+|\require|<span style="color:firebrick;">Not supported</span>||
+|\restriction|$\restriction$||
+|\rfloor|$\rfloor$||
+|\rgroup|$\rgroup$||
+|\rhd|$\rhd$||
+|\Rho|$\Rho$||
+|\rho|$\rho$||
+|\right|$\left.\dfrac a b\right)$|`\left.\dfrac a b\right)`|
+|\Rightarrow|$\Rightarrow$||
+|\rightarrow|$\rightarrow$||
+|\rightarrowtail|$\rightarrowtail$||
+|\rightharpoondown|$\rightharpoondown$||
+|\rightharpoonup|$\rightharpoonup$||
+|\rightleftarrows|$\rightleftarrows$||
+|\rightleftharpoons|$\rightleftharpoons$||
+|\rightrightarrows|$\rightrightarrows$||
+|\rightsquigarrow|$\rightsquigarrow$||
+|\rightthreetimes|$\rightthreetimes$||
+|\risingdotseq|$\risingdotseq$||
+|\rlap|$\rlap{\,/}{=}$|`\rlap{\,/}{=}`|
+|\rm|$\rm AaBb12$|`\rm AaBb12`|
+|\rmoustache|$\rmoustache$||
+|\root|<span style="color:firebrick;">Not supported</span>||
+|\rotatebox|<span style="color:firebrick;">Not supported</span>|[Issue #681](https://github.com/KaTeX/KaTeX/issues/681)|
+|\rparen|$\rparen$||
+|\rq|$\rq$||
+|\rrbracket|$\rrbracket$||
+|\Rrightarrow|$\Rrightarrow$||
+|\Rsh|$\Rsh$||
+|\rtimes|$\rtimes$||
+|\Rule|<span style="color:firebrick;">Not supported</span>|see `\rule`
+|\rule|$x\rule[6pt]{2ex}{1ex}x$|`x\rule[6pt]{2ex}{1ex}x`|
+|\rVert|$\rVert$||
+|\rvert|$\rvert$||
 
 ## S
 

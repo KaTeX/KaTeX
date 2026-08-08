@@ -4732,4 +4732,8 @@ describe("A reflectbox builder", function() {
         expect`\reflectbox{abc}`.toBuild();
         expect`\reflectbox{$x^2$}`.toBuild();
     });
+
+    it("should use the reflectbox class", function() {
+        expect(getBuilt`\reflectbox{abc}`[0].classes).toContain("reflectbox");
+    });
 });
