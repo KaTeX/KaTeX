@@ -62,7 +62,7 @@ def main():
     start_json = json.load(sys.stdin)
 
     for font in start_json:
-        fontInfo = TTFont("../../fonts/KaTeX_" + font + ".ttf")
+        fontInfo = TTFont("../../../fonts/KaTeX_" + font + ".ttf")
         glyf = fontInfo["glyf"]
         widths = fontInfo.getGlyphSet()
         unitsPerEm = float(fontInfo["head"].unitsPerEm)
