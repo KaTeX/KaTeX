@@ -2525,6 +2525,61 @@ describe("A markup generator", function() {
         expect(markup).toContain("<span");
         expect(markup).toContain("<math");
     });
+
+    it("does not emit source-location attributes by default", function() {
+        const markup = katex.renderToString("a", {output: "html"});
+
+        expect(markup).not.toContain("data-katex-source-start");
+        expect(markup).not.toContain("data-katex-source-end");
+    });
+
+    it("emits source-location attributes when requested", function() {
+        const markup = katex.renderToString("a+b", {
+            output: "html",
+            outputSourceLocations: true,
+        });
+
+        expect(markup).toContain(
+            'data-katex-source-start="0" data-katex-source-end="1"');
+        expect(markup).toContain(
+            'data-katex-source-start="1" data-katex-source-end="2"');
+        expect(markup).toContain(
+            'data-katex-source-start="2" data-katex-source-end="3"');
+    });
+
+    it("emits source-location attributes in default HTML output", function() {
+        const markup = katex.renderToString("a+b", {
+            outputSourceLocations: true,
+        });
+        const htmlStart = markup.indexOf('<span class="katex-html"');
+        const mathmlMarkup = markup.slice(0, htmlStart);
+        const htmlMarkup = markup.slice(htmlStart);
+
+        expect(markup).toContain("katex-mathml");
+        expect(markup).toContain("katex-html");
+        expect(mathmlMarkup).not.toContain("data-katex-source-start");
+        expect(mathmlMarkup).not.toContain("data-katex-source-end");
+        expect(htmlMarkup).toContain(
+            'data-katex-source-start="0" data-katex-source-end="1"');
+        expect(htmlMarkup).toContain(
+            'data-katex-source-start="1" data-katex-source-end="2"');
+        expect(htmlMarkup).toContain(
+            'data-katex-source-start="2" data-katex-source-end="3"');
+    });
+
+    it("inherits source-location attributes for grouped HTML output", function() {
+        const markup = katex.renderToString(String.raw`\frac{a}{b}`, {
+            output: "html",
+            outputSourceLocations: true,
+        });
+
+        expect(markup).toContain(
+            'data-katex-source-start="5" data-katex-source-end="11"');
+        expect(markup).toContain(
+            'data-katex-source-start="6" data-katex-source-end="7"');
+        expect(markup).toContain(
+            'data-katex-source-start="9" data-katex-source-end="10"');
+    });
 });
 
 describe("A parse tree generator", function() {
