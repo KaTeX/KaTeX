@@ -4650,6 +4650,35 @@ describe("strict setting", function() {
     });
 });
 
+describe("Settings prototype pollution", function() {
+    afterEach(() => {
+        delete (Object.prototype as any).trust;
+        delete (Object.prototype as any).default;
+        delete (Object.prototype as any).processor;
+    });
+
+    it("should ignore a polluted Object.prototype.trust", () => {
+        (Object.prototype as any).trust = true;
+        expect(new Settings().trust).toBe(false);
+        expect(katex.renderToString(r`\href{javascript:alert(1)}{x}`))
+            .not.toContain("<a href=");
+    });
+
+    it("should ignore trust inherited from the options prototype", () => {
+        expect(new Settings(Object.create({trust: true})).trust).toBe(false);
+    });
+
+    it("should ignore a polluted Object.prototype.default", () => {
+        (Object.prototype as any).default = true;
+        expect(new Settings().trust).toBe(false);
+    });
+
+    it("should ignore a polluted Object.prototype.processor", () => {
+        (Object.prototype as any).processor = () => true;
+        expect(new Settings({trust: false}).trust).toBe(false);
+    });
+});
+
 describe("Internal __* interface", function() {
     const latex = r`\sum_{k = 0}^{\infty} x^k`;
     const rendered = katex.renderToString(latex);
