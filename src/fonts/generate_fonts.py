@@ -2,10 +2,9 @@
 
 import sys
 import os
-import json
 
 from fontTools.ttLib import TTFont, sfnt
-from fontTools.misc.timeTools import timestampNow
+from os.path import dirname
 sfnt.USE_ZOPFLI = True
 
 if len(sys.argv) < 2:
@@ -14,7 +13,10 @@ if len(sys.argv) < 2:
 
 font_file = sys.argv[1]
 font_name = os.path.splitext(os.path.basename(font_file))[0]
+prefix = 'KaTeX_'
+font_name = prefix + font_name
 
+output_directory = dirname(dirname(font_file))
 
 font = TTFont(font_file, recalcBBoxes=False, recalcTimestamp=False)
 
@@ -32,8 +34,12 @@ if 'GDEF' in font:
 
 # remove Macintosh table
 # https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6cmap.html
-font['name'].names = [record for record in font['name'].names if record.platformID != 1]
-font['cmap'].tables = [table for table in font['cmap'].tables if table.platformID != 1]
+font['name'].names = [
+    record for record in font['name'].names if record.platformID != 1
+]
+font['cmap'].tables = [
+    table for table in font['cmap'].tables if table.platformID != 1
+]
 
 # fix OS/2 and hhea metrics
 glyf = font['glyf']
@@ -47,12 +53,15 @@ font['hhea'].ascent = ascent
 font['hhea'].descent = -descent
 
 # save TTF
-font.save(font_file, reorderTables=None)
+font.save(os.path.join(output_directory, 'ttf',
+          font_name + '.ttf'), reorderTables=None)
 
 # save WOFF
 font.flavor = 'woff'
-font.save(os.path.join('woff', font_name + '.woff'), reorderTables=None)
+font.save(os.path.join(output_directory, 'woff',
+          font_name + '.woff'), reorderTables=None)
 
 # save WOFF2
 font.flavor = 'woff2'
-font.save(os.path.join('woff2', font_name + '.woff2'), reorderTables=None)
+font.save(os.path.join(output_directory, 'woff2',
+          font_name + '.woff2'), reorderTables=None)
