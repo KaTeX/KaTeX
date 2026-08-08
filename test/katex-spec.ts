@@ -4755,3 +4755,14 @@ describe("\\emph", () => {
         expect`\textit{\emph{foo \emph{bar}}}`.toBuildLike`\textit{\textup{foo \textit{bar}}}`;
     });
 });
+
+describe("A reflectbox builder", function() {
+    it("should build", function() {
+        expect`\reflectbox{abc}`.toBuild();
+        expect`\reflectbox{$x^2$}`.toBuild();
+    });
+
+    it("should use the reflectbox class", function() {
+        expect(getBuilt`\reflectbox{abc}`[0].classes).toContain("reflectbox");
+    });
+});
