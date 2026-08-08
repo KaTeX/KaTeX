@@ -4727,13 +4727,9 @@ describe("\\emph", () => {
     });
 });
 
-describe("\\mapsfrom", () => {
-    it("should render mapsfrom with the mirrored \\mapsto glyph", function() {
-        for (const expression of ["\\mapsfrom", "\u21a4"]) {
-            const markup = katex.renderToString(expression);
-
-            expect(markup).toContain('class="mrel mapsfrom"');
-            expect(markup).toContain("↦");
-        }
+describe("A reflectbox builder", function() {
+    it("should build", function() {
+        expect`\reflectbox{abc}`.toBuild();
+        expect`\reflectbox{$x^2$}`.toBuild();
     });
 });

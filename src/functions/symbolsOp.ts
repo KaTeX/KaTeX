@@ -9,15 +9,6 @@ import * as mml from "../buildMathML";
 defineFunctionBuilders({
     type: "atom",
     htmlBuilder(group, options) {
-        if (group.text === "\\mapsfrom" || group.text === "\u21a4") {
-            return mathsym(
-                "\\mapsto",
-                group.mode,
-                options,
-                ["m" + group.family, "mapsfrom"],
-            );
-        }
-
         return mathsym(
             group.text,
             group.mode,
