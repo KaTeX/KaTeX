@@ -634,6 +634,10 @@ $display-margin: 1em 0 !default;
         left: calc(50% + 0.3em);
         text-align: right;
     }
+
+    .dice-black {
+        font-feature-settings: "salt";
+    }
 }
 
 .katex-display {
