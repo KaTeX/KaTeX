@@ -1361,6 +1361,13 @@ describe("A begin/end parser", function() {
         expect`\begin{matrix}\hdashline a&b\\ \hdashline c&d\end{matrix}`.toParse();
     });
 
+    it("should build hlines with prefixed classes", function() {
+        const markup = katex.renderToString(
+            r`\begin{matrix}\hline a\\ \hdashline b\end{matrix}`);
+        expect(markup).toContain("class=\"katex-hline\"");
+        expect(markup).toContain("class=\"katex-hdashline\"");
+    });
+
     it("should forbid hlines outside array environment", () => {
         expect`\hline`.not.toParse();
     });
@@ -2378,6 +2385,25 @@ describe("The \\htmlData macro", function() {
         expect(built[0].attributes["data-foo"]).toEqual(" bar ");
     });
 
+    it("should allow commas in value escaped as {,}", () => {
+        const built = getBuilt(
+            "\\htmlData{annotation_text=[a{,}b]}{x}", trustNonStrictSettings);
+        expect(built[0].attributes["data-annotation_text"]).toEqual("[a,b]");
+    });
+
+    it("should split on unescaped commas while preserving escaped ones", () => {
+        const built = getBuilt(
+            "\\htmlData{foo=a{,}b, bar=c}{x}", trustNonStrictSettings);
+        expect(built[0].attributes["data-foo"]).toEqual("a,b");
+        expect(built[0].attributes["data-bar"]).toEqual("c");
+    });
+
+    it("should allow multiple escaped commas in one value", () => {
+        const built = getBuilt(
+            "\\htmlData{list=a{,}b{,}c}{x}", trustNonStrictSettings);
+        expect(built[0].attributes["data-list"]).toEqual("a,b,c");
+    });
+
     it("should throw Error if an argument contains no equals signs", () => {
         try {
             katex.renderToString(
@@ -2437,13 +2463,13 @@ describe("A \\phantom builder and \\smash builder", function() {
 
     it("should use smash class for hphantom", function() {
         const node = getBuilt`x\,\hphantom{\!}x`[2];
-        expect(node.classes).toContain("smash");
+        expect(node.classes).toContain("katex-smash");
         expect(node.children[0].classes).not.toContain("vlist-t");
     });
 
     it("should avoid vlist for symmetric smash", function() {
         const node = getBuilt`x\smash{x}x`[1];
-        expect(node.classes).toContain("smash");
+        expect(node.classes).toContain("katex-smash");
         expect(node.children[0].classes).not.toContain("vlist-t");
     });
 
@@ -4515,7 +4541,7 @@ describe("Newlines via \\\\ and \\newline", function() {
         // Ensure newlines appear outside base spans (because, in this regexp,
         // base span occurs immediately after each newline span).
         expect(markup).toMatch(
-            /(<span class="base">.*?<\/span><span class="mspace newline"><\/span>){3}<span class="base">/);
+            /(<span class="katex-base">.*?<\/span><span class="mspace katex-newline"><\/span>){3}<span class="katex-base">/);
         expect(markup).toMatchSnapshot();
     });
 });
@@ -4525,7 +4551,7 @@ describe("Automatic line breaking", function() {
         const built = katex.__renderToDomTree(r`M\not=N`, new Settings());
         const htmlTree = built.children[1];
         // @ts-ignore
-        const baseChildren = htmlTree.children.filter(node => node.hasClass("base"));
+        const baseChildren = htmlTree.children.filter(node => node.hasClass("katex-base"));
 
         expect(baseChildren).toHaveLength(2);
         expect(baseChildren[0].toMarkup()).toContain("=");
@@ -4535,7 +4561,7 @@ describe("Automatic line breaking", function() {
         const built = katex.__renderToDomTree(r`M\neq N`, new Settings());
         const htmlTree = built.children[1];
         // @ts-ignore
-        const baseChildren = htmlTree.children.filter(node => node.hasClass("base"));
+        const baseChildren = htmlTree.children.filter(node => node.hasClass("katex-base"));
 
         expect(baseChildren).toHaveLength(2);
     });
@@ -4596,6 +4622,35 @@ describe("strict setting", function() {
     it("should warn about top-level \\newline in display mode", () => {
         expect`x\\y`.toWarn(new Settings({displayMode: true}));
         expect`x\\y`.toParse(new Settings({displayMode: false}));
+    });
+});
+
+describe("Settings prototype pollution", function() {
+    afterEach(() => {
+        delete (Object.prototype as any).trust;
+        delete (Object.prototype as any).default;
+        delete (Object.prototype as any).processor;
+    });
+
+    it("should ignore a polluted Object.prototype.trust", () => {
+        (Object.prototype as any).trust = true;
+        expect(new Settings().trust).toBe(false);
+        expect(katex.renderToString(r`\href{javascript:alert(1)}{x}`))
+            .not.toContain("<a href=");
+    });
+
+    it("should ignore trust inherited from the options prototype", () => {
+        expect(new Settings(Object.create({trust: true})).trust).toBe(false);
+    });
+
+    it("should ignore a polluted Object.prototype.default", () => {
+        (Object.prototype as any).default = true;
+        expect(new Settings().trust).toBe(false);
+    });
+
+    it("should ignore a polluted Object.prototype.processor", () => {
+        (Object.prototype as any).processor = () => true;
+        expect(new Settings({trust: false}).trust).toBe(false);
     });
 });
 

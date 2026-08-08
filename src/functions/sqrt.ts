@@ -104,7 +104,7 @@ defineFunction({
             }, options);
             // Add a class surrounding it so we can add on the appropriate
             // kerning
-            const rootVListWrap = makeSpan(["root"], [rootVList]);
+            const rootVListWrap = makeSpan(["katex-root"], [rootVList]);
 
             return makeSpan(["mord", "sqrt"],
                 [rootVListWrap, body], options);

@@ -1,6 +1,32 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.18.2](https://github.com/KaTeX/KaTeX/compare/v0.18.1...v0.18.2) (2026-08-08)
+
+
+### Bug Fixes
+
+* prevent prototype pollution in settings ([#4260](https://github.com/KaTeX/KaTeX/issues/4260)) ([0adf7e7](https://github.com/KaTeX/KaTeX/commit/0adf7e77db6915d991803b29699f82b1ccf8d4f4))
+
+## [0.18.1](https://github.com/KaTeX/KaTeX/compare/v0.18.0...v0.18.1) (2026-07-19)
+
+
+### Bug Fixes
+
+* **htmlData:** allow escaped commas in \htmlData ([#4236](https://github.com/KaTeX/KaTeX/issues/4236)) ([87a2b30](https://github.com/KaTeX/KaTeX/commit/87a2b304aff601ad1c3d930d47d6833d123ad210)), closes [#4204](https://github.com/KaTeX/KaTeX/issues/4204) [#4218](https://github.com/KaTeX/KaTeX/issues/4218)
+
+# [0.18.0](https://github.com/KaTeX/KaTeX/compare/v0.17.0...v0.18.0) (2026-07-17)
+
+
+### Features
+
+* prefix css classes ([#4229](https://github.com/KaTeX/KaTeX/issues/4229)) ([6f5c44f](https://github.com/KaTeX/KaTeX/commit/6f5c44f69bae0703877a3a8d934e20c47bbbbc32))
+
+
+### BREAKING CHANGES
+
+* users who apply custom styles or have allowlists targeting KaTeX's internal classes must update their selectors.
+
 # [0.17.0](https://github.com/KaTeX/KaTeX/compare/v0.16.47...v0.17.0) (2026-05-22)
 
 

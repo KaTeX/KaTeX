@@ -35,7 +35,7 @@ defineFunction({
     htmlBuilder(group, options) {
         const span = makeSpan(["mspace"], [], options);
         if (group.newLine) {
-            span.classes.push("newline");
+            span.classes.push("katex-newline");
             if (group.size) {
                 span.style.marginTop =
                     makeEm(calculateSize(group.size, options));

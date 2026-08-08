@@ -1092,8 +1092,8 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
   <span class="katex-html"
         aria-hidden="true"
   >
-    <span class="base">
-      <span class="strut"
+    <span class="katex-base">
+      <span class="katex-strut"
             style="height:0.8442em;"
       >
       </span>
@@ -1115,7 +1115,7 @@ exports[`Extending katex by new fonts and symbols Add new font class to new exte
                         style="height:2.7em;"
                   >
                   </span>
-                  <span class="sizing reset-size6 size3 mtight">
+                  <span class="katex-sizing reset-size6 size3 mtight">
                     <span class="mord mtight">
                       <span class="mord mockEasternArabicFont-Regular mtight">
                         ۱۱
@@ -1173,8 +1173,8 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
   <span class="katex-html"
         aria-hidden="true"
   >
-    <span class="base">
-      <span class="strut"
+    <span class="katex-base">
+      <span class="katex-strut"
             style="height:0.6833em;"
       >
       </span>
@@ -1191,10 +1191,10 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
         =
       </span>
     </span>
-    <span class="mspace newline">
+    <span class="mspace katex-newline">
     </span>
-    <span class="base">
-      <span class="strut"
+    <span class="katex-base">
+      <span class="katex-strut"
             style="height:0.6667em;vertical-align:-0.0833em;"
       >
       </span>
@@ -1209,10 +1209,10 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
         +
       </span>
     </span>
-    <span class="mspace newline">
+    <span class="mspace katex-newline">
     </span>
-    <span class="base">
-      <span class="strut"
+    <span class="katex-base">
+      <span class="katex-strut"
             style="height:0.6944em;"
       >
       </span>
@@ -1220,10 +1220,10 @@ exports[`Newlines via \\\\ and \\newline \\\\ causes newline, even after mrel an
         b
       </span>
     </span>
-    <span class="mspace newline">
+    <span class="mspace katex-newline">
     </span>
-    <span class="base">
-      <span class="strut"
+    <span class="katex-base">
+      <span class="katex-strut"
             style="height:0.4306em;"
       >
       </span>

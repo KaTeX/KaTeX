@@ -326,7 +326,8 @@ function getDefaultValue<K extends keyof SettingsOptions>(
     schema: SchemaEntry<K>,
 ): Settings[K];
 function getDefaultValue(schema: SchemaEntry<keyof SettingsOptions>): DefaultValue {
-    if (schema.default !== undefined) {
+    if (Object.prototype.hasOwnProperty.call(schema, "default") &&
+        schema.default !== undefined) {
         return schema.default;
     }
     const type = Array.isArray(schema.type) ? schema.type[0] : schema.type;
@@ -339,10 +340,13 @@ function applySetting<K extends keyof SettingsOptions>(
     options: SettingsOptions,
     schema: SchemaEntry<K>,
 ) {
-    const optionValue = options[prop];
+    const optionValue = Object.prototype.hasOwnProperty.call(options, prop)
+        ? options[prop] : undefined;
+    const processor = Object.prototype.hasOwnProperty.call(schema, "processor")
+        ? schema.processor : undefined;
     target[prop] = optionValue !== undefined
-        ? (schema.processor
-            ? schema.processor(optionValue)
+        ? (processor
+            ? processor(optionValue)
             : optionValue)
         : getDefaultValue(schema);
 }
