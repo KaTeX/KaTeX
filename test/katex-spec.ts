@@ -3859,6 +3859,33 @@ describe("A macro expander", function() {
         expect(parsed[0].text).toEqual("𝟙");
     });
 
+    // errors-spec.ts covers the rejected code points and their message; these
+    // pin the other side of each boundary.  toParse, not toBuild: the guard
+    // runs at parse time and most of these have no font metrics.
+    it("\\char accepts characters the output may contain", () => {
+        expect`\char9`.toParse();       // tab
+        expect`\char10`.toParse();      // line feed
+        expect`\char13`.toParse();      // carriage return
+        expect`\char32`.toParse();      // space, just above the C0 controls
+        expect`\char160`.toParse();     // U+00A0, just above the C1 controls
+        expect`\char55295`.toParse();   // U+D7FF, just below the surrogates
+        expect`\char57344`.toParse();   // U+E000, just above the surrogates
+        expect`\char64975`.toParse();   // U+FDCF, just below U+FDD0
+        expect`\char65008`.toParse();   // U+FDF0, just above U+FDEF
+        expect`\char65533`.toParse();   // U+FFFD, just below U+FFFE
+        expect`\char65536`.toParse();   // first astral code point
+        expect`\char1114109`.toParse(); // U+10FFFD, last code point that is a character
+    });
+
+    it("\\char does not emit invalid characters with throwOnError: false",
+        () => {
+            expect(katex.renderToString(r`\char0`, {throwOnError: false}))
+                .not.toContain(String.fromCharCode(0));
+            // A lone surrogate is the case that cannot be encoded as UTF-8.
+            expect(katex.renderToString(r`\char55296`, {throwOnError: false}))
+                .not.toContain(String.fromCharCode(0xd800));
+        });
+
     it("should build Unicode private area characters", function() {
         expect`\gvertneqq\lvertneqq\ngeqq\ngeqslant\nleqq`.toBuild();
         expect`\nleqslant\nshortmid\nshortparallel\varsubsetneq`.toBuild();
