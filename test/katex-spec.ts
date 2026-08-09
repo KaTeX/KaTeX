@@ -1050,6 +1050,7 @@ describe("A delimiter sizing parser", function() {
         const bare = getParsed(normalDelim)[0];
 
         expect(braced.delim).toEqual(bare.delim);
+        expect(normalDelim).toParseLike(bracedDelim);
     });
 
     it("should produce the correct direction delimiter", function() {
