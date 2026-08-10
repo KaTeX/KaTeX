@@ -42,7 +42,7 @@ deno install -g npm:katex
 Alternatively, you can import KaTeX directly from a CDN in your Deno project:
 
 ```ts
-import katex from "https://cdn.jsdelivr.net/npm/katex@0.18.3/dist/katex.mjs";
+import katex from "https://cdn.jsdelivr.net/npm/katex@0.18.4/dist/katex.mjs";
 ```
 
 ### Building from Source

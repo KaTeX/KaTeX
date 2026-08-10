@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.18.4](https://github.com/KaTeX/KaTeX/compare/v0.18.3...v0.18.4) (2026-08-10)
+
+
+### Bug Fixes
+
+* **environment:** report invalid environment names as ParseError ([#4256](https://github.com/KaTeX/KaTeX/issues/4256)) ([e507f75](https://github.com/KaTeX/KaTeX/commit/e507f759f067ad3b9e279837027d4cfb2314915b)), closes [#3760](https://github.com/KaTeX/KaTeX/issues/3760) [#3760](https://github.com/KaTeX/KaTeX/issues/3760)
+
 ## [0.18.3](https://github.com/KaTeX/KaTeX/compare/v0.18.2...v0.18.3) (2026-08-09)
 
 
