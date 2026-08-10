@@ -30,6 +30,21 @@ pnpm add katex
 pnpm add -g katex
 ```
 
+### Deno 2
+Install with `Deno`:
+
+```bash
+deno install katex
+# or globally
+deno install -g npm:katex
+```
+
+Alternatively, you can import KaTeX directly from a CDN in your Deno project:
+
+```ts
+import katex from "https://cdn.jsdelivr.net/npm/katex@0.18.3/dist/katex.mjs";
+```
+
 ### Building from Source
 To build you will need Git, Node.js 22.13 or later, and [corepack](https://nodejs.org/api/corepack.html) enabled.
 

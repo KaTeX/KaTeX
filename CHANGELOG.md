@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.18.3](https://github.com/KaTeX/KaTeX/compare/v0.18.2...v0.18.3) (2026-08-09)
+
+
+### Bug Fixes
+
+* allow braced arguments for delimsizing ([#4255](https://github.com/KaTeX/KaTeX/issues/4255)) ([1c973ae](https://github.com/KaTeX/KaTeX/commit/1c973ae2e2416d3943d78606c90b2a9e8e578243))
+
 ## [0.18.2](https://github.com/KaTeX/KaTeX/compare/v0.18.1...v0.18.2) (2026-08-08)
 
 

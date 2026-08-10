@@ -293,15 +293,9 @@ describe("functions.js:", function() {
                    "Invalid delimiter '=' after '\\bigr' at position 15:" +
                    " \\bigl(1+2\\bigr=̲3");
         });
-        it("reject group opening delimiters", function() {
-            expect`\bigl{(}1+2\bigr)3`.toFailWithParseError(
-                   "Invalid delimiter type 'ordgroup' at position 6:" +
-                   " \\bigl{̲(̲}̲1+2\\bigr)3");
-        });
-        it("reject group closing delimiters", function() {
-            expect`\bigl(1+2\bigr{)}3`.toFailWithParseError(
-                   "Invalid delimiter type 'ordgroup' at position 15:" +
-                   " \\bigl(1+2\\bigr{̲)̲}̲3");
+        it("reject multi-symbol group delimiters", function() {
+            expect`\bigl{((}1+2\bigr)3`.toFailWithParseError(
+                "Invalid delimiter type 'ordgroup' at position 6: \\bigl{̲(̲(̲}̲1+2\\bigr)3");
         });
     });
 
