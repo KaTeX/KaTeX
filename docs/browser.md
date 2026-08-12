@@ -23,9 +23,11 @@ title: Browser
   <body>
     <p>Inline math: \(e^{i\pi} + 1 = 0\)</p>
     <p>Display math:</p>
+    <p>
     $$
     \int_{-\infty}^{\infty} e^{-x^2} \, dx = \sqrt{\pi}
     $$
+    </p>
   </body>
 </html>
 ```
