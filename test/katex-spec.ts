@@ -3898,6 +3898,17 @@ describe("A macro expander", function() {
         expect(parsed[0].text).toEqual("𝟙");
     });
 
+    it("\\char accepts the last code point of the Unicode codespace", () => {
+        const parsed = getParsed`\char"10ffff`;
+        expect(parsed[0].type).toEqual("textord");
+        // Written as a surrogate pair, since U+10FFFF has no visible glyph
+        expect(parsed[0].text).toEqual("\udbff\udfff");
+    });
+
+    it("\\char rejects code points outside the Unicode codespace", () => {
+        expect`\char"110000`.toFailWithParseError();
+    });
+
     it("should build Unicode private area characters", function() {
         expect`\gvertneqq\lvertneqq\ngeqq\ngeqslant\nleqq`.toBuild();
         expect`\nleqslant\nshortmid\nshortparallel\varsubsetneq`.toBuild();
