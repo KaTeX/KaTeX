@@ -1,6 +1,6 @@
 import defineFunction from "../defineFunction";
 import ParseError from "../ParseError";
-import {assertNodeType} from "../parseNode";
+import {assertCharacterGroup, assertNodeType} from "../parseNode";
 
 // A code point inside the Unicode codespace is not necessarily one the output
 // may contain.  Of those rejected below, the C0 controls, the surrogates and
@@ -28,12 +28,8 @@ defineFunction({
 
     handler({parser}, args) {
         const arg = assertNodeType(args[0], "ordgroup");
-        const group = arg.body;
-        let number = "";
-        for (let i = 0; i < group.length; i++) {
-            const node = assertNodeType(group[i], "textord");
-            number += node.text;
-        }
+        const number = assertCharacterGroup(
+            arg, "\\@char has non-numeric argument");
         let code = parseInt(number);
         let text;
         if (isNaN(code)) {
