@@ -105,6 +105,10 @@ const sigmasAndXis: Record<string, [number, number, number]> = {
 // the fraction bar or root line from intersecting the glyph.
 // TODO(kevinb) allow union of multiple glyph metrics for better accuracy.
 const extraCharacterMap: Record<string, string> = {
+    // Math symbols present in Unicode but missing from KaTeX fonts.
+    // U+27C2 PERPENDICULAR shares a glyph with U+22A5 UP TACK.
+    '⟂': '⊥',
+
     // Latin-1
     'Å': 'A',
     'Ð': 'D',

@@ -266,4 +266,16 @@ describe("A MathML builder", function() {
         expect(getMathML("\\copyright\\neq\\notin\u2258\\KaTeX"))
             .toMatchSnapshot();
     });
+
+    it("should map \\perp to U+27C2 and keep \\bot as U+22A5", () => {
+        const perp = getMathML("x \\perp y");
+        const bot = getMathML("x \\bot y");
+        expect(perp).toContain("\u27C2");
+        expect(perp).not.toContain("\u22A5");
+        expect(bot).toContain("\u22A5");
+        expect(bot).not.toContain("\u27C2");
+        expect`x \perp y`.toBuild();
+        expect`x \bot y`.toBuild();
+    });
 });
+
