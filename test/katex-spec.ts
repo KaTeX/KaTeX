@@ -1023,20 +1023,34 @@ describe("A delimiter sizing parser", function() {
     const normalDelim = r`\bigl |`;
     const notDelim = r`\bigl x`;
     const bigDelim = r`\Biggr \langle`;
+    const bracedDelim = r`\bigl{|}`;
 
     it("should parse normal delimiters", function() {
         expect(normalDelim).toParse();
         expect(bigDelim).toParse();
     });
 
+    it("should accept a single braced delimiter", function() {
+        expect(bracedDelim).toParse();
+    });
+
     it("should not parse not-delimiters", function() {
         expect(notDelim).not.toParse();
+        expect(r`\bigl{x}`).not.toParse();
     });
 
     it("should produce a delimsizing", function() {
         const parse = getParsed(normalDelim)[0];
 
         expect(parse.type).toEqual("delimsizing");
+    });
+
+    it("should produce the same delim for braced and unbraced forms", function() {
+        const braced = getParsed(bracedDelim)[0];
+        const bare = getParsed(normalDelim)[0];
+
+        expect(braced.delim).toEqual(bare.delim);
+        expect(normalDelim).toParseLike(bracedDelim);
     });
 
     it("should produce the correct direction delimiter", function() {
@@ -3505,6 +3519,22 @@ describe("A parser that does not throw on unsupported commands", function() {
         it("in text boxes", function() {
             expect`\text{\error}`.toBuild(noThrowSettings);
         });
+
+        it("in environment names", function() {
+            expect`\begin{\pmatrix}`.toBuild(noThrowSettings);
+            expect`\begin{\error}`.toBuild(noThrowSettings);
+            expect`\begin{\error}x\end{\error}`.toBuild(noThrowSettings);
+            expect`\begin{matrix}a\end{\pmatrix}`.toBuild(noThrowSettings);
+        });
+
+        it("in a column count", function() {
+            expect`\begin{alignedat}{\error}a&b\end{alignedat}`
+                .toBuild(noThrowSettings);
+        });
+
+        it("in a \\@char argument", function() {
+            expect`\@char{\error}`.toBuild(noThrowSettings);
+        });
     });
 
     it("should produce color nodes with a color value given by errorColor", function() {
@@ -3844,6 +3874,15 @@ describe("A macro expander", function() {
         expect`\char'a`.not.toParse();
         expect`\char"g`.not.toParse();
         expect`\char"g`.not.toParse();
+    });
+
+    it("\\@char reports a non-character argument", () => {
+        expect`\@char{\text{2}}`.toFailWithParseError(
+               "\\@char has non-numeric argument at position 7:" +
+               " \\@char{̲\\̲t̲e̲x̲t̲{̲2̲}̲}̲");
+        // A space is part of an environment name but not of a code point, and
+        // in text mode it reaches the argument as a spacing node.
+        expect`\text{\@char{6 5}}`.not.toParse();
     });
 
     it("\\char escapes ~ correctly", () => {
