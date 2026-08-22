@@ -5,7 +5,7 @@
  */
 
 import {SymbolNode, Anchor, Span, PathNode, SvgNode, createClass} from "./domTree";
-import {getCharacterMetrics} from "./fontMetrics";
+import {getCharacterMetrics, getFontGlyphCharacter} from "./fontMetrics";
 import symbols, {ligatures} from "./symbols";
 import {wideCharacterFont} from "./wide-character";
 import {calculateSize, makeEm} from "./units";
@@ -45,9 +45,11 @@ const lookupSymbol = function(
         }
     }
 
+    const glyph = getFontGlyphCharacter(value);
+
     return {
-        value,
-        metrics: getCharacterMetrics(value, fontName, mode),
+        value: glyph,
+        metrics: getCharacterMetrics(glyph, fontName, mode),
     };
 };
 

@@ -277,5 +277,16 @@ describe("A MathML builder", function() {
         expect`x \perp y`.toBuild();
         expect`x \bot y`.toBuild();
     });
+
+    it("should render \\perp in HTML using the \\bot font glyph", () => {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const katex = require("../katex").default;
+        const html = katex.renderToString("x \\perp y");
+        const visible = html.match(/katex-html"[^>]*>([\s\S]*)<\/span><\/span>$/);
+        expect(visible).not.toBeNull();
+        expect(visible![1]).toContain("\u22A5");
+        expect(visible![1]).not.toContain("\u27C2");
+        expect(html).toContain("\u27C2");
+    });
 });
 

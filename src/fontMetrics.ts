@@ -107,6 +107,7 @@ const sigmasAndXis: Record<string, [number, number, number]> = {
 const extraCharacterMap: Record<string, string> = {
     // Math symbols present in Unicode but missing from KaTeX fonts.
     // U+27C2 PERPENDICULAR shares a glyph with U+22A5 UP TACK.
+    '\u27C2': '\u22A5',
     '⟂': '⊥',
 
     // Latin-1
@@ -202,6 +203,17 @@ export function setFontMetrics(
  * Note: the `width` property may be undefined if fontMetricsData.js wasn't
  * built using `Make extended_metrics`.
  */
+/**
+ * Returns the KaTeX-font glyph for HTML rendering when `character` is absent
+ * from the font metrics tables but has a known substitute glyph.
+ */
+export function getFontGlyphCharacter(character: string): string {
+    if (character[0] in extraCharacterMap) {
+        return extraCharacterMap[character[0]];
+    }
+    return character;
+}
+
 export function getCharacterMetrics(
     character: string,
     font: string,
