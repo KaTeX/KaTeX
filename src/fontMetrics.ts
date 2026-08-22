@@ -108,7 +108,6 @@ const extraCharacterMap: Record<string, string> = {
     // Math symbols present in Unicode but missing from KaTeX fonts.
     // U+27C2 PERPENDICULAR shares a glyph with U+22A5 UP TACK.
     '\u27C2': '\u22A5',
-    '⟂': '⊥',
 
     // Latin-1
     'Å': 'A',
