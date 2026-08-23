@@ -165,7 +165,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "commander": "^8.3.0"
+    "commander": "^15.0.0"
   },
   "jest": {
     "collectCoverageFrom": [
