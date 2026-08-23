@@ -45,11 +45,15 @@ const lookupSymbol = function(
         }
     }
 
-    // Characters absent from this KaTeX font may have a known substitute
-    // glyph; render the substitute instead so HTML output is not blank.
-    const glyph = getFontGlyphCharacter(value, fontName);
-    if (glyph !== value) {
-        value = glyph;
+    // In math mode, characters absent from this KaTeX font may have a known
+    // substitute glyph; render the substitute so HTML output is not blank.
+    // In text mode, leave the character as-is so the browser can fall back to
+    // system fonts (e.g. Cyrillic, CJK) instead of showing Latin lookalikes.
+    if (mode === "math") {
+        const glyph = getFontGlyphCharacter(value, fontName);
+        if (glyph !== value) {
+            value = glyph;
+        }
     }
 
     return {
