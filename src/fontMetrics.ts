@@ -204,10 +204,12 @@ export function setFontMetrics(
  */
 /**
  * Returns the KaTeX-font glyph for HTML rendering when `character` is absent
- * from the font metrics tables but has a known substitute glyph.
+ * from the given font's metrics table but has a known substitute glyph.
+ * Characters that the font can render directly are returned unchanged.
  */
-export function getFontGlyphCharacter(character: string): string {
-    if (character[0] in extraCharacterMap) {
+export function getFontGlyphCharacter(character: string, font: string): string {
+    const ch = character.charCodeAt(0);
+    if (!metricMap[font]?.[ch] && character[0] in extraCharacterMap) {
         return extraCharacterMap[character[0]];
     }
     return character;

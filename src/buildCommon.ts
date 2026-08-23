@@ -45,11 +45,16 @@ const lookupSymbol = function(
         }
     }
 
-    const glyph = getFontGlyphCharacter(value);
+    // Characters absent from this KaTeX font may have a known substitute
+    // glyph; render the substitute instead so HTML output is not blank.
+    const glyph = getFontGlyphCharacter(value, fontName);
+    if (glyph !== value) {
+        value = glyph;
+    }
 
     return {
-        value: glyph,
-        metrics: getCharacterMetrics(glyph, fontName, mode),
+        value,
+        metrics: getCharacterMetrics(value, fontName, mode),
     };
 };
 
