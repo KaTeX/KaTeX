@@ -13,6 +13,7 @@ const optionsFromSettings = function(settings: Settings) {
         style: (settings.displayMode ? Style.DISPLAY : Style.TEXT),
         maxSize: settings.maxSize,
         minRuleThickness: settings.minRuleThickness,
+        sourceLocations: settings.outputSourceLocations,
     });
 };
 
