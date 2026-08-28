@@ -1,5 +1,6 @@
 /* eslint max-len:0 */
 import Settings from "../src/Settings";
+import {getFontGlyphCharacter} from "../src/fontMetrics";
 import {scriptFromCodepoint, supportedCodepoint} from "../src/unicodeScripts";
 import {strictSettings, nonstrictSettings} from "./helpers";
 
@@ -178,6 +179,25 @@ describe("unicodeScripts", () => {
 
             expect(script).toBe(null);
             expect(supportedCodepoint(codepoint)).toBe(false);
+        }
+    });
+});
+
+describe("glyph substitution", () => {
+    it("renders U+27C2 PERPENDICULAR with the U+22A5 glyph the fonts carry", () => {
+        expect(getFontGlyphCharacter("\u27C2", "Main-Regular")).toBe("\u22A5");
+    });
+
+    it("does not substitute characters that only borrow metrics", () => {
+        // extraCharacterMap lends metrics from a similarly-shaped character, and
+        // several of its entries are lookalikes rather than equivalents: Cyrillic
+        // 'Ш' borrows the metrics of Latin 'W'. Rendering those substitutes would
+        // change the visible text, so they must be left alone.
+        for (const ch of ["\u0428", "\u0414", "\u0416", "\u0413"]) {
+            expect(getFontGlyphCharacter(ch, "Main-Regular")).toBe(ch);
+        }
+        for (const ch of ["\u00C5", "\u00D0", "\u00DE", "\u00E5"]) {
+            expect(getFontGlyphCharacter(ch, "Main-Regular")).toBe(ch);
         }
     });
 });

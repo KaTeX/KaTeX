@@ -105,10 +105,6 @@ const sigmasAndXis: Record<string, [number, number, number]> = {
 // the fraction bar or root line from intersecting the glyph.
 // TODO(kevinb) allow union of multiple glyph metrics for better accuracy.
 const extraCharacterMap: Record<string, string> = {
-    // Math symbols present in Unicode but missing from KaTeX fonts.
-    // U+27C2 PERPENDICULAR shares a glyph with U+22A5 UP TACK.
-    '\u27C2': '\u22A5',
-
     // Latin-1
     'Å': 'A',
     'Ð': 'D',
@@ -196,25 +192,44 @@ export function setFontMetrics(
 }
 
 /**
+ * Characters that KaTeX fonts do not carry, but which are typographically
+ * identical to a character the fonts do carry, so the substitute may be
+ * rendered in place of the original.
+ *
+ * This is deliberately separate from `extraCharacterMap`. That map exists to
+ * borrow *metrics* from a similarly-shaped character, and several of its
+ * entries are lookalikes rather than equivalents -- Cyrillic 'Ш' borrows the
+ * metrics of Latin 'W', for instance. Rendering those substitutes would change
+ * the visible text, so only genuine glyph equivalences belong here.
+ */
+const glyphSubstitutionMap: Record<string, string> = {
+    // U+27C2 PERPENDICULAR is the same glyph as U+22A5 UP TACK, which the
+    // KaTeX fonts do carry.
+    '\u27C2': '\u22A5',
+};
+
+/**
+ * Returns the KaTeX-font glyph to render for `character`, substituting an
+ * equivalent glyph when the font does not carry the character itself.
+ * Characters the font can render directly are returned unchanged.
+ */
+export function getFontGlyphCharacter(character: string, font: string): string {
+    const substitute = glyphSubstitutionMap[character[0]];
+    if (substitute === undefined) {
+        return character;
+    }
+    // Only substitute when the font genuinely lacks the original character.
+    const ch = character.charCodeAt(0);
+    return metricMap[font]?.[ch] ? character : substitute;
+}
+
+/**
  * This function is a convenience function for looking up information in the
  * metricMap table. It takes a character as a string, and a font.
  *
  * Note: the `width` property may be undefined if fontMetricsData.js wasn't
  * built using `Make extended_metrics`.
  */
-/**
- * Returns the KaTeX-font glyph for HTML rendering when `character` is absent
- * from the given font's metrics table but has a known substitute glyph.
- * Characters that the font can render directly are returned unchanged.
- */
-export function getFontGlyphCharacter(character: string, font: string): string {
-    const ch = character.charCodeAt(0);
-    if (!metricMap[font]?.[ch] && character[0] in extraCharacterMap) {
-        return extraCharacterMap[character[0]];
-    }
-    return character;
-}
-
 export function getCharacterMetrics(
     character: string,
     font: string,
