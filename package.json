@@ -16,9 +16,14 @@
       }
     },
     "./contrib/auto-render": {
-      "types": "./types/contrib/auto-render.d.ts",
-      "require": "./dist/contrib/auto-render.js",
-      "import": "./dist/contrib/auto-render.mjs"
+      "require": {
+        "types": "./types/contrib/auto-render.d.cts",
+        "default": "./dist/contrib/auto-render.js"
+      },
+      "import": {
+        "types": "./types/contrib/auto-render.d.mts",
+        "default": "./dist/contrib/auto-render.mjs"
+      }
     },
     "./contrib/mhchem": {
       "types": "./types/contrib/mhchem.d.ts",
@@ -36,9 +41,14 @@
       "import": "./dist/contrib/mathtex-script-type.mjs"
     },
     "./contrib/render-a11y-string": {
-      "types": "./types/contrib/render-a11y-string.d.ts",
-      "require": "./dist/contrib/render-a11y-string.js",
-      "import": "./dist/contrib/render-a11y-string.mjs"
+      "require": {
+        "types": "./types/contrib/render-a11y-string.d.cts",
+        "default": "./dist/contrib/render-a11y-string.js"
+      },
+      "import": {
+        "types": "./types/contrib/render-a11y-string.d.mts",
+        "default": "./dist/contrib/render-a11y-string.mjs"
+      }
     },
     "./*": "./*"
   },

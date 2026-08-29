@@ -1,4 +1,4 @@
-import type {KatexOptions} from "../katex";
+import type {KatexOptions} from "../katex.js";
 
 export interface DelimiterSpec {
     left: string;
