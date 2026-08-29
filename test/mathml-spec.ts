@@ -279,7 +279,6 @@ describe("A MathML builder", function() {
     });
 
     it("should render \\perp in HTML using the \\bot font glyph", () => {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const katex = require("../katex").default;
         const html = katex.renderToString("x \\perp y");
         const visible = html.match(/katex-html"[^>]*>([\s\S]*)<\/span><\/span>$/);
