@@ -902,7 +902,7 @@ use `\ce` instead|
 |\Reals|$\Reals$||
 |\reals|$\reals$||
 |\ref|<span style="color:firebrick;">Not supported</span>|[Issue #350](https://github.com/KaTeX/KaTeX/issues/350)|
-|\reflectbox|$\reflectbox{$x^2$}$||
+|\reflectbox|$\reflectbox{$x^2$}$|`\reflectbox{$x^2$}`|
 |\relax|||
 |\renewcommand|$\def\hail{Hi!}\renewcommand\hail{\text{Ahoy!}} \hail$|`\def\hail{Hi!}`<br>`\renewcommand\hail{\text{Ahoy!}}`<br>`\hail`|
 |\renewenvironment|<span style="color:firebrick;">Not supported</span>||

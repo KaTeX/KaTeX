@@ -245,6 +245,7 @@ LowerAccent: |
         \frac{\underrightarrow{AB}}{\underrightarrow{AB}} + \sqrt{\underrightarrow{AB}} + \left\lvert\underrightarrow{AB}\right\rvert \\
         \text{\underline{text}}
     \end{matrix}
+Mapsfrom: a \mapsfrom b \quad c ↤ d
 MathAtom: a\mathrel{\mathop{=}\limits^{\blue ?}}b
 MathAtom2: \mathop{\overline{\mathrm{lim}}}\limits_{x\to\infty}f(x)
 MathChoice: |
@@ -350,6 +351,7 @@ ReactionArrows: |
         A \xrightleftarrows{} B \xrightequilibrium{} C \xleftequilibrium{} D \\
         A \xrightleftarrows{over} B \xrightequilibrium{over} C \xleftequilibrium{over} D
     \end{matrix}
+Reflectbox: \reflectbox{abc} \quad \reflectbox{$x^2 + \frac{a}{b}$}
 RelativeUnits: |
     \begin{array}{ll}
         a\kern1emb^{a\kern1emb^{a\kern1emb}} &
