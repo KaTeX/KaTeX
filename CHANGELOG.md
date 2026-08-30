@@ -1,6 +1,27 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.18.4](https://github.com/KaTeX/KaTeX/compare/v0.18.3...v0.18.4) (2026-08-10)
+
+
+### Bug Fixes
+
+* **environment:** report invalid environment names as ParseError ([#4256](https://github.com/KaTeX/KaTeX/issues/4256)) ([e507f75](https://github.com/KaTeX/KaTeX/commit/e507f759f067ad3b9e279837027d4cfb2314915b)), closes [#3760](https://github.com/KaTeX/KaTeX/issues/3760) [#3760](https://github.com/KaTeX/KaTeX/issues/3760)
+
+## [0.18.3](https://github.com/KaTeX/KaTeX/compare/v0.18.2...v0.18.3) (2026-08-09)
+
+
+### Bug Fixes
+
+* allow braced arguments for delimsizing ([#4255](https://github.com/KaTeX/KaTeX/issues/4255)) ([1c973ae](https://github.com/KaTeX/KaTeX/commit/1c973ae2e2416d3943d78606c90b2a9e8e578243))
+
+## [0.18.2](https://github.com/KaTeX/KaTeX/compare/v0.18.1...v0.18.2) (2026-08-08)
+
+
+### Bug Fixes
+
+* prevent prototype pollution in settings ([#4260](https://github.com/KaTeX/KaTeX/issues/4260)) ([0adf7e7](https://github.com/KaTeX/KaTeX/commit/0adf7e77db6915d991803b29699f82b1ccf8d4f4))
+
 ## [0.18.1](https://github.com/KaTeX/KaTeX/compare/v0.18.0...v0.18.1) (2026-07-19)
 
 

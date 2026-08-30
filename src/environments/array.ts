@@ -6,8 +6,12 @@ import defineFunction from "../defineFunction";
 import defineMacro from "../defineMacro";
 import {MathNode} from "../mathMLTree";
 import ParseError from "../ParseError";
-import {assertNodeType, assertSymbolNodeType} from "../parseNode";
-import {checkSymbolNodeType} from "../parseNode";
+import {
+    assertCharacterGroup,
+    assertNodeType,
+    assertSymbolNodeType,
+    checkSymbolNodeType,
+} from "../parseNode";
 import {Token} from "../Token";
 import {calculateSize, makeEm} from "../units";
 
@@ -734,12 +738,12 @@ const alignedHandler = function(context: EnvContextLike, args: AnyParseNode[]) {
         body: [],
     };
     if (args[0] && args[0].type === "ordgroup") {
-        let arg0 = "";
-        for (let i = 0; i < args[0].body.length; i++) {
-            const textord = assertNodeType(args[0].body[i], "textord");
-            arg0 += textord.text;
+        const message = "Number of columns should be a positive integer";
+        const numColumns = assertCharacterGroup(args[0], message);
+        if (!/^[0-9]+$/.test(numColumns) || Number(numColumns) < 1) {
+            throw new ParseError(message, args[0]);
         }
-        numMaths = Number(arg0);
+        numMaths = Number(numColumns);
         numCols = numMaths * 2;
     }
     const isAligned = !numCols;
