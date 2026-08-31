@@ -3898,7 +3898,14 @@ describe("A macro expander", function() {
         expect(parsed[0].text).toEqual("𝟙");
     });
 
-    it("\\char accepts the last code point of the Unicode codespace", () => {
+    it("\\char accepts the first and last code point of every plane", () => {
+        for (let plane = 0; plane <= 0x10; plane++) {
+            for (const code of [plane * 0x10000, plane * 0x10000 + 0xffff]) {
+                const parsed = getParsed(`\\char"${code.toString(16)}`);
+                expect(parsed[0].type).toEqual("textord");
+            }
+        }
+    });
         const parsed = getParsed`\char"10ffff`;
         expect(parsed[0].type).toEqual("textord");
         // Written as a surrogate pair, since U+10FFFF has no visible glyph
