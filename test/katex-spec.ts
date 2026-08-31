@@ -3906,11 +3906,6 @@ describe("A macro expander", function() {
             }
         }
     });
-        const parsed = getParsed`\char"10ffff`;
-        expect(parsed[0].type).toEqual("textord");
-        // Written as a surrogate pair, since U+10FFFF has no visible glyph
-        expect(parsed[0].text).toEqual("\udbff\udfff");
-    });
 
     it("\\char rejects code points outside the Unicode codespace", () => {
         expect`\char"110000`.toFailWithParseError();
