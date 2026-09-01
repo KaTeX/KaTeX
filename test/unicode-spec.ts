@@ -184,15 +184,33 @@ describe("unicodeScripts", () => {
 });
 
 describe("glyph substitution", () => {
-    it("renders U+27C2 PERPENDICULAR with the U+22A5 glyph the fonts carry", () => {
-        expect(getFontGlyphCharacter("\u27C2", "Main-Regular")).toBe("\u22A5");
+    it("renders \\perp in HTML with the U+22A5 glyph, keeping U+27C2 in MathML", () => {
+        // U+27C2 PERPENDICULAR is absent from the KaTeX fonts but is the same
+        // glyph as U+22A5 UP TACK, which they carry. Only the HTML output
+        // substitutes; MathML keeps U+27C2 so copy/paste and assistive
+        // technology still read the character the author wrote.
+        const katex = require("../katex").default;
+        const html = katex.renderToString("x \\perp y");
+        const visible = html.match(/katex-html"[^>]*>([\s\S]*)<\/span><\/span>$/);
+        expect(visible).not.toBeNull();
+        expect(visible![1]).toContain("⊥");
+        expect(visible![1]).not.toContain("⟂");
+        expect(html).toContain("⟂");
     });
 
+    // The positive direction above is covered end-to-end, reaching
+    // getFontGlyphCharacter through buildCommon's lookupSymbol -- its only call
+    // site. What an output-layer test cannot cover is the negative direction:
+    // the lookalike entries in extraCharacterMap must NOT be substituted, and
+    // only \perp is ever rendered by those tests.
     it("does not substitute characters that only borrow metrics", () => {
-        // extraCharacterMap lends metrics from a similarly-shaped character, and
-        // several of its entries are lookalikes rather than equivalents: Cyrillic
-        // 'Ш' borrows the metrics of Latin 'W'. Rendering those substitutes would
-        // change the visible text, so they must be left alone.
+        // Contract: only genuine glyph equivalences may be substituted. Every
+        // character below is absent from Main-Regular and has a lookalike in
+        // extraCharacterMap ('Ш'->'W', 'Ð'->'D', 'Þ'->'o'), which exists to borrow
+        // *metrics* only. Substituting them would change the visible text, so
+        // getFontGlyphCharacter must return them unchanged -- whether by
+        // consulting extraCharacterMap again or by admitting a lookalike into
+        // glyphSubstitutionMap.
         for (const ch of ["\u0428", "\u0414", "\u0416", "\u0413"]) {
             expect(getFontGlyphCharacter(ch, "Main-Regular")).toBe(ch);
         }

@@ -267,25 +267,25 @@ describe("A MathML builder", function() {
             .toMatchSnapshot();
     });
 
-    it("should map \\perp to U+27C2 and keep \\bot as U+22A5", () => {
-        const perp = getMathML("x \\perp y");
-        const bot = getMathML("x \\bot y");
-        expect(perp).toContain("\u27C2");
-        expect(perp).not.toContain("\u22A5");
-        expect(bot).toContain("\u22A5");
-        expect(bot).not.toContain("\u27C2");
-        expect`x \perp y`.toBuild();
-        expect`x \bot y`.toBuild();
-    });
-
-    it("should render \\perp in HTML using the \\bot font glyph", () => {
-        const katex = require("../katex").default;
-        const html = katex.renderToString("x \\perp y");
-        const visible = html.match(/katex-html"[^>]*>([\s\S]*)<\/span><\/span>$/);
-        expect(visible).not.toBeNull();
-        expect(visible![1]).toContain("\u22A5");
-        expect(visible![1]).not.toContain("\u27C2");
-        expect(html).toContain("\u27C2");
+    it("should give each command the Unicode character it names", () => {
+        // MathML carries the character Unicode assigns to the command, even when
+        // another command shares its glyph. Substitution is HTML-only, so each
+        // of these must appear in its own output and in no other's.
+        const codepoints = {
+            "\\perp": "\u27C2", // PERPENDICULAR
+            "\\bot": "\u22A5",  // UP TACK
+            "\\top": "\u22A4",  // DOWN TACK
+        };
+        for (const [command, expected] of Object.entries(codepoints)) {
+            const mathml = getMathML(`x ${command} y`);
+            expect(mathml).toContain(expected);
+            for (const other of Object.values(codepoints)) {
+                if (other !== expected) {
+                    expect(mathml).not.toContain(other);
+                }
+            }
+            expect(`x ${command} y`).toBuild();
+        }
     });
 });
 
