@@ -4248,6 +4248,14 @@ describe("\\tag support", function() {
         expect`\begin{align}\tag{1}x\\&+y\tag{2}\end{align}`.toParse(displayMode);
     });
 
+    it("should keep a manual tag on an empty final row", () => {
+        const markup = katex.renderToString(
+            r`\begin{align}\nonumber a\\\tag{1}\end{align}`,
+            {displayMode: true},
+        );
+        expect(markup).toContain("<span class=\"mord\">1</span>");
+    });
+
     it("should work with \\nonumber/\\notag", () => {
         expect`\begin{align}\tag{1}\nonumber x\\&+y\notag\end{align}`
         .toParseLike(r`\begin{align}\tag{1}x\\&+y\nonumber\end{align}`, displayMode);
