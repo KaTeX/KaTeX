@@ -192,33 +192,31 @@ export function setFontMetrics(
 }
 
 /**
- * Characters that KaTeX fonts do not carry, but which are typographically
- * identical to a character the fonts do carry, so the substitute may be
- * rendered in place of the original.
+ * Characters the KaTeX fonts do not carry, mapped to a character they do carry
+ * that is the *same glyph* -- not merely a similar shape. Only genuine glyph
+ * equivalences belong here, because the substitute is what the reader sees.
  *
- * This is deliberately separate from `extraCharacterMap`. That map exists to
- * borrow *metrics* from a similarly-shaped character, and several of its
- * entries are lookalikes rather than equivalents -- Cyrillic 'Ш' borrows the
- * metrics of Latin 'W', for instance. Rendering those substitutes would change
- * the visible text, so only genuine glyph equivalences belong here.
+ * Hence the separation from `extraCharacterMap`, which borrows *metrics* from a
+ * similarly-shaped character and so holds lookalikes rather than equivalents
+ * (Cyrillic 'Ш' borrows Latin 'W' metrics). Substituting one of those would
+ * change the visible text: routed through it, 'Ð' would render as 'D' and
+ * 'Þ' as 'o'.
  */
 const glyphSubstitutionMap: Record<string, string> = {
-    // U+27C2 PERPENDICULAR is the same glyph as U+22A5 UP TACK, which the
-    // KaTeX fonts do carry.
+    // U+27C2 PERPENDICULAR is the same glyph as U+22A5 UP TACK.
     '\u27C2': '\u22A5',
 };
 
 /**
- * Returns the KaTeX-font glyph to render for `character`, substituting an
- * equivalent glyph when the font does not carry the character itself.
- * Characters the font can render directly are returned unchanged.
+ * Returns the glyph to render for `character` in `font`: the mapped equivalent
+ * when the font lacks the character itself, and `character` unchanged when the
+ * font can render it directly or when no equivalence is known.
  */
 export function getFontGlyphCharacter(character: string, font: string): string {
     const substitute = glyphSubstitutionMap[character[0]];
     if (substitute === undefined) {
         return character;
     }
-    // Only substitute when the font genuinely lacks the original character.
     const ch = character.charCodeAt(0);
     return metricMap[font]?.[ch] ? character : substitute;
 }
