@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.18.5](https://github.com/KaTeX/KaTeX/compare/v0.18.4...v0.18.5) (2026-08-31)
+
+
+### Bug Fixes
+
+* **char:** accept U+10FFFF ([#4265](https://github.com/KaTeX/KaTeX/issues/4265)) ([6805538](https://github.com/KaTeX/KaTeX/commit/680553898e23c55fa6cb66052b4b9396cbe857ce)), closes [#2549](https://github.com/KaTeX/KaTeX/issues/2549)
+
 ## [0.18.4](https://github.com/KaTeX/KaTeX/compare/v0.18.3...v0.18.4) (2026-08-10)
 
 

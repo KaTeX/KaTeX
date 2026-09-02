@@ -3898,6 +3898,19 @@ describe("A macro expander", function() {
         expect(parsed[0].text).toEqual("𝟙");
     });
 
+    it("\\char accepts the first and last code point of every plane", () => {
+        for (let plane = 0; plane <= 0x10; plane++) {
+            for (const code of [plane * 0x10000, plane * 0x10000 + 0xffff]) {
+                const parsed = getParsed(`\\char"${code.toString(16)}`);
+                expect(parsed[0].type).toEqual("textord");
+            }
+        }
+    });
+
+    it("\\char rejects code points outside the Unicode codespace", () => {
+        expect`\char"110000`.toFailWithParseError();
+    });
+
     it("should build Unicode private area characters", function() {
         expect`\gvertneqq\lvertneqq\ngeqq\ngeqslant\nleqq`.toBuild();
         expect`\nleqslant\nshortmid\nshortparallel\varsubsetneq`.toBuild();
