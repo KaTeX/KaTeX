@@ -22,17 +22,17 @@ document.addEventListener('copy', function(event: ClipboardEvent) {
     // around `user-select: none` elements.  Reading only the first range
     // drops everything after it.
     const fragment = document.createDocumentFragment();
-    let copiedKatex: Element | null | undefined = null;
+    const copied: Range[] = [];
     for (let i = 0; i < selection.rangeCount; i++) {
         const range = selection.getRangeAt(i);
 
-        // When start point is within a formula, expand to entire formula,
-        // unless an earlier range already copied that formula: expanding
-        // again would repeat it.  Starting after it instead leaves a range
-        // wholly inside the formula collapsed, contributing nothing.
+        // When start point is within a formula, expand to entire formula.
+        // If an earlier range already copied that formula, start after it
+        // instead, so the formula is not repeated; a range lying wholly
+        // inside it then collapses and contributes nothing.
         const startKatex = closestKatex(range.startContainer);
         if (startKatex) {
-            if (startKatex === copiedKatex) {
+            if (copied.some((r) => r.intersectsNode(startKatex))) {
                 range.setStartAfter(startKatex);
             } else {
                 range.setStartBefore(startKatex);
@@ -44,10 +44,10 @@ document.addEventListener('copy', function(event: ClipboardEvent) {
         const endKatex = closestKatex(range.endContainer);
         if (endKatex) {
             range.setEndAfter(endKatex);
-            copiedKatex = endKatex;
         }
 
         fragment.appendChild(range.cloneContents());
+        copied.push(range.cloneRange());
     }
 
     if (!fragment.querySelector('.katex-mathml')) {
