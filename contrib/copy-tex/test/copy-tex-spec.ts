@@ -70,7 +70,7 @@ describe("copy-tex", () => {
         expect(text).toBe("first $x^2$ second  third");
     });
 
-    it("does not repeat a formula covered by two ranges", () => {
+    it("does not repeat a formula split across two ranges", () => {
         buildDocument();
         const math = document.querySelector(".katex")!;
         const parts = [
@@ -85,5 +85,19 @@ describe("copy-tex", () => {
         }));
 
         expect(text).toBe("$x^2$");
+    });
+
+    it("does not repeat a formula an earlier range already covered", () => {
+        const {beforeGap} = buildDocument();
+        const inner = document.createRange();
+        inner.selectNodeContents(document.querySelector(".katex-html")!);
+
+        const text = copy([
+            // Covers the whole formula without either endpoint inside it.
+            rangeOver(document.body.firstChild!, beforeGap),
+            inner,
+        ]);
+
+        expect(text).toBe("first $x^2$ second ");
     });
 });
