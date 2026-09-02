@@ -16,21 +16,40 @@ document.addEventListener('copy', function(event: ClipboardEvent) {
         return; // default action OK if selection is empty or unchangeable
     }
     const clipboardData = event.clipboardData;
-    const range = selection.getRangeAt(0);
 
-    // When start point is within a formula, expand to entire formula.
-    const startKatex = closestKatex(range.startContainer);
-    if (startKatex) {
-        range.setStartBefore(startKatex);
+    // A selection can hold more than one range.  Firefox builds one range
+    // per Ctrl-click, and before Firefox 147 it also split a selection
+    // around `user-select: none` elements.  Reading only the first range
+    // drops everything after it.
+    const fragment = document.createDocumentFragment();
+    let copiedKatex: Element | null | undefined = null;
+    for (let i = 0; i < selection.rangeCount; i++) {
+        const range = selection.getRangeAt(i);
+
+        // When start point is within a formula, expand to entire formula,
+        // unless an earlier range already copied that formula: expanding
+        // again would repeat it.  Starting after it instead leaves a range
+        // wholly inside the formula collapsed, contributing nothing.
+        const startKatex = closestKatex(range.startContainer);
+        if (startKatex) {
+            if (startKatex === copiedKatex) {
+                range.setStartAfter(startKatex);
+            } else {
+                range.setStartBefore(startKatex);
+            }
+        }
+
+        // Similarly, when end point is within a formula, expand to entire
+        // formula.
+        const endKatex = closestKatex(range.endContainer);
+        if (endKatex) {
+            range.setEndAfter(endKatex);
+            copiedKatex = endKatex;
+        }
+
+        fragment.appendChild(range.cloneContents());
     }
 
-    // Similarly, when end point is within a formula, expand to entire formula.
-    const endKatex = closestKatex(range.endContainer);
-    if (endKatex) {
-        range.setEndAfter(endKatex);
-    }
-
-    const fragment = range.cloneContents();
     if (!fragment.querySelector('.katex-mathml')) {
         return; // default action OK if no .katex-mathml elements
     }
