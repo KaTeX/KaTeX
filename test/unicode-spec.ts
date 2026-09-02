@@ -211,6 +211,15 @@ describe("glyph substitution", () => {
         // getFontGlyphCharacter must return them unchanged -- whether by
         // consulting extraCharacterMap again or by admitting a lookalike into
         // glyphSubstitutionMap.
+        //
+        // These assertions pass by construction today: glyphSubstitutionMap holds
+        // one entry, so all eight characters hit the `substitute === undefined`
+        // early return. That is the point -- the test pins the construction. Wiring
+        // the metrics map back in as a rendering fallback,
+        //     glyphSubstitutionMap[c] ?? extraCharacterMap[c]
+        // fails 8 of 8 assertions here while leaving \perp correct, so every
+        // \perp-based test in this file and in mathml-spec.ts stays green. This is
+        // the only guard on "metrics fallback must not become rendering fallback".
         for (const ch of ["\u0428", "\u0414", "\u0416", "\u0413"]) {
             expect(getFontGlyphCharacter(ch, "Main-Regular")).toBe(ch);
         }
