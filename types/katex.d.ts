@@ -55,7 +55,7 @@ export type StrictFunction = (
     | "mathVsSout"
     | "mathVsTextAccents"
     | "textEnv"
-    | "noCharacterMetrics",
+    | "symbolNotInFont",
   errorMsg: string,
   token?: Token,
 ) => boolean | "error" | "warn" | "ignore" | undefined;

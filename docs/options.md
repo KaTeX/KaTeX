@@ -46,7 +46,7 @@ You can provide an object of options as the last argument to [`katex.render` and
     text mode; KaTeX renders the argument in text mode anyway.
   - `"textEnv"`: A row of an `{array}` environment has more `&`-separated
     cells than the column argument declares. LaTeX would raise an error.
-  - `"noCharacterMetrics"`: No character metrics for a given symbol in the 
+  - `"symbolNotInFont"`: No character metrics for a given symbol in the 
     specified style and mode.
 
   A second category of `errorCode`s never throw errors, but their strictness
