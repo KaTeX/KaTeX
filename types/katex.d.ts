@@ -51,9 +51,13 @@ export type StrictFunction = (
     | "mathVsTextUnits"
     | "commentAtEnd"
     | "htmlExtension"
-    | "newLineInDisplayMode",
+    | "newLineInDisplayMode"
+    | "mathVsSout"
+    | "mathVsTextAccents"
+    | "textEnv"
+    | "noCharacterMetrics",
   errorMsg: string,
-  token: Token,
+  token?: Token,
 ) => boolean | "error" | "warn" | "ignore" | undefined;
 
 
