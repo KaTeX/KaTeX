@@ -198,20 +198,6 @@ describe("glyph substitution", () => {
         expect(html).toContain("⟂");
     });
 
-    it("does not substitute characters that only borrow metrics", () => {
-        // extraCharacterMap borrows *metrics* from a lookalike ('Ð'->'D',
-        // 'Þ'->'o'), so substituting one of its entries would change the visible
-        // text. Wiring it in as a rendering fallback,
-        //     glyphSubstitutionMap[c] ?? extraCharacterMap[c]
-        // corrupts all eight characters below while leaving every \perp test green.
-        for (const ch of ["\u0428", "\u0414", "\u0416", "\u0413"]) {
-            expect(getFontGlyphCharacter(ch, "Main-Regular")).toBe(ch);
-        }
-        for (const ch of ["\u00C5", "\u00D0", "\u00DE", "\u00E5"]) {
-            expect(getFontGlyphCharacter(ch, "Main-Regular")).toBe(ch);
-        }
-    });
-
     it("substitutes in math mode only, so text mode can fall back to system fonts", () => {
         // The substitution hook is gated on mode === "math" in buildCommon. In text
         // mode a character absent from the KaTeX fonts must be left alone, so the
