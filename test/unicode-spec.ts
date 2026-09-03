@@ -198,28 +198,12 @@ describe("glyph substitution", () => {
         expect(html).toContain("⟂");
     });
 
-    // The positive direction above is covered end-to-end, reaching
-    // getFontGlyphCharacter through buildCommon's lookupSymbol -- its only call
-    // site. What an output-layer test cannot cover is the negative direction:
-    // the lookalike entries in extraCharacterMap must NOT be substituted, and
-    // only \perp is ever rendered by those tests.
     it("does not substitute characters that only borrow metrics", () => {
-        // Contract: only genuine glyph equivalences may be substituted. Every
-        // character below is absent from Main-Regular and has a lookalike in
-        // extraCharacterMap ('Ш'->'W', 'Ð'->'D', 'Þ'->'o'), which exists to borrow
-        // *metrics* only. Substituting them would change the visible text, so
-        // getFontGlyphCharacter must return them unchanged -- whether by
-        // consulting extraCharacterMap again or by admitting a lookalike into
-        // glyphSubstitutionMap.
-        //
-        // These assertions pass by construction today: glyphSubstitutionMap holds
-        // one entry, so all eight characters hit the `substitute === undefined`
-        // early return. That is the point -- the test pins the construction. Wiring
-        // the metrics map back in as a rendering fallback,
+        // extraCharacterMap borrows *metrics* from a lookalike ('Ð'->'D',
+        // 'Þ'->'o'), so substituting one of its entries would change the visible
+        // text. Wiring it in as a rendering fallback,
         //     glyphSubstitutionMap[c] ?? extraCharacterMap[c]
-        // fails 8 of 8 assertions here while leaving \perp correct, so every
-        // \perp-based test in this file and in mathml-spec.ts stays green. This is
-        // the only guard on "metrics fallback must not become rendering fallback".
+        // corrupts all eight characters below while leaving every \perp test green.
         for (const ch of ["\u0428", "\u0414", "\u0416", "\u0413"]) {
             expect(getFontGlyphCharacter(ch, "Main-Regular")).toBe(ch);
         }
