@@ -25,6 +25,7 @@ const defaultOptions = new Options({
     size: 5,
     maxSize: Infinity,
     minRuleThickness: 0,
+    strict: "warn",
 });
 
 describe("A parser", function() {

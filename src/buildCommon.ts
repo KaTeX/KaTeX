@@ -1,4 +1,3 @@
-/* eslint no-console:0 */
 /**
  * This module contains general functions that can be used for building
  * different kinds of domTree nodes in a consistent manner.
@@ -10,6 +9,7 @@ import symbols, {ligatures} from "./symbols";
 import {wideCharacterFont} from "./wide-character";
 import {calculateSize, makeEm} from "./units";
 import {DocumentFragment} from "./tree";
+import {handleStrict} from "./strict";
 
 import type Options from "./Options";
 import type {Measurement, Mode} from "./types";
@@ -59,13 +59,12 @@ const lookupSymbol = function(
  * TODO: make argument order closer to makeSpan
  * TODO: add a separate argument for math class (e.g. `mop`, `mbin`), which
  * should if present come first in `classes`.
- * TODO(#953): Make `options` mandatory and always pass it in.
  */
 export const makeSymbol = function(
     value: string,
     fontName: FontName,
     mode: Mode,
-    options?: Options,
+    options: Options,
     classes?: string[],
 ): SymbolNode {
     const lookup = lookupSymbol(value, fontName, mode);
@@ -82,21 +81,22 @@ export const makeSymbol = function(
             value, metrics.height, metrics.depth, italic, metrics.skew,
             metrics.width, classes);
     } else {
-        // TODO(emily): Figure out a good way to only print this in development
-        typeof console !== "undefined" && console.warn("No character metrics " +
-            `for '${value}' in style '${fontName}' and mode '${mode}'`);
+        handleStrict({
+            strictSetting: options.strict,
+            errorCode: "symbolNotInFont",
+            errorMessage: `No character metrics for '${value}' in style '${fontName}' and mode '${mode}'`,
+            report: true,
+        });
         symbolNode = new SymbolNode(value, 0, 0, 0, 0, 0, classes);
     }
 
-    if (options) {
-        symbolNode.maxFontSize = options.sizeMultiplier;
-        if (options.style.isTight()) {
-            symbolNode.classes.push("mtight");
-        }
-        const color = options.getColor();
-        if (color) {
-            symbolNode.style.color = color;
-        }
+    symbolNode.maxFontSize = options.sizeMultiplier;
+    if (options.style.isTight()) {
+        symbolNode.classes.push("mtight");
+    }
+    const color = options.getColor();
+    if (color) {
+        symbolNode.style.color = color;
     }
 
     return symbolNode;
@@ -120,7 +120,7 @@ export const mathsym = function(
     // table for text, as well as a special case for boldsymbol because it
     // can be used for bold + and -
     if (options.font === "boldsymbol" &&
-            lookupSymbol(value, "Main-Bold", mode).metrics) {
+        lookupSymbol(value, "Main-Bold", mode).metrics) {
         return makeSymbol(value, "Main-Bold", mode, options,
             classes.concat(["mathbf"]));
     } else if (value === "\\" || symbols[mode][value].font === "main") {
@@ -213,12 +213,12 @@ export const makeOrd = function(
             return makeSymbol(text, fontName, mode, options,
                 classes.concat(fontClasses));
         } else if (Object.prototype.hasOwnProperty.call(ligatures, text) &&
-                   fontName.slice(0, 10) === "Typewriter") {
+            fontName.slice(0, 10) === "Typewriter") {
             // Deconstruct ligatures in monospace fonts (\texttt, \tt).
             const parts = [];
             for (let i = 0; i < text.length; i++) {
                 parts.push(makeSymbol(text[i], fontName, mode, options,
-                                      classes.concat(fontClasses)));
+                    classes.concat(fontClasses)));
             }
             return makeFragment(parts);
         }
@@ -502,7 +502,7 @@ const getVListChildrenAndDepth = function(params: VListParam): {
                 oldChildren[i].elem.depth;
             const size = diff -
                 (oldChildren[i - 1].elem.height +
-                 oldChildren[i - 1].elem.depth);
+                    oldChildren[i - 1].elem.depth);
 
             currPos = currPos + diff;
             children.push({type: "kern", size});
@@ -529,7 +529,7 @@ const getVListChildrenAndDepth = function(params: VListParam): {
     } else {
         const firstChild = params.children[0];
         if (firstChild.type !== "elem") {
-            throw new Error('First child must have type "elem".');
+            throw new Error("First child must have type \"elem\".");
         }
         if (params.positionType === "shift") {
             depth = -firstChild.elem.depth - params.positionData;
