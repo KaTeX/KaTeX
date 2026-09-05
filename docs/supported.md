@@ -268,10 +268,13 @@ In display math, KaTeX does not insert automatic line breaks. It ignores display
 |$x_n$ `x_n` |$\stackrel{!}{=}$ `\stackrel{!}{=}`| $a \atop b$ `a \atop b`
 |$e^x$ `e^x` |$\overset{!}{=}$ `\overset{!}{=}`  | $a\raisebox{0.25em}{$b$}c$ `a\raisebox{0.25em}{$b$}c`
 ||| $\reflectbox{KaTeX}$ `\reflectbox{KaTeX}`
+||| $\mathreflectbox{x^2}$ `\mathreflectbox{x^2}`
 |$_u^o $ `_u^o `| $\underset{!}{=}$ `\underset{!}{=}` | $a+\left(\vcenter{\frac{\frac a b}c}\right)$ `a+\left(\vcenter{\hbox{$\frac{\frac a b}c$}}\right)`
 ||| $$\sum_{\substack{0<i<m\\0<j<n}}$$ `\sum_{\substack{0<i<m\\0<j<n}}`
 
 `\raisebox`, `\reflectbox` and `\hbox` put their argument into text mode. To use math inside these commands, nest `$…$` delimiters inside the argument as shown above. 
+
+`\mathreflectbox` reflects math while preserving the surrounding math style, including in subscripts and superscripts. Both reflection commands have ordinary-atom spacing. Reflection is applied only to HTML output; MathML retains the unreflected content.
 
 `\vcenter` can be written without an `\hbox` if the `strict` rendering option is *false*. In that case, omit the nested `$…$` delimiters.
 

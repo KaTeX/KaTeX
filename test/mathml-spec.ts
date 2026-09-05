@@ -273,5 +273,10 @@ describe("A MathML builder", function() {
 
     it("should use the mapsfrom character in MathML", () => {
         expect(getMathML("\\mapsfrom")).toContain("↤");
+        expect(getMathML("a\\mapsfrom b")).toMatchSnapshot();
+    });
+
+    it("should preserve mathreflectbox content and script style in MathML", () => {
+        expect(getMathML("x_{\\mathreflectbox{\\frac{a}{b}}}")).toMatchSnapshot();
     });
 });

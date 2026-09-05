@@ -671,6 +671,7 @@ use `\ce` instead|
 |\mathopen|$a + \mathopen\lt b) + c$|`a + \mathopen\lt b) + c`|
 |\mathord|$1\mathord{,}234{,}567$|`1\mathord{,}234{,}567`|
 |\mathpunct|$A\mathpunct{-}B$|`A\mathpunct{-}B`|
+|\mathreflectbox|$\mathreflectbox{x^2}$|`\mathreflectbox{x^2}`|
 |\mathrel|$a \mathrel{\#} b$|`a \mathrel{\#} b`|
 |\mathrlap|$\mathrlap{\,/}{=}$|`\mathrlap{\,/}{=}`|
 |\mathring|$\mathring{a}$|`\mathring{a}`|
