@@ -3215,6 +3215,138 @@ describe("An rcases environment", function() {
 
 });
 
+describe("A numcases environment", function() {
+    const displayMode = new Settings({displayMode: true});
+    const nc = r`\begin{numcases}{|x|=}x, & x \geq 0\\-x, & x < 0\end{numcases}`;
+    const htmlOf = (tex: string) =>
+        katex.__renderToDomTree(tex, displayMode).children[0].children[1];
+    const classesOf = (nodes: any[]) => nodes.map((node: any) => node.classes[0]);
+
+    it("should fail outside display mode", function() {
+        expect(nc).toFailWithParseError(
+            "{numcases} can be used only in display mode.", nonstrictSettings);
+    });
+
+    it("should build in display mode", function() {
+        expect(nc).toBuild(displayMode);
+        expect`\begin{numcases}{f=}a & b\end{numcases}`.toBuild(displayMode);
+        expect`\begin{numcases}{}a\\b\end{numcases}`.toBuild(displayMode);
+        expect`\begin{numcases}{f=}a\\[1em]b\end{numcases}`.toBuild(displayMode);
+    });
+
+    it("should build an empty environment as one numbered row", function() {
+        // As cases.sty does, and amsmath for {gather}.
+        const tex = r`\begin{numcases}{f=}\end{numcases}`;
+        expect(tex).toBuild(displayMode);
+        const parsed = getParsed(tex, displayMode)[0];
+        expect(parsed.body).toHaveLength(1);
+        expect(parsed.tags).toEqual([true]);
+    });
+
+    it("should eat a final newline", function() {
+        const parsed = getParsed(r`\begin{numcases}{f=}a\\b\\\end{numcases}`, displayMode)[0];
+        expect(parsed.body).toHaveLength(2);
+    });
+
+    it("should fail with a third column, as cases.sty and {split} do", function() {
+        expect`\begin{numcases}{f=}a & b & c\end{numcases}`.toFailWithParseError(
+            "Too many tab characters: & at position 27: …ases}{f=}a & b &̲ c\\end{numcases…",
+            displayMode);
+    });
+
+    it("should set the cases in text style, as {cases} does", function() {
+        const cell = getParsed(nc, displayMode)[0].body[0][0];
+        expect(cell.type).toBe("styling");
+        expect(cell.style).toBe("text");
+    });
+
+    it("should number every row", function() {
+        expect(getParsed(nc, displayMode)[0].tags).toEqual([true, true]);
+    });
+
+    it("should honor \\nonumber and \\notag", function() {
+        expect`\begin{numcases}{f=}a\\b\nonumber\end{numcases}`
+            .toParseLike(r`\begin{numcases}{f=}a\\b\notag\end{numcases}`, displayMode);
+        expect(getParsed(r`\begin{numcases}{f=}a\\b\nonumber\end{numcases}`, displayMode)[0].tags)
+            .toEqual([true, false]);
+    });
+
+    it("should let \\tag override the automatic number", function() {
+        const tags = getParsed(r`\begin{numcases}{f=}a\tag{$\ast$}\\b\end{numcases}`, displayMode)[0].tags;
+        expect(tags[0]).not.toBe(true);
+        expect(tags[1]).toBe(true);
+    });
+
+    it("should set the left-hand side and the brace beside the table", function() {
+        expect(classesOf(getBuilt(nc, displayMode)[0].children))
+            .toEqual(["mord", "mopen", "mtable"]);
+    });
+
+    it("should keep the left-hand side and the brace when no row is numbered", function() {
+        const tex = r`\begin{numcases}{f=}a\nonumber\\b\nonumber\end{numcases}`;
+        expect(classesOf(htmlOf(tex).children)).toEqual(["katex-base"]);
+        expect(classesOf(getBuilt(tex, displayMode)[0].children))
+            .toEqual(["mord", "mopen", "mtable"]);
+    });
+
+    it("should leave the tag column where the stylesheet expects it", function() {
+        // Why this shape matters: see the html builder in environments/array.ts.
+        expect(classesOf(htmlOf(nc).children)).toEqual(["katex-base", "katex-tag"]);
+    });
+
+    it("should keep the equation numbers level with their rows", function() {
+        const [base, tag] = htmlOf(nc).children;
+        const body = base.children[base.children.length - 1];
+        const strut = tag.children[0];
+        expect(strut.classes).toContain("katex-strut");
+        expect(parseFloat(strut.style.height)).toBeCloseTo(body.height + body.depth, 3);
+        expect(parseFloat(strut.style.verticalAlign)).toBeCloseTo(-body.depth, 3);
+    });
+
+    it("should size the brace for the current font size, as \\left\\{ does", function() {
+        const findClass = (node: any, cls: string): any => node.classes.includes(cls)
+            ? node
+            : (node.children || []).reduce(
+                (found: any, child: any) => found || findClass(child, cls), null);
+        const rows = r`a\\b\\c\\d`;
+        for (const size of ["\\tiny", "", "\\Huge"]) {
+            const brace = findClass(htmlOf(size + r`\begin{numcases}{f=}` + rows + r`\end{numcases}`), "mopen");
+            const reference = findClass(htmlOf(size + r`\begin{cases}` + rows + r`\end{cases}`), "mopen");
+            expect([brace.height, brace.depth]).toEqual([reference.height, reference.depth]);
+        }
+    });
+
+    it("should space the left-hand side from the brace as TeX would", function() {
+        // As after cases.sty's {#1{}}: a trailing relation gets its thick
+        // space, an operator its thin space, an ordinary symbol none.
+        const lhsOf = (tex: string) => getBuilt(tex, displayMode)[0].children[0].children;
+        const rel = lhsOf(nc);
+        expect(rel[rel.length - 1].classes[0]).toBe("mspace");
+        expect(rel[rel.length - 1].style.marginRight).toBe("0.2778em");
+        const op = lhsOf(r`\begin{numcases}{\lim}a\\b\end{numcases}`);
+        expect(op[op.length - 1].style.marginRight).toBe("0.1667em");
+        const ord = lhsOf(r`\begin{numcases}{f(x)}a\\b\end{numcases}`);
+        expect(ord[ord.length - 1].classes[0]).not.toBe("mspace");
+    });
+
+    it("should set the left-hand side and the brace beside the table in MathML", function() {
+        const markup = buildMathML(getParsed(nc, displayMode), nc, defaultOptions).toMarkup();
+        expect(markup).toMatch(/<mo fence="true">\{<\/mo><mtable/);
+        expect(markup.match(/mml-eqn-num/g)).toHaveLength(2);
+        // Why there is no glue: see the mathml builder in environments/array.ts.
+        expect(markup).not.toContain("mtr-glue");
+    });
+
+    it("should put the number on the left under leqno in MathML", function() {
+        const leqno = new Settings({displayMode: true, leqno: true});
+        const markup = buildMathML(getParsed(nc, leqno), nc, defaultOptions).toMarkup();
+        expect(markup).toMatch(/<mtr><mtd class ?="mml-eqn-num">/);
+        const plain = buildMathML(getParsed(nc, displayMode), nc, defaultOptions).toMarkup();
+        expect(plain).toMatch(/<mtd class ?="mml-eqn-num"><\/mtd><\/mtr>/);
+    });
+
+});
+
 describe("An aligned environment", function() {
 
     it("should parse its input", function() {

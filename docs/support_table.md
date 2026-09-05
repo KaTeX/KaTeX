@@ -778,6 +778,7 @@ use `\ce` instead|
 |\ntrianglerighteq|$\ntrianglerighteq$||
 |\Nu|$\Nu$||
 |\nu|$\nu$||
+|{numcases}|$$\begin{numcases}{\lvert x\rvert=}x,&\text{if $x\geq0$}\\-x,&\text{if $x<0$}\end{numcases}$$|`\begin{numcases}{\lvert x\rvert=}`<br>&nbsp;&nbsp;&nbsp;`x, &\text{if $x \geq 0$} \\`<br>&nbsp;&nbsp;&nbsp;`-x, &\text{if $x < 0$}`<br>`\end{numcases}`|
 |\nVDash|$\nVDash$||
 |\nVdash|$\nVdash$||
 |\nvDash|$\nvDash$||
