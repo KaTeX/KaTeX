@@ -266,4 +266,26 @@ describe("A MathML builder", function() {
         expect(getMathML("\\copyright\\neq\\notin\u2258\\KaTeX"))
             .toMatchSnapshot();
     });
+
+    it("should give each command the Unicode character it names", () => {
+        // MathML carries the character Unicode assigns to the command, even when
+        // another command shares its glyph. Substitution is HTML-only, so each
+        // of these must appear in its own output and in no other's.
+        const codepoints = {
+            "\\perp": "\u27C2", // PERPENDICULAR
+            "\\bot": "\u22A5",  // UP TACK
+            "\\top": "\u22A4",  // DOWN TACK
+        };
+        for (const [command, expected] of Object.entries(codepoints)) {
+            const mathml = getMathML(`x ${command} y`);
+            expect(mathml).toContain(expected);
+            for (const other of Object.values(codepoints)) {
+                if (other !== expected) {
+                    expect(mathml).not.toContain(other);
+                }
+            }
+            expect(`x ${command} y`).toBuild();
+        }
+    });
 });
+
