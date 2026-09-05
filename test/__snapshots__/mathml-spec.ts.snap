@@ -603,6 +603,59 @@ exports[`A MathML builder should output \\limsup_{x \\rightarrow \\infty} in dis
 </math>
 `;
 
+exports[`A MathML builder should preserve mathreflectbox content and script style in MathML 1`] = `
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <semantics>
+    <mrow>
+      <msub>
+        <mi>
+          x
+        </mi>
+        <mfrac>
+          <mi>
+            a
+          </mi>
+          <mi>
+            b
+          </mi>
+        </mfrac>
+      </msub>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      x_{\\mathreflectbox{\\frac{a}{b}}}
+    </annotation>
+  </semantics>
+</math>
+`;
+
+exports[`A MathML builder should preserve reflected content in MathML 1`] = `
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <semantics>
+    <mrow>
+      <mstyle scriptlevel="0"
+              displaystyle="false"
+      >
+        <mstyle scriptlevel="0"
+                displaystyle="false"
+        >
+          <msup>
+            <mi>
+              x
+            </mi>
+            <mn>
+              2
+            </mn>
+          </msup>
+        </mstyle>
+      </mstyle>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      \\reflectbox{$x^2$}
+    </annotation>
+  </semantics>
+</math>
+`;
+
 exports[`A MathML builder should render boldsymbol with the correct mathvariants 1`] = `
 <math xmlns="http://www.w3.org/1998/Math/MathML">
   <semantics>
@@ -1027,6 +1080,29 @@ exports[`A MathML builder should use <munderover> for large operators 1`] = `
     </mrow>
     <annotation encoding="application/x-tex">
       \\displaystyle\\sum_a^b
+    </annotation>
+  </semantics>
+</math>
+`;
+
+exports[`A MathML builder should use the mapsfrom character in MathML 1`] = `
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+  <semantics>
+    <mrow>
+      <mi>
+        a
+      </mi>
+      <mo>
+        <mi mathvariant="normal">
+          ↤
+        </mi>
+      </mo>
+      <mi>
+        b
+      </mi>
+    </mrow>
+    <annotation encoding="application/x-tex">
+      a\\mapsfrom b
     </annotation>
   </semantics>
 </math>

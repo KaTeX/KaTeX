@@ -652,6 +652,7 @@ use `\ce` instead|
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\maltese|$\maltese$||
+|\mapsfrom|$\mapsfrom$||
 |\mapsto|$\mapsto$||
 |\mathbb|$\mathbb{AB}$|`\mathbb{AB}`<br>KaTeX supports A-Z k|
 |\mathbf|$\mathbf{AaBb123}$|`\mathbf{AaBb123}`|
@@ -670,6 +671,7 @@ use `\ce` instead|
 |\mathopen|$a + \mathopen\lt b) + c$|`a + \mathopen\lt b) + c`|
 |\mathord|$1\mathord{,}234{,}567$|`1\mathord{,}234{,}567`|
 |\mathpunct|$A\mathpunct{-}B$|`A\mathpunct{-}B`|
+|\mathreflectbox|$\mathreflectbox{x^2}$|`\mathreflectbox{x^2}`|
 |\mathrel|$a \mathrel{\#} b$|`a \mathrel{\#} b`|
 |\mathrlap|$\mathrlap{\,/}{=}$|`\mathrlap{\,/}{=}`|
 |\mathring|$\mathring{a}$|`\mathring{a}`|
@@ -901,6 +903,7 @@ use `\ce` instead|
 |\Reals|$\Reals$||
 |\reals|$\reals$||
 |\ref|<span style="color:firebrick;">Not supported</span>|[Issue #350](https://github.com/KaTeX/KaTeX/issues/350)|
+|\reflectbox|$\reflectbox{$x^2$}$|`\reflectbox{$x^2$}`|
 |\relax|||
 |\renewcommand|$\def\hail{Hi!}\renewcommand\hail{\text{Ahoy!}} \hail$|`\def\hail{Hi!}`<br>`\renewcommand\hail{\text{Ahoy!}}`<br>`\hail`|
 |\renewenvironment|<span style="color:firebrick;">Not supported</span>||
