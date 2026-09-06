@@ -12,6 +12,13 @@ interface RenderMathInElementOptions {
     errorCallback?: (msg: string, err: Error) => void;
     displayMode?: boolean;
     macros?: Record<string, string>;
+
+    /**
+     * An optional callback invoked for each element that is not excluded by
+     * `ignoredTags` or `ignoredClasses`. Return `false` to skip rendering
+     * math inside that element and its descendants.
+     */
+    shouldRender?: (node: HTMLElement) => boolean;
 }
 
 interface RenderMathInElementOptionsCopy {
@@ -22,6 +29,7 @@ interface RenderMathInElementOptionsCopy {
     errorCallback: (msg: string, err: Error) => void;
     displayMode?: boolean;
     macros?: Record<string, string>;
+    shouldRender?: (node: HTMLElement) => boolean;
 }
 
 /* Note: optionsCopy is mutated by this method. If it is ever exposed in the
@@ -78,6 +86,10 @@ const renderElem = function(
     elem: HTMLElement,
     optionsCopy: RenderMathInElementOptionsCopy
 ) {
+    if (optionsCopy.shouldRender &&
+            !optionsCopy.shouldRender(elem)) {
+        return;
+    }
     for (let i = 0; i < elem.childNodes.length; i++) {
         const childNode = elem.childNodes[i];
         if (childNode.nodeType === 3) {
@@ -109,12 +121,12 @@ const renderElem = function(
         } else if (childNode.nodeType === 1) {
             // Element node
             const className = ' ' + (childNode as HTMLElement).className + ' ';
-            const shouldRender = !optionsCopy.ignoredTags.has(
+            const isAllowed = !optionsCopy.ignoredTags.has(
                 childNode.nodeName.toLowerCase()) &&
                   optionsCopy.ignoredClasses.every(
                       (x: string) => !className.includes(' ' + x + ' '));
 
-            if (shouldRender) {
+            if (isAllowed) {
                 renderElem(childNode as HTMLElement, optionsCopy);
             }
         }
