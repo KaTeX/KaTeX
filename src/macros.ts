@@ -814,7 +814,7 @@ defineMacro("\\rBrace", "\\html@mathml{" +
 defineMacro("↤", "\\mapsfrom");
 defineMacro(
     "\\mapsfrom",
-    "\\mathrel{\\html@mathml{\\mathreflectbox{\\mapsto}}{\\char`↤}}",
+    "\\html@mathml{\\mathrel{\\mathreflectbox{\\mapsto}}}{\\mathrel{\\char`↤}}",
 );
 
 defineMacro("\u2983", "\\lBrace"); // blackboard bold {

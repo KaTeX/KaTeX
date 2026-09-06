@@ -1092,10 +1092,8 @@ exports[`A MathML builder should use the mapsfrom character in MathML 1`] = `
       <mi>
         a
       </mi>
-      <mo>
-        <mi mathvariant="normal">
-          ↤
-        </mi>
+      <mo mathvariant="normal">
+        ↤
       </mo>
       <mi>
         b
