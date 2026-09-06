@@ -212,12 +212,13 @@ function parseArray(
             endRow();
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
             // the last line is empty.  However, AMS environments keep the
-            // empty row if it's the only one.
+            // empty row if it's the only one or has a manual tag.
             // NOTE: Currently, `cell` is the last item added into `row`.
             if (row.length === 1 && cell.type === "styling" &&
                 cell.body.length === 1 && cell.body[0].type === "ordgroup" &&
                 cell.body[0].body.length === 0 &&
-                (body.length > 1 || !emptySingleRow)) {
+                (body.length > 1 || !emptySingleRow) &&
+                !Array.isArray(tags?.[tags.length - 1])) {
                 body.pop();
             }
             if (hLinesBeforeRow.length < body.length + 1) {
