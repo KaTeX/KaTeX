@@ -39,6 +39,15 @@ You can provide an object of options as the last argument to [`katex.render` and
     causing an error.
   - `"htmlExtension"`: Use of HTML extension (`\html`-prefixed) commands,
     which are provided for HTML manipulation.
+  - `"mathVsSout"`: Use of `\sout` in math mode. LaTeX's `\sout` (from the
+    `ulem` package) works only in text mode.
+  - `"mathVsTextAccents"`: Use of a text-mode accent command (such as `\'`,
+    `\"`, `\c`, or `\textcircled`) in math mode. LaTeX defines these only for
+    text mode; KaTeX renders the argument in text mode anyway.
+  - `"textEnv"`: A row of an `{array}` environment has more `&`-separated
+    cells than the column argument declares. LaTeX would raise an error.
+  - `"symbolNotInFont"`: No character metrics for a given symbol in the 
+    specified style and mode.
 
   A second category of `errorCode`s never throw errors, but their strictness
   affects the behavior of KaTeX:
