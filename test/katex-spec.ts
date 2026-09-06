@@ -3898,6 +3898,19 @@ describe("A macro expander", function() {
         expect(parsed[0].text).toEqual("𝟙");
     });
 
+    it("\\char accepts the first and last code point of every plane", () => {
+        for (let plane = 0; plane <= 0x10; plane++) {
+            for (const code of [plane * 0x10000, plane * 0x10000 + 0xffff]) {
+                const parsed = getParsed(`\\char"${code.toString(16)}`);
+                expect(parsed[0].type).toEqual("textord");
+            }
+        }
+    });
+
+    it("\\char rejects code points outside the Unicode codespace", () => {
+        expect`\char"110000`.toFailWithParseError();
+    });
+
     it("should build Unicode private area characters", function() {
         expect`\gvertneqq\lvertneqq\ngeqq\ngeqslant\nleqq`.toBuild();
         expect`\nleqslant\nshortmid\nshortparallel\varsubsetneq`.toBuild();
@@ -4233,6 +4246,14 @@ describe("\\tag support", function() {
 
     it("should work with one tag per row", () => {
         expect`\begin{align}\tag{1}x\\&+y\tag{2}\end{align}`.toParse(displayMode);
+    });
+
+    it("should keep a manual tag on an empty final row", () => {
+        const markup = katex.renderToString(
+            r`\begin{align}\nonumber a\\\tag{1}\end{align}`,
+            {displayMode: true},
+        );
+        expect(markup).toContain("<span class=\"mord\">1</span>");
     });
 
     it("should work with \\nonumber/\\notag", () => {
