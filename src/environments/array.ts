@@ -1,8 +1,9 @@
 import {makeFragment, makeLineSpan, makeSpan, makeVList} from "../buildCommon";
 import Style from "../Style";
+import {makeLeftRightDelim} from "../delimiter";
 import defineEnvironment from "../defineEnvironment";
 import {parseCD} from "./cd";
-import defineFunction from "../defineFunction";
+import defineFunction, {ordargument} from "../defineFunction";
 import defineMacro from "../defineMacro";
 import {MathNode} from "../mathMLTree";
 import ParseError from "../ParseError";
@@ -39,7 +40,8 @@ export type AlignSpec = {type: "separator", separator: string} | {
 };
 
 // Type to indicate column separation in MathML
-export type ColSeparationType = "align" | "alignat" | "gather" | "small" | "CD";
+export type ColSeparationType = "align" | "alignat" | "gather" | "small" | "CD" |
+    "cases";
 
 // Helper functions
 function getHLines(parser: Parser): boolean[] {
@@ -544,15 +546,45 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         }, options);
     }
 
+    let bodyNode: HtmlDomNode = tableBody;
+    if (group.casesLeft) {
+        // Spaced as if an ordinary symbol followed, which is how cases.sty
+        // sets the argument: {#1{}}.
+        const lhs = makeSpan(["mord"], html.buildExpression(
+            group.casesLeft, options, true, [null, "mord"]), options);
+        // The inner size is scaled as for \left...\right (delimsizing.ts).
+        const brace = makeLeftRightDelim("\\{",
+            tableBody.height * options.sizeMultiplier,
+            tableBody.depth * options.sizeMultiplier,
+            options, group.mode, ["mopen"]);
+        // The stylesheet only places a tag that is a direct child of
+        // .katex-html, and buildHTML lifts it out only when it is the second
+        // of two root elements: hence one node here, and no \left...\right
+        // around it.
+        bodyNode = makeSpan(["mord"], [lhs, brace, tableBody], options);
+    }
+
     if (tagSpans.length === 0) {
-        return makeSpan(["mord"], [tableBody], options);
+        return group.casesLeft
+            ? bodyNode
+            : makeSpan(["mord"], [bodyNode], options);
     } else {
         const eqnNumCol = makeVList({
             positionType: "individualShift",
             children: tagSpans,
         }, options);
-        const tagCol = makeSpan(["katex-tag"], [eqnNumCol], options);
-        return makeFragment([tableBody, tagCol]);
+        const tagChildren: HtmlDomNode[] = [eqnNumCol];
+        if (group.casesLeft) {
+            // The numbers are placed against the table's rows, but the line
+            // is as tall as the brace: a strut keeps the two aligned, as
+            // buildHTML does for a manual \tag.
+            const strut = makeSpan(["katex-strut"]);
+            strut.style.height = makeEm(bodyNode.height + bodyNode.depth);
+            strut.style.verticalAlign = makeEm(-bodyNode.depth);
+            tagChildren.unshift(strut);
+        }
+        const tagCol = makeSpan(["katex-tag"], tagChildren, options);
+        return makeFragment([bodyNode, tagCol]);
     }
 };
 
@@ -574,8 +606,13 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
                 [mml.buildGroup(rw[j], options)]));
         }
         if (group.tags && group.tags[i]) {
-            row.unshift(glue);
-            row.push(glue);
+            if (!group.casesLeft) {
+                // The 50%-wide glue spreads the row over the display. With
+                // the left-hand side and the brace beside the table it would
+                // push the number past the margin instead.
+                row.unshift(glue);
+                row.push(glue);
+            }
             if (group.leqno) {
                 row.unshift(tag);
             } else {
@@ -697,6 +734,18 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
         // A small array. Wrap in scriptstyle so row gap is not too large.
         table = new MathNode("mstyle", [table]);
         table.setAttribute("scriptlevel", "1");
+    }
+
+    if (group.casesLeft) {
+        // Beside the table, not around it, as in the HTML build: the
+        // equation numbers live in the table's own last column.
+        const brace = new MathNode("mo", [mml.makeText("\\{", group.mode)]);
+        brace.setAttribute("fence", "true");
+        table = new MathNode("mrow", [
+            mml.buildExpressionRow(group.casesLeft, options),
+            brace,
+            table,
+        ]);
     }
 
     return table;
@@ -975,6 +1024,22 @@ defineEnvironment({
 
 // A cases environment (in amsmath.sty) is almost equivalent to
 // \def\arraystretch{1.2}%
+const casesCols: AlignSpec[] = [{
+    type: "align",
+    align: "l",
+    pregap: 0,
+    // TODO(kevinb) get the current style.
+    // For now we use the metrics for TEXT style which is what we were
+    // doing before.  Before attempting to get the current style we
+    // should look at TeX's behavior especially for \over and matrices.
+    postgap: 1.0, /* 1em quad */
+}, {
+    type: "align",
+    align: "l",
+    pregap: 0,
+    postgap: 0,
+}];
+
 // \left\{\begin{array}{@{}l@{\quad}l@{}} … \end{array}\right.
 // {dcases} is a {cases} environment where cells are set in \displaystyle,
 // as defined in mathtools.sty.
@@ -993,21 +1058,7 @@ defineEnvironment({
     handler(context) {
         const payload: Parameters<typeof parseArray>[1] = {
             arraystretch: 1.2,
-            cols: [{
-                type: "align",
-                align: "l",
-                pregap: 0,
-                // TODO(kevinb) get the current style.
-                // For now we use the metrics for TEXT style which is what we were
-                // doing before.  Before attempting to get the current style we
-                // should look at TeX's behavior especially for \over and matrices.
-                postgap: 1.0, /* 1em quad */
-            }, {
-                type: "align",
-                align: "l",
-                pregap: 0,
-                postgap: 0,
-            }],
+            cols: casesCols,
         };
         const res = parseArray(context.parser, payload, dCellStyle(context.envName));
         return {
@@ -1018,6 +1069,38 @@ defineEnvironment({
             right: context.envName.includes("r") ? "\\}" : ".",
             rightColor: undefined,
         };
+    },
+    htmlBuilder,
+    mathmlBuilder,
+});
+
+defineEnvironment({
+    type: "array",
+    names: ["numcases"],
+    props: {
+        numArgs: 1,
+    },
+    handler(context, args) {
+        validateAmsEnvironmentContext(context);
+        const payload: Parameters<typeof parseArray>[1] = {
+            arraystretch: 1.2,
+            autoTag: true,
+            // An empty environment is one numbered row, as in cases.sty
+            // and in {gather}.
+            emptySingleRow: true,
+            leqno: context.parser.settings.leqno,
+            // A third column is an error, as in cases.sty. The separation
+            // type only makes parseArray report it; the columns are those
+            // of {cases}.
+            maxNumCols: 2,
+            colSeparationType: "cases",
+            cols: casesCols,
+        };
+        // Text style, as in {cases}. cases.sty defaults to \displaystyle
+        // and switches to text style with its amsstyle option.
+        const res = parseArray(context.parser, payload, "text");
+        res.casesLeft = ordargument(args[0]);
+        return res;
     },
     htmlBuilder,
     mathmlBuilder,
