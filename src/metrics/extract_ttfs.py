@@ -43,6 +43,12 @@ metrics_to_extract = {
         u"\u21a9": None,  # \hookleftarrow
         u"\u21aa": None,  # \hookrightarrow
         u"\u21cc": None,  # \rightleftharpoons
+        u"\u2680": None,  # \epsdice{1}
+        u"\u2681": None,  # \epsdice{2}
+        u"\u2682": None,  # \epsdice{3}
+        u"\u2683": None,  # \epsdice{4}
+        u"\u2684": None,  # \epsdice{5}
+        u"\u2685": None,  # \epsdice{6}
     },
     "Main-Bold": {
         u"\u2245": None,  # \cong
