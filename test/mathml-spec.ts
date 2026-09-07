@@ -267,6 +267,19 @@ describe("A MathML builder", function() {
             .toMatchSnapshot();
     });
 
+    it("should preserve reflected content in MathML", () => {
+        expect(getMathML("\\reflectbox{$x^2$}")).toMatchSnapshot();
+    });
+
+    it("should use the mapsfrom character in MathML", () => {
+        expect(getMathML("\\mapsfrom")).toContain("↤");
+        expect(getMathML("a\\mapsfrom b")).toMatchSnapshot();
+    });
+
+    it("should preserve mathreflectbox content and script style in MathML", () => {
+        expect(getMathML("x_{\\mathreflectbox{\\frac{a}{b}}}")).toMatchSnapshot();
+    });
+
     it("should give each command the Unicode character it names", () => {
         // MathML carries the character Unicode assigns to the command, even when
         // another command shares its glyph. Substitution is HTML-only, so each
