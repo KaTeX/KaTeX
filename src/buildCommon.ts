@@ -5,7 +5,7 @@
  */
 
 import {SymbolNode, Anchor, Span, PathNode, SvgNode, createClass} from "./domTree";
-import {getCharacterMetrics} from "./fontMetrics";
+import {getCharacterMetrics, getFontGlyphCharacter} from "./fontMetrics";
 import symbols, {ligatures} from "./symbols";
 import {wideCharacterFont} from "./wide-character";
 import {calculateSize, makeEm} from "./units";
@@ -42,6 +42,17 @@ const lookupSymbol = function(
         const replacement = symbols[mode][value].replace;
         if (replacement) {
             value = replacement;
+        }
+    }
+
+    // In math mode, characters absent from this KaTeX font may have a known
+    // substitute glyph; render the substitute so HTML output is not blank.
+    // In text mode, leave the character as-is so the browser can fall back to
+    // system fonts (e.g. Cyrillic, CJK) instead of showing Latin lookalikes.
+    if (mode === "math") {
+        const glyph = getFontGlyphCharacter(value, fontName);
+        if (glyph !== value) {
+            value = glyph;
         }
     }
 
