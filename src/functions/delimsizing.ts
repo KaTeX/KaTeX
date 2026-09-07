@@ -1,5 +1,5 @@
 import {makeSpan} from "../buildCommon";
-import defineFunction from "../defineFunction";
+import defineFunction, {normalizeArgument} from "../defineFunction";
 import {makeLeftRightDelim, makeSizedDelim, sizeToMaxHeight} from "../delimiter";
 import {MathNode} from "../mathMLTree";
 import ParseError from "../ParseError";
@@ -97,7 +97,7 @@ defineFunction({
     argTypes: ["primitive"],
 
     handler: (context, args) => {
-        const delim = checkDelimiter(args[0], context);
+        const delim = checkDelimiter(normalizeArgument(args[0]), context);
 
         return {
             type: "delimsizing",

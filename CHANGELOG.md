@@ -1,6 +1,67 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.18.7](https://github.com/KaTeX/KaTeX/compare/v0.18.6...v0.18.7) (2026-09-06)
+
+
+### Features
+
+* add \reflectbox and \mapsfrom support ([#4262](https://github.com/KaTeX/KaTeX/issues/4262)) ([ab509fd](https://github.com/KaTeX/KaTeX/commit/ab509fde2026a355d3c80965213c05a10bf144cb))
+
+## [0.18.6](https://github.com/KaTeX/KaTeX/compare/v0.18.5...v0.18.6) (2026-09-05)
+
+
+### Bug Fixes
+
+* **array:** preserve tags on empty final rows ([#4277](https://github.com/KaTeX/KaTeX/issues/4277)) ([02d552c](https://github.com/KaTeX/KaTeX/commit/02d552ca2198e91fb24cf32fb0a35cf7610a66aa))
+
+## [0.18.5](https://github.com/KaTeX/KaTeX/compare/v0.18.4...v0.18.5) (2026-08-31)
+
+
+### Bug Fixes
+
+* **char:** accept U+10FFFF ([#4265](https://github.com/KaTeX/KaTeX/issues/4265)) ([6805538](https://github.com/KaTeX/KaTeX/commit/680553898e23c55fa6cb66052b4b9396cbe857ce)), closes [#2549](https://github.com/KaTeX/KaTeX/issues/2549)
+
+## [0.18.4](https://github.com/KaTeX/KaTeX/compare/v0.18.3...v0.18.4) (2026-08-10)
+
+
+### Bug Fixes
+
+* **environment:** report invalid environment names as ParseError ([#4256](https://github.com/KaTeX/KaTeX/issues/4256)) ([e507f75](https://github.com/KaTeX/KaTeX/commit/e507f759f067ad3b9e279837027d4cfb2314915b)), closes [#3760](https://github.com/KaTeX/KaTeX/issues/3760) [#3760](https://github.com/KaTeX/KaTeX/issues/3760)
+
+## [0.18.3](https://github.com/KaTeX/KaTeX/compare/v0.18.2...v0.18.3) (2026-08-09)
+
+
+### Bug Fixes
+
+* allow braced arguments for delimsizing ([#4255](https://github.com/KaTeX/KaTeX/issues/4255)) ([1c973ae](https://github.com/KaTeX/KaTeX/commit/1c973ae2e2416d3943d78606c90b2a9e8e578243))
+
+## [0.18.2](https://github.com/KaTeX/KaTeX/compare/v0.18.1...v0.18.2) (2026-08-08)
+
+
+### Bug Fixes
+
+* prevent prototype pollution in settings ([#4260](https://github.com/KaTeX/KaTeX/issues/4260)) ([0adf7e7](https://github.com/KaTeX/KaTeX/commit/0adf7e77db6915d991803b29699f82b1ccf8d4f4))
+
+## [0.18.1](https://github.com/KaTeX/KaTeX/compare/v0.18.0...v0.18.1) (2026-07-19)
+
+
+### Bug Fixes
+
+* **htmlData:** allow escaped commas in \htmlData ([#4236](https://github.com/KaTeX/KaTeX/issues/4236)) ([87a2b30](https://github.com/KaTeX/KaTeX/commit/87a2b304aff601ad1c3d930d47d6833d123ad210)), closes [#4204](https://github.com/KaTeX/KaTeX/issues/4204) [#4218](https://github.com/KaTeX/KaTeX/issues/4218)
+
+# [0.18.0](https://github.com/KaTeX/KaTeX/compare/v0.17.0...v0.18.0) (2026-07-17)
+
+
+### Features
+
+* prefix css classes ([#4229](https://github.com/KaTeX/KaTeX/issues/4229)) ([6f5c44f](https://github.com/KaTeX/KaTeX/commit/6f5c44f69bae0703877a3a8d934e20c47bbbbc32))
+
+
+### BREAKING CHANGES
+
+* users who apply custom styles or have allowlists targeting KaTeX's internal classes must update their selectors.
+
 # [0.17.0](https://github.com/KaTeX/KaTeX/compare/v0.16.47...v0.17.0) (2026-05-22)
 
 

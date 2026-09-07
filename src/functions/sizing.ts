@@ -22,7 +22,7 @@ export function sizingGroup(
     // Add size-resetting classes to the inner list and set maxFontSize
     // manually. Handle nested size changes.
     for (let i = 0; i < inner.length; i++) {
-        const pos = inner[i].classes.indexOf("sizing");
+        const pos = inner[i].classes.indexOf("katex-sizing");
         if (pos < 0) {
             Array.prototype.push.apply(inner[i].classes,
                 options.sizingClasses(baseOptions));

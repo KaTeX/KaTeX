@@ -1026,20 +1026,34 @@ describe("A delimiter sizing parser", function() {
     const normalDelim = r`\bigl |`;
     const notDelim = r`\bigl x`;
     const bigDelim = r`\Biggr \langle`;
+    const bracedDelim = r`\bigl{|}`;
 
     it("should parse normal delimiters", function() {
         expect(normalDelim).toParse();
         expect(bigDelim).toParse();
     });
 
+    it("should accept a single braced delimiter", function() {
+        expect(bracedDelim).toParse();
+    });
+
     it("should not parse not-delimiters", function() {
         expect(notDelim).not.toParse();
+        expect(r`\bigl{x}`).not.toParse();
     });
 
     it("should produce a delimsizing", function() {
         const parse = getParsed(normalDelim)[0];
 
         expect(parse.type).toEqual("delimsizing");
+    });
+
+    it("should produce the same delim for braced and unbraced forms", function() {
+        const braced = getParsed(bracedDelim)[0];
+        const bare = getParsed(normalDelim)[0];
+
+        expect(braced.delim).toEqual(bare.delim);
+        expect(normalDelim).toParseLike(bracedDelim);
     });
 
     it("should produce the correct direction delimiter", function() {
@@ -1362,6 +1376,13 @@ describe("A begin/end parser", function() {
         expect`\begin{matrix}\hline a&b\\ \hline c&d\end{matrix}`.toParse();
         expect`\begin{matrix}\hline a&b\cr \hline c&d\end{matrix}`.toParse();
         expect`\begin{matrix}\hdashline a&b\\ \hdashline c&d\end{matrix}`.toParse();
+    });
+
+    it("should build hlines with prefixed classes", function() {
+        const markup = katex.renderToString(
+            r`\begin{matrix}\hline a\\ \hdashline b\end{matrix}`);
+        expect(markup).toContain("class=\"katex-hline\"");
+        expect(markup).toContain("class=\"katex-hdashline\"");
     });
 
     it("should forbid hlines outside array environment", () => {
@@ -2381,6 +2402,25 @@ describe("The \\htmlData macro", function() {
         expect(built[0].attributes["data-foo"]).toEqual(" bar ");
     });
 
+    it("should allow commas in value escaped as {,}", () => {
+        const built = getBuilt(
+            "\\htmlData{annotation_text=[a{,}b]}{x}", trustNonStrictSettings);
+        expect(built[0].attributes["data-annotation_text"]).toEqual("[a,b]");
+    });
+
+    it("should split on unescaped commas while preserving escaped ones", () => {
+        const built = getBuilt(
+            "\\htmlData{foo=a{,}b, bar=c}{x}", trustNonStrictSettings);
+        expect(built[0].attributes["data-foo"]).toEqual("a,b");
+        expect(built[0].attributes["data-bar"]).toEqual("c");
+    });
+
+    it("should allow multiple escaped commas in one value", () => {
+        const built = getBuilt(
+            "\\htmlData{list=a{,}b{,}c}{x}", trustNonStrictSettings);
+        expect(built[0].attributes["data-list"]).toEqual("a,b,c");
+    });
+
     it("should throw Error if an argument contains no equals signs", () => {
         try {
             katex.renderToString(
@@ -2440,13 +2480,13 @@ describe("A \\phantom builder and \\smash builder", function() {
 
     it("should use smash class for hphantom", function() {
         const node = getBuilt`x\,\hphantom{\!}x`[2];
-        expect(node.classes).toContain("smash");
+        expect(node.classes).toContain("katex-smash");
         expect(node.children[0].classes).not.toContain("vlist-t");
     });
 
     it("should avoid vlist for symmetric smash", function() {
         const node = getBuilt`x\smash{x}x`[1];
-        expect(node.classes).toContain("smash");
+        expect(node.classes).toContain("katex-smash");
         expect(node.children[0].classes).not.toContain("vlist-t");
     });
 
@@ -3482,6 +3522,22 @@ describe("A parser that does not throw on unsupported commands", function() {
         it("in text boxes", function() {
             expect`\text{\error}`.toBuild(noThrowSettings);
         });
+
+        it("in environment names", function() {
+            expect`\begin{\pmatrix}`.toBuild(noThrowSettings);
+            expect`\begin{\error}`.toBuild(noThrowSettings);
+            expect`\begin{\error}x\end{\error}`.toBuild(noThrowSettings);
+            expect`\begin{matrix}a\end{\pmatrix}`.toBuild(noThrowSettings);
+        });
+
+        it("in a column count", function() {
+            expect`\begin{alignedat}{\error}a&b\end{alignedat}`
+                .toBuild(noThrowSettings);
+        });
+
+        it("in a \\@char argument", function() {
+            expect`\@char{\error}`.toBuild(noThrowSettings);
+        });
     });
 
     it("should produce color nodes with a color value given by errorColor", function() {
@@ -3823,6 +3879,15 @@ describe("A macro expander", function() {
         expect`\char"g`.not.toParse();
     });
 
+    it("\\@char reports a non-character argument", () => {
+        expect`\@char{\text{2}}`.toFailWithParseError(
+               "\\@char has non-numeric argument at position 7:" +
+               " \\@char{̲\\̲t̲e̲x̲t̲{̲2̲}̲}̲");
+        // A space is part of an environment name but not of a code point, and
+        // in text mode it reaches the argument as a spacing node.
+        expect`\text{\@char{6 5}}`.not.toParse();
+    });
+
     it("\\char escapes ~ correctly", () => {
         const parsedBare = getParsed`~`;
         expect(parsedBare[0].type).toEqual("spacing");
@@ -3834,6 +3899,19 @@ describe("A macro expander", function() {
         const parsed = getParsed`\char"1d7d9`;
         expect(parsed[0].type).toEqual("textord");
         expect(parsed[0].text).toEqual("𝟙");
+    });
+
+    it("\\char accepts the first and last code point of every plane", () => {
+        for (let plane = 0; plane <= 0x10; plane++) {
+            for (const code of [plane * 0x10000, plane * 0x10000 + 0xffff]) {
+                const parsed = getParsed(`\\char"${code.toString(16)}`);
+                expect(parsed[0].type).toEqual("textord");
+            }
+        }
+    });
+
+    it("\\char rejects code points outside the Unicode codespace", () => {
+        expect`\char"110000`.toFailWithParseError();
     });
 
     it("should build Unicode private area characters", function() {
@@ -4171,6 +4249,14 @@ describe("\\tag support", function() {
 
     it("should work with one tag per row", () => {
         expect`\begin{align}\tag{1}x\\&+y\tag{2}\end{align}`.toParse(displayMode);
+    });
+
+    it("should keep a manual tag on an empty final row", () => {
+        const markup = katex.renderToString(
+            r`\begin{align}\nonumber a\\\tag{1}\end{align}`,
+            {displayMode: true},
+        );
+        expect(markup).toContain("<span class=\"mord\">1</span>");
     });
 
     it("should work with \\nonumber/\\notag", () => {
@@ -4518,7 +4604,7 @@ describe("Newlines via \\\\ and \\newline", function() {
         // Ensure newlines appear outside base spans (because, in this regexp,
         // base span occurs immediately after each newline span).
         expect(markup).toMatch(
-            /(<span class="base">.*?<\/span><span class="mspace newline"><\/span>){3}<span class="base">/);
+            /(<span class="katex-base">.*?<\/span><span class="mspace katex-newline"><\/span>){3}<span class="katex-base">/);
         expect(markup).toMatchSnapshot();
     });
 });
@@ -4528,7 +4614,7 @@ describe("Automatic line breaking", function() {
         const built = katex.__renderToDomTree(r`M\not=N`, new Settings());
         const htmlTree = built.children[1];
         // @ts-ignore
-        const baseChildren = htmlTree.children.filter(node => node.hasClass("base"));
+        const baseChildren = htmlTree.children.filter(node => node.hasClass("katex-base"));
 
         expect(baseChildren).toHaveLength(2);
         expect(baseChildren[0].toMarkup()).toContain("=");
@@ -4538,7 +4624,7 @@ describe("Automatic line breaking", function() {
         const built = katex.__renderToDomTree(r`M\neq N`, new Settings());
         const htmlTree = built.children[1];
         // @ts-ignore
-        const baseChildren = htmlTree.children.filter(node => node.hasClass("base"));
+        const baseChildren = htmlTree.children.filter(node => node.hasClass("katex-base"));
 
         expect(baseChildren).toHaveLength(2);
     });
@@ -4599,6 +4685,35 @@ describe("strict setting", function() {
     it("should warn about top-level \\newline in display mode", () => {
         expect`x\\y`.toWarn(new Settings({displayMode: true}));
         expect`x\\y`.toParse(new Settings({displayMode: false}));
+    });
+});
+
+describe("Settings prototype pollution", function() {
+    afterEach(() => {
+        delete (Object.prototype as any).trust;
+        delete (Object.prototype as any).default;
+        delete (Object.prototype as any).processor;
+    });
+
+    it("should ignore a polluted Object.prototype.trust", () => {
+        (Object.prototype as any).trust = true;
+        expect(new Settings().trust).toBe(false);
+        expect(katex.renderToString(r`\href{javascript:alert(1)}{x}`))
+            .not.toContain("<a href=");
+    });
+
+    it("should ignore trust inherited from the options prototype", () => {
+        expect(new Settings(Object.create({trust: true})).trust).toBe(false);
+    });
+
+    it("should ignore a polluted Object.prototype.default", () => {
+        (Object.prototype as any).default = true;
+        expect(new Settings().trust).toBe(false);
+    });
+
+    it("should ignore a polluted Object.prototype.processor", () => {
+        (Object.prototype as any).processor = () => true;
+        expect(new Settings({trust: false}).trust).toBe(false);
     });
 });
 
@@ -4701,5 +4816,75 @@ describe("\\emph", () => {
 
     it("should toggle italics within textit", () => {
         expect`\textit{\emph{foo \emph{bar}}}`.toBuildLike`\textit{\textup{foo \textit{bar}}}`;
+    });
+});
+
+describe("A reflectbox builder", function() {
+    it("should build", function() {
+        expect`\reflectbox{abc}`.toBuild();
+        expect`\reflectbox{$x^2$}`.toBuild();
+    });
+
+    it("should use the reflectbox class", function() {
+        expect(getBuilt`\reflectbox{abc}`[0].classes).toContain("reflectbox");
+        expect(getBuilt`\mathreflectbox{abc}`[0].classes).toContain("reflectbox");
+    });
+
+    it("should parse text and math arguments in their respective modes", () => {
+        expect`\reflectbox{x^2}`.not.toParse();
+        expect`\mathreflectbox{x^2}`.toBuild();
+        expect`\text{\reflectbox{abc}}`.toBuild();
+    });
+
+    it.each([r`\reflectbox{b}`, r`\mathreflectbox{b}`])(
+        "should give %s ordinary-atom spacing", (command: string) => {
+            const spacing = (expression: string) => getBuilt(expression).map(
+                (node: {classes: string[]; style: {marginRight?: string}}) =>
+                    [node.classes[0], node.style.marginRight]);
+            expect(spacing(`a+${command}=c`)).toEqual(spacing("a+b=c"));
+        });
+
+    it.each([
+        r`\displaystyle`, r`\textstyle`,
+        r`\scriptstyle`, r`\scriptscriptstyle`,
+    ])("should inherit %s in mathreflectbox", (style: string) => {
+        const reflected = getBuilt(String.raw`${style}\mathreflectbox{\frac{a}{b}}`)[0];
+        const normal = getBuilt(String.raw`${style}\frac{a}{b}`)[0];
+        expect(reflected.height).toBeCloseTo(normal.height);
+        expect(reflected.depth).toBeCloseTo(normal.depth);
+    });
+
+    it("should keep reflectbox math in text style", () => {
+        const reflected = getBuilt`\scriptstyle\reflectbox{$\frac{a}{b}$}`[0];
+        const normal = getBuilt`\textstyle\frac{a}{b}`[0];
+        expect(reflected.height).toBeCloseTo(normal.height);
+        expect(reflected.depth).toBeCloseTo(normal.depth);
+    });
+});
+
+describe("\\mapsfrom", () => {
+    it("should give both inputs relation spacing and preserve unary minus", () => {
+        const spacing = (expression: string) => getBuilt(expression).map(
+            (node: {classes: string[]; style: {marginRight?: string}}) =>
+                [node.classes[0], node.style.marginRight]);
+        for (const command of [r`\mapsfrom`, "↤"]) {
+            expect(spacing(`a ${command} b`)).toEqual(spacing(r`a \mapsto b`));
+            expect(spacing(`${command} -b`)).toEqual(spacing(r`\mapsto -b`));
+        }
+        expect`a ↤ b`.toBuildLike`a \mapsfrom b`;
+    });
+
+    it.each([
+        ["", ""],
+        ["x_{", "}"],
+        ["x_{y_{", "}}"],
+        ["x^{", "}"],
+    ])("should size arrows like mapsto in %s...%s", (prefix: string, suffix: string) => {
+        const reflected = getBuilt(String.raw`${prefix}a \mapsfrom b${suffix}`);
+        const normal = getBuilt(String.raw`${prefix}a \mapsto b${suffix}`);
+        expect(reflected.map((node: {height: number; depth: number}) =>
+            [node.height, node.depth])).toEqual(
+            normal.map((node: {height: number; depth: number}) =>
+                [node.height, node.depth]));
     });
 });

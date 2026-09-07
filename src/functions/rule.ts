@@ -28,7 +28,7 @@ defineFunction({
 
     htmlBuilder(group, options) {
         // Make an empty span for the rule
-        const rule = makeSpan(["mord", "rule"], [], options);
+        const rule = makeSpan(["mord", "katex-rule"], [], options);
 
         // Calculate the shift, width, and height of the rule, and account for units
         const width = calculateSize(group.width, options);

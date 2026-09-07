@@ -6,8 +6,12 @@ import defineFunction from "../defineFunction";
 import defineMacro from "../defineMacro";
 import {MathNode} from "../mathMLTree";
 import ParseError from "../ParseError";
-import {assertNodeType, assertSymbolNodeType} from "../parseNode";
-import {checkSymbolNodeType} from "../parseNode";
+import {
+    assertCharacterGroup,
+    assertNodeType,
+    assertSymbolNodeType,
+    checkSymbolNodeType,
+} from "../parseNode";
 import {Token} from "../Token";
 import {calculateSize, makeEm} from "../units";
 
@@ -206,12 +210,13 @@ function parseArray(
             endRow();
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
             // the last line is empty.  However, AMS environments keep the
-            // empty row if it's the only one.
+            // empty row if it's the only one or has a manual tag.
             // NOTE: Currently, `cell` is the last item added into `row`.
             if (row.length === 1 && cell.type === "styling" &&
                 cell.body.length === 1 && cell.body[0].type === "ordgroup" &&
                 cell.body[0].body.length === 0 &&
-                (body.length > 1 || !emptySingleRow)) {
+                (body.length > 1 || !emptySingleRow) &&
+                !Array.isArray(tags?.[tags.length - 1])) {
                 body.pop();
             }
             if (hLinesBeforeRow.length < body.length + 1) {
@@ -520,8 +525,8 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
     // Add \hline(s), if any.
     if (hlines.length > 0) {
-        const line = makeLineSpan("hline", options, ruleThickness);
-        const dashes = makeLineSpan("hdashline", options, ruleThickness);
+        const line = makeLineSpan("katex-hline", options, ruleThickness);
+        const dashes = makeLineSpan("katex-hdashline", options, ruleThickness);
         const vListElems = [{type: "elem" as const, elem: tableBody, shift: 0}];
         while (hlines.length > 0) {
             const hline = hlines.pop()!;
@@ -546,7 +551,7 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             positionType: "individualShift",
             children: tagSpans,
         }, options);
-        const tagCol = makeSpan(["tag"], [eqnNumCol], options);
+        const tagCol = makeSpan(["katex-tag"], [eqnNumCol], options);
         return makeFragment([tableBody, tagCol]);
     }
 };
@@ -734,12 +739,12 @@ const alignedHandler = function(context: EnvContextLike, args: AnyParseNode[]) {
         body: [],
     };
     if (args[0] && args[0].type === "ordgroup") {
-        let arg0 = "";
-        for (let i = 0; i < args[0].body.length; i++) {
-            const textord = assertNodeType(args[0].body[i], "textord");
-            arg0 += textord.text;
+        const message = "Number of columns should be a positive integer";
+        const numColumns = assertCharacterGroup(args[0], message);
+        if (!/^[0-9]+$/.test(numColumns) || Number(numColumns) < 1) {
+            throw new ParseError(message, args[0]);
         }
-        numMaths = Number(arg0);
+        numMaths = Number(numColumns);
         numCols = numMaths * 2;
     }
     const isAligned = !numCols;

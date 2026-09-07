@@ -42,6 +42,8 @@ Browsers other than Firefox can be targeted using the `--browser` option.
 For a complete list of options pass `--help` as an argument to
 `screenshotter.js`.  Using these it should be possible to have the script
 connect to almost any Selenium web driver you might have access to.
+Note that `screenshotter.js` loads some ESM-only dependencies, so it needs
+a Node.js version that supports `require()` of ES modules.
 
 Note that screenshots taken without Docker are very likely to disagree
 from the ones stored in the repository, due to different versions of

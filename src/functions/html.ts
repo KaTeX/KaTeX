@@ -49,7 +49,24 @@ defineFunction({
                 };
                 break;
             case "\\htmlData": {
-                const data = value.split(",");
+                // `{,}` escapes a literal comma. Braces are used rather than a
+                // backslash because `\,` is a macro (a thin space) that expands
+                // away before this raw argument is ever read.
+                const ESCAPED_COMMA = "{,}";
+                const data: string[] = [];
+                let current = "";
+                for (let i = 0; i < value.length; i++) {
+                    if (value.startsWith(ESCAPED_COMMA, i)) {
+                        current += ",";
+                        i += ESCAPED_COMMA.length - 1;
+                    } else if (value[i] === ",") {
+                        data.push(current);
+                        current = "";
+                    } else {
+                        current += value[i];
+                    }
+                }
+                data.push(current);
                 for (let i = 0; i < data.length; i++) {
                     const item = data[i];
                     const firstEquals = item.indexOf("=");

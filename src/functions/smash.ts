@@ -69,7 +69,7 @@ defineFunction({
 
         if (group.smashHeight && group.smashDepth) {
             // Symmetric \smash can stay in inline layout.
-            return makeSpan(["mord", "smash"], [node], options);
+            return makeSpan(["mord", "katex-smash"], [node], options);
         }
 
         // In order to influence makeVList for asymmetric smashing, we have to

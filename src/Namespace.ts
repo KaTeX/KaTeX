@@ -81,8 +81,10 @@ export default class Namespace<Value> {
     get(name: string): Value | undefined {
         if (Object.prototype.hasOwnProperty.call(this.current, name)) {
             return this.current[name];
-        } else {
+        } else if (Object.prototype.hasOwnProperty.call(this.builtins, name)) {
             return this.builtins[name];
+        } else {
+            return undefined;
         }
     }
 
@@ -111,7 +113,8 @@ export default class Namespace<Value> {
             // value is the correct one.
             const top = this.undefStack[this.undefStack.length - 1];
             if (top && !Object.prototype.hasOwnProperty.call(top, name)) {
-                top[name] = this.current[name];
+                top[name] = Object.prototype.hasOwnProperty.call(
+                    this.current, name) ? this.current[name] : undefined;
             }
         }
         if (value == null) {
