@@ -38,13 +38,14 @@ export const buildTree = function(
     const options = optionsFromSettings(settings);
     let katexNode;
     if (settings.output === "mathml") {
-        return buildMathML(tree, expression, options, settings.displayMode, true);
+        return buildMathML(tree, expression, options, settings.displayMode, true,
+            settings);
     } else if (settings.output === "html") {
         const htmlNode = buildHTML(tree, options);
         katexNode = makeSpan(["katex"], [htmlNode]);
     } else {
         const mathMLNode = buildMathML(tree, expression, options,
-            settings.displayMode, false);
+            settings.displayMode, false, settings);
         const htmlNode = buildHTML(tree, options);
         katexNode = makeSpan(["katex"], [mathMLNode, htmlNode]);
     }
