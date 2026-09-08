@@ -69,7 +69,8 @@ export type AnyParseNode =
     | SmashNode
     | SqrtNode
     | VerticalCenterNode
-    | ExtensibleArrowNode;
+    | ExtensibleArrowNode
+    | ReflectBoxNode;
 
 // ParseNode's corresponding to Symbol `Group`s in symbols.js.
 export type SymbolParseNode =
@@ -456,3 +457,8 @@ type ExtensibleArrowNode = BaseNode & {
     body: AnyParseNode;
     below: AnyParseNode | null;
 }
+
+type ReflectBoxNode = BaseNode & {
+    type: "reflectbox";
+    body: AnyParseNode;
+};

@@ -6,7 +6,7 @@ This is a list of TeX functions supported by KaTeX. It is sorted into logical gr
 
 There is a similar [Support Table](support_table.md), sorted alphabetically, that lists both supported and un-supported functions.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.6/dist/katex.min.css" integrity="sha384-M59ezskvvpvT+a+C1x088YJ3DVmK+wZdX0UkVKalOI4Qi5Nwv0WrvpqHcfa2HQqB" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.7/dist/katex.min.css" integrity="sha384-JctiRyLzXCrSoOOzFlSoWLdyzQl7OrrRnhyeBmzB6ZWtcjccUyc8lCQJqIbs3uQX" crossorigin="anonymous">
 <style>
 p {overflow-wrap: break-word;}
 table tr,
@@ -268,10 +268,14 @@ In display math, KaTeX does not insert automatic line breaks. It ignores display
 |:--------------|:----------------------------------------|:-----
 |$x_n$ `x_n` |$\stackrel{!}{=}$ `\stackrel{!}{=}`| $a \atop b$ `a \atop b`
 |$e^x$ `e^x` |$\overset{!}{=}$ `\overset{!}{=}`  | $a\raisebox{0.25em}{$b$}c$ `a\raisebox{0.25em}{$b$}c`
+||| $\reflectbox{KaTeX}$ `\reflectbox{KaTeX}`
+||| $\mathreflectbox{x^2}$ `\mathreflectbox{x^2}`
 |$_u^o $ `_u^o `| $\underset{!}{=}$ `\underset{!}{=}` | $a+\left(\vcenter{\frac{\frac a b}c}\right)$ `a+\left(\vcenter{\hbox{$\frac{\frac a b}c$}}\right)`
 ||| $$\sum_{\substack{0<i<m\\0<j<n}}$$ `\sum_{\substack{0<i<m\\0<j<n}}`
 
-`\raisebox` and `\hbox` put their argument into text mode. To raise math, nest `$…$` delimiters inside the argument as shown above. 
+`\raisebox`, `\reflectbox` and `\hbox` put their argument into text mode. To use math inside these commands, nest `$…$` delimiters inside the argument as shown above. 
+
+`\mathreflectbox` reflects math while preserving the surrounding math style, including in subscripts and superscripts. Both reflection commands have ordinary-atom spacing. Reflection is applied only to HTML output; MathML retains the unreflected content.
 
 `\vcenter` can be written without an `\hbox` if the `strict` rendering option is *false*. In that case, omit the nested `$…$` delimiters.
 
@@ -547,7 +551,7 @@ Direct Input: $∉ ∌ ∤ ∦ ≁ ≆ ≠ ≨ ≩ ≮ ≯ ≰ ≱ ⊀ ⊁ ⊈ �
 |$\leadsto$ `\leadsto`|$\nLeftrightarrow$ `\nLeftrightarrow`|$\upharpoonleft$ `\upharpoonleft`
 |$\leftarrow$ `\leftarrow`|$\nrightarrow$ `\nrightarrow`|$\upharpoonright$ `\upharpoonright`
 |$\Leftarrow$ `\Leftarrow`|$\nRightarrow$ `\nRightarrow`|$\upuparrows$ `\upuparrows`
-|$\leftarrowtail$ `\leftarrowtail`|$\nwarrow$ `\nwarrow`
+|$\leftarrowtail$ `\leftarrowtail`|$\nwarrow$ `\nwarrow`|$\mapsfrom$ `\mapsfrom`
 |$\leftharpoondown$ `\leftharpoondown`|$\Rarr$ `\Rarr`
 
 Direct Input: $← ↑ → ↓ ↔ ↕ ↖ ↗ ↘ ↙ ↚ ↛ ↞ ↠ ↢ ↣ ↦ ↩ ↪ ↫ ↬ ↭ ↮ ↰ ↱↶ ↷ ↺ ↻ ↼ ↽ ↾ ↾ ↿ ⇀ ⇁ ⇂ ⇃ ⇄ ⇆ ⇇ ⇈ ⇉ ⇊ ⇋ ⇌⇍ ⇎ ⇏ ⇐ ⇑ ⇒ ⇓ ⇔ ⇕ ⇚ ⇛ ⇝ ⇠ ⇢ ⟵ ⟶ ⟷ ⟸ ⟹ ⟺ ⟼$ ↽

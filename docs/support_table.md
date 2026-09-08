@@ -6,7 +6,7 @@ This is a list of TeX functions, sorted alphabetically. This list includes funct
 
 If you know the shape of a character, but not its name, [Detexify](https://detexify.kirelabs.org/classify.html) can help.
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.6/dist/katex.min.css" integrity="sha384-M59ezskvvpvT+a+C1x088YJ3DVmK+wZdX0UkVKalOI4Qi5Nwv0WrvpqHcfa2HQqB" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.7/dist/katex.min.css" integrity="sha384-JctiRyLzXCrSoOOzFlSoWLdyzQl7OrrRnhyeBmzB6ZWtcjccUyc8lCQJqIbs3uQX" crossorigin="anonymous">
 <style>
 table tr,
 table td {
@@ -652,6 +652,7 @@ use `\ce` instead|
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\maltese|$\maltese$||
+|\mapsfrom|$\mapsfrom$||
 |\mapsto|$\mapsto$||
 |\mathbb|$\mathbb{AB}$|`\mathbb{AB}`<br>KaTeX supports A-Z k|
 |\mathbf|$\mathbf{AaBb123}$|`\mathbf{AaBb123}`|
@@ -670,6 +671,7 @@ use `\ce` instead|
 |\mathopen|$a + \mathopen\lt b) + c$|`a + \mathopen\lt b) + c`|
 |\mathord|$1\mathord{,}234{,}567$|`1\mathord{,}234{,}567`|
 |\mathpunct|$A\mathpunct{-}B$|`A\mathpunct{-}B`|
+|\mathreflectbox|$\mathreflectbox{x^2}$|`\mathreflectbox{x^2}`|
 |\mathrel|$a \mathrel{\#} b$|`a \mathrel{\#} b`|
 |\mathrlap|$\mathrlap{\,/}{=}$|`\mathrlap{\,/}{=}`|
 |\mathring|$\mathring{a}$|`\mathring{a}`|
@@ -902,6 +904,7 @@ use `\ce` instead|
 |\Reals|$\Reals$||
 |\reals|$\reals$||
 |\ref|<span style="color:firebrick;">Not supported</span>|[Issue #350](https://github.com/KaTeX/KaTeX/issues/350)|
+|\reflectbox|$\reflectbox{$x^2$}$|`\reflectbox{$x^2$}`|
 |\relax|||
 |\renewcommand|$\def\hail{Hi!}\renewcommand\hail{\text{Ahoy!}} \hail$|`\def\hail{Hi!}`<br>`\renewcommand\hail{\text{Ahoy!}}`<br>`\hail`|
 |\renewenvironment|<span style="color:firebrick;">Not supported</span>||
