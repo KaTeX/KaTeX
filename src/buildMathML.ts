@@ -309,7 +309,7 @@ export default function buildMathML(
 
     // Expand user-defined macros in the annotation if enabled
     const annotationText = (settings && settings.expandAnnotations)
-        ? expandAnnotations(texExpression, settings.macros)
+        ? expandAnnotations(texExpression, settings.macros, settings.maxExpand)
         : texExpression;
 
     // Build a TeX annotation of the source
