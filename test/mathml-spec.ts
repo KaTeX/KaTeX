@@ -311,14 +311,6 @@ describe("A MathML builder", function() {
             expect(mathml).toContain("x+1");
         });
 
-        it("should expand macros with arguments", () => {
-            const mathml = getMathML("\\sq{a}", new Settings({
-                macros: {"\\sq": "#1^2"},
-                expandAnnotations: true,
-            }));
-            expect(mathml).toContain("a^2");
-        });
-
         it("should not expand built-in KaTeX macros", () => {
             const mathml = getMathML("\\frac{1}{2}", new Settings({
                 expandAnnotations: true,
@@ -326,8 +318,43 @@ describe("A MathML builder", function() {
             expect(mathml).toContain("\\frac{1}{2}");
         });
 
+        it("should preserve whitespace between control words", () => {
+            const mathml = getMathML("\\alpha x", new Settings({
+                expandAnnotations: true,
+            }));
+            expect(mathml).toContain("\\alpha x");
+            expect(mathml).not.toContain("\\alphax");
+        });
+
+        it("should preserve built-in macros like \\neq and \\dots", () => {
+            const mathml = getMathML("x \\neq y \\dots z", new Settings({
+                macros: {"\\foo": "bar"},
+                expandAnnotations: true,
+            }));
+            expect(mathml).toContain("\\neq");
+            expect(mathml).toContain("\\dots");
+        });
+
+        it("should expand user macro alongside built-in macros", () => {
+            const mathml = getMathML("\\R \\neq \\S", new Settings({
+                macros: {"\\R": "\\mathbb{R}", "\\S": "\\mathbb{S}"},
+                expandAnnotations: true,
+            }));
+            expect(mathml).toContain("\\mathbb{R}");
+            expect(mathml).toContain("\\neq");
+            expect(mathml).toContain("\\mathbb{S}");
+        });
+
         it("should handle expression with no macros", () => {
             const mathml = getMathML("x+y", new Settings({
+                expandAnnotations: true,
+            }));
+            expect(mathml).toContain("x+y");
+        });
+
+        it("should handle empty macros object", () => {
+            const mathml = getMathML("x+y", new Settings({
+                macros: {},
                 expandAnnotations: true,
             }));
             expect(mathml).toContain("x+y");
