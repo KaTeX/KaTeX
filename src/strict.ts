@@ -7,24 +7,48 @@ export type Strict = boolean | "ignore" | "warn" | "error" | StrictFunction;
 
 export type StrictFunction =
     (errorCode: string, errorMsg: string, token?: Token | AnyParseNode) =>
-        (boolean | "ignore" | "warn" | "error") | undefined;
+        Exclude<Strict, StrictFunction>;
 
 export type StrictParameters<R extends boolean = boolean> = {
     strictSetting: Strict;
     errorCode: string;
-    errorMessage: string;
+    errorMsg: string;
     report: R;
     token?: Token | AnyParseNode;
 };
 
+/**
+ * Dispatch LaTeX-incompatible (nonstrict) input according to the `strict`
+ * setting.  Can safely not be called if `strict` is `false`.
+ *
+ * With `report: true`, reports the transgression and returns nothing:
+ * `"error"`/`true` throws a `ParseError`, `"warn"` warns via `console.warn`,
+ * and `"ignore"`/`false` does nothing.  An exception thrown by a `strict`
+ * callback propagates to the caller.
+ *
+ * With `report: false`, checks whether to apply strict (LaTeX-adhering)
+ * behavior for unusual input (like `\\`) and never throws: `"error"`/`true`
+ * returns `true`, `"ignore"`/`false` returns `false`, and `"warn"` warns and
+ * returns `false`.  An exception thrown by a `strict` callback is treated as
+ * `"error"`.  This is for the second category of `errorCode`s listed in
+ * `docs/options.md`.
+ */
 export function handleStrict(params: StrictParameters<true>): void;
 export function handleStrict(params: StrictParameters<false>): boolean;
 export function handleStrict(params: StrictParameters): void | boolean {
-    const {strictSetting, errorCode, errorMessage, token, report} = params;
+    const {strictSetting, errorCode, errorMsg, token, report} = params;
     let strict: Strict | ReturnType<StrictFunction> = strictSetting;
 
     if (typeof strictSetting === "function") {
-        strict = invokeStrictFunction(strictSetting, errorCode, errorMessage, report, token);
+        if (report) {
+            strict = strictSetting(errorCode, errorMsg, token);
+        } else {
+            try {
+                strict = strictSetting(errorCode, errorMsg, token);
+            } catch (error) {
+                strict = "error";
+            }
+        }
     }
 
     switch (strict) {
@@ -33,44 +57,25 @@ export function handleStrict(params: StrictParameters): void | boolean {
             if (report) {
                 throw new ParseError(
                     "LaTeX-incompatible input and strict mode is set to 'error': " +
-                    `${errorMessage} [${errorCode}]`, token);
+                    `${errorMsg} [${errorCode}]`, token);
             } else {
                 return true;
             }
-        case "warn":
-            typeof console !== "undefined" && console.warn(
-                "LaTeX-incompatible input and strict mode is set to 'warn': " +
-                `${errorMessage} [${errorCode}]`);
-
+        case false:
+        case "ignore":
             if (!report) {
                 return false;
             }
             break;
-        case undefined:
-        case false:
-        case "ignore":
+        case "warn":
         default:
+            typeof console !== "undefined" && console.warn(
+                "LaTeX-incompatible input and strict mode is set to 'warn': " +
+                `${errorMsg} [${errorCode}]`);
+
             if (!report) {
                 return false;
             }
             break;
     }
 }
-
-const invokeStrictFunction = (
-    strictFn: StrictFunction,
-    errorCode: string,
-    errorMessage: string,
-    report: boolean,
-    token?: Token | AnyParseNode
-) => {
-    if (report) {
-        return strictFn(errorCode, errorMessage, token);
-    }
-
-    try {
-        return strictFn(errorCode, errorMessage, token);
-    } catch (error) {
-        return "error";
-    }
-};

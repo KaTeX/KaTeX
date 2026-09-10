@@ -5,6 +5,7 @@ import {makeGlue} from "../buildCommon";
 import {SpaceNode} from "../mathMLTree";
 import {calculateSize} from "../units";
 import {assertNodeType} from "../parseNode";
+import {handleStrict} from "../strict";
 
 // TODO: \hskip and \mskip should support plus and minus in lengths
 
@@ -23,18 +24,30 @@ defineFunction({
             const muUnit = (size.value.unit === 'mu');
             if (mathFunction) {
                 if (!muUnit) {
-                    parser.settings.reportNonstrict("mathVsTextUnits",
-                        `LaTeX's ${funcName} supports only mu units, ` +
-                        `not ${size.value.unit} units`);
+                    handleStrict({
+                        strictSetting: parser.settings.strict,
+                        errorCode: "mathVsTextUnits",
+                        errorMsg: `LaTeX's ${funcName} supports only mu units, ` +
+                            `not ${size.value.unit} units`,
+                        report: true,
+                    });
                 }
                 if (parser.mode !== "math") {
-                    parser.settings.reportNonstrict("mathVsTextUnits",
-                        `LaTeX's ${funcName} works only in math mode`);
+                    handleStrict({
+                        strictSetting: parser.settings.strict,
+                        errorCode: "mathVsTextUnits",
+                        errorMsg: `LaTeX's ${funcName} works only in math mode`,
+                        report: true,
+                    });
                 }
             } else {  // !mathFunction
                 if (muUnit) {
-                    parser.settings.reportNonstrict("mathVsTextUnits",
-                        `LaTeX's ${funcName} doesn't support mu units`);
+                    handleStrict({
+                        strictSetting: parser.settings.strict,
+                        errorCode: "mathVsTextUnits",
+                        errorMsg: `LaTeX's ${funcName} doesn't support mu units`,
+                        report: true,
+                    });
                 }
             }
         }

@@ -5,10 +5,8 @@
  */
 
 import {protocolFromUrl} from "./utils";
-import {handleStrict, type Strict} from "./strict";
 
-import type {Token} from "./Token";
-import type {AnyParseNode} from "./types/nodes";
+import type {Strict} from "./strict";
 import type {MacroMap} from "./defineMacro";
 
 export type TrustContextTypes = {
@@ -383,40 +381,6 @@ export default class Settings {
                 applySetting(this, prop, options, schema);
             }
         }
-    }
-
-    /**
-     * Report nonstrict (non-LaTeX-compatible) input.
-     * Can safely not be called if `this.strict` is false in JavaScript.
-     */
-    reportNonstrict(errorCode: string, errorMessage: string,
-                    token?: Token | AnyParseNode) {
-        handleStrict({
-            strictSetting: this.strict,
-            errorCode,
-            errorMessage,
-            token,
-            report: true,
-        });
-    }
-
-    /**
-     * Check whether to apply strict (LaTeX-adhering) behavior for unusual
-     * input (like `\\`).  Unlike `nonstrict`, will not throw an error;
-     * instead, "error" translates to a return value of `true`, while "ignore"
-     * translates to a return value of `false`.  May still print a warning:
-     * "warn" prints a warning and returns `false`.
-     * This is for the second category of `errorCode`s listed in the README.
-     */
-    useStrictBehavior(errorCode: string, errorMessage: string,
-                      token?: Token | AnyParseNode): boolean {
-        return handleStrict({
-            strictSetting: this.strict,
-            errorCode,
-            errorMessage,
-            token,
-            report: false,
-        });
     }
 
     /**

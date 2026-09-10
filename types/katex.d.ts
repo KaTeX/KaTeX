@@ -58,7 +58,7 @@ export type StrictFunction = (
     | "symbolNotInFont",
   errorMsg: string,
   token?: Token,
-) => boolean | "error" | "warn" | "ignore" | undefined;
+) => boolean | "error" | "warn" | "ignore";
 
 
 /**

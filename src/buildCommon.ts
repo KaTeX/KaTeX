@@ -84,7 +84,7 @@ export const makeSymbol = function(
         handleStrict({
             strictSetting: options.strict,
             errorCode: "symbolNotInFont",
-            errorMessage: `No character metrics for '${value}' in style '${fontName}' and mode '${mode}'`,
+            errorMsg: `No character metrics for '${value}' in style '${fontName}' and mode '${mode}'`,
             report: true,
         });
         symbolNode = new SymbolNode(value, 0, 0, 0, 0, 0, classes);
@@ -213,12 +213,12 @@ export const makeOrd = function(
             return makeSymbol(text, fontName, mode, options,
                 classes.concat(fontClasses));
         } else if (Object.prototype.hasOwnProperty.call(ligatures, text) &&
-            fontName.slice(0, 10) === "Typewriter") {
+                   fontName.slice(0, 10) === "Typewriter") {
             // Deconstruct ligatures in monospace fonts (\texttt, \tt).
             const parts = [];
             for (let i = 0; i < text.length; i++) {
                 parts.push(makeSymbol(text[i], fontName, mode, options,
-                    classes.concat(fontClasses)));
+                                      classes.concat(fontClasses)));
             }
             return makeFragment(parts);
         }
@@ -502,7 +502,7 @@ const getVListChildrenAndDepth = function(params: VListParam): {
                 oldChildren[i].elem.depth;
             const size = diff -
                 (oldChildren[i - 1].elem.height +
-                    oldChildren[i - 1].elem.depth);
+                 oldChildren[i - 1].elem.depth);
 
             currPos = currPos + diff;
             children.push({type: "kern", size});
@@ -529,7 +529,7 @@ const getVListChildrenAndDepth = function(params: VListParam): {
     } else {
         const firstChild = params.children[0];
         if (firstChild.type !== "elem") {
-            throw new Error("First child must have type \"elem\".");
+            throw new Error('First child must have type "elem".');
         }
         if (params.positionType === "shift") {
             depth = -firstChild.elem.depth - params.positionData;
