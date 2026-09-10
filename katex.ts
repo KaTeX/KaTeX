@@ -135,7 +135,7 @@ const renderToHTMLTree = function(
     const settings = new Settings(options);
     try {
         const tree = parseTree(expression, settings);
-        return buildHTMLTree(tree, expression, settings);
+        return buildHTMLTree(tree, settings);
     } catch (error) {
         return renderError(error, expression, settings);
     }

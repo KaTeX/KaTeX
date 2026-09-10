@@ -7,6 +7,7 @@ import {phasePath} from "../svgGeometry";
 import {PathNode, SvgNode} from "../domTree";
 import {calculateSize, makeEm} from "../units";
 import {assertNodeType} from "../parseNode";
+import {handleStrict} from "../strict";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -303,8 +304,12 @@ defineFunction({
 
     handler({parser, funcName}, args) {
         if (parser.mode === "math") {
-            parser.settings.reportNonstrict("mathVsSout",
-                `LaTeX's \\sout works only in text mode`);
+            handleStrict({
+                strictSetting: parser.settings.strict,
+                errorCode: "mathVsSout",
+                errorMsg: `LaTeX's \\sout works only in text mode`,
+                report: true,
+            });
         }
         const body = args[0];
         return {

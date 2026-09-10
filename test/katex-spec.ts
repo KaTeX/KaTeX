@@ -3,12 +3,15 @@
 import buildMathMLOrig from "../src/buildMathML";
 import buildTreeOrig from "../src/buildTree";
 import katexOrig from "../katex";
+import Lexer from "../src/Lexer";
 import parseTreeOrig from "../src/parseTree";
 import Options from "../src/Options";
 import ParseError from "../src/ParseError";
 import Settings from "../src/Settings";
+import {handleStrict} from "../src/strict";
 import Style from "../src/Style";
 import type {MacroMap} from "../src/defineMacro";
+import type {Strict} from "../src/strict";
 import {
     strictSettings, nonstrictSettings, trustSettings, r,
     getBuilt, getParsed, stripPositions,
@@ -25,6 +28,7 @@ const defaultOptions = new Options({
     size: 5,
     maxSize: Infinity,
     minRuleThickness: 0,
+    strict: "warn",
 });
 
 describe("A parser", function() {
@@ -4682,6 +4686,42 @@ describe("strict setting", function() {
     it("should warn about top-level \\newline in display mode", () => {
         expect`x\\y`.toWarn(new Settings({displayMode: true}));
         expect`x\\y`.toParse(new Settings({displayMode: false}));
+    });
+
+    describe("handleStrict", function() {
+        const errorCode = "unknownSymbol";
+        const errorMsg = 'Unrecognized Unicode character "\u20ac" (8364)';
+
+        const report = (strictSetting: Strict) =>
+            handleStrict({strictSetting, errorCode, errorMsg, report: true});
+        const query = (strictSetting: Strict) =>
+            handleStrict({strictSetting, errorCode, errorMsg, report: false});
+
+        it("should throw or return true when strict is 'error'", () => {
+            expect(() => report("error")).toThrow(
+                `LaTeX-incompatible input and strict mode is set to 'error': ` +
+                `${errorMsg} [${errorCode}]`
+            );
+            expect(query("error")).toBe(true);
+        });
+
+        it("should stay silent when strict is 'ignore'", () => {
+            expect(report("ignore")).toBeUndefined();
+            expect(query("ignore")).toBe(false);
+        });
+
+        it("should apply the behavior returned by a strict function", () => {
+            const strict = jest.fn(() => "error" as const);
+            expect(query(strict)).toBe(true);
+            expect(strict).toHaveBeenCalledWith(errorCode, errorMsg, undefined);
+        });
+
+        it("should propagate an exception thrown by a strict function", () => {
+            const error = new Error("strict function failed");
+            expect(() => report(() => {
+                throw error;
+            })).toThrow(error);
+        });
     });
 });
 

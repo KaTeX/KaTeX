@@ -14,6 +14,7 @@ import {
 } from "../parseNode";
 import {Token} from "../Token";
 import {calculateSize, makeEm} from "../units";
+import {handleStrict} from "../strict";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -201,8 +202,12 @@ function parseArray(
                                         parser.nextToken);
                 } else {
                     // {array} environment
-                    parser.settings.reportNonstrict("textEnv", "Too few columns " +
-                    "specified in the {array} column argument.");
+                    handleStrict({
+                        strictSetting: parser.settings.strict,
+                        errorCode: "textEnv",
+                        errorMsg: "Too few columns specified in the {array} column argument.",
+                        report: true,
+                    });
                 }
             }
             parser.consume();
