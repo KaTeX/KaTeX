@@ -113,27 +113,27 @@
 Copyright (c) 2014-2018 Khan Academy
     </namerecord>
     <namerecord nameID="1" platformID="3" platEncID="1" langID="0x409">
-      *NAME*
+      {name}
     </namerecord>
     <namerecord nameID="2" platformID="3" platEncID="1" langID="0x409">
-      *WEIGHT_S*
+      {weight_s}
     </namerecord>
     <namerecord nameID="3" platformID="3" platEncID="1" langID="0x409">
-      FontForge 2.0 : *NAME*-*WEIGHT*
+      FontForge 2.0 : {name}-{weight}
     </namerecord>
     <namerecord nameID="4" platformID="3" platEncID="1" langID="0x409">
-      *NAME*-*WEIGHT*
+      {name}-{weight}
     </namerecord>
     <namerecord nameID="5" platformID="3" platEncID="1" langID="0x409">
       Version 1.1
     </namerecord>
     <namerecord nameID="6" platformID="3" platEncID="1" langID="0x409">
-      *NAME*-*WEIGHT*
+      {name}-{weight}
     </namerecord>
     <namerecord nameID="13" platformID="3" platEncID="1" langID="0x409">
       Copyright (c) 2009-2010, Design Science, Inc. (&lt;www.mathjax.org&gt;)
 Copyright (c) 2014-2018 Khan Academy (&lt;www.khanacademy.org&gt;),
-with Reserved Font Name *NAME*.
+with Reserved Font Name {name}.
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license available with a FAQ at:
@@ -171,12 +171,12 @@ http://scripts.sil.org/OFL
   <CFF>
     <major value="1"/>
     <minor value="0"/>
-    <CFFFont name="*NAME*-*WEIGHT*">
+    <CFFFont name="{name}-{weight}">
       <version value="001.001"/>
       <Notice value="Copyright (c) 2009-2010 Design Science, Inc., Copyright (c) 2014-2018 Khan Academy"/>
-      <FullName value="*NAME*-*WEIGHT*"/>
-      <FamilyName value="*NAME*"/>
-      <Weight value="*NORMAL*"/>
+      <FullName value="{name}-{weight}"/>
+      <FamilyName value="{name}"/>
+      <Weight value="{normal}"/>
       <isFixedPitch value="0"/>
       <ItalicAngle value="0"/>
       <UnderlinePosition value="-150"/>
