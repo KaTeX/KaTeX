@@ -438,6 +438,8 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
 
         let firstSeparator = true;
         while (colDescr?.type === "separator") {
+            const isAtArrayEdge = c === 0 || c >= nc;
+
             // If there is more than one separator in a row, add a space
             // between them.
             if (!firstSeparator) {
@@ -453,7 +455,11 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
                 separator.style.height = makeEm(totalHeight);
                 separator.style.borderRightWidth = makeEm(ruleThickness);
                 separator.style.borderRightStyle = lineType;
-                separator.style.margin = `0 ${makeEm(-ruleThickness / 2)}`;
+
+                if (!isAtArrayEdge) {
+                    separator.style.margin = `0 ${makeEm(-ruleThickness / 2)}`;
+                }
+
                 const shift = totalHeight - offset;
                 if (shift) {
                     separator.style.verticalAlign = makeEm(-shift);
