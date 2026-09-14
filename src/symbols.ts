@@ -737,6 +737,19 @@ defineSymbol(text, main, textord, "\u00a3", "\\pounds");
 defineSymbol(text, main, textord, "\u00a3", "\\textsterling", true);
 defineSymbol(math, ams, textord, "\u2720", "\\maltese");
 defineSymbol(text, ams, textord, "\u2720", "\\maltese");
+// Support \epsdice in both text and math mode
+defineSymbol(text, main, textord, "\u2680", "\u2680");
+defineSymbol(text, main, textord, "\u2681", "\u2681");
+defineSymbol(text, main, textord, "\u2682", "\u2682");
+defineSymbol(text, main, textord, "\u2683", "\u2683");
+defineSymbol(text, main, textord, "\u2684", "\u2684");
+defineSymbol(text, main, textord, "\u2685", "\u2685");
+defineSymbol(math, main, textord, "\u2680", "\u2680");
+defineSymbol(math, main, textord, "\u2681", "\u2681");
+defineSymbol(math, main, textord, "\u2682", "\u2682");
+defineSymbol(math, main, textord, "\u2683", "\u2683");
+defineSymbol(math, main, textord, "\u2684", "\u2684");
+defineSymbol(math, main, textord, "\u2685", "\u2685");
 
 // There are lots of symbols which are the same, so we add them in afterwards.
 // All of these are textords in math mode
