@@ -1165,6 +1165,12 @@ $map{eufb10} = {
   ],
 };
 
+$map{feymr10} = {
+  "Main-Regular" => [
+    0x65 => 0x20AC,         # \euro (official Euro glyph, eurosym package)
+  ],
+};
+
 $map{rsfs10} = {
   "Script-Regular" => [
     [0x41,0x5A] => 0x41,    # A-Z
@@ -1936,7 +1942,7 @@ foreach $cmfont (sort (keys %map)) {
     @remap = @{$map{$cmfont}{$mjfont}};
     while (defined($item = shift(@remap))) {
       $remap = shift(@remap);
-      if ($cmfont =~ /^eu/) {
+      if ($cmfont =~ /^eu/ || $cmfont eq 'feymr10') {
 	push(@$script,'Open("pfa/'.$cmfont.'.pfb")');
       } else {
 	push(@$script,'Open("pfa/'.$cmfont.'.pfa")');
