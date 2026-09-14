@@ -89,7 +89,7 @@
     "eslint": "^10.0.3",
     "eslint-plugin-actions": "^2.0.0",
     "eslint-plugin-react": "^7.37.5",
-    "fs-extra": "^10.1.0",
+    "fs-extra": "^11.0.0",
     "globals": "^17.6.0",
     "got": "^11.8.5",
     "husky": "^9.1.7",
