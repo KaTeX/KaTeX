@@ -195,6 +195,17 @@ export interface KatexOptions {
      * @default false
      */
     globalGroup?: boolean;
+
+    /**
+     * Expand user-defined macros in `<annotation>` elements. When enabled,
+     * the TeX source in `<annotation>` will have user-provided macros
+     * expanded, making it more useful for copy-paste via the copy-tex plugin.
+     * Only macros from the `macros` option are expanded; built-in KaTeX
+     * macros like `\frac`, `\sqrt`, etc. are left untouched.
+     *
+     * @default false
+     */
+    expandAnnotations?: boolean;
 }
 
 /**

@@ -294,6 +294,14 @@ export const SETTINGS_SCHEMA: Schema = {
         type: "boolean",
         cli: false,
     },
+    expandAnnotations: {
+        type: "boolean",
+        description: "Expand user-defined macros in <annotation> elements. " +
+            "When enabled, the TeX source in <annotation> will have " +
+            "user-provided macros expanded, making it more useful for " +
+            "copy-paste via the copy-tex plugin.",
+        cli: false,
+    },
 };
 
 function getImplicitDefault(type: "boolean"): boolean;
@@ -376,6 +384,7 @@ export default class Settings {
     maxSize!: number;
     maxExpand!: number;
     globalGroup!: boolean;
+    expandAnnotations!: boolean;
 
     constructor(options: SettingsOptions = {}) {
         // allow null options
