@@ -84,7 +84,7 @@
     "benchmark": "^2.1.4",
     "browserslist": "^4.21.3",
     "caniuse-lite": "^1.0.30001384",
-    "css-loader": "^6.7.1",
+    "css-loader": "^7.0.0",
     "cssnano": "^5.1.13",
     "eslint": "^10.0.3",
     "eslint-plugin-actions": "^2.0.0",
