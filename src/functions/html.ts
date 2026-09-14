@@ -2,6 +2,7 @@ import defineFunction, {ordargument} from "../defineFunction";
 import {makeSpan} from "../buildCommon";
 import {assertNodeType} from "../parseNode";
 import ParseError from "../ParseError";
+import {handleStrict} from "../strict";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -19,8 +20,12 @@ defineFunction({
         const body = args[1];
 
         if (parser.settings.strict) {
-            parser.settings.reportNonstrict("htmlExtension",
-                "HTML extension is disabled on strict mode");
+            handleStrict({
+                strictSetting: parser.settings.strict,
+                errorCode: "htmlExtension",
+                errorMsg: "HTML extension is disabled on strict mode",
+                report: true,
+            });
         }
 
         let trustContext: AnyTrustContext;

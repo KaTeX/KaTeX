@@ -5,6 +5,7 @@ import {makeSpan} from "../buildCommon";
 import {MathNode} from "../mathMLTree";
 import {calculateSize, makeEm} from "../units";
 import {assertNodeType} from "../parseNode";
+import {handleStrict} from "../strict";
 
 // \DeclareRobustCommand\\{...\@xnewline}
 defineFunction({
@@ -14,13 +15,16 @@ defineFunction({
     numOptionalArgs: 0,
     allowedInText: true,
 
-    handler({parser}, args, optArgs) {
+    handler({parser}) {
         const size = parser.gullet.future().text === "[" ?
             parser.parseSizeGroup(true) : null;
         const newLine = !parser.settings.displayMode ||
-            !parser.settings.useStrictBehavior(
-                "newLineInDisplayMode", "In LaTeX, \\\\ or \\newline " +
-                "does nothing in display mode");
+            !handleStrict({
+                strictSetting: parser.settings.strict,
+                errorCode: "newLineInDisplayMode",
+                errorMsg: "In LaTeX, \\\\ or \\newline does nothing in display mode",
+                report: false,
+            });
         return {
             type: "cr",
             mode: parser.mode,

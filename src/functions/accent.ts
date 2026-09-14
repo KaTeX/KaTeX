@@ -6,6 +6,7 @@ import {stretchyMathML, stretchySvg} from "../stretchy";
 import {assertNodeType} from "../parseNode";
 import {assertSpan, assertSymbolDomNode, hasHtmlDomChildren, SymbolNode} from "../domTree";
 import {makeEm} from "../units";
+import {handleStrict} from "../strict";
 
 import * as html from "../buildHTML";
 import * as mml from "../buildMathML";
@@ -265,8 +266,12 @@ defineFunction({
         let mode = context.parser.mode;
 
         if (mode === "math") {
-            context.parser.settings.reportNonstrict("mathVsTextAccents",
-                `LaTeX's accent ${context.funcName} works only in text mode`);
+            handleStrict({
+                strictSetting: context.parser.settings.strict,
+                errorCode: "mathVsTextAccents",
+                errorMsg: `LaTeX's accent ${context.funcName} works only in text mode`,
+                report: true,
+            });
             mode = "text";
         }
 

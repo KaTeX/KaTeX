@@ -14,6 +14,7 @@
 import ParseError from "./ParseError";
 import SourceLocation from "./SourceLocation";
 import {Token} from "./Token";
+import {handleStrict} from "./strict";
 
 import type {LexerInterface} from "./Token";
 import type Settings from "./Settings";
@@ -106,9 +107,13 @@ export default class Lexer implements LexerInterface {
             const nlIndex = input.indexOf('\n', this.tokenRegex.lastIndex);
             if (nlIndex === -1) {
                 this.tokenRegex.lastIndex = input.length; // EOF
-                this.settings.reportNonstrict("commentAtEnd",
-                    "% comment has no terminating newline; LaTeX would " +
-                    "fail because of commenting the end of math mode (e.g. $)");
+                handleStrict({
+                    strictSetting: this.settings.strict,
+                    errorCode: "commentAtEnd",
+                    errorMsg: "% comment has no terminating newline; LaTeX would " +
+                        "fail because of commenting the end of math mode (e.g. $)",
+                    report: true,
+                });
             } else {
                 this.tokenRegex.lastIndex = nlIndex + 1;
             }

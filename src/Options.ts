@@ -7,6 +7,7 @@
 
 import {getGlobalMetrics} from "./fontMetrics";
 import type {StyleInterface} from "./Style";
+import type {Strict} from "./strict";
 import type {FontMetrics, MathFont, TextFont, FontWeight, FontShape} from "./types/fonts";
 
 const sizeStyleMap = [
@@ -48,6 +49,7 @@ export type OptionsData = {
     sizeMultiplier?: number;
     maxSize: number;
     minRuleThickness: number;
+    strict: Strict;
 };
 
 /**
@@ -74,6 +76,7 @@ class Options {
     maxSize: number;
     minRuleThickness: number;
     _fontMetrics: FontMetrics | undefined;
+    strict: Strict;
 
     /**
      * The base size index.
@@ -93,6 +96,7 @@ class Options {
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
         this.maxSize = data.maxSize;
         this.minRuleThickness = data.minRuleThickness;
+        this.strict = data.strict;
         this._fontMetrics = undefined;
     }
 
@@ -113,6 +117,7 @@ class Options {
             fontShape: this.fontShape,
             maxSize: this.maxSize,
             minRuleThickness: this.minRuleThickness,
+            strict: this.strict,
         };
 
         Object.assign(data, extension);

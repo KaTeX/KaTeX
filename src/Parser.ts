@@ -12,6 +12,7 @@ import Settings from "./Settings";
 import SourceLocation from "./SourceLocation";
 import {unicodeSubRegEx, uSubsAndSups} from "./unicodeSupOrSub";
 import {Token} from "./Token";
+import {handleStrict} from "./strict";
 
 // Pre-evaluate both modules as unicodeSymbols require String.normalize()
 import unicodeAccents from /*preval*/ "./unicodeAccents";
@@ -943,9 +944,12 @@ export default class Parser {
             !symbols[this.mode][text[0]]) {
             // This behavior is not strict (XeTeX-compatible) in math mode.
             if (this.settings.strict && this.mode === "math") {
-                this.settings.reportNonstrict("unicodeTextInMathMode",
-                    `Accented Unicode text character "${text[0]}" used in ` +
-                    `math mode`, nucleus);
+                handleStrict({
+                    strictSetting: this.settings.strict,
+                    errorCode: "unicodeTextInMathMode",
+                    errorMsg: `Accented Unicode text character "${text[0]}" used in math mode`,
+                    report: true,
+                });
             }
             text = unicodeSymbols[text[0]] + text.slice(1);
         }
@@ -964,9 +968,13 @@ export default class Parser {
         if (symbols[this.mode][text]) {
             if (this.settings.strict && this.mode === 'math' &&
                 extraLatin.includes(text)) {
-                this.settings.reportNonstrict("unicodeTextInMathMode",
-                    `Latin-1/Unicode text character "${text[0]}" used in ` +
-                    `math mode`, nucleus);
+                handleStrict({
+                    strictSetting: this.settings.strict,
+                    errorCode: "unicodeTextInMathMode",
+                    errorMsg: `Latin-1/Unicode text character "${text[0]}" used in math mode`,
+                    report: true,
+                    token: nucleus,
+                });
             }
             const group: Group = symbols[this.mode][text].group;
             const loc = SourceLocation.range(nucleus);
@@ -991,13 +999,22 @@ export default class Parser {
         } else if (text.charCodeAt(0) >= 0x80) { // no symbol for e.g. ^
             if (this.settings.strict) {
                 if (!supportedCodepoint(text.charCodeAt(0))) {
-                    this.settings.reportNonstrict("unknownSymbol",
-                        `Unrecognized Unicode character "${text[0]}"` +
-                        ` (${text.charCodeAt(0)})`, nucleus);
+                    handleStrict({
+                        strictSetting: this.settings.strict,
+                        errorCode: "unknownSymbol",
+                        errorMsg: `Unrecognized Unicode character "${text[0]}"` +
+                            ` (${text.charCodeAt(0)})`,
+                        report: true,
+                        token: nucleus,
+                    });
                 } else if (this.mode === "math") {
-                    this.settings.reportNonstrict("unicodeTextInMathMode",
-                        `Unicode text character "${text[0]}" used in math mode`,
-                        nucleus);
+                    handleStrict({
+                        strictSetting: this.settings.strict,
+                        errorCode: "unicodeTextInMathMode",
+                        errorMsg: `Unicode text character "${text[0]}" used in math mode`,
+                        report: true,
+                        token: nucleus,
+                    });
                 }
             }
             // All nonmathematical Unicode characters are rendered as if they
