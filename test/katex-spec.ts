@@ -4256,6 +4256,20 @@ describe("\\tag support", function() {
         expect(markup).toContain("<span class=\"mord\">1</span>");
     });
 
+    it("should keep a bare final row in align but not aligned", () => {
+        const align = getParsed(
+            r`\begin{align}a&=b\\\end{align}`,
+            displayMode,
+        )[0];
+        expect(align.body).toHaveLength(2);
+
+        const aligned = getParsed(
+            r`\begin{aligned}a&=b\\\end{aligned}`,
+            displayMode,
+        )[0];
+        expect(aligned.body).toHaveLength(1);
+    });
+
     it("should work with \\nonumber/\\notag", () => {
         expect`\begin{align}\tag{1}\nonumber x\\&+y\notag\end{align}`
         .toParseLike(r`\begin{align}\tag{1}x\\&+y\nonumber\end{align}`, displayMode);
