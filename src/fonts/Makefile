@@ -95,6 +95,8 @@ pfa: $(MFTRACE_MODIFIED)
 
 	@echo "feymr10"
 	cp "`$(KPSEWHICH) feymr10.pfb`" feymr10.pfb
+	@echo "feybr10"
+	cp "`$(KPSEWHICH) feybr10.pfb`" feybr10.pfb
 
 	# echo "eusm10"
 	# $(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eusm10

@@ -4885,3 +4885,37 @@ describe("\\mapsfrom", () => {
                 [node.height, node.depth]));
     });
 });
+
+describe("\\euro", () => {
+    it("should build in math mode", () => {
+        expect`\euro`.toBuild();
+        expect(getBuilt`\euro`[0].text).toBe("€");
+    });
+
+    it("should build \\texteuro in text mode", () => {
+        expect`\text{\texteuro}`.toBuild();
+        expect(getBuilt`\text{\texteuro}`[0].children[0].text).toBe("€");
+    });
+
+    it("should not parse \\texteuro directly in math mode", () => {
+        expect`\texteuro`.not.toParse();
+    });
+
+    it("should have real (non-fallback) metrics for \\mathbf{\\euro}", () => {
+        // A glyph missing from the requested style falls back to a
+        // zero-sized box and a "No character metrics" warning.
+        const expression = r`\mathbf{\euro}`;
+        expect(expression).not.toWarn();
+        const built = getBuilt(expression);
+        expect(built[0].height).toBeGreaterThan(0);
+        expect(built[0].width).toBeGreaterThan(0);
+    });
+
+    it("should have real (non-fallback) metrics for \\textbf{\\texteuro}", () => {
+        const expression = r`\textbf{\texteuro}`;
+        expect(expression).not.toWarn();
+        const built = getBuilt(expression)[0].children[0];
+        expect(built.height).toBeGreaterThan(0);
+        expect(built.width).toBeGreaterThan(0);
+    });
+});
