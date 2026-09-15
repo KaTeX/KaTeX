@@ -279,4 +279,9 @@ describe("A MathML builder", function() {
     it("should preserve mathreflectbox content and script style in MathML", () => {
         expect(getMathML("x_{\\mathreflectbox{\\frac{a}{b}}}")).toMatchSnapshot();
     });
+
+    it("should use the euro character in MathML", () => {
+        expect(getMathML("\\euro")).toContain("\u20ac");
+        expect(getMathML("\\text{\\texteuro}")).toContain("\u20ac");
+    });
 });

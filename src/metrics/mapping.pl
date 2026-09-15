@@ -988,6 +988,18 @@ $map{eufm10} = {
   ],
 };
 
+$map{feymr10} = {
+  "Main-Regular" => [
+    0x65 => 0x20AC,         # \euro (official Euro glyph, eurosym package)
+  ],
+};
+
+$map{feybr10} = {
+  "Main-Bold" => [
+    0x65 => 0x20AC,         # \euro, bold weight (eurosym package)
+  ],
+};
+
 $map{cmtt10} = {
   "Typewriter-Regular" => [
     [0,1] => 0x393,         # \Gamma, \Delta

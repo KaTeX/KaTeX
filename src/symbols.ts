@@ -735,6 +735,10 @@ defineSymbol(math, main, textord, "\u00a3", "\\pounds");
 defineSymbol(math, main, textord, "\u00a3", "\\mathsterling", true);
 defineSymbol(text, main, textord, "\u00a3", "\\pounds");
 defineSymbol(text, main, textord, "\u00a3", "\\textsterling", true);
+// \euro from the eurosym package
+defineSymbol(math, main, textord, "\u20ac", "\\euro");
+defineSymbol(text, main, textord, "\u20ac", "\\euro");
+defineSymbol(text, main, textord, "\u20ac", "\\texteuro", true);
 defineSymbol(math, ams, textord, "\u2720", "\\maltese");
 defineSymbol(text, ams, textord, "\u2720", "\\maltese");
 

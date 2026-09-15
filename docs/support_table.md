@@ -398,7 +398,7 @@ use `\ce` instead|
 |\Eta|$\Eta$||
 |\eta|$\eta$||
 |\eth|$\eth$||
-|\euro|<span style="color:firebrick;">Not supported</span>||
+|\euro|$\euro$||
 |\exist|$\exist$||
 |\exists|$\exists$||
 |\exp|$\exp$||
@@ -1074,6 +1074,7 @@ use `\ce` instead|
 |\textellipsis|$\text{\textellipsis}$|`\text{\textellipsis}`|
 |\textemdash|$\text{\textemdash}$|`\text{\textemdash}`|
 |\textendash|$\text{\textendash}$|`\text{\textendash}`|
+|\texteuro|$\text{\texteuro}$|`\text{\texteuro}`|
 |\textgreater|$\text{\textgreater}$|`\text{\textgreater}`|
 |\textit|$\textit{AaBb}$|`\textit{AaBb}`|
 |\textless|$\text{\textless}$|`\text{\textless}`|
