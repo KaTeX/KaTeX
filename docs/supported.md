@@ -310,6 +310,7 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 | `\<space>`      | space              | `\negmedspace`       | – ⁴∕₁₈ em space
 | `\nobreakspace` | non-breaking space | `\negthickspace`     | – ⁵∕₁₈ em space
 | `\space`        | space              | `\mathstrut`         | `\vphantom{(}`
+| `\enskip`       | ½ em space         |                      |
 
 </div>
 
@@ -369,7 +370,7 @@ KaTeX has no `\par`, so all macros are long by default and `\long` will be ignor
 
 Available functions include:
 
-`\char` `\mathchoice` `\TextOrMath` `\@ifstar` `\@ifnextchar` `\@firstoftwo` `\@secondoftwo` `\relax` `\expandafter` `\noexpand`
+`\char` `\mathchoice` `\TextOrMath` `\@ifstar` `\@ifnextchar` `\@firstoftwo` `\@secondoftwo` `\bgroup` `\egroup` `\message` `\errmessage` `\show` `\relax` `\expandafter` `\noexpand`
 
 @ is a valid character for commands, as if `\makeatletter` were in effect.
 
@@ -690,6 +691,7 @@ In cases where KaTeX fonts do not have a bold glyph, `\pmb` can simulate one. Fo
 |$\text{\textregistered}$ `\text{\textregistered}`|$\diamonds$ `\diamonds`|$\hearts$ `\hearts`
 |$\circledS$ `\circledS`|$\spadesuit$ `\spadesuit`|$\spades$ `\spades`
 |$\text{\textcircled a}$ `\text{\textcircled a}`|$\maltese$ `\maltese`|$\minuso$ `\minuso`|
+|$\text{\textcopyright}$ `\text{\textcopyright}`|||
 
 Direct Input: § ¶ $ £ ¥ ∇ ∞ · ∠ ∡ ∢ ♠ ♡ ♢ ♣ ♭ ♮ ♯ ✓ …  ⋮  ⋯  ⋱  !$ ‼ ⦵
 

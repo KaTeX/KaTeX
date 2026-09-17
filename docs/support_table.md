@@ -138,6 +138,7 @@ $\gdef\VERT{|}$
 |\between|$\between$||
 |\bf|$\bf AaBb12$|`\bf AaBb12`|
 |\bfseries|<span style="color:firebrick;">Not supported</span>||
+|\bgroup|$\bgroup a}$|`\bgroup a}`|
 |\big|$\big(\big)$|`\big(\big)`|
 |\Big|$\Big(\Big)$|`\Big(\Big)`|
 |\bigcap|$\bigcap$||
@@ -368,6 +369,7 @@ use `\ce` instead|
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\edef|$\def\foo{a}\edef\fcopy{\foo}\def\foo{}\fcopy$|`\def\foo{a}\edef\fcopy{\foo}\def\foo{}\fcopy`|
+|\egroup|${a\egroup$|`{a\egroup`|
 |\ell|$\ell$||
 |\else|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
 |\em|<span style="color:firebrick;">Not supported</span>||
@@ -377,6 +379,7 @@ use `\ce` instead|
 |\enclose|<span style="color:firebrick;">Not supported</span>|Non standard
 |\end|$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |\endgroup|${a\endgroup$|`{a\endgroup`|
+|\enskip|$a\enskip b$|`a\enskip b`|
 |\enspace|$a\enspace b$|`a\enspace b`|
 |\Epsilon|$\Epsilon$||
 |\epsilon|$\epsilon$||
@@ -397,6 +400,7 @@ use `\ce` instead|
 |\equalscolon|$\equalscolon$||
 |\equalscoloncolon|$\equalscoloncolon$||
 |\equiv|$\equiv$||
+|\errmessage||Writes argument to the console error log|
 |\Eta|$\Eta$||
 |\eta|$\eta$||
 |\eth|$\eth$||
@@ -488,7 +492,7 @@ use `\ce` instead|
 |\href|$\href{https://katex.org/}{\KaTeX}$|`\href{https://katex.org/}{\KaTeX}` Requires `trust` [option](options.md)|
 |\hskip|$w\hskip1em i\hskip2em d$|`w\hskip1em i\hskip2em d`|
 |\hslash|$\hslash$||
-|\hspace|$s\hspace7ex k$|`s\hspace7ex k`|
+|\hspace|$s\hspace7ex k$|`s\hspace7ex k`<br>Starred form `\hspace*`, e.g. `\hspace*{1em}`|
 |\htmlClass|$\htmlClass{foo}{x}$|`\htmlClass{foo}{x}` Must enable `trust` and disable `strict` [option](options.md)|
 |\htmlData|$\htmlData{foo=a, bar=b}{x}$|`\htmlData{foo=a, bar=b}{x}` Must enable `trust` and disable `strict` [option](options.md)|
 |\htmlId|$\htmlId{bar}{x}$|`\htmlId{bar}{x}` Must enable `trust` and disable `strict` [option](options.md)|
@@ -695,6 +699,7 @@ use `\ce` instead|
 |\mdseries|<span style="color:firebrick;">Not supported</span>||
 |\measuredangle|$\measuredangle$||
 |\medspace|$a\medspace b$|`a\medspace b`|
+|\message||Writes argument to the console log|
 |\mho|$\mho$||
 |\mid|$\{x∈ℝ\mid x>0\}$|`\{x∈ℝ\mid x>0\}`|
 |\middle|$P\left(A\middle\vert B\right)$|`P\left(A\middle\vert B\right)`|
@@ -973,6 +978,7 @@ use `\ce` instead|
 |\shortparallel|$\shortparallel$||
 |\shoveleft|<span style="color:firebrick;">Not supported</span>||
 |\shoveright|<span style="color:firebrick;">Not supported</span>||
+|\show||Writes information to the console log|
 |\sideset|<span style="color:firebrick;">Not supported</span>||
 |\Sigma|$\Sigma$||
 |\sigma|$\sigma$||
@@ -1071,6 +1077,7 @@ use `\ce` instead|
 |\textbraceright|$\text{\textbraceright}$|`\text{\textbraceright}`|
 |\textcircled|$\text{\textcircled a}$|`\text{\textcircled a}`|
 |\textcolor|$\textcolor{blue}{F=ma}$|`\textcolor{blue}{F=ma}`|
+|\textcopyright|$\text{\textcopyright}$|`\text{\textcopyright}`|
 |\textdagger|$\text{\textdagger}$|`\text{\textdagger}`|
 |\textdaggerdbl|$\text{\textdaggerdbl}$|`\text{\textdaggerdbl}`|
 |\textdegree|$\text{\textdegree}$|`\text{\textdegree}`|
