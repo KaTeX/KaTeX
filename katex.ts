@@ -40,11 +40,11 @@ declare let __VERSION__: string;
 let render: (
     expression: string,
     baseNode: Node,
-    options: SettingsOptions,
+    options?: SettingsOptions,
 ) => void = function(
     expression: string,
     baseNode: Node,
-    options: SettingsOptions,
+    options?: SettingsOptions,
 ) {
     baseNode.textContent = "";
     const node = renderToDomTree(expression, options).toNode();
@@ -70,7 +70,7 @@ if (typeof document !== "undefined") {
  */
 const renderToString = function(
     expression: string,
-    options: SettingsOptions,
+    options?: SettingsOptions,
 ): string {
     const markup = renderToDomTree(expression, options).toMarkup();
     return markup;
@@ -113,7 +113,7 @@ const renderError = function(
  */
 const renderToDomTree = function(
     expression: string,
-    options: SettingsOptions,
+    options?: SettingsOptions,
 ): DomSpan {
     const settings = new Settings(options);
     try {
@@ -130,7 +130,7 @@ const renderToDomTree = function(
  */
 const renderToHTMLTree = function(
     expression: string,
-    options: SettingsOptions,
+    options?: SettingsOptions,
 ): DomSpan {
     const settings = new Settings(options);
     try {
