@@ -109,14 +109,17 @@ The auto-render extension will render the following environments even if they ar
 |:-----------------------------------------------|:------------------|
 | `darray`, `dcases`, `drcases`                  | … apply `displaystyle` |
 | `matrix*`, `pmatrix*`, `bmatrix*`<br>`Bmatrix*`, `vmatrix*`, `Vmatrix*` | … take an optional argument to set column<br>alignment, as in `\begin{matrix*}[r]`
+| `equation`                                  | … a single auto-numbered display equation |
 | `equation*`, `gather*`<br>`align*`, `alignat*` | … have no automatic numbering. Alternatively, you can use `\nonumber` or `\notag` to omit the numbering for a specific row of the equation. |
 | `gathered`, `aligned`, `alignedat`             | … do not need to be in display mode.<br> … have no automatic numbering.<br> … must be inside math delimiters in<br>order to be rendered by the auto-render<br>extension. |
 
 </div>
 
-Acceptable line separators include: `\\`, `\cr`, `\\[distance]`, and `\cr[distance]`. *Distance* can be written with any of the [KaTeX units](#units).
+Acceptable line separators include: `\\`, `\cr`, and `\\[distance]`. (`\cr` is equivalent to `\\` without the optional size argument.) *Distance* can be written with any of the [KaTeX units](#unit-tbl).
 
 The `{array}` environment supports `|` and `:` vertical separators.
+
+Row spacing is scaled by `\arraystretch` (default `1`): write e.g. `\def\arraystretch{1.5}` before the environment, as in the `{array}` example above.
 
 The `{array}` environment does not yet support `\cline` or `\multicolumn`.
 
@@ -144,7 +147,7 @@ or for just some URLs via the `trust` [option](options.md).
 | $\htmlStyle{color: red;}{x}$ <code>…&lt;span style="color: red;" class="enclosing"&gt;…x…&lt;/span&gt;…</code> | `\htmlStyle{color: red;}{x}` |
 | $\htmlData{foo=a, bar=b}{x}$ <code>…&lt;span data-foo="a" data-bar="b" class="enclosing"&gt;…x…&lt;/span&gt;…</code> | `\htmlData{foo=a, bar=b}{x}` |
 
-`\includegraphics` supports `height`, `width`, `totalheight`, and `alt` in its first argument. `height` is required.
+`\includegraphics` supports `height`, `width`, `totalheight`, and `alt` in its first argument. All keys are optional: omitted `height` defaults to `0.9em` (roughly character-sized), and omitted `width`/`totalheight` default to `0em`.
 
 HTML extension (`\html`-prefixed) commands are non-standard, so loosening `strict` option for `htmlExtension` is required.
 
@@ -242,6 +245,7 @@ Any character can be written with the `\char` function and the Unicode code in h
 | $\bcancel{5}$ `\bcancel{5}`                                             | $\underbrace{a+b+c}_{\text{note}}$ `\underbrace{a+b+c}_{\text{note}}`     |
 | $\xcancel{ABC}$ `\xcancel{ABC}`                                         | $\not =$ `\not =`                                                         |
 | $\text{\sout{abc}}$ `\text{\sout{abc}}`                                 | $\boxed{\pi=\frac c d}$ `\boxed{\pi=\frac c d}`                           |
+| $\fbox{Hi there!}$ `\fbox{Hi there!}`                                     |                                                                           |
 | $a_{\angl n}$ `$a_{\angl n}`                                            | $a_\angln$ `a_\angln`                                                     |
 | $\overbracket{a+b+c}^{\text{note}}$ `\overbracket{a+b+c}^{\text{note}}` | $\underbracket{a+b+c}_{\text{note}}$ `\underbracket{a+b+c}_{\text{note}}` |
 | $\phase{-78^\circ}$`\phase{-78^\circ}`                                  |                                                                           |
@@ -316,11 +320,11 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 
 **Notes:**
 
-`distance` will accept any of the [KaTeX units](#units).
+`distance` will accept any of the [KaTeX units](#unit-tbl).
 
 `\kern`, `\mkern`, `\mskip`, and `\hspace` accept unbraced distances, as in: `\kern1em`.
 
-`\mkern` and `\mskip` will not work in text mode and both will write a console warning for any unit except `mu`.
+`\mkern` and `\mskip` will not work in text mode. In `strict` mode, using them with any unit except `mu` (or outside math mode, or using `\kern`/`\hskip` with `mu` units) is reported as a `mathVsTextUnits` transgression.
 
 <div class="katex-hopscotch">
 
@@ -371,6 +375,10 @@ KaTeX has no `\par`, so all macros are long by default and `\long` will be ignor
 Available functions include:
 
 `\char` `\mathchoice` `\TextOrMath` `\@ifstar` `\@ifnextchar` `\@firstoftwo` `\@secondoftwo` `\bgroup` `\egroup` `\message` `\errmessage` `\show` `\relax` `\expandafter` `\noexpand`
+
+`\mathchoice{display}{text}{script}{scriptscript}` picks the argument matching the current math style. `\TextOrMath{text}{math}` expands to its first argument in text mode and its second argument in math mode. `\@firstoftwo`/`\@secondoftwo` expand to their first/second argument respectively; `\@ifstar`/`\@ifnextchar` are the usual LaTeX lookahead helpers. `\message` and `\errmessage` write to the console log and console error log; `\show` writes information to the console log.
+
+Chemistry notation (`\ce`, `\pu`) is not built in: it is provided by the [mhchem extension](https://github.com/KaTeX/KaTeX/tree/main/contrib/mhchem).
 
 @ is a valid character for commands, as if `\makeatletter` were in effect.
 
@@ -633,6 +641,7 @@ In cases where KaTeX fonts do not have a bold glyph, `\pmb` can simulate one. Fo
 |$\LARGE AB$ `\LARGE AB`|$\footnotesize AB$ `\footnotesize AB`
 |$\Large AB$ `\Large AB`|$\scriptsize AB$ `\scriptsize AB`
 |$\large AB$ `\large AB`|$\tiny AB$ `\tiny AB`
+|$\sixptsize AB$ `\sixptsize AB`|
 
 
 **Style**
@@ -646,6 +655,7 @@ In cases where KaTeX fonts do not have a bold glyph, `\pmb` can simulate one. Fo
 |$\lim\limits_x$ `\lim\limits_x`
 |$\lim\nolimits_x$ `\lim\nolimits_x`
 |$\verb!x^2!$ `\verb!x^2!`
+|$\verb*!a b!$ `\verb*!a b!` (renders spaces as `␣` instead of `&nbsp;`)
 
 `\text{…}` will accept nested `$…$` fragments and render them in math mode.
 
@@ -712,6 +722,7 @@ KaTeX units are different than CSS units.
 | mm | 1 mm × F × G         | nd | 685/642 KaTeX pt |
 | cm | 1 cm × F × G         | nc | 1370/107​ KaTeX pt|
 | in | 1 inch × F × G       | sp | 1/65536 KaTeX pt |
+| px | 803/800 KaTeX pt     |    |                  |
 
 </div>
 

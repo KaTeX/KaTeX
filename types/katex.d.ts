@@ -2,7 +2,7 @@
 // - https://katex.org/docs/options
 // - https://katex.org/docs/api
 // - https://katex.org/docs/error
-// for v0.16.11 on 2024/12/01
+// for v0.18.7
 // with some references from https://www.npmjs.com/package/@types/katex
 
 /**
@@ -51,10 +51,13 @@ export type StrictFunction = (
     | "mathVsTextUnits"
     | "commentAtEnd"
     | "htmlExtension"
-    | "newLineInDisplayMode",
+    | "newLineInDisplayMode"
+    | "textEnv"
+    | "mathVsTextAccents"
+    | "mathVsSout",
   errorMsg: string,
-  token: Token,
-) => boolean | "error" | "warn" | "ignore" | undefined;
+  token?: Token | object,
+) => boolean | "error" | "warn" | "ignore" | null | undefined;
 
 
 /**
@@ -105,9 +108,9 @@ export interface KatexOptions {
      */
     throwOnError?: boolean;
     /**
-     * A color string given in the format `"#XXX"` or `"#XXXXXX"`. This option
-     * determines the color that unsupported commands and invalid LaTeX are
-     * rendered in when `throwOnError` is set to `false`.
+     * Any CSS color string. This option determines the color that
+     * unsupported commands and invalid LaTeX are rendered in when
+     * `throwOnError` is set to `false`.
      *
      * @default "#cc0000"
      */
@@ -183,7 +186,7 @@ export interface KatexOptions {
      *
      * @default false
     */
-    trust?: boolean | ((context: TrustContext) => boolean);
+    trust?: boolean | ((context: TrustContext) => boolean | null | undefined);
     /**
      * Run KaTeX code in the global group. As a consequence, macros defined at
      * the top level by `\def` and `\newcommand` are added to the macros
@@ -237,15 +240,35 @@ export function renderToString(tex: string, options?: KatexOptions): string;
  * @see https://katex.org/docs/error
  */
 export class ParseError implements Error {
-    constructor(message: string, token?: object);
+    constructor(message: string, token?: Token | object | null);
     name: "ParseError";
-    position: number;
-    length: number;
+    position: number | undefined;
+    length: number | undefined;
     rawMessage: string;
     message: string;
 }
 
 export const version: string;
+
+/**
+ * Describes every rendering option (and powers the CLI flags).
+ * See `SETTINGS_SCHEMA` in `src/Settings.ts`.
+ */
+export const SETTINGS_SCHEMA: Record<string, object>;
+
+/**
+ * Unstable internal exports (see "Advanced (unstable) exports" in
+ * https://katex.org/docs/api). The internal tree representation is
+ * unstable and very likely to change; use at your own risk.
+ */
+export function __parse(tex: string, options?: KatexOptions): object[];
+export function __renderToDomTree(tex: string, options?: KatexOptions): object;
+export function __renderToHTMLTree(tex: string, options?: KatexOptions): object;
+export function __setFontMetrics(fontName: string, metrics: Record<string, object>): void;
+export function __defineSymbol(mode: string, font: string, group: string, replace: string, name: string, acceptUnicodeChar?: boolean): void;
+export function __defineFunction(spec: object): void;
+export function __defineMacro(name: string, body: string | object | ((...args: object[]) => object)): void;
+export const __domTree: Record<string, unknown>;
 
 export as namespace katex;
 
@@ -254,6 +277,15 @@ declare const katex: {
     render: typeof render;
     renderToString: typeof renderToString;
     ParseError: typeof ParseError;
+    SETTINGS_SCHEMA: typeof SETTINGS_SCHEMA;
+    __parse: typeof __parse;
+    __renderToDomTree: typeof __renderToDomTree;
+    __renderToHTMLTree: typeof __renderToHTMLTree;
+    __setFontMetrics: typeof __setFontMetrics;
+    __defineSymbol: typeof __defineSymbol;
+    __defineFunction: typeof __defineFunction;
+    __defineMacro: typeof __defineMacro;
+    __domTree: typeof __domTree;
 };
 
 export default katex;

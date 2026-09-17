@@ -8,9 +8,13 @@ surrounded by specified delimiters.  (The HTML content of the resulting
 clipboard remains the selected HTML content, as it normally would.)
 The default delimiters are `$...$` for inline math and `$$...$$` for display
 math, but you can easy switch them to e.g. `\(...\)` and `\[...\]` by
-modifying `copyDelimiters` in [the source code](copy-tex.js).
+modifying `copyDelimiters` in [the source code](katex2tex.ts).
 Note that a selection containing part of a KaTeX formula gets extended to
 include the entire KaTeX formula.
+
+This extension reads the TeX source from the MathML
+`<annotation>` element, so it requires the default MathML output:
+it does nothing when KaTeX is rendered with `output: "html"`.
 
 ## Usage
 
@@ -30,8 +34,8 @@ http://localhost:7936/contrib/copy-tex/index.html
 with your web browser.)
 
 If you want to build your own custom copy handler based on this one,
-copy the `copy-tex.js` into your codebase and replace the `require`
-statement with `require('katex/contrib/copy-tex/katex2tex.js')`.
+copy `copy-tex.ts` into your codebase and replace the `import`
+statement with `import ... from 'katex/contrib/copy-tex/katex2tex'`.
 
 ECMAScript module is also available:
 ```html

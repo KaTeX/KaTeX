@@ -45,3 +45,8 @@ and from `-m` flags are merged; `-m` definitions are applied after (and so
 take precedence over) file definitions.
 
 ## Options
+
+The flags below are generated at website build time from the
+[settings schema](https://github.com/KaTeX/KaTeX/blob/main/src/Settings.ts)
+by `website/lib/build.js` — see the built
+[CLI docs](https://katex.org/docs/cli) for the full list.

@@ -76,7 +76,7 @@ function renderMathInElement(elem, options)
 nodes inside this element and render the math in them.
 
 `options` is an optional object argument that can have the same keys as [the
-object passed to `katex.render`](options.html),
+object passed to `katex.render`](options.md),
 in addition to five auto-render-specific keys:
 
 - `delimiters`: This is a list of delimiters to look for math, processed in
