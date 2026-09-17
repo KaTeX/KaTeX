@@ -37,6 +37,27 @@ inputs as the TeX source code in red (by default), with the error message as
 hover text.  Without this option, invalid LaTeX will cause a
 `katex.ParseError` exception to be thrown.  See [handling errors](error.md).
 
+`katex.ParseError` is exposed on the module so you can distinguish KaTeX
+parse failures from other exceptions with `e instanceof katex.ParseError`.
+`katex.version` reports the running KaTeX version; when you serve the JS and
+CSS separately, compare it against the loaded stylesheet version (see
+[troubleshooting](issues.md#troubleshooting)) to catch mismatches.
+`katex.SETTINGS_SCHEMA` describes every rendering option (and powers the
+[CLI](cli.md) flags).
+
+TypeScript declarations for all of the above ship in `types/katex.d.ts`.
+
+## Advanced (unstable) exports
+
+For custom tooling, the module also exposes its internals under `__`-prefixed
+names: `__parse` (parse to an internal tree without rendering),
+`__renderToDomTree` / `__renderToHTMLTree` (render to an internal DOM-tree
+representation), `__setFontMetrics`, `__defineSymbol`, `__defineFunction`,
+`__defineMacro` (extend the builtin symbol, function, and macro tables), and
+`__domTree` (the tree node classes).  As noted in the source, these are not
+recommended for public use: the internal tree representation is unstable and
+very likely to change, so use them at your own risk.
+
 ## Configuring KaTeX
 
 The last argument to `katex.render` and `katex.renderToString` can contain

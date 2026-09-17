@@ -18,4 +18,30 @@ after `npm install katex`.  You can also execute with the relative path:
 > To use the CLI from local Git clone, you need to build the project first.
 See [Building from Source](node.md#building-from-source) for more details.
 
+## Input and output
+
+By default the CLI reads one TeX string from standard input and writes the
+rendered HTML to standard output:
+
+```bash
+echo "c = \\pm\\sqrt{a^2 + b^2}" | npx katex --no-throw-on-error
+```
+
+Use `-i/--input <path>` to read from a file and `-o/--output <path>` to
+write to a file instead.
+
+## Macros
+
+Use `-m/--macro` to define a macro of the form `'\foo:expansion'`
+(repeat the flag for multiple macros):
+
+```bash
+echo "\\R[x]" | npx katex -m '\\R:\\mathbb{R}' --no-throw-on-error
+```
+
+Use `-f/--macro-file <path>` to read macro definitions from a file instead,
+one `'\foo:expansion'` definition per line. Definitions from the macro file
+and from `-m` flags are merged; `-m` definitions are applied after (and so
+take precedence over) file definitions.
+
 ## Options

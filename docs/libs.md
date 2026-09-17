@@ -7,9 +7,10 @@ title: Extensions & Libraries
 These extensions are provided by KaTeX.
 
 - [Auto-render](autorender.md): Automatically renders all of the math inside text
-- [Copy-tex](https://github.com/KaTeX/KaTeX/tree/main/contrib/copy-tex): When selecting and copying KaTeX-rendered elements, copies their LaTeX source to the clipboard
-- [`math/tex` Custom Script Type](https://github.com/KaTeX/KaTeX/tree/main/contrib/mathtex-script-type): Automatically displays LaTeX math inside `script` tags with `type=math/tex`
-- [mhchem](https://github.com/KaTeX/KaTeX/tree/main/contrib/mhchem): Write beautiful chemical equations easily
+- [Copy-tex](https://github.com/KaTeX/KaTeX/tree/main/contrib/copy-tex): When selecting and copying KaTeX-rendered elements, copies their LaTeX source to the clipboard. Requires the default MathML output (it reads the TeX source from the `<annotation>` element, so it does nothing with `output: "html"`). Display math is copied with `$$...$$` and inline math with `$...$` by default; to use different delimiters, import `katexReplaceWithTex` from `katex/contrib/copy-tex/katex2tex` and write your own `copy` handler (see the extension's `index.html` example).
+- [`math/tex` Custom Script Type](https://github.com/KaTeX/KaTeX/tree/main/contrib/mathtex-script-type): Automatically displays LaTeX math inside `script` tags with `type=math/tex`. Append `; mode=display` to the type (`<script type="math/tex; mode=display">…</script>`) to render in display mode.
+- [mhchem](https://github.com/KaTeX/KaTeX/tree/main/contrib/mhchem): Write beautiful chemical equations easily with `\ce` and `\pu`. Load it *after* `katex.js` but *before* `auto-render.js` so auto-rendered math can use the new functions.
+- [render-a11y-string](https://github.com/KaTeX/KaTeX/tree/main/contrib/render-a11y-string): Converts a TeX expression into a spoken-style string for `aria-label`s. See [Accessibility](accessibility.md).
 
 ## Libraries
 

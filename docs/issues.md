@@ -30,6 +30,19 @@ title: Common Issues
 
 ## Troubleshooting
 
+- If math renders as missing glyphs, boxes, or unstyled text, the font files
+  are probably not loading (404s in the network panel). The default build
+  expects a `fonts/` directory next to `katex.min.css`; if you moved the
+  stylesheet, point it at the fonts via `$font-folder` and rebuild. See
+  [font location](font.md#location-of-font-files).
+- If spacing or glyphs look wrong despite fonts loading, check that the JS
+  and CSS versions match: compare `katex.version` in the console against the
+  stylesheet version probe below. This commonly happens when one of the two
+  is pinned to a CDN version and the other is bundled locally.
+- If `$...$` inline math is not picked up, note that auto-render
+  [does not include `$` delimiters by default](autorender.md#api); add the
+  rule explicitly (after `$$`).
+
 To check the stylesheet (katex.css) is properly loaded, add following code to
 anywhere in the document:
 

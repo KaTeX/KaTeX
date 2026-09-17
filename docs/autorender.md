@@ -135,3 +135,12 @@ instead taken from the `display` key of the corresponding entry in the
 The same `options.macros` object (which defaults to an empty object `{}`)
 is passed into several calls to `katex.render`, so that consecutive equations
 can build up shared macros by `\gdef`.
+
+## Dynamically added content
+
+`renderMathInElement` only processes the DOM as it exists when called. If
+your page adds content later (single-page-app navigation, live preview,
+fetched comments), call `renderMathInElement` again on the new container
+after inserting it. To avoid double-rendering math that is already rendered,
+scope each call to the newly added subtree rather than re-running it on
+`document.body`.

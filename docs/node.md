@@ -105,6 +105,22 @@ still need to link the CSS file, make the KaTeX font files available to the
 client, and use the HTML5 doctype.  See [browser usage](browser.html).
 Note, however, that you do not need to include `katex.js` on the client.
 
+## Server-side rendering in app frameworks
+
+The same pattern works inside server components, loaders, or build plugins:
+render on the server with `katex.renderToString`, send the HTML string to the
+client, and inject it into the page (e.g. via your framework's raw-HTML
+escape hatch). No client-side KaTeX JavaScript is needed for display; the
+client only needs the stylesheet and the fonts:
+
+1. Bundle or link `katex.css` (see [browser usage](browser.html) and the
+   [font docs](font.md) for self-hosting the `fonts/` directory).
+2. Render each expression once on the server and cache the string when the
+   same expression repeats across requests.
+3. Keep the JS and CSS versions in lockstep (`katex.version` tells you the
+   running JS version); mismatched CSS is a common source of misaligned
+   output. See [troubleshooting](issues.md#troubleshooting).
+
 ## Using mhchem extension
 
 The [mhchem extension](https://github.com/KaTeX/KaTeX/tree/main/contrib/mhchem)
