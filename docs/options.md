@@ -14,7 +14,7 @@ You can provide an object of options as the last argument to [`katex.render` and
 - `leqno`: `boolean`. If `true`, display math has `\tag`s rendered on the left instead of the right, like `\usepackage[leqno]{amsmath}` in LaTeX.
 - `fleqn`: `boolean`. If `true`, display math renders flush left with a `2em` left margin, like `\documentclass[fleqn]` in LaTeX with the `amsmath` package.
 - `throwOnError`: `boolean`. If `true` (the default), KaTeX will throw a `ParseError` when it encounters an unsupported command or invalid LaTeX. If `false`, KaTeX will render unsupported commands as text, and render invalid LaTeX as its source code with hover text giving the error, in the color given by `errorColor`.
-- `errorColor`: `string`. Any CSS color string. This option determines the color that unsupported commands and invalid LaTeX are rendered in when `throwOnError` is set to `false`. (default: `#cc0000`)
+- `errorColor`: `string`. Any CSS color string. This option determines the color that unsupported commands and invalid LaTeX are rendered in when `throwOnError` is set to `false`. (default: `#cc0000`. Via the CLI `--error-color` flag, pass hex without the leading `#`, e.g. `cc0000`.)
 - `macros`: `object`. A collection of custom macros.
   - Each macro is a key-value pair where the key is a new command name and the value is the expansion of the macro.
   - Example: `macros: {"\\R": "\\mathbb{R}"}`

@@ -8,7 +8,7 @@ surrounded by specified delimiters.  (The HTML content of the resulting
 clipboard remains the selected HTML content, as it normally would.)
 The default delimiters are `$...$` for inline math and `$$...$$` for display
 math, but you can easy switch them to e.g. `\(...\)` and `\[...\]` by
-modifying `copyDelimiters` in [the source code](katex2tex.ts).
+modifying `defaultCopyDelimiters` in [the source code](katex2tex.ts).
 Note that a selection containing part of a KaTeX formula gets extended to
 include the entire KaTeX formula.
 

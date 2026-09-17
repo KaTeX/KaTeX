@@ -115,8 +115,8 @@ client only needs the stylesheet and the fonts:
 
 1. Bundle or link `katex.css` (see [browser usage](browser.md) and the
    [font docs](font.md) for self-hosting the `fonts/` directory).
-2. Render each expression once on the server and cache the string when the
-   same expression repeats across requests.
+2. Render each expression once on the server and cache the string in a
+   bounded cache when the same expression repeats across requests.
 3. Keep the JS and CSS versions in lockstep (`katex.version` tells you the
    running JS version); mismatched CSS is a common source of misaligned
    output. See [troubleshooting](issues.md#troubleshooting).

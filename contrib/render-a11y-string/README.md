@@ -19,11 +19,8 @@ katex.render(tex, element);
 ```
 
 The function signature is `renderA11yString(tex, settings)`, where the
-optional second argument accepts the same options as `katex.render`
-(`strict`, `macros`, etc.).
+optional second argument accepts the same options as `katex.render`.
 
-These strings are approximations of the math's meaning, not a full semantic
-representation: a screen reader reads the commas as brief pauses. Prefer the
-default MathML output when it is available, and use this extension for
-contexts where MathML is not (custom widgets, canvas fallbacks, test
-fixtures).
+These strings approximate the math's meaning; prefer the default MathML
+output when available. See
+[Accessibility](https://katex.org/docs/accessibility) for details.

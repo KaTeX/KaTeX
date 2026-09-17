@@ -9,7 +9,8 @@ plain-text alternatives. This page summarizes both.
 
 The default [`output`](options.md) setting, `htmlAndMathml`, renders visual
 HTML *and* a MathML copy of the expression (with the TeX source in an
-`<annotation>` element). Assistive technologies can use the MathML copy,
+`<annotation>` element). Assistive technologies can use the MathML copy
+(support varies by screen reader and browser),
 so keep this default when your math has human readers.
 
 If you set `output: "html"`, no MathML is emitted. Only do this when you

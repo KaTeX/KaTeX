@@ -147,7 +147,7 @@ or for just some URLs via the `trust` [option](options.md).
 | $\htmlStyle{color: red;}{x}$ <code>…&lt;span style="color: red;" class="enclosing"&gt;…x…&lt;/span&gt;…</code> | `\htmlStyle{color: red;}{x}` |
 | $\htmlData{foo=a, bar=b}{x}$ <code>…&lt;span data-foo="a" data-bar="b" class="enclosing"&gt;…x…&lt;/span&gt;…</code> | `\htmlData{foo=a, bar=b}{x}` |
 
-`\includegraphics` supports `height`, `width`, `totalheight`, and `alt` in its first argument. All keys are optional: omitted `height` defaults to `0.9em` (roughly character-sized), and omitted `width`/`totalheight` default to `0em`.
+`\includegraphics` supports `height`, `width`, `totalheight`, and `alt` in its first argument. All keys are optional: omitted `height` defaults to `0.9em`, and omitted `width`/`totalheight` default to `0em`.
 
 HTML extension (`\html`-prefixed) commands are non-standard, so loosening `strict` option for `htmlExtension` is required.
 
@@ -314,7 +314,7 @@ KaTeX also supports `\llap`, `\rlap`, and `\clap`, but they will take only text,
 | `\<space>`      | space              | `\negmedspace`       | – ⁴∕₁₈ em space
 | `\nobreakspace` | non-breaking space | `\negthickspace`     | – ⁵∕₁₈ em space
 | `\space`        | space              | `\mathstrut`         | `\vphantom{(}`
-| `\enskip`       | ½ em space         |                      |
+| `\enskip`       | ½ em space         |                      |                      |
 
 </div>
 

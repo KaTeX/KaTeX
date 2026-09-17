@@ -28,7 +28,9 @@ katex.renderToString(userTex, {
 });
 ```
 
-To forbid one risky command while allowing the rest, invert the test:
+To forbid one risky command while allowing the rest, invert the test.
+Prefer allowlisting (above): a denylist silently permits any command added
+in the future.
 
 ```js
 trust: (context) => context.command !== "\\includegraphics"
