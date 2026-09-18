@@ -77,7 +77,7 @@ nodes inside this element and render the math in them.
 
 `options` is an optional object argument that can have the same keys as [the
 object passed to `katex.render`](options.html),
-in addition to five auto-render-specific keys:
+in addition to six auto-render-specific keys:
 
 - `delimiters`: This is a list of delimiters to look for math, processed in
   the same order as the list. Each delimiter has three properties:
@@ -127,6 +127,10 @@ in addition to five auto-render-specific keys:
 
 - `preProcess`: A callback function, `(math: string) => string`, used to process
   math expressions before rendering.
+
+- `shouldRender`: A callback function, `(elem: HTMLElement) => boolean`, called
+  for each element as it is descended into. Return `false` to skip that
+  element and its descendants.
 
 The `displayMode` property of the options object is ignored, and is
 instead taken from the `display` key of the corresponding entry in the

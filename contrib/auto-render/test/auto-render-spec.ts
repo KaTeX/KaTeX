@@ -331,6 +331,106 @@ describe("Pre-process callback", function() {
     });
 });
 
+describe("shouldRender callback", function() {
+    const delimiters = [{left: "$", right: "$", display: false}];
+
+    it("renders normally when no callback is given", function() {
+        const el = document.createElement('div');
+        el.textContent = '$x^2$';
+        renderMathInElement(el, {delimiters});
+        expect(el.innerHTML).toContain('class="katex"');
+    });
+
+    it("renders when the callback returns true", function() {
+        const el = document.createElement('div');
+        el.textContent = '$x^2$';
+        renderMathInElement(el, {delimiters, shouldRender: () => true});
+        expect(el.innerHTML).toContain('class="katex"');
+    });
+
+    it("skips the whole tree when the callback returns false for the " +
+        "root element", function() {
+        const el = document.createElement('div');
+        el.textContent = '$x^2$';
+        renderMathInElement(el, {delimiters, shouldRender: () => false});
+        expect(el.innerHTML).not.toContain('class="katex"');
+    });
+
+    it("skips a subtree when the callback returns false for a " +
+        "non-root element, without affecting the root or siblings",
+    function() {
+        const root = document.createElement('div');
+        const skipped = document.createElement('div');
+        const rendered = document.createElement('div');
+        skipped.textContent = '$x^2$';
+        rendered.textContent = '$y^2$';
+        root.appendChild(skipped);
+        root.appendChild(rendered);
+
+        renderMathInElement(root, {
+            delimiters,
+            shouldRender: (elem) => elem !== skipped,
+        });
+
+        expect(skipped.innerHTML).not.toContain('class="katex"');
+        expect(rendered.innerHTML).toContain('class="katex"');
+    });
+
+    it("is not called for elements excluded by ignoredTags", function() {
+        const el = document.createElement('div');
+        const code = document.createElement('code');
+        code.textContent = '$x^2$';
+        el.appendChild(code);
+        const seen: HTMLElement[] = [];
+
+        renderMathInElement(el, {
+            delimiters,
+            ignoredTags: ["code"],
+            shouldRender: (elem) => {
+                seen.push(elem);
+                return true;
+            },
+        });
+
+        expect(seen).toStrictEqual([el]);
+    });
+
+    it("skips grandchildren too, not just direct children, when an " +
+        "ancestor is skipped", function() {
+        const root = document.createElement('div');
+        const middle = document.createElement('div');
+        const leaf = document.createElement('span');
+        leaf.textContent = '$x^2$';
+        middle.appendChild(leaf);
+        root.appendChild(middle);
+
+        renderMathInElement(root, {
+            delimiters,
+            shouldRender: (elem) => elem !== middle,
+        });
+
+        expect(leaf.innerHTML).not.toContain('class="katex"');
+    });
+
+    it("calls the callback exactly once per element", function() {
+        const root = document.createElement('div');
+        const child = document.createElement('span');
+        child.textContent = '$x^2$';
+        root.appendChild(child);
+        const seen: HTMLElement[] = [];
+
+        renderMathInElement(root, {
+            delimiters,
+            shouldRender: (elem) => {
+                seen.push(elem);
+                return true;
+            },
+        });
+
+        expect(seen).toStrictEqual([root, child]);
+    });
+});
+
 describe("Parse adjacent text nodes", function() {
     it("parse adjacent text nodes with math", function() {
         const textNodes = ['\\[',
