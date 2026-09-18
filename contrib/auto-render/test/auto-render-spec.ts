@@ -381,7 +381,7 @@ describe("shouldRender callback", function() {
         const code = document.createElement('code');
         code.textContent = '$x^2$';
         el.appendChild(code);
-        const seen: HTMLElement[] = [];
+        const seen: Element[] = [];
 
         renderMathInElement(el, {
             delimiters,
@@ -417,7 +417,7 @@ describe("shouldRender callback", function() {
         const child = document.createElement('span');
         child.textContent = '$x^2$';
         root.appendChild(child);
-        const seen: HTMLElement[] = [];
+        const seen: Element[] = [];
 
         renderMathInElement(root, {
             delimiters,

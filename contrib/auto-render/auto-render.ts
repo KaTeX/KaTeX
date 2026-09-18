@@ -13,9 +13,10 @@ interface RenderMathInElementOptions {
     displayMode?: boolean;
     macros?: Record<string, string>;
     // Called with each element being descended into, including `elem`
-    // itself. Return `false` to skip math rendering in that element and
-    // its descendants.
-    shouldRender?: (elem: HTMLElement) => boolean;
+    // itself. Takes `Element`, not `HTMLElement`, since SVG/MathML nodes
+    // can reach it too. Return `false` to skip that element and its
+    // descendants.
+    shouldRender?: (elem: Element) => boolean;
 }
 
 interface RenderMathInElementOptionsCopy {
@@ -26,7 +27,7 @@ interface RenderMathInElementOptionsCopy {
     errorCallback: (msg: string, err: Error) => void;
     displayMode?: boolean;
     macros?: Record<string, string>;
-    shouldRender?: (elem: HTMLElement) => boolean;
+    shouldRender?: (elem: Element) => boolean;
 }
 
 /* Note: optionsCopy is mutated by this method. If it is ever exposed in the

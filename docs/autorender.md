@@ -128,7 +128,7 @@ in addition to six auto-render-specific keys:
 - `preProcess`: A callback function, `(math: string) => string`, used to process
   math expressions before rendering.
 
-- `shouldRender`: A callback function, `(elem: HTMLElement) => boolean`, called
+- `shouldRender`: A callback function, `(elem: Element) => boolean`, called
   for each element as it is descended into. Return `false` to skip that
   element and its descendants.
 
