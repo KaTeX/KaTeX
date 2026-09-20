@@ -3898,6 +3898,19 @@ describe("A macro expander", function() {
         expect(parsed[0].text).toEqual("𝟙");
     });
 
+    it("\\char accepts the first and last code point of every plane", () => {
+        for (let plane = 0; plane <= 0x10; plane++) {
+            for (const code of [plane * 0x10000, plane * 0x10000 + 0xffff]) {
+                const parsed = getParsed(`\\char"${code.toString(16)}`);
+                expect(parsed[0].type).toEqual("textord");
+            }
+        }
+    });
+
+    it("\\char rejects code points outside the Unicode codespace", () => {
+        expect`\char"110000`.toFailWithParseError();
+    });
+
     it("should build Unicode private area characters", function() {
         expect`\gvertneqq\lvertneqq\ngeqq\ngeqslant\nleqq`.toBuild();
         expect`\nleqslant\nshortmid\nshortparallel\varsubsetneq`.toBuild();
@@ -4233,6 +4246,14 @@ describe("\\tag support", function() {
 
     it("should work with one tag per row", () => {
         expect`\begin{align}\tag{1}x\\&+y\tag{2}\end{align}`.toParse(displayMode);
+    });
+
+    it("should keep a manual tag on an empty final row", () => {
+        const markup = katex.renderToString(
+            r`\begin{align}\nonumber a\\\tag{1}\end{align}`,
+            {displayMode: true},
+        );
+        expect(markup).toContain("<span class=\"mord\">1</span>");
     });
 
     it("should work with \\nonumber/\\notag", () => {
@@ -4792,5 +4813,75 @@ describe("\\emph", () => {
 
     it("should toggle italics within textit", () => {
         expect`\textit{\emph{foo \emph{bar}}}`.toBuildLike`\textit{\textup{foo \textit{bar}}}`;
+    });
+});
+
+describe("A reflectbox builder", function() {
+    it("should build", function() {
+        expect`\reflectbox{abc}`.toBuild();
+        expect`\reflectbox{$x^2$}`.toBuild();
+    });
+
+    it("should use the reflectbox class", function() {
+        expect(getBuilt`\reflectbox{abc}`[0].classes).toContain("reflectbox");
+        expect(getBuilt`\mathreflectbox{abc}`[0].classes).toContain("reflectbox");
+    });
+
+    it("should parse text and math arguments in their respective modes", () => {
+        expect`\reflectbox{x^2}`.not.toParse();
+        expect`\mathreflectbox{x^2}`.toBuild();
+        expect`\text{\reflectbox{abc}}`.toBuild();
+    });
+
+    it.each([r`\reflectbox{b}`, r`\mathreflectbox{b}`])(
+        "should give %s ordinary-atom spacing", (command: string) => {
+            const spacing = (expression: string) => getBuilt(expression).map(
+                (node: {classes: string[]; style: {marginRight?: string}}) =>
+                    [node.classes[0], node.style.marginRight]);
+            expect(spacing(`a+${command}=c`)).toEqual(spacing("a+b=c"));
+        });
+
+    it.each([
+        r`\displaystyle`, r`\textstyle`,
+        r`\scriptstyle`, r`\scriptscriptstyle`,
+    ])("should inherit %s in mathreflectbox", (style: string) => {
+        const reflected = getBuilt(String.raw`${style}\mathreflectbox{\frac{a}{b}}`)[0];
+        const normal = getBuilt(String.raw`${style}\frac{a}{b}`)[0];
+        expect(reflected.height).toBeCloseTo(normal.height);
+        expect(reflected.depth).toBeCloseTo(normal.depth);
+    });
+
+    it("should keep reflectbox math in text style", () => {
+        const reflected = getBuilt`\scriptstyle\reflectbox{$\frac{a}{b}$}`[0];
+        const normal = getBuilt`\textstyle\frac{a}{b}`[0];
+        expect(reflected.height).toBeCloseTo(normal.height);
+        expect(reflected.depth).toBeCloseTo(normal.depth);
+    });
+});
+
+describe("\\mapsfrom", () => {
+    it("should give both inputs relation spacing and preserve unary minus", () => {
+        const spacing = (expression: string) => getBuilt(expression).map(
+            (node: {classes: string[]; style: {marginRight?: string}}) =>
+                [node.classes[0], node.style.marginRight]);
+        for (const command of [r`\mapsfrom`, "↤"]) {
+            expect(spacing(`a ${command} b`)).toEqual(spacing(r`a \mapsto b`));
+            expect(spacing(`${command} -b`)).toEqual(spacing(r`\mapsto -b`));
+        }
+        expect`a ↤ b`.toBuildLike`a \mapsfrom b`;
+    });
+
+    it.each([
+        ["", ""],
+        ["x_{", "}"],
+        ["x_{y_{", "}}"],
+        ["x^{", "}"],
+    ])("should size arrows like mapsto in %s...%s", (prefix: string, suffix: string) => {
+        const reflected = getBuilt(String.raw`${prefix}a \mapsfrom b${suffix}`);
+        const normal = getBuilt(String.raw`${prefix}a \mapsto b${suffix}`);
+        expect(reflected.map((node: {height: number; depth: number}) =>
+            [node.height, node.depth])).toEqual(
+            normal.map((node: {height: number; depth: number}) =>
+                [node.height, node.depth]));
     });
 });
