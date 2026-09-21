@@ -4227,6 +4227,30 @@ describe("A macro expander", function() {
         expect`\Set{ x \| x<\frac 1 2 |S| }`
         .toParseLike`\left\{\: x\;\middle\Vert\; x<\frac 1 2 |S| \:\right\}`;
     });
+
+    it("should expand \\absolutevalue as expected", () => {
+        expect`\absolutevalue{x}`.toParseLike`\left\lvert{x}\right\rvert`;
+    });
+
+    it("should expand sized \\absolutevalue as expected", () => {
+        expect`\absolutevalue \Big{A}`.toParseLike`\Bigl\lvert{A}\Bigr\rvert`;
+    });
+
+    it("should expand \\vectorbold as expected", () => {
+        expect`\vectorbold{b}`.toParseLike`\mathbf{b}`;
+    });
+
+    it("should expand starred \\vectorbold as expected", () => {
+        expect`\vectorbold*{c}`.toParseLike`\boldsymbol{c}`;
+    });
+
+    it("should expand \\vectorarrow as expected", () => {
+        expect`\vectorarrow{d}`.toParseLike`\vec{\mathbf{d}}`;
+    });
+
+    it("should expand starred \\vectorarrow as expected", () => {
+        expect`\vectorarrow*{E}`.toParseLike`\vec{\boldsymbol{E}}`;
+    });
 });
 
 describe("\\tag support", function() {
