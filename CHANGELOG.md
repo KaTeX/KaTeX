@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.18.9](https://github.com/KaTeX/KaTeX/compare/v0.18.8...v0.18.9) (2026-09-23)
+
+
+### Features
+
+* **types:** add contrib module declarations ([#4250](https://github.com/KaTeX/KaTeX/issues/4250)) ([aafa187](https://github.com/KaTeX/KaTeX/commit/aafa1874d720a7ffc74be705b9f4f4b13d1fe758))
+
 ## [0.18.8](https://github.com/KaTeX/KaTeX/compare/v0.18.7...v0.18.8) (2026-09-23)
 
 
