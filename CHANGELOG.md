@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.18.7](https://github.com/KaTeX/KaTeX/compare/v0.18.6...v0.18.7) (2026-09-06)
+
+
+### Features
+
+* add \reflectbox and \mapsfrom support ([#4262](https://github.com/KaTeX/KaTeX/issues/4262)) ([ab509fd](https://github.com/KaTeX/KaTeX/commit/ab509fde2026a355d3c80965213c05a10bf144cb))
+
 ## [0.18.6](https://github.com/KaTeX/KaTeX/compare/v0.18.5...v0.18.6) (2026-09-05)
 
 
