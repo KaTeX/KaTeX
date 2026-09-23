@@ -22,7 +22,7 @@ const getMathML = function(expr: any, settings: any = new Settings()) {
     });
 
     const built = buildMathML(parseTree(expr, settings), expr, options,
-        settings.displayMode);
+        settings.displayMode, false, settings);
 
     // Strip off the surrounding <span>
     return built.children[0].toMarkup();
@@ -278,5 +278,86 @@ describe("A MathML builder", function() {
 
     it("should preserve mathreflectbox content and script style in MathML", () => {
         expect(getMathML("x_{\\mathreflectbox{\\frac{a}{b}}}")).toMatchSnapshot();
+    });
+
+    describe("expandAnnotations", () => {
+        it("should not expand macros in annotation by default", () => {
+            const mathml = getMathML("\\foo", new Settings({
+                macros: {"\\foo": "x+y"},
+            }));
+            expect(mathml).toContain("<annotation");
+            expect(mathml).toContain("\\foo");
+            expect(mathml).not.toContain("x+y");
+        });
+
+        it("should expand user macros in annotation when enabled", () => {
+            const mathml = getMathML("\\foo", new Settings({
+                macros: {"\\foo": "x+y"},
+                expandAnnotations: true,
+            }));
+            expect(mathml).toContain("<annotation");
+            expect(mathml).toContain("x+y");
+            expect(mathml).not.toContain("\\foo");
+        });
+
+        it("should expand nested user macros", () => {
+            const mathml = getMathML("\\a", new Settings({
+                macros: {
+                    "\\a": "\\b+1",
+                    "\\b": "x",
+                },
+                expandAnnotations: true,
+            }));
+            expect(mathml).toContain("x+1");
+        });
+
+        it("should not expand built-in KaTeX macros", () => {
+            const mathml = getMathML("\\frac{1}{2}", new Settings({
+                expandAnnotations: true,
+            }));
+            expect(mathml).toContain("\\frac{1}{2}");
+        });
+
+        it("should preserve whitespace between control words", () => {
+            const mathml = getMathML("\\alpha x", new Settings({
+                expandAnnotations: true,
+            }));
+            expect(mathml).toContain("\\alpha x");
+            expect(mathml).not.toContain("\\alphax");
+        });
+
+        it("should preserve built-in macros like \\neq and \\dots", () => {
+            const mathml = getMathML("x \\neq y \\dots z", new Settings({
+                macros: {"\\foo": "bar"},
+                expandAnnotations: true,
+            }));
+            expect(mathml).toContain("\\neq");
+            expect(mathml).toContain("\\dots");
+        });
+
+        it("should expand user macro alongside built-in macros", () => {
+            const mathml = getMathML("\\R \\neq \\S", new Settings({
+                macros: {"\\R": "\\mathbb{R}", "\\S": "\\mathbb{S}"},
+                expandAnnotations: true,
+            }));
+            expect(mathml).toContain("\\mathbb{R}");
+            expect(mathml).toContain("\\neq");
+            expect(mathml).toContain("\\mathbb{S}");
+        });
+
+        it("should handle expression with no macros", () => {
+            const mathml = getMathML("x+y", new Settings({
+                expandAnnotations: true,
+            }));
+            expect(mathml).toContain("x+y");
+        });
+
+        it("should handle empty macros object", () => {
+            const mathml = getMathML("x+y", new Settings({
+                macros: {},
+                expandAnnotations: true,
+            }));
+            expect(mathml).toContain("x+y");
+        });
     });
 });
