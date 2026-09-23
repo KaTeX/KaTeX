@@ -11,6 +11,7 @@ You can provide an object of options as the last argument to [`katex.render` and
   - `html`: Outputs KaTeX in HTML only.
   - `mathml`: Outputs KaTeX in MathML only.
   - `htmlAndMathml`: Outputs HTML for visual rendering and includes MathML for accessibility. This is the default.
+- `outputSourceLocations`: `boolean` (default: `false`). If `true`, HTML output includes `data-katex-source-start` and `data-katex-source-end` attributes where rendered nodes can be mapped back to source ranges. Offsets are zero-based UTF-16 offsets into the input expression; wrapper nodes may use the smallest range covering their children.
 - `leqno`: `boolean`. If `true`, display math has `\tag`s rendered on the left instead of the right, like `\usepackage[leqno]{amsmath}` in LaTeX.
 - `fleqn`: `boolean`. If `true`, display math renders flush left with a `2em` left margin, like `\documentclass[fleqn]` in LaTeX with the `amsmath` package.
 - `throwOnError`: `boolean`. If `true` (the default), KaTeX will throw a `ParseError` when it encounters an unsupported command or invalid LaTeX. If `false`, KaTeX will render unsupported commands as text, and render invalid LaTeX as its source code with hover text giving the error, in the color given by `errorColor`.
