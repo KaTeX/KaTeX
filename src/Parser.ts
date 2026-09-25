@@ -58,6 +58,7 @@ export default class Parser {
     settings: Settings;
     leftrightDepth: number;
     nextToken: Token | null;
+    lastToken: Token | null;
 
     constructor(input: string, settings: Settings) {
         // Start in math mode
@@ -70,6 +71,7 @@ export default class Parser {
         // Count leftright depth (for \middle errors)
         this.leftrightDepth = 0;
         this.nextToken = null;
+        this.lastToken = null;
     }
 
     /**
@@ -91,6 +93,7 @@ export default class Parser {
      * Discards the current lookahead token, considering it consumed.
      */
     consume() {
+        this.lastToken = this.nextToken;
         this.nextToken = null;
     }
 
@@ -158,7 +161,7 @@ export default class Parser {
     subparse(tokens: Token[]): AnyParseNode[] {
         // Save the next token from the current job.
         const oldToken = this.nextToken;
-        this.consume();
+        this.nextToken = null;
 
         // Run the new job, terminating it with an excess '}'
         this.gullet.pushToken(new Token("}"));
@@ -485,7 +488,22 @@ export default class Parser {
         }
 
         const {args, optArgs} = this.parseArguments(func, funcData);
-        return this.callFunction(func, args, optArgs, token, breakOnTokenText);
+        const node =
+            this.callFunction(func, args, optArgs, token, breakOnTokenText);
+        // Most handlers build their node without a location. For source
+        // locations, give it the whole call: the command through the last
+        // token it consumed, so e.g. `\frac{a}{b}` covers `\frac` too.
+        if (this.settings.outputSourceLocations && !node.loc &&
+                this.lastToken) {
+            node.loc = SourceLocation.range(token, this.lastToken);
+            // `\dfrac` and friends wrap the fraction in a styling node,
+            // whose HTML is a fragment with no element to carry the range.
+            if (node.type === "styling" && node.body.length === 1 &&
+                    !node.body[0].loc) {
+                node.body[0].loc = node.loc;
+            }
+        }
+        return node;
     }
 
     /**

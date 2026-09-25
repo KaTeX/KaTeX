@@ -7,7 +7,10 @@
 
 import ParseError from "./ParseError";
 import Style from "./Style";
-import {makeGlue, makeSpan, tryCombineChars} from "./buildCommon";
+import {
+    makeGlue, makeSpan, sourceEndAttribute, sourceStartAttribute,
+    tryCombineChars,
+} from "./buildCommon";
 import type {DomSpan, HtmlDomNode} from "./domTree";
 import {Anchor, Span} from "./domTree";
 import {makeEm} from "./units";
@@ -250,9 +253,6 @@ export const makeNullDelimiter = function(
     const moreClasses = ["nulldelimiter"].concat(options.baseSizingClasses());
     return makeSpan(classes.concat(moreClasses));
 };
-
-const sourceStartAttribute = "data-katex-source-start";
-const sourceEndAttribute = "data-katex-source-end";
 
 type AttributedDomNode = HtmlDomNode & {
     attributes?: Record<string, string>;

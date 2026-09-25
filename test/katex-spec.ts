@@ -2582,17 +2582,82 @@ describe("A markup generator", function() {
     });
 
     it("inherits source-location attributes for grouped HTML output", function() {
+        const markup = katex.renderToString("x^{2}", {
+            output: "html",
+            outputSourceLocations: true,
+        });
+
+        // The supsub node has no location of its own.
+        expect(markup).toContain(
+            '<span class="mord" data-katex-source-start="0" ' +
+            'data-katex-source-end="5">');
+        expect(markup).toContain(
+            'data-katex-source-start="0" data-katex-source-end="1">x<');
+        expect(markup).toContain(
+            'data-katex-source-start="3" data-katex-source-end="4">2<');
+    });
+
+    it("covers a function call from its command to its last argument", function() {
         const markup = katex.renderToString(String.raw`\frac{a}{b}`, {
             output: "html",
             outputSourceLocations: true,
         });
 
         expect(markup).toContain(
-            'data-katex-source-start="5" data-katex-source-end="11"');
+            'data-katex-source-start="0" data-katex-source-end="11"');
         expect(markup).toContain(
-            'data-katex-source-start="6" data-katex-source-end="7"');
+            'data-katex-source-start="5" data-katex-source-end="8"');
         expect(markup).toContain(
-            'data-katex-source-start="9" data-katex-source-end="10"');
+            'data-katex-source-start="6" data-katex-source-end="7">a<');
+        expect(markup).toContain(
+            'data-katex-source-start="9" data-katex-source-end="10">b<');
+    });
+
+    it("gives a styled fraction the range of its call", function() {
+        const markup = katex.renderToString(String.raw`\dfrac12`, {
+            output: "html",
+            outputSourceLocations: true,
+        });
+
+        expect(markup).toContain(
+            'data-katex-source-start="0" data-katex-source-end="8"');
+    });
+
+    it("locates macro expansions at the macro call", function() {
+        const expression = String.raw`a\neq b\operatorname{sin}`;
+        const markup = katex.renderToString(expression, {
+            output: "html",
+            outputSourceLocations: true,
+        });
+        const ends = [...markup.matchAll(/data-katex-source-end="(\d+)"/g)]
+            .map((match) => +match[1]);
+
+        expect(Math.max(...ends)).toBeLessThanOrEqual(expression.length);
+        // The lexer counts the space after a control word into its token.
+        expect(markup).toContain(
+            'data-katex-source-start="1" data-katex-source-end="6">=<');
+        expect(markup).toContain(
+            'data-katex-source-start="7" data-katex-source-end="25"');
+    });
+
+    it("locates the arguments of a macro in the input", function() {
+        const markup = katex.renderToString(String.raw`\def\f#1{#1!}\f{a}`, {
+            output: "html",
+            outputSourceLocations: true,
+        });
+
+        expect(markup).toContain(
+            'data-katex-source-start="16" data-katex-source-end="17">a<');
+    });
+
+    it("merges source ranges of combined characters", function() {
+        const markup = katex.renderToString(String.raw`\text{ab}`, {
+            output: "html",
+            outputSourceLocations: true,
+        });
+
+        expect(markup).toContain(
+            'data-katex-source-start="6" data-katex-source-end="8">ab<');
     });
 });
 
