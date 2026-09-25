@@ -279,4 +279,16 @@ describe("A MathML builder", function() {
     it("should preserve mathreflectbox content and script style in MathML", () => {
         expect(getMathML("x_{\\mathreflectbox{\\frac{a}{b}}}")).toMatchSnapshot();
     });
+
+    it("should wrap a lone text operator in <mrow> when it is an argument", () => {
+        const fn = "<mi>min</mi><mo>\u2061</mo>";
+        expect(getMathML("x_{\\min}")).toContain(
+            `<msub><mi>x</mi><mrow>${fn}</mrow></msub>`);
+        expect(getMathML("x^{\\operatorname{foo}}")).toContain(
+            '<mrow><mi mathvariant="normal">foo</mi><mo>\u2061</mo></mrow>');
+        expect(getMathML("\\frac{\\min}{2}")).toContain(
+            `<mfrac><mrow>${fn}</mrow><mn>2</mn></mfrac>`);
+        expect(getMathML("\\sqrt[\\min]{x}")).toContain(
+            `<mroot><mi>x</mi><mrow>${fn}</mrow></mroot>`);
+    });
 });
