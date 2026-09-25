@@ -10,6 +10,7 @@ import ParseError from "./ParseError";
 import symbols, {ligatures} from "./symbols";
 import {_mathmlGroupBuilders as groupBuilders} from "./defineFunction";
 import {MathNode, TextNode} from "./mathMLTree";
+import {DocumentFragment} from "./tree";
 
 import type Options from "./Options";
 import type {DomSpan, HtmlDomNode} from "./domTree";
@@ -43,10 +44,13 @@ export const makeText = function(
 
 /**
  * Wrap the given array of nodes in an <mrow> node if needed, i.e.,
- * unless the array has length 1.  Always returns a single node.
+ * unless the array has length 1.  A lone DocumentFragment (e.g. from
+ * \sin or \operatorname) still gets an <mrow>, since it would otherwise
+ * be flattened into several children of its parent.
+ * Always returns a single node.
  */
 export const makeRow = function(body: MathDomNode[]): MathDomNode {
-    if (body.length === 1) {
+    if (body.length === 1 && !(body[0] instanceof DocumentFragment)) {
         return body[0];
     } else {
         return new MathNode("mrow", body);
