@@ -309,6 +309,7 @@ export class Img implements VirtualNode {
     depth: number;
     maxFontSize: number;
     style: CssStyle;
+    attributes?: Record<string, string>;
 
     constructor(
         src: string,
@@ -324,6 +325,13 @@ export class Img implements VirtualNode {
         this.style = style;
     }
 
+    setAttribute(attribute: string, value: string) {
+        // Created on first use, so an image without attributes stays as it
+        // was.
+        this.attributes = this.attributes || {};
+        this.attributes[attribute] = value;
+    }
+
     hasClass(className: string): boolean {
         return this.classes.includes(className);
     }
@@ -337,6 +345,11 @@ export class Img implements VirtualNode {
         // Apply inline styles
         Object.assign(node.style, this.style);
 
+        const attributes = this.attributes || {};
+        for (const attr of Object.keys(attributes)) {
+            node.setAttribute(attr, attributes[attr]);
+        }
+
         return node;
     }
 
@@ -347,6 +360,14 @@ export class Img implements VirtualNode {
         const styles = cssStyleToString(this.style);
         if (styles) {
             markup += ` style="${escape(styles)}"`;
+        }
+
+        const attributes = this.attributes || {};
+        for (const attr of Object.keys(attributes)) {
+            if (invalidAttributeNameRegex.test(attr)) {
+                throw new ParseError(`Invalid attribute name '${attr}'`);
+            }
+            markup += ` ${attr}="${escape(attributes[attr])}"`;
         }
 
         markup += "'/>";

@@ -328,10 +328,11 @@ export default class MacroExpander implements MacroContextInterface {
     }
 
     /**
-     * Tokens that a macro body brought in from outside the input (a string
-     * macro's body has a lexer of its own) take the source range of the
-     * macro call, from its name through its last argument. Tokens pasted in
-     * from the arguments keep their own ranges.
+     * Tokens of a macro's expansion that do not come from inside the call
+     * take the source range of the call, from its name through its last
+     * argument: a string macro's body has a lexer of its own, and a `\def`
+     * body sits earlier in the input. Tokens pasted in from the arguments
+     * lie inside the call and keep their own ranges.
      */
     locateAtCallSite(tokens: Token[], topToken: Token): Token[] {
         const loc = SourceLocation.range(topToken, this.lastPopped!);
@@ -339,7 +340,8 @@ export default class MacroExpander implements MacroContextInterface {
             return tokens;
         }
         return tokens.map((tok) => {
-            if (tok.loc && tok.loc.lexer === this.lexer) {
+            if (tok.loc && tok.loc.lexer === this.lexer &&
+                    tok.loc.start >= loc.start && tok.loc.end <= loc.end) {
                 return tok;
             }
             const located = new Token(tok.text, loc);

@@ -953,6 +953,7 @@ export default class Parser {
                 mode: "text",
                 body: arg,
                 star,
+                loc: SourceLocation.range(nucleus),
             };
         }
         // At this point, we should have a symbol, possibly with accents.

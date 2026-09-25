@@ -299,7 +299,10 @@ const inheritSourceLocationRange = function(
             maxEnd = Math.max(maxEnd, +end);
         }
 
-        if (current.children) {
+        // A located descendant already covers its own subtree, so there is
+        // no need to scan it again at every enclosing level.
+        const located = current !== node && start != null && end != null;
+        if (current.children && !located) {
             for (let i = current.children.length - 1; i >= 0; i--) {
                 stack.push(current.children[i]);
             }

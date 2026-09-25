@@ -2650,6 +2650,35 @@ describe("A markup generator", function() {
             'data-katex-source-start="16" data-katex-source-end="17">a<');
     });
 
+    it("locates a \\def expansion at the macro call", function() {
+        const markup = katex.renderToString(String.raw`\def\f{\frac}\f{a}{b}`, {
+            output: "html",
+            outputSourceLocations: true,
+        });
+
+        expect(markup).toContain(
+            'data-katex-source-start="13" data-katex-source-end="21"');
+        expect(markup).not.toContain('data-katex-source-start="7"');
+    });
+
+    it("locates verbatim text and images", function() {
+        const verb = katex.renderToString(String.raw`\verb|ab|`, {
+            output: "html",
+            outputSourceLocations: true,
+        });
+        const image = katex.renderToString(
+            String.raw`\includegraphics[height=1em]{a.png}`, {
+                output: "html",
+                outputSourceLocations: true,
+                trust: true,
+            });
+
+        expect(verb).toContain(
+            'data-katex-source-start="0" data-katex-source-end="9"');
+        expect(image).toMatch(
+            /<img [^>]*data-katex-source-start="0" data-katex-source-end="35"/);
+    });
+
     it("merges source ranges of combined characters", function() {
         const markup = katex.renderToString(String.raw`\text{ab}`, {
             output: "html",
