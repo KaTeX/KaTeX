@@ -57,9 +57,9 @@ defineFunction({
 
     htmlBuilder: (group, options) => {
         const inner = makeSpan(
-            ["inner"],
+            ["katex-inner"],
             [html.buildGroup(group.body, options.withPhantom())]);
-        const fix = makeSpan(["fix"], []);
+        const fix = makeSpan(["katex-fix"], []);
         return makeSpan(
             ["mord", "rlap"], [inner, fix], options);
     },

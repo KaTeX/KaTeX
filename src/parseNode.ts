@@ -1,4 +1,5 @@
 import {NonAtoms} from "./atoms";
+import ParseError from "./ParseError";
 import type {AnyParseNode, NodeType, ParseNode, SymbolParseNode} from "./types/nodes";
 
 /**
@@ -41,4 +42,27 @@ export function checkSymbolNodeType(node: AnyParseNode): SymbolParseNode | null 
         return node as SymbolParseNode;
     }
     return null;
+}
+
+/**
+ * Returns the string spelled out by a group of plain characters, throwing the
+ * given ParseError if the group holds anything else. With allowSpaces, a
+ * literal space counts as a character; `~` and `\ ` do not.
+ */
+export function assertCharacterGroup(
+    group: ParseNode<"ordgroup">,
+    errorMessage: string,
+    allowSpaces?: boolean,
+): string {
+    let text = "";
+    for (const node of group.body) {
+        if (node.type === "textord") {
+            text += node.text;
+        } else if (allowSpaces && node.type === "spacing" && node.text === " ") {
+            text += " ";
+        } else {
+            throw new ParseError(errorMessage, group);
+        }
+    }
+    return text;
 }

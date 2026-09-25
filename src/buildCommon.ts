@@ -775,7 +775,7 @@ export const staticSvg = function(value: string, options: Options): SvgSpan {
         "viewBox": "0 0 " + 1000 * width + " " + 1000 * height,
         "preserveAspectRatio": "xMinYMin",
     });
-    const span = makeSvgSpan(["overlay"], [svgNode], options);
+    const span = makeSvgSpan(["katex-overlay"], [svgNode], options);
     span.height = height;
     span.style.height = makeEm(height);
     span.style.width = makeEm(width);

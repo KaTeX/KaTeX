@@ -40,7 +40,7 @@ defineFunction({
             ],
         }, options);
 
-        return makeSpan(["mord", "underline"], [vlist], options);
+        return makeSpan(["mord", "katex-underline"], [vlist], options);
     },
     mathmlBuilder(group, options) {
         const operator = new MathNode(

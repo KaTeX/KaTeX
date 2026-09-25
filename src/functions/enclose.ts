@@ -32,7 +32,7 @@ const htmlBuilder: HtmlBuilder<"enclose"> = (group, options) => {
     const isSingleChar = isCharacterBox(group.body);
 
     if (label === "sout") {
-        img = makeSpan(["stretchy", "sout"]);
+        img = makeSpan(["katex-stretchy", "katex-sout"]);
         img.height = options.fontMetrics().defaultRuleThickness / scale;
         imgShift = -0.5 * options.fontMetrics().xHeight;
 
