@@ -267,7 +267,7 @@ export function __renderToHTMLTree(tex: string, options?: KatexOptions): object;
 export function __setFontMetrics(fontName: string, metrics: Record<string, object>): void;
 export function __defineSymbol(mode: string, font: string, group: string, replace: string, name: string, acceptUnicodeChar?: boolean): void;
 export function __defineFunction(spec: object): void;
-export function __defineMacro(name: string, body: string | object | ((...args: object[]) => object)): void;
+export function __defineMacro(name: string, body: string | object | ((...args: object[]) => string | object)): void;
 export const __domTree: Record<string, unknown>;
 
 export as namespace katex;

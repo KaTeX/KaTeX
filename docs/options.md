@@ -73,7 +73,6 @@ You can provide an object of options as the last argument to [`katex.render` and
   - Allow multiple specific commands: `trust: (context) => ['\\url', '\\href'].includes(context.command)`
   - Allow all commands with a specific protocol: `trust: (context) => context.protocol === 'http'`
   - Allow all commands with specific protocols: `trust: (context) => ['http', 'https', '_relative'].includes(context.protocol)`
-  - Allow all commands but forbid specific protocol: `trust: (context) => context.protocol !== 'file'`
   - Allow certain commands with specific protocols: `trust: (context) => ['\\url', '\\href'].includes(context.command) && ['http', 'https', '_relative'].includes(context.protocol)`
 
 - `globalGroup`: `boolean`  (default: `false`). Run KaTeX code in the global group. As a consequence, macros defined at the top level by `\def` and `\newcommand` are added to the `macros` argument and can be used in subsequent render calls. In LaTeX, constructs such as `\begin{equation}` and `$$` create a local group and prevent definitions other than `\gdef` from becoming visible outside of those blocks, so this is KaTeX's default behavior.

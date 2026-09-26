@@ -36,12 +36,17 @@ in the future.
 trust: (context) => context.command !== "\\includegraphics"
 ```
 
-To block a dangerous protocol everywhere (e.g. `javascript:` or `file:` URLs
-smuggled through `\href` or `\includegraphics`):
+To block dangerous protocols in URLs (e.g. `javascript:` or `file:` URLs
+smuggled through `\href` or `\includegraphics`), gate on the URL-bearing
+commands and allowlist safe protocols. A denylist such as
+`context.protocol !== "javascript"` is unsafe: commands without a URL
+(such as `\htmlClass`) have no `protocol`, so the test passes and they
+are trusted, and every unlisted scheme (`data:`, `vbscript:`) is
+permitted.
 
 ```js
-trust: (context) => context.protocol !== "javascript" &&
-    context.protocol !== "file"
+trust: (context) => ["\\url", "\\href", "\\includegraphics"].includes(context.command) &&
+    ["http", "https", "_relative"].includes(context.protocol)
 ```
 
 Run `strict` in at least the default `"warn"` mode so non-LaTeX extensions
