@@ -1,6 +1,6 @@
 {
   "name": "katex",
-  "version": "0.18.5",
+  "version": "0.18.9",
   "description": "Fast math typesetting for the web.",
   "main": "dist/katex.js",
   "types": "types/katex.d.ts",
@@ -16,24 +16,54 @@
       }
     },
     "./contrib/auto-render": {
-      "require": "./dist/contrib/auto-render.js",
-      "import": "./dist/contrib/auto-render.mjs"
+      "require": {
+        "types": "./types/contrib/auto-render.d.cts",
+        "default": "./dist/contrib/auto-render.js"
+      },
+      "import": {
+        "types": "./types/contrib/auto-render.d.mts",
+        "default": "./dist/contrib/auto-render.mjs"
+      }
     },
     "./contrib/mhchem": {
-      "require": "./dist/contrib/mhchem.js",
-      "import": "./dist/contrib/mhchem.mjs"
+      "require": {
+        "types": "./types/contrib/mhchem.d.cts",
+        "default": "./dist/contrib/mhchem.js"
+      },
+      "import": {
+        "types": "./types/contrib/mhchem.d.mts",
+        "default": "./dist/contrib/mhchem.mjs"
+      }
     },
     "./contrib/copy-tex": {
-      "require": "./dist/contrib/copy-tex.js",
-      "import": "./dist/contrib/copy-tex.mjs"
+      "require": {
+        "types": "./types/contrib/copy-tex.d.cts",
+        "default": "./dist/contrib/copy-tex.js"
+      },
+      "import": {
+        "types": "./types/contrib/copy-tex.d.mts",
+        "default": "./dist/contrib/copy-tex.mjs"
+      }
     },
     "./contrib/mathtex-script-type": {
-      "require": "./dist/contrib/mathtex-script-type.js",
-      "import": "./dist/contrib/mathtex-script-type.mjs"
+      "require": {
+        "types": "./types/contrib/mathtex-script-type.d.cts",
+        "default": "./dist/contrib/mathtex-script-type.js"
+      },
+      "import": {
+        "types": "./types/contrib/mathtex-script-type.d.mts",
+        "default": "./dist/contrib/mathtex-script-type.mjs"
+      }
     },
     "./contrib/render-a11y-string": {
-      "require": "./dist/contrib/render-a11y-string.js",
-      "import": "./dist/contrib/render-a11y-string.mjs"
+      "require": {
+        "types": "./types/contrib/render-a11y-string.d.cts",
+        "default": "./dist/contrib/render-a11y-string.js"
+      },
+      "import": {
+        "types": "./types/contrib/render-a11y-string.d.mts",
+        "default": "./dist/contrib/render-a11y-string.mjs"
+      }
     },
     "./*": "./*"
   },

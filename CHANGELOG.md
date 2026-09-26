@@ -1,6 +1,34 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.18.9](https://github.com/KaTeX/KaTeX/compare/v0.18.8...v0.18.9) (2026-09-23)
+
+
+### Features
+
+* **types:** add contrib module declarations ([#4250](https://github.com/KaTeX/KaTeX/issues/4250)) ([aafa187](https://github.com/KaTeX/KaTeX/commit/aafa1874d720a7ffc74be705b9f4f4b13d1fe758))
+
+## [0.18.8](https://github.com/KaTeX/KaTeX/compare/v0.18.7...v0.18.8) (2026-09-23)
+
+
+### Bug Fixes
+
+* **array:** preserve trailing rows in align ([#4283](https://github.com/KaTeX/KaTeX/issues/4283)) ([ddfcc29](https://github.com/KaTeX/KaTeX/commit/ddfcc29825a35194e8de7490acea20d96ca05477))
+
+## [0.18.7](https://github.com/KaTeX/KaTeX/compare/v0.18.6...v0.18.7) (2026-09-06)
+
+
+### Features
+
+* add \reflectbox and \mapsfrom support ([#4262](https://github.com/KaTeX/KaTeX/issues/4262)) ([ab509fd](https://github.com/KaTeX/KaTeX/commit/ab509fde2026a355d3c80965213c05a10bf144cb))
+
+## [0.18.6](https://github.com/KaTeX/KaTeX/compare/v0.18.5...v0.18.6) (2026-09-05)
+
+
+### Bug Fixes
+
+* **array:** preserve tags on empty final rows ([#4277](https://github.com/KaTeX/KaTeX/issues/4277)) ([02d552c](https://github.com/KaTeX/KaTeX/commit/02d552ca2198e91fb24cf32fb0a35cf7610a66aa))
+
 ## [0.18.5](https://github.com/KaTeX/KaTeX/compare/v0.18.4...v0.18.5) (2026-08-31)
 
 
