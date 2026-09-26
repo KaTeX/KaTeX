@@ -19,6 +19,7 @@ const getMathML = function(expr: any, settings: any = new Settings()) {
         style: startStyle,
         maxSize: Infinity,
         minRuleThickness: 0,
+        strict: "warn",
     });
 
     const built = buildMathML(parseTree(expr, settings), expr, options,
