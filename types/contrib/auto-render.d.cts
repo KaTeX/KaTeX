@@ -18,6 +18,7 @@ declare namespace renderMathInElement {
         ignoredTags?: readonly string[];
         ignoredClasses?: readonly string[];
         errorCallback?: (msg: string, err: Error) => void;
+        shouldRender?: (elem: Element) => boolean;
     }
 }
 
