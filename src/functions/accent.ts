@@ -267,7 +267,7 @@ defineFunction({
 
         if (mode === "math") {
             handleStrict({
-                strictSetting: context.parser.settings.strict,
+                strict: context.parser.settings.strict,
                 errorCode: "mathVsTextAccents",
                 errorMsg: `LaTeX's accent ${context.funcName} works only in text mode`,
                 report: true,

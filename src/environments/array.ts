@@ -203,7 +203,7 @@ function parseArray(
                 } else {
                     // {array} environment
                     handleStrict({
-                        strictSetting: parser.settings.strict,
+                        strict: parser.settings.strict,
                         errorCode: "textEnv",
                         errorMsg: "Too few columns specified in the {array} column argument.",
                         report: true,

@@ -108,7 +108,7 @@ export default class Lexer implements LexerInterface {
             if (nlIndex === -1) {
                 this.tokenRegex.lastIndex = input.length; // EOF
                 handleStrict({
-                    strictSetting: this.settings.strict,
+                    strict: this.settings.strict,
                     errorCode: "commentAtEnd",
                     errorMsg: "% comment has no terminating newline; LaTeX would " +
                         "fail because of commenting the end of math mode (e.g. $)",

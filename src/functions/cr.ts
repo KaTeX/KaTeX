@@ -20,7 +20,7 @@ defineFunction({
             parser.parseSizeGroup(true) : null;
         const newLine = !parser.settings.displayMode ||
             !handleStrict({
-                strictSetting: parser.settings.strict,
+                strict: parser.settings.strict,
                 errorCode: "newLineInDisplayMode",
                 errorMsg: "In LaTeX, \\\\ or \\newline does nothing in display mode",
                 report: false,

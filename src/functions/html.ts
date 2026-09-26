@@ -21,7 +21,7 @@ defineFunction({
 
         if (parser.settings.strict) {
             handleStrict({
-                strictSetting: parser.settings.strict,
+                strict: parser.settings.strict,
                 errorCode: "htmlExtension",
                 errorMsg: "HTML extension is disabled on strict mode",
                 report: true,

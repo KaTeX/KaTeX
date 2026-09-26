@@ -10,7 +10,7 @@ export type StrictFunction =
         Exclude<Strict, StrictFunction>;
 
 export type StrictParameters<R extends boolean = boolean> = {
-    strictSetting: Strict;
+    strict: Strict;
     errorCode: string;
     errorMsg: string;
     report: R;
@@ -36,22 +36,22 @@ export type StrictParameters<R extends boolean = boolean> = {
 export function handleStrict(params: StrictParameters<true>): void;
 export function handleStrict(params: StrictParameters<false>): boolean;
 export function handleStrict(params: StrictParameters): void | boolean {
-    const {strictSetting, errorCode, errorMsg, token, report} = params;
-    let strict: Strict | ReturnType<StrictFunction> = strictSetting;
+    const {strict, errorCode, errorMsg, token, report} = params;
+    let behavior: Strict | ReturnType<StrictFunction> = strict;
 
-    if (typeof strictSetting === "function") {
+    if (typeof strict === "function") {
         if (report) {
-            strict = strictSetting(errorCode, errorMsg, token);
+            behavior = strict(errorCode, errorMsg, token);
         } else {
             try {
-                strict = strictSetting(errorCode, errorMsg, token);
+                behavior = strict(errorCode, errorMsg, token);
             } catch (error) {
-                strict = "error";
+                behavior = "error";
             }
         }
     }
 
-    switch (strict) {
+    switch (behavior) {
         case true:
         case "error":
             if (report) {

@@ -82,7 +82,7 @@ export const makeSymbol = function(
             metrics.width, classes);
     } else {
         handleStrict({
-            strictSetting: options.strict,
+            strict: options.strict,
             errorCode: "symbolNotInFont",
             errorMsg: `No character metrics for '${value}' in style '${fontName}' and mode '${mode}'`,
             report: true,

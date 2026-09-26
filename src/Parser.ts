@@ -945,10 +945,11 @@ export default class Parser {
             // This behavior is not strict (XeTeX-compatible) in math mode.
             if (this.settings.strict && this.mode === "math") {
                 handleStrict({
-                    strictSetting: this.settings.strict,
+                    strict: this.settings.strict,
                     errorCode: "unicodeTextInMathMode",
                     errorMsg: `Accented Unicode text character "${text[0]}" used in math mode`,
                     report: true,
+                    token: nucleus,
                 });
             }
             text = unicodeSymbols[text[0]] + text.slice(1);
@@ -969,7 +970,7 @@ export default class Parser {
             if (this.settings.strict && this.mode === 'math' &&
                 extraLatin.includes(text)) {
                 handleStrict({
-                    strictSetting: this.settings.strict,
+                    strict: this.settings.strict,
                     errorCode: "unicodeTextInMathMode",
                     errorMsg: `Latin-1/Unicode text character "${text[0]}" used in math mode`,
                     report: true,
@@ -1000,7 +1001,7 @@ export default class Parser {
             if (this.settings.strict) {
                 if (!supportedCodepoint(text.charCodeAt(0))) {
                     handleStrict({
-                        strictSetting: this.settings.strict,
+                        strict: this.settings.strict,
                         errorCode: "unknownSymbol",
                         errorMsg: `Unrecognized Unicode character "${text[0]}"` +
                             ` (${text.charCodeAt(0)})`,
@@ -1009,7 +1010,7 @@ export default class Parser {
                     });
                 } else if (this.mode === "math") {
                     handleStrict({
-                        strictSetting: this.settings.strict,
+                        strict: this.settings.strict,
                         errorCode: "unicodeTextInMathMode",
                         errorMsg: `Unicode text character "${text[0]}" used in math mode`,
                         report: true,

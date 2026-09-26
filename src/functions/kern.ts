@@ -25,7 +25,7 @@ defineFunction({
             if (mathFunction) {
                 if (!muUnit) {
                     handleStrict({
-                        strictSetting: parser.settings.strict,
+                        strict: parser.settings.strict,
                         errorCode: "mathVsTextUnits",
                         errorMsg: `LaTeX's ${funcName} supports only mu units, ` +
                             `not ${size.value.unit} units`,
@@ -34,7 +34,7 @@ defineFunction({
                 }
                 if (parser.mode !== "math") {
                     handleStrict({
-                        strictSetting: parser.settings.strict,
+                        strict: parser.settings.strict,
                         errorCode: "mathVsTextUnits",
                         errorMsg: `LaTeX's ${funcName} works only in math mode`,
                         report: true,
@@ -43,7 +43,7 @@ defineFunction({
             } else {  // !mathFunction
                 if (muUnit) {
                     handleStrict({
-                        strictSetting: parser.settings.strict,
+                        strict: parser.settings.strict,
                         errorCode: "mathVsTextUnits",
                         errorMsg: `LaTeX's ${funcName} doesn't support mu units`,
                         report: true,
