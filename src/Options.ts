@@ -48,6 +48,7 @@ export type OptionsData = {
     sizeMultiplier?: number;
     maxSize: number;
     minRuleThickness: number;
+    sourceLocations?: boolean;
 };
 
 /**
@@ -73,6 +74,7 @@ class Options {
     sizeMultiplier: number;
     maxSize: number;
     minRuleThickness: number;
+    sourceLocations: boolean;
     _fontMetrics: FontMetrics | undefined;
 
     /**
@@ -93,6 +95,7 @@ class Options {
         this.sizeMultiplier = sizeMultipliers[this.size - 1];
         this.maxSize = data.maxSize;
         this.minRuleThickness = data.minRuleThickness;
+        this.sourceLocations = !!data.sourceLocations;
         this._fontMetrics = undefined;
     }
 
@@ -113,6 +116,7 @@ class Options {
             fontShape: this.fontShape,
             maxSize: this.maxSize,
             minRuleThickness: this.minRuleThickness,
+            sourceLocations: this.sourceLocations,
         };
 
         Object.assign(data, extension);

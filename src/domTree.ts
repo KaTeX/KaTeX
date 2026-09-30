@@ -309,6 +309,7 @@ export class Img implements VirtualNode {
     depth: number;
     maxFontSize: number;
     style: CssStyle;
+    attributes?: Record<string, string>;
 
     constructor(
         src: string,
@@ -324,6 +325,13 @@ export class Img implements VirtualNode {
         this.style = style;
     }
 
+    setAttribute(attribute: string, value: string) {
+        // Created on first use, so an image without attributes stays as it
+        // was.
+        this.attributes = this.attributes || {};
+        this.attributes[attribute] = value;
+    }
+
     hasClass(className: string): boolean {
         return this.classes.includes(className);
     }
@@ -337,6 +345,11 @@ export class Img implements VirtualNode {
         // Apply inline styles
         Object.assign(node.style, this.style);
 
+        const attributes = this.attributes || {};
+        for (const attr of Object.keys(attributes)) {
+            node.setAttribute(attr, attributes[attr]);
+        }
+
         return node;
     }
 
@@ -347,6 +360,14 @@ export class Img implements VirtualNode {
         const styles = cssStyleToString(this.style);
         if (styles) {
             markup += ` style="${escape(styles)}"`;
+        }
+
+        const attributes = this.attributes || {};
+        for (const attr of Object.keys(attributes)) {
+            if (invalidAttributeNameRegex.test(attr)) {
+                throw new ParseError(`Invalid attribute name '${attr}'`);
+            }
+            markup += ` ${attr}="${escape(attributes[attr])}"`;
         }
 
         markup += "'/>";
@@ -376,6 +397,7 @@ export class SymbolNode implements HtmlDomNode {
     width: number;
     maxFontSize: number;
     classes: string[];
+    attributes: Record<string, string>;
     style: CssStyle;
 
     constructor(
@@ -395,6 +417,7 @@ export class SymbolNode implements HtmlDomNode {
         this.skew = skew || 0;
         this.width = width || 0;
         this.classes = classes || [];
+        this.attributes = {};
         this.style = style || {};
         this.maxFontSize = 0;
 
@@ -419,6 +442,10 @@ export class SymbolNode implements HtmlDomNode {
         return this.classes.includes(className);
     }
 
+    setAttribute(attribute: string, value: string) {
+        this.attributes[attribute] = value;
+    }
+
     /**
      * Creates a text node or span from a symbol node. Note that a span is only
      * created if it is needed.
@@ -440,6 +467,11 @@ export class SymbolNode implements HtmlDomNode {
         if (Object.keys(this.style).length > 0) {
             span = span || document.createElement("span");
             Object.assign(span.style, this.style);
+        }
+
+        for (const attr of Object.keys(this.attributes)) {
+            span = span || document.createElement("span");
+            span.setAttribute(attr, this.attributes[attr]);
         }
 
         if (span) {
@@ -477,6 +509,14 @@ export class SymbolNode implements HtmlDomNode {
         if (styles) {
             needsSpan = true;
             markup += " style=\"" + escape(styles) + "\"";
+        }
+
+        for (const attr of Object.keys(this.attributes)) {
+            if (invalidAttributeNameRegex.test(attr)) {
+                throw new ParseError(`Invalid attribute name '${attr}'`);
+            }
+            needsSpan = true;
+            markup += ` ${attr}="${escape(this.attributes[attr])}"`;
         }
 
         const escaped = escape(this.text);

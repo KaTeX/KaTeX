@@ -252,6 +252,9 @@ export const makeOrd = function(
     }
 };
 
+export const sourceStartAttribute = "data-katex-source-start";
+export const sourceEndAttribute = "data-katex-source-end";
+
 /**
  * Returns true if subsequent symbolNodes have the same classes, skew, maxFont,
  * and styles. For mathnormal text, the left node must also have zero italic
@@ -302,6 +305,18 @@ export const tryCombineChars = (chars: HtmlDomNode[]): HtmlDomNode[] => {
             && canCombine(prev, next)) {
 
             prev.text += next.text;
+            // With `outputSourceLocations`, the combined node covers both
+            // characters' source ranges.
+            const prevStart = prev.attributes[sourceStartAttribute];
+            const nextEnd = next.attributes[sourceEndAttribute];
+            if (prevStart != null && nextEnd != null) {
+                const start = Math.min(
+                    +prevStart, +next.attributes[sourceStartAttribute]);
+                const end = Math.max(
+                    +prev.attributes[sourceEndAttribute], +nextEnd);
+                prev.setAttribute(sourceStartAttribute, String(start));
+                prev.setAttribute(sourceEndAttribute, String(end));
+            }
             prev.height = Math.max(prev.height, next.height);
             prev.depth = Math.max(prev.depth, next.depth);
             // Use the last character's italic correction since we use

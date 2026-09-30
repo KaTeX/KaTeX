@@ -33,6 +33,7 @@ export default class MacroExpander implements MacroContextInterface {
     macros: Namespace<MacroDefinition>;
     stack: Token[];
     mode: Mode;
+    lastPopped: Token | null | undefined;
 
     constructor(input: string, settings: Settings, mode: Mode) {
         this.settings = settings;
@@ -97,7 +98,9 @@ export default class MacroExpander implements MacroContextInterface {
      */
     popToken(): Token {
         this.future();  // ensure non-empty stack
-        return this.stack.pop()!;
+        const token = this.stack.pop()!;
+        this.lastPopped = token;
+        return token;
     }
 
     /**
@@ -316,9 +319,36 @@ export default class MacroExpander implements MacroContextInterface {
                 }
             }
         }
+        if (this.settings.outputSourceLocations) {
+            tokens = this.locateAtCallSite(tokens, topToken);
+        }
         // Concatenate expansion onto top of stack.
         this.pushTokens(tokens);
         return tokens.length;
+    }
+
+    /**
+     * Tokens of a macro's expansion that do not come from inside the call
+     * take the source range of the call, from its name through its last
+     * argument: a string macro's body has a lexer of its own, and a `\def`
+     * body sits earlier in the input. Tokens pasted in from the arguments
+     * lie inside the call and keep their own ranges.
+     */
+    locateAtCallSite(tokens: Token[], topToken: Token): Token[] {
+        const loc = SourceLocation.range(topToken, this.lastPopped!);
+        if (!loc || loc.lexer !== this.lexer) {
+            return tokens;
+        }
+        return tokens.map((tok) => {
+            if (tok.loc && tok.loc.lexer === this.lexer &&
+                    tok.loc.start >= loc.start && tok.loc.end <= loc.end) {
+                return tok;
+            }
+            const located = new Token(tok.text, loc);
+            located.noexpand = tok.noexpand;
+            located.treatAsRelax = tok.treatAsRelax;
+            return located;
+        });
     }
 
     /**
