@@ -12,7 +12,7 @@ export interface RenderMathInElementOptions extends KatexOptions {
     ignoredTags?: readonly string[];
     ignoredClasses?: readonly string[];
     errorCallback?: (msg: string, err: Error) => void;
-    shouldRender?: (elem: Element) => boolean;
+    ignoreElement?: (elem: Element) => boolean;
 }
 
 export default function renderMathInElement(

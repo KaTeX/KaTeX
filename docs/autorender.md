@@ -115,12 +115,12 @@ in addition to six auto-render-specific keys:
   ]
   ```
 
-- `ignoredTags`: This is a list of DOM node types to ignore when recursing
-  through. The default value is
+- `ignoredTags`: DOM node types to skip, along with their subtrees, when
+  recursing. The default value is
   `["script", "noscript", "style", "textarea", "pre", "code", "option"]`.
 
-- `ignoredClasses`: This is a list of DOM node class names to ignore when
-  recursing through. By default, this value is not set.
+- `ignoredClasses`: DOM node class names to skip, along with their subtrees.
+  Unset by default.
 
 - `errorCallback`: A callback method returning a message and an error stack
   in case of an critical error during rendering. The default uses `console.error`.
@@ -128,9 +128,9 @@ in addition to six auto-render-specific keys:
 - `preProcess`: A callback function, `(math: string) => string`, used to process
   math expressions before rendering.
 
-- `shouldRender`: A callback function, `(elem: Element) => boolean`, called
-  for each element as it is descended into. Return `false` to skip that
-  element and its descendants.
+- `ignoreElement`: A callback function, `(elem: Element) => boolean`, called
+  for each element including the root. Return `true` to skip it and its
+  subtree.
 
 The `displayMode` property of the options object is ignored, and is
 instead taken from the `display` key of the corresponding entry in the

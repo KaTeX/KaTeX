@@ -331,7 +331,7 @@ describe("Pre-process callback", function() {
     });
 });
 
-describe("shouldRender callback", function() {
+describe("ignoreElement callback", function() {
     const delimiters = [{left: "$", right: "$", display: false}];
 
     it("renders normally when no callback is given", function() {
@@ -341,22 +341,22 @@ describe("shouldRender callback", function() {
         expect(el.innerHTML).toContain('class="katex"');
     });
 
-    it("renders when the callback returns true", function() {
+    it("renders when the callback returns false", function() {
         const el = document.createElement('div');
         el.textContent = '$x^2$';
-        renderMathInElement(el, {delimiters, shouldRender: () => true});
+        renderMathInElement(el, {delimiters, ignoreElement: () => false});
         expect(el.innerHTML).toContain('class="katex"');
     });
 
-    it("skips the whole tree when the callback returns false for the " +
+    it("skips the whole tree when the callback returns true for the " +
         "root element", function() {
         const el = document.createElement('div');
         el.textContent = '$x^2$';
-        renderMathInElement(el, {delimiters, shouldRender: () => false});
+        renderMathInElement(el, {delimiters, ignoreElement: () => true});
         expect(el.innerHTML).not.toContain('class="katex"');
     });
 
-    it("skips a subtree when the callback returns false for a " +
+    it("skips a subtree when the callback returns true for a " +
         "non-root element, without affecting the root or siblings",
     function() {
         const root = document.createElement('div');
@@ -369,7 +369,7 @@ describe("shouldRender callback", function() {
 
         renderMathInElement(root, {
             delimiters,
-            shouldRender: (elem) => elem !== skipped,
+            ignoreElement: (elem) => elem === skipped,
         });
 
         expect(skipped.innerHTML).not.toContain('class="katex"');
@@ -386,9 +386,9 @@ describe("shouldRender callback", function() {
         renderMathInElement(el, {
             delimiters,
             ignoredTags: ["code"],
-            shouldRender: (elem) => {
+            ignoreElement: (elem) => {
                 seen.push(elem);
-                return true;
+                return false;
             },
         });
 
@@ -406,7 +406,7 @@ describe("shouldRender callback", function() {
 
         renderMathInElement(root, {
             delimiters,
-            shouldRender: (elem) => elem !== middle,
+            ignoreElement: (elem) => elem === middle,
         });
 
         expect(leaf.innerHTML).not.toContain('class="katex"');
@@ -421,9 +421,9 @@ describe("shouldRender callback", function() {
 
         renderMathInElement(root, {
             delimiters,
-            shouldRender: (elem) => {
+            ignoreElement: (elem) => {
                 seen.push(elem);
-                return true;
+                return false;
             },
         });
 

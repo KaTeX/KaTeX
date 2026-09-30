@@ -12,11 +12,9 @@ interface RenderMathInElementOptions {
     errorCallback?: (msg: string, err: Error) => void;
     displayMode?: boolean;
     macros?: Record<string, string>;
-    // Called with each element being descended into, including `elem`
-    // itself. Takes `Element`, not `HTMLElement`, since SVG/MathML nodes
-    // can reach it too. Return `false` to skip that element and its
-    // descendants.
-    shouldRender?: (elem: Element) => boolean;
+    // Called for each element, including the root. Takes `Element`, not
+    // `HTMLElement`, for SVG/MathML. `true` skips the subtree.
+    ignoreElement?: (elem: Element) => boolean;
 }
 
 interface RenderMathInElementOptionsCopy {
@@ -27,7 +25,7 @@ interface RenderMathInElementOptionsCopy {
     errorCallback: (msg: string, err: Error) => void;
     displayMode?: boolean;
     macros?: Record<string, string>;
-    shouldRender?: (elem: Element) => boolean;
+    ignoreElement?: (elem: Element) => boolean;
 }
 
 /* Note: optionsCopy is mutated by this method. If it is ever exposed in the
@@ -84,7 +82,7 @@ const renderElem = function(
     elem: HTMLElement,
     optionsCopy: RenderMathInElementOptionsCopy
 ) {
-    if (optionsCopy.shouldRender && !optionsCopy.shouldRender(elem)) {
+    if (optionsCopy.ignoreElement && optionsCopy.ignoreElement(elem)) {
         return;
     }
 
