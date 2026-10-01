@@ -979,6 +979,69 @@ defineMacro("\\set", "\\bra@set{\\{\\,}{\\mid}{}{\\,\\}}");
 // actuarialangle.dtx
 defineMacro("\\angln", "{\\angl n}");
 
+//////////////////////////////////////////////////////////////////////
+// physics.sty
+
+// This package contains some macros widely useful in physics.
+// https://ctan.math.washington.edu/tex-archive/macros/latex/contrib/physics/physics.pdf
+
+const physicsDelimiters: Record<string, [string, string]> = {
+    "\\big": ["\\bigl", "\\bigr"],
+    "\\Big": ["\\Bigl", "\\Bigr"],
+    "\\bigg": ["\\biggl", "\\biggr"],
+    "\\Bigg": ["\\Biggl", "\\Biggr"],
+};
+
+const getDelimiter = (
+    left: string,
+    right: string,
+) => (context: MacroContextInterface): string => {
+    context.consumeSpaces();
+    const modifier = context.future().text;
+
+    if (modifier === "*") {
+        context.popToken();
+        return `\\left${left}\\smash{#1}\\right${right}\\vphantom{#1}`;
+    }
+
+    const size = physicsDelimiters[modifier];
+    if (size) {
+        context.popToken();
+        return `${size[0]}${left}{#1}${size[1]}${right}`;
+    }
+
+    return `\\left${left}{#1}\\right${right}`;
+};
+
+defineMacro("\\absolutevalue", getDelimiter("\\lvert", "\\rvert"));
+defineMacro("\\abs", "\\absolutevalue");
+defineMacro("\\norm", getDelimiter("\\lVert", "\\rVert"));
+defineMacro("\\pqty", getDelimiter("\\lparen", "\\rparen"));
+defineMacro("\\bqty", getDelimiter("\\lbrack", "\\rbrack"));
+defineMacro("\\Bqty", getDelimiter("\\lbrace", "\\rbrace"));
+defineMacro("\\vqty", getDelimiter("\\lvert", "\\rvert"));
+defineMacro("\\vectorbold", "\\@ifstar\\boldsymbol\\mathbf");
+defineMacro("\\vb", "\\vectorbold");
+defineMacro("\\vectorarrow@bold", "\\vec{\\boldsymbol{#1}}");
+defineMacro("\\vectorarrow@normal", "\\vec{\\mathbf{#1}}");
+defineMacro(
+    "\\vectorarrow",
+    "\\@ifstar\\vectorarrow@bold\\vectorarrow@normal",
+);
+defineMacro("\\va", "\\vectorarrow");
+defineMacro("\\vectorunit@bold", "\\boldsymbol{\\hat{#1}}");
+defineMacro("\\vectorunit@normal", "\\mathbf{\\hat{#1}}");
+defineMacro(
+    "\\vectorunit",
+    "\\@ifstar\\vectorunit@bold\\vectorunit@normal",
+);
+defineMacro("\\vu", "\\vectorunit");
+defineMacro("\\dotproduct", "\\boldsymbol\\cdot");
+defineMacro("\\vdot", "\\dotproduct");
+defineMacro("\\crossproduct", "\\boldsymbol\\times");
+defineMacro("\\cross", "\\crossproduct");
+defineMacro("\\cp", "\\crossproduct");
+
 // Custom Khan Academy colors, should be moved to an optional package
 defineMacro("\\blue", "\\textcolor{##6495ed}{#1}");
 defineMacro("\\orange", "\\textcolor{##ffa500}{#1}");

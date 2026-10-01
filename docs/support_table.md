@@ -67,6 +67,8 @@ $\gdef\VERT{|}$
 |:---------------|:------------|:-----------------|
 |\AA|$\text{\AA}$|`\text{\AA}`|
 |\aa|$\text{\aa}$|`\text{\aa}`|
+|\abs|$\abs{x}$|`\abs{x}`|
+|\absolutevalue|$\absolutevalue{x}$|`\absolutevalue{x}`|
 |\above|${a \above{2pt} b+1}$|`{a \above{2pt} b+1}`|
 |\abovewithdelims|<span style="color:firebrick;">Not supported</span>||
 |\acute|$\acute e$|`\acute e`|
@@ -192,6 +194,8 @@ $\gdef\VERT{|}$
 |\boxminus|$\boxminus$||
 |\boxplus|$\boxplus$||
 |\boxtimes|$\boxtimes$||
+|\Bqty|$\Bqty{x}$|`\Bqty{x}`|
+|\bqty|$\bqty{x}$|`\bqty{x}`|
 |\Bra|$\Bra{\psi}$|`\Bra{\psi}`|
 |\bra|$\bra{\psi}$|`\bra{\psi}`|
 |\braket|$\braket{\phi\VERT\psi}$|<code>\braket{\phi&#124;\psi}</code>|
@@ -280,7 +284,10 @@ use `\ce` instead|
 |\cot|$\cot$||
 |\cotg|$\cotg$||
 |\coth|$\coth$||
+|\cp|$\cp$||
 |\cr|$\begin{matrix} a & b\cr c & d \end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \cr`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
+|\cross|$\cross$||
+|\crossproduct|$\crossproduct$||
 |\csc|$\csc$||
 |\cssId|<span style="color:firebrick;">Not supported</span>|A PR is pending.
 |\ctg|$\ctg$||
@@ -345,6 +352,7 @@ use `\ce` instead|
 |\doteq|$\doteq$||
 |\doteqdot|$\doteqdot$||
 |\dotplus|$\dotplus$||
+|\dotproduct|$\dotproduct$||
 |\dots|$x_1 + \dots + x_n$|`x_1 + \dots + x_n`|
 |\dotsb|$x_1 +\dotsb + x_n$|`x_1 +\dotsb + x_n`|
 |\dotsc|$x,\dotsc,y$|`x,\dotsc,y`|
@@ -754,6 +762,7 @@ use `\ce` instead|
 |\noexpand|||
 |\nolimits|$\lim\nolimits_x$|`\lim\nolimits_x`|
 |\nonumber|$$\begin{align}a&=b+c\nonumber\\d+e&=f\end{align}$$|`\begin{align}`<br>&nbsp;&nbsp;&nbsp;`a&=b+c \nonumber\\`<br>&nbsp;&nbsp;&nbsp;`d+e&=f`<br>`\end{align}`|
+|\norm|$\norm{x}$|`\norm{x}`|
 |\normalfont|<span style="color:firebrick;">Not supported</span>||
 |\normalsize|$\normalsize normalsize$|`\normalsize normalsize`|
 |\not|$\not =$|`\not =`|
@@ -858,6 +867,7 @@ use `\ce` instead|
 |\pmod|$x\pmod a$|`x\pmod a`|
 |\pod|$x \pod a$|`x \pod a`|
 |\pounds|$\pounds$||
+|\pqty|$\pqty{x}$|`\pqty{x}`|
 |\Pr|$\Pr$||
 |\prec|$\prec$||
 |\precapprox|$\precapprox$||
@@ -1170,6 +1180,7 @@ use `\ce` instead|
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\v|$\text{\v{a}}$|`\text{\v{a}}`|
+|\va|$\va{x}$|`\va{x}`|
 |\varcoppa|<span style="color:firebrick;">Not supported</span>||
 |\varDelta|$\varDelta$||
 |\varepsilon|$\varepsilon$||
@@ -1203,14 +1214,19 @@ use `\ce` instead|
 |\vartriangleright|$\vartriangleright$||
 |\varUpsilon|$\varUpsilon$||
 |\varXi|$\varXi$||
+|\vb|$\vb{x}$|`\vb{x}`|
 |\vcentcolon|$\mathrel{\vcentcolon =}$|`\mathrel{\vcentcolon =}`|
 |\vcenter|$a+\left(\vcenter{\frac{\frac a b}c}\right)$|`a+\left(\vcenter{\hbox{$\frac{\frac a b}c$}}\right)`<br>TeX (strict) syntax|
 |\vcenter|$a+\left(\vcenter{\frac{\frac a b}c}\right)$|`a+\left(\vcenter{\frac{\frac a b}c}\right)`<br>non-strict syntax|
 |\Vdash|$\Vdash$||
 |\vDash|$\vDash$||
 |\vdash|$\vdash$||
+|\vdot|$\vdot$||
 |\vdots|$\vdots$||
 |\vec|$\vec{F}$|`\vec{F}`|
+|\vectorarrow|$\vectorarrow{x}$|`\vectorarrow{x}`|
+|\vectorbold|$\vectorbold{x}$|`\vectorbold{x}`|
+|\vectorunit|$\vectorunit{x}$|`\vectorunit{x}`|
 |\vee|$\vee$||
 |\veebar|$\veebar$||
 |\verb|$\verb!\frac a b!$|`\verb!\frac a b!`|
@@ -1224,6 +1240,8 @@ use `\ce` instead|
 |{vmatrix}|$\begin{vmatrix}a&b\\c&d\end{vmatrix}$|`\begin{vmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{vmatrix}`|
 |{vmatrix*}|$\begin{vmatrix*}[r]0&-1\\-1&0\end{vmatrix*}$|`\begin{vmatrix*}[r]`<br>&nbsp;&nbsp;&nbsp;`0 & -1 \\`<br>&nbsp;&nbsp;&nbsp;`-1 & 0`<br>`\end{vmatrix*}`|
 |\vphantom|$\overline{\vphantom{M}a}$|`\overline{\vphantom{M}a}`|
+|\vqty|$\vqty{x}$|`\vqty{x}`|
+|\vu|$\vu{x}$|`\vu{x}`|
 |\Vvdash|$\Vvdash$||
 
 ## W
