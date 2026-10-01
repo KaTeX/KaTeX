@@ -308,6 +308,16 @@ Not: |
         a \neq b \notin c
     \end{array}
 NullDelimiterInteraction: a \bigl. + 2 \quad \left. + a \right)
+Numcases:
+    # The explanations are written as \text{...$...$}, the one spelling
+    # that both KaTeX and cases.sty accept (KaTeX sets that column in
+    # math mode, as it does for {cases}; cases.sty sets it in text mode),
+    # so the same source can be typeset with pdflatex for comparison.
+    tex: \begin{numcases}{\lvert x\rvert=}
+      x, & \text{for $x \geq 0$} \\
+      -x, & \text{for $x < 0$} \nonumber
+      \end{numcases}
+    display: 1
 OldFont: |
     \begin{matrix}
       \rm rm & it & \it it & \bf bf & \sf sf & \tt tt \\

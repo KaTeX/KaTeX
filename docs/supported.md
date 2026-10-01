@@ -111,6 +111,7 @@ The auto-render extension will render the following environments even if they ar
 | `matrix*`, `pmatrix*`, `bmatrix*`<br>`Bmatrix*`, `vmatrix*`, `Vmatrix*` | … take an optional argument to set column<br>alignment, as in `\begin{matrix*}[r]`
 | `equation*`, `gather*`<br>`align*`, `alignat*` | … have no automatic numbering. Alternatively, you can use `\nonumber` or `\notag` to omit the numbering for a specific row of the equation. |
 | `gathered`, `aligned`, `alignedat`             | … do not need to be in display mode.<br> … have no automatic numbering.<br> … must be inside math delimiters in<br>order to be rendered by the auto-render<br>extension. |
+| `numcases`                                     | … is `cases` with the left-hand side as a<br>mandatory argument, `\begin{numcases}{x=}`,<br>and an automatic equation number on<br>each row (`\nonumber` and `\tag` apply).<br> … set the second column in math mode,<br>as `cases` does (cases.sty uses text mode).<br> … is display-mode only.<br> … must be inside math delimiters in<br>order to be rendered by the auto-render<br>extension. |
 
 </div>
 
@@ -121,7 +122,7 @@ The `{array}` environment supports `|` and `:` vertical separators.
 The `{array}` environment does not yet support `\cline` or `\multicolumn`.
 
 `\tag` can be applied to individual rows of top-level environments
-(`align`, `align*`, `alignat`, `alignat*`, `gather`, `gather*`).
+(`align`, `align*`, `alignat`, `alignat*`, `gather`, `gather*`, `numcases`).
 
 <div class="katex-hopscotch">
 
