@@ -15,6 +15,7 @@ const options: RenderMathInElementOptions = {
         {left: "$$", right: "$$", display: true},
     ],
     preProcess: (math) => math.trim(),
+    ignoreElement: (elem) => elem.tagName === "PRE",
     throwOnError: false,
 };
 

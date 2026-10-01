@@ -77,7 +77,7 @@ nodes inside this element and render the math in them.
 
 `options` is an optional object argument that can have the same keys as [the
 object passed to `katex.render`](options.html),
-in addition to five auto-render-specific keys:
+in addition to six auto-render-specific keys:
 
 - `delimiters`: This is a list of delimiters to look for math, processed in
   the same order as the list. Each delimiter has three properties:
@@ -115,18 +115,22 @@ in addition to five auto-render-specific keys:
   ]
   ```
 
-- `ignoredTags`: This is a list of DOM node types to ignore when recursing
-  through. The default value is
+- `ignoredTags`: DOM node types to skip, along with their subtrees, when
+  recursing. The default value is
   `["script", "noscript", "style", "textarea", "pre", "code", "option"]`.
 
-- `ignoredClasses`: This is a list of DOM node class names to ignore when
-  recursing through. By default, this value is not set.
+- `ignoredClasses`: DOM node class names to skip, along with their subtrees.
+  Unset by default.
 
 - `errorCallback`: A callback method returning a message and an error stack
   in case of an critical error during rendering. The default uses `console.error`.
 
 - `preProcess`: A callback function, `(math: string) => string`, used to process
   math expressions before rendering.
+
+- `ignoreElement`: A callback function, `(elem: Element) => boolean`, called
+  for each element including the root. Return `true` to skip it and its
+  subtree.
 
 The `displayMode` property of the options object is ignored, and is
 instead taken from the `display` key of the corresponding entry in the
