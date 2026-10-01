@@ -5,6 +5,9 @@ title: Migration Guide
 
 ## v0.19.0
 
+> These changes were first published in v0.18.11, which was mistakenly
+> released as a patch version.
+
 ### Missing character metrics are reported via `strict`
 
 When a symbol has no metrics in KaTeX's fonts (for example, `\origof` or
