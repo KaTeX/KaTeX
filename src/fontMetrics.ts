@@ -192,6 +192,30 @@ export function setFontMetrics(
 }
 
 /**
+ * Characters the KaTeX fonts do not carry, mapped to a character they do carry
+ * that is the *same glyph* -- not merely a similar shape. Only genuine glyph
+ * equivalences belong here, because the substitute is what the reader sees.
+ */
+const glyphSubstitutionMap: Record<string, string> = {
+    // U+27C2 PERPENDICULAR is the same glyph as U+22A5 UP TACK.
+    '\u27C2': '\u22A5',
+};
+
+/**
+ * Returns the glyph to render for `character` in `font`: the substitute above
+ * when the font lacks the character itself, and `character` unchanged when the
+ * font carries it or no equivalence is known.
+ */
+export function getFontGlyphCharacter(character: string, font: string): string {
+    const substitute = glyphSubstitutionMap[character[0]];
+    if (substitute === undefined) {
+        return character;
+    }
+    const ch = character.charCodeAt(0);
+    return metricMap[font]?.[ch] ? character : substitute;
+}
+
+/**
  * This function is a convenience function for looking up information in the
  * metricMap table. It takes a character as a string, and a font.
  *
