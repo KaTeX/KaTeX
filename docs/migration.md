@@ -29,7 +29,7 @@ reported through the [`strict`](options.md) setting with the new error code
   ```
 
 - With `strict: "ignore"` or `strict: false`, the warning is no longer
-  printed. This is the new way to silence it.
+  printed. This (or a function returning one of these values) is the new way to silence it.
 
 ### `strict` functions must return a value
 
