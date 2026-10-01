@@ -34,7 +34,7 @@ reported through the [`strict`](options.md) setting with the new error code
 ### `strict` functions must return a value
 
 A `strict` function that returns `undefined` or `null` used to be treated
-like `"ignore"`. It is now treated like `"warn"`. Return `false` or
+like `"ignore"`. It is now treated like `"warn"` (the default behavior). Return `false` or
 `"ignore"` explicitly to suppress the warning:
 
 ```js
