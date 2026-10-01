@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+# [0.19.0](https://github.com/KaTeX/KaTeX/compare/v0.18.11...v0.19.0) (2026-10-01)
+
+
+### Documentation
+
+* note strict changes shipped in 0.18.11 ([#4300](https://github.com/KaTeX/KaTeX/issues/4300)) ([cbb1fce](https://github.com/KaTeX/KaTeX/commit/cbb1fce7e8facb728e735cd9c231ed28cbfaa6fa))
+
+
+### BREAKING CHANGES
+
+* Missing character metrics now reported via strict with error code symbolNotInFont, changing warning formatting, calling any strict callbacks, and producing errors in strict: "error" mode. Also, strict callbacks returning undefined or null now warn instead of ignoring the issue (and no longer typecheck); return false or "ignore" to suppress warnings.
+
 ## [0.18.11](https://github.com/KaTeX/KaTeX/compare/v0.18.10...v0.18.11) (2026-10-01)
 
 
