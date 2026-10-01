@@ -22,7 +22,7 @@ $version: "" !default;
 $display-margin: 1em 0 !default;
 
 .katex {
-    font: normal 1.21em KaTeX_Main, Times New Roman, serif;
+    font: normal 1.21em KaTeX_Main, math, Times New Roman, serif;
     line-height: 1.2;
     position: relative;
 

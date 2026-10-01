@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.18.10](https://github.com/KaTeX/KaTeX/compare/v0.18.9...v0.18.10) (2026-09-30)
+
+
+### Features
+
+* make KaTeX fallback to browsr math font before Times New Roman ([#4298](https://github.com/KaTeX/KaTeX/issues/4298)) ([a477b2e](https://github.com/KaTeX/KaTeX/commit/a477b2e1c30e38e1ada785d5766b1e57211b793e))
+
 ## [0.18.9](https://github.com/KaTeX/KaTeX/compare/v0.18.8...v0.18.9) (2026-09-23)
 
 
