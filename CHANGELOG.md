@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.18.11](https://github.com/KaTeX/KaTeX/compare/v0.18.10...v0.18.11) (2026-10-01)
+
+
+### Features
+
+* handle character metrics warnings via `strict` ([#4243](https://github.com/KaTeX/KaTeX/issues/4243)) ([4237070](https://github.com/KaTeX/KaTeX/commit/423707055a37803acafef4c1533832273192ea0e))
+
 ## [0.18.10](https://github.com/KaTeX/KaTeX/compare/v0.18.9...v0.18.10) (2026-09-30)
 
 

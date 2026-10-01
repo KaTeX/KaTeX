@@ -11,13 +11,13 @@ title: Browser
 <!-- KaTeX requires the use of the HTML5 doctype. Without it, KaTeX may not render properly -->
 <html>
   <head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.10/dist/katex.min.css" integrity="sha384-rdqqrpVNEfmY6hsVFS50HU5L84tWeMdr4XpF+TJPvLR6e8YxPgRyDzzpawPHMQE6" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.11/dist/katex.min.css" integrity="sha384-NJ/T2p1ROqNH3Yico+wdWm5Rv2rlinAOvV25Sw1zLOaxg8yLDPVv8GGAUccx50rh" crossorigin="anonymous">
 
     <!-- The loading of KaTeX is deferred to speed up page rendering -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.10/dist/katex.min.js" integrity="sha384-oeXTyN/gxEn/v98/oDFW+7XVfZrp59R6Tporzsg2uNs9g+G9Xel/Afxdamc4Mags" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.11/dist/katex.min.js" integrity="sha384-vaygNa7Kw+54Zb42f7K+4bfhZp4vWSHPJMKwd7nVmlgSvRADUrCRRdCpc1/CJwO+" crossorigin="anonymous"></script>
 
     <!-- To automatically render math in text elements, include the auto-render extension: -->
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.10/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.11/dist/contrib/auto-render.min.js" integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"
         onload="renderMathInElement(document.body);"></script>
   </head>
   ...
@@ -29,15 +29,15 @@ If you include the `katex.js` directly, the `katex` object will be available as
 a global variable.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.10/dist/katex.css" integrity="sha384-0tH1ocr4N55idvfatTGct1b67pXhDVxH1UotksK+E0KiYIUUrkTsj2ygLx/jHJ/p" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.10/dist/katex.js" integrity="sha384-fgU0TVQkaC5uPR4DqrF0IyqmAgJZsqb2iGOhdQMROD8yC8YP2fi6PWxZJakgHB5s" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.11/dist/katex.css" integrity="sha384-6RKMP8csO5CUpITeodLxqhhrio+EIJPzkaP+SWt6frqkquvoQtUK9hLaP0ZPo1hh" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.11/dist/katex.js" integrity="sha384-ja55VWLLXf9eJvqSaTrs9AKOeim1fz0aS3s/sRdr6u5SwjoYiEb8W8trzRs9gDBS" crossorigin="anonymous"></script>
 ```
 
 KaTeX also provides minified versions:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.10/dist/katex.min.css" integrity="sha384-rdqqrpVNEfmY6hsVFS50HU5L84tWeMdr4XpF+TJPvLR6e8YxPgRyDzzpawPHMQE6" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.10/dist/katex.min.js" integrity="sha384-oeXTyN/gxEn/v98/oDFW+7XVfZrp59R6Tporzsg2uNs9g+G9Xel/Afxdamc4Mags" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.11/dist/katex.min.css" integrity="sha384-NJ/T2p1ROqNH3Yico+wdWm5Rv2rlinAOvV25Sw1zLOaxg8yLDPVv8GGAUccx50rh" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.18.11/dist/katex.min.js" integrity="sha384-vaygNa7Kw+54Zb42f7K+4bfhZp4vWSHPJMKwd7nVmlgSvRADUrCRRdCpc1/CJwO+" crossorigin="anonymous"></script>
 ```
 
 The examples above load the script [deferred using the `defer` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
@@ -58,7 +58,7 @@ If you would rather use `font-display: swap` to prevent
 include `katex-swap.css` or `katex-swap.min.css`:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.10/dist/katex-swap.min.css" integrity="sha384-e5XlLwqVwyDftSS9ARHbu2cIE72gyK5bIMM9X7PpgTkj+JB+tYwwlFkmgN3U+gXH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.11/dist/katex-swap.min.css" integrity="sha384-3NgjctiKthvNSnv8MUZr9QqFn+FJadnDwN+E0n7+yyIqKm28QOrWl9atX0Y51k2X" crossorigin="anonymous">
 ```
 
 To prevent both FOUT and FOIT, you can prefetch KaTeX fonts.
@@ -92,22 +92,22 @@ for more detail.
 ```html
 <script type="text/javascript">
     require([
-        "https://cdn.jsdelivr.net/npm/katex@0.18.10/dist/katex.js",
+        "https://cdn.jsdelivr.net/npm/katex@0.18.11/dist/katex.js",
     ], katex => {
         ...
     });
 </script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.10/dist/katex.css" integrity="sha384-0tH1ocr4N55idvfatTGct1b67pXhDVxH1UotksK+E0KiYIUUrkTsj2ygLx/jHJ/p" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.11/dist/katex.css" integrity="sha384-6RKMP8csO5CUpITeodLxqhhrio+EIJPzkaP+SWt6frqkquvoQtUK9hLaP0ZPo1hh" crossorigin="anonymous">
 ```
 
 ### ECMAScript module
 ```html
 <script type="module" type="text/javascript">
-    import katex from 'https://cdn.jsdelivr.net/npm/katex@0.18.10/dist/katex.mjs';
+    import katex from 'https://cdn.jsdelivr.net/npm/katex@0.18.11/dist/katex.mjs';
     ...
 </script>
-<script nomodule defer src="https://cdn.jsdelivr.net/npm/katex@0.18.10/dist/katex.js" integrity="sha384-fgU0TVQkaC5uPR4DqrF0IyqmAgJZsqb2iGOhdQMROD8yC8YP2fi6PWxZJakgHB5s" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.10/dist/katex.css" integrity="sha384-0tH1ocr4N55idvfatTGct1b67pXhDVxH1UotksK+E0KiYIUUrkTsj2ygLx/jHJ/p" crossorigin="anonymous">
+<script nomodule defer src="https://cdn.jsdelivr.net/npm/katex@0.18.11/dist/katex.js" integrity="sha384-ja55VWLLXf9eJvqSaTrs9AKOeim1fz0aS3s/sRdr6u5SwjoYiEb8W8trzRs9gDBS" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.18.11/dist/katex.css" integrity="sha384-6RKMP8csO5CUpITeodLxqhhrio+EIJPzkaP+SWt6frqkquvoQtUK9hLaP0ZPo1hh" crossorigin="anonymous">
 ```
 
 > Use [`nomodule` attribute](https://developer.mozilla.org/en/HTML/Element/script#Attributes)
