@@ -5,15 +5,9 @@
  */
 
 import {protocolFromUrl} from "./utils";
-import ParseError from "./ParseError";
-import {Token} from "./Token";
 
-import type {AnyParseNode} from "./types/nodes";
+import type {Strict} from "./strict";
 import type {MacroMap} from "./defineMacro";
-
-export type StrictFunction =
-    (errorCode: string, errorMsg: string, token?: Token | AnyParseNode) =>
-    (boolean | string) | null | undefined;
 
 export type TrustContextTypes = {
     "\\href": {
@@ -371,7 +365,7 @@ export default class Settings {
     macros!: MacroMap;
     minRuleThickness!: number;
     colorIsTextColor!: boolean;
-    strict!: boolean | "ignore" | "warn" | "error" | StrictFunction;
+    strict!: Strict;
     trust!: boolean | TrustFunction;
     maxSize!: number;
     maxExpand!: number;
@@ -386,74 +380,6 @@ export default class Settings {
                 // TODO: validate options
                 applySetting(this, prop, options, schema);
             }
-        }
-    }
-
-    /**
-     * Report nonstrict (non-LaTeX-compatible) input.
-     * Can safely not be called if `this.strict` is false in JavaScript.
-     */
-    reportNonstrict(errorCode: string, errorMsg: string,
-                    token?: Token | AnyParseNode) {
-        let strict: Settings["strict"] | ReturnType<StrictFunction> = this.strict;
-        if (typeof strict === "function") {
-            // Allow return value of strict function to be boolean or string
-            // (or null/undefined, meaning no further processing).
-            strict = strict(errorCode, errorMsg, token);
-        }
-        if (!strict || strict === "ignore") {
-            return;
-        } else if (strict === true || strict === "error") {
-            throw new ParseError(
-                "LaTeX-incompatible input and strict mode is set to 'error': " +
-                `${errorMsg} [${errorCode}]`, token);
-        } else if (strict === "warn") {
-            typeof console !== "undefined" && console.warn(
-                "LaTeX-incompatible input and strict mode is set to 'warn': " +
-                `${errorMsg} [${errorCode}]`);
-        } else {  // won't happen in type-safe code
-            typeof console !== "undefined" && console.warn(
-                "LaTeX-incompatible input and strict mode is set to " +
-                `unrecognized '${strict}': ${errorMsg} [${errorCode}]`);
-        }
-    }
-
-    /**
-     * Check whether to apply strict (LaTeX-adhering) behavior for unusual
-     * input (like `\\`).  Unlike `nonstrict`, will not throw an error;
-     * instead, "error" translates to a return value of `true`, while "ignore"
-     * translates to a return value of `false`.  May still print a warning:
-     * "warn" prints a warning and returns `false`.
-     * This is for the second category of `errorCode`s listed in the README.
-     */
-    useStrictBehavior(errorCode: string, errorMsg: string,
-                      token?: Token | AnyParseNode): boolean {
-        let strict: Settings["strict"] | ReturnType<StrictFunction> = this.strict;
-        if (typeof strict === "function") {
-            // Allow return value of strict function to be boolean or string
-            // (or null/undefined, meaning no further processing).
-            // But catch any exceptions thrown by function, treating them
-            // like "error".
-            try {
-                strict = strict(errorCode, errorMsg, token);
-            } catch (error) {
-                strict = "error";
-            }
-        }
-        if (!strict || strict === "ignore") {
-            return false;
-        } else if (strict === true || strict === "error") {
-            return true;
-        } else if (strict === "warn") {
-            typeof console !== "undefined" && console.warn(
-                "LaTeX-incompatible input and strict mode is set to 'warn': " +
-                `${errorMsg} [${errorCode}]`);
-            return false;
-        } else {  // won't happen in type-safe code
-            typeof console !== "undefined" && console.warn(
-                "LaTeX-incompatible input and strict mode is set to " +
-                `unrecognized '${strict}': ${errorMsg} [${errorCode}]`);
-            return false;
         }
     }
 

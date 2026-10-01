@@ -3,6 +3,66 @@ id: migration
 title: Migration Guide
 ---
 
+## v0.19.0
+
+### Missing character metrics are reported via `strict`
+
+When a symbol has no metrics in KaTeX's fonts (for example, `\origof` or
+`\char"20AC`), KaTeX used to always print a plain `console.warn`. It is now
+reported through the [`strict`](options.md) setting with the new error code
+`symbolNotInFont`. As a result:
+
+- The default `strict: "warn"` still warns, but the message has changed from
+  `No character metrics for '…' in style '…' and mode '…'` to
+  `LaTeX-incompatible input and strict mode is set to 'warn': No character
+  metrics for '…' in style '…' and mode '…' [symbolNotInFont]`. Update any
+  code that filters or matches on the old message.
+- With `strict: "error"` or `strict: true`, such input now throws a
+  `ParseError` instead of rendering. To keep the old behavior for this case
+  only, use a `strict` function:
+
+  ```js
+  katex.render(tex, element, {
+      strict: (errorCode) =>
+          errorCode === "symbolNotInFont" ? "warn" : "error",
+  });
+  ```
+
+- With `strict: "ignore"` or `strict: false`, the warning is no longer
+  printed. This (or a function returning one of these values) is the new way to silence it.
+
+### `strict` functions must return a value
+
+A `strict` function that returns `undefined` or `null` used to be treated
+like `"ignore"`. It is now treated like `"warn"` (the default behavior). Return `false` or
+`"ignore"` explicitly to suppress the warning:
+
+```js
+// Before
+strict: (errorCode) => {
+    if (errorCode === "unicodeTextInMathMode") {
+        return "error";
+    }
+}
+
+// After
+strict: (errorCode) => {
+    if (errorCode === "unicodeTextInMathMode") {
+        return "error";
+    }
+    return "ignore";
+}
+```
+
+### TypeScript
+
+`StrictFunction` in `katex.d.ts` changed:
+
+- Its return type no longer includes `undefined`, so a function that can fall
+  through without returning no longer typechecks.
+- Its `token` parameter is now optional (`token?: Token`). Check it before
+  using it, for example `token?.loc`.
+
 ## v0.18.0
 
 KaTeX's internal CSS classes are now prefixed with `katex-`. If you apply custom
