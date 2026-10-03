@@ -10,8 +10,10 @@ import ParseError from "./ParseError";
 import symbols, {ligatures} from "./symbols";
 import {_mathmlGroupBuilders as groupBuilders} from "./defineFunction";
 import {MathNode, TextNode} from "./mathMLTree";
+import expandAnnotations from "./expandAnnotations";
 
 import type Options from "./Options";
+import type Settings from "./Settings";
 import type {DomSpan, HtmlDomNode} from "./domTree";
 import type {MathDomNode} from "./mathMLTree";
 import type {Mode} from "./types";
@@ -286,6 +288,7 @@ export default function buildMathML(
     options: Options,
     isDisplayMode: boolean,
     forMathmlOnly: boolean,
+    settings?: Settings,
 ): DomSpan {
     const expression = buildExpression(tree, options);
 
@@ -304,9 +307,14 @@ export default function buildMathML(
         wrapper = new MathNode("mrow", expression);
     }
 
+    // Expand user-defined macros in the annotation if enabled
+    const annotationText = (settings && settings.expandAnnotations)
+        ? expandAnnotations(texExpression, settings.macros, settings.maxExpand)
+        : texExpression;
+
     // Build a TeX annotation of the source
     const annotation = new MathNode(
-        "annotation", [new TextNode(texExpression)]);
+        "annotation", [new TextNode(annotationText)]);
 
     annotation.setAttribute("encoding", "application/x-tex");
 
