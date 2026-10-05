@@ -545,7 +545,7 @@ export default class Parser {
 
             // An optional color model changes how the next color is parsed.
             const model = optArgs[0]?.type === "raw"
-                ? optArgs[0].string : undefined;
+                ? optArgs[0] : undefined;
             const arg = argType === "color" && model != null
                 ? this.parseColorGroup(isOptional, model)
                 : this.parseGroupOfType(`argument to '${func}'`,
@@ -599,6 +599,7 @@ export default class Parser {
                     type: "raw",
                     mode: "text",
                     string: token.text,
+                    loc: token.loc,
                 } : null;
             }
             case "primitive": {
@@ -682,18 +683,19 @@ export default class Parser {
      * Parses a color description.
      */
     parseColorGroup(
-        optional: boolean, model?: string
+        optional: boolean, model?: ParseNode<"raw">
     ): ParseNode<"color-token"> | null {
         const res = this.parseStringGroup(optional);
         if (res == null) {
             return null;
         }
         if (model != null) {
-            if (model !== "rgb" && model !== "RGB") {
-                throw new ParseError("Unsupported color model: '" + model + "'");
+            if (model.string !== "rgb" && model.string !== "RGB") {
+                throw new ParseError(
+                    "Unsupported color model: '" + model.string + "'", model);
             }
             const parts = res.text.split(",").map(part => part.trim());
-            const integer = model === "RGB";
+            const integer = model.string === "RGB";
             const valid = integer ? /^\d+$/ : /^(?:\d+(?:\.\d*)?|\.\d+)$/;
             const max = integer ? 255 : 1;
             if (parts.length !== 3 || parts.some(part =>

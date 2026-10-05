@@ -913,6 +913,8 @@ describe("A color parser", function() {
         expect(r`\color[rgb]{0,0}x`).not.toParse();
         expect(r`\color[rgb]{0,red,0}x`).not.toParse();
         expect(r`\color[unknown]{1,0,0}x`).not.toParse();
+        expect(() => getParsed(r`\color[cmyk]{0,0,0,0}x`))
+            .toThrow(/Unsupported color model: 'cmyk' at position 7/);
     });
 
     it("should not fail", function() {
