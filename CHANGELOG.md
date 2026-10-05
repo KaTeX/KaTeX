@@ -1,6 +1,46 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+# [0.19.0](https://github.com/KaTeX/KaTeX/compare/v0.18.11...v0.19.0) (2026-10-01)
+
+
+### Documentation
+
+* note strict changes shipped in 0.18.11 ([#4300](https://github.com/KaTeX/KaTeX/issues/4300)) ([cbb1fce](https://github.com/KaTeX/KaTeX/commit/cbb1fce7e8facb728e735cd9c231ed28cbfaa6fa))
+
+
+### BREAKING CHANGES
+
+* Missing character metrics now reported via strict with error code symbolNotInFont, changing warning formatting, calling any strict callbacks, and producing errors in strict: "error" mode. Also, strict callbacks returning undefined or null now warn instead of ignoring the issue (and no longer typecheck); return false or "ignore" to suppress warnings.
+
+## [0.18.11](https://github.com/KaTeX/KaTeX/compare/v0.18.10...v0.18.11) (2026-10-01)
+
+
+### Features
+
+* handle character metrics warnings via `strict` ([#4243](https://github.com/KaTeX/KaTeX/issues/4243)) ([4237070](https://github.com/KaTeX/KaTeX/commit/423707055a37803acafef4c1533832273192ea0e))
+
+## [0.18.10](https://github.com/KaTeX/KaTeX/compare/v0.18.9...v0.18.10) (2026-09-30)
+
+
+### Features
+
+* make KaTeX fallback to browsr math font before Times New Roman ([#4298](https://github.com/KaTeX/KaTeX/issues/4298)) ([a477b2e](https://github.com/KaTeX/KaTeX/commit/a477b2e1c30e38e1ada785d5766b1e57211b793e))
+
+## [0.18.9](https://github.com/KaTeX/KaTeX/compare/v0.18.8...v0.18.9) (2026-09-23)
+
+
+### Features
+
+* **types:** add contrib module declarations ([#4250](https://github.com/KaTeX/KaTeX/issues/4250)) ([aafa187](https://github.com/KaTeX/KaTeX/commit/aafa1874d720a7ffc74be705b9f4f4b13d1fe758))
+
+## [0.18.8](https://github.com/KaTeX/KaTeX/compare/v0.18.7...v0.18.8) (2026-09-23)
+
+
+### Bug Fixes
+
+* **array:** preserve trailing rows in align ([#4283](https://github.com/KaTeX/KaTeX/issues/4283)) ([ddfcc29](https://github.com/KaTeX/KaTeX/commit/ddfcc29825a35194e8de7490acea20d96ca05477))
+
 ## [0.18.7](https://github.com/KaTeX/KaTeX/compare/v0.18.6...v0.18.7) (2026-09-06)
 
 

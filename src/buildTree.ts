@@ -8,13 +8,14 @@ import Style from "./Style";
 import type {AnyParseNode} from "./types/nodes";
 import type {DomSpan} from "./domTree";
 
-const optionsFromSettings = function(settings: Settings) {
-    return new Options({
+const optionsFromSettings = (settings: Settings) =>
+    new Options({
         style: (settings.displayMode ? Style.DISPLAY : Style.TEXT),
         maxSize: settings.maxSize,
         minRuleThickness: settings.minRuleThickness,
+        strict: settings.strict,
     });
-};
+
 
 const displayWrap = function(node: DomSpan, settings: Settings): DomSpan {
     if (settings.displayMode) {
@@ -54,7 +55,6 @@ export const buildTree = function(
 
 export const buildHTMLTree = function(
     tree: AnyParseNode[],
-    expression: string,
     settings: Settings,
 ): DomSpan {
     const options = optionsFromSettings(settings);
