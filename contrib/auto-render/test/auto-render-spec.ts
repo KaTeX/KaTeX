@@ -331,6 +331,85 @@ describe("Pre-process callback", function() {
     });
 });
 
+describe("The shouldRender callback", function() {
+    it("should render when callback returns true", function() {
+        const el = document.createElement('div');
+        el.textContent = 'Equation: $x^2$';
+        const delimiters = [{left: "$", right: "$", display: false}];
+        renderMathInElement(el, {
+            delimiters,
+            shouldRender: () => true,
+        });
+        expect(el.innerHTML).toContain('class="katex"');
+    });
+
+    it("should skip rendering when callback returns false", function() {
+        const el = document.createElement('div');
+        el.textContent = 'Equation: $x^2$';
+        const delimiters = [{left: "$", right: "$", display: false}];
+        renderMathInElement(el, {
+            delimiters,
+            shouldRender: () => false,
+        });
+        expect(el.innerHTML).not.toContain('class="katex"');
+    });
+
+    it("should skip child elements when callback returns false for parent", function() {
+        const parent = document.createElement('div');
+        const child = document.createElement('span');
+        child.textContent = '$x^2$';
+        parent.appendChild(child);
+        const delimiters = [{left: "$", right: "$", display: false}];
+        renderMathInElement(parent, {
+            delimiters,
+            shouldRender: (node) => node !== parent,
+        });
+        expect(parent.innerHTML).not.toContain('class="katex"');
+    });
+
+    it("should render math when no callback provided", function() {
+        const el = document.createElement('div');
+        el.textContent = 'Equation: $x^2$';
+        const delimiters = [{left: "$", right: "$", display: false}];
+        renderMathInElement(el, {delimiters});
+        expect(el.innerHTML).toContain('class="katex"');
+    });
+
+    it("should invoke callback exactly once per element (not double-fire)", function() {
+        const spy = jest.fn(() => true);
+        const parent = document.createElement('div');
+        const child = document.createElement('span');
+        child.textContent = '$x^2$';
+        parent.appendChild(child);
+        const delimiters = [{left: "$", right: "$", display: false}];
+        renderMathInElement(parent, {
+            delimiters,
+            shouldRender: spy,
+        });
+        expect(spy).toHaveBeenCalledTimes(2);
+        expect(spy).toHaveBeenCalledWith(parent);
+        expect(spy).toHaveBeenCalledWith(child);
+    });
+
+    it("should not invoke callback for elements excluded by ignoredTags", function() {
+        const spy = jest.fn(() => true);
+        const el = document.createElement('div');
+        const code = document.createElement('code');
+        code.textContent = '$x^2$';
+        el.appendChild(code);
+        const delimiters = [{left: "$", right: "$", display: false}];
+        renderMathInElement(el, {
+            delimiters,
+            shouldRender: spy,
+            ignoredTags: ["code"],
+        });
+        // The callback should be called for the root div but not for the
+        // <code> element (which is excluded by ignoredTags first).
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith(el);
+    });
+});
+
 describe("Parse adjacent text nodes", function() {
     it("parse adjacent text nodes with math", function() {
         const textNodes = ['\\[',
