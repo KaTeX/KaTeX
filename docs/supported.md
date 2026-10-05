@@ -603,10 +603,6 @@ Note that, as in LaTeX, `\colorbox` & `\fcolorbox` renders its third argument as
 
 For color definition, KaTeX color functions will accept the standard HTML [predefined color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords). They will also accept an RGB argument in CSS hexa­decimal style. The "#" is optional before a six-digit specification.
 
-`\color`, `\textcolor`, and `\colorbox` also accept `[rgb]` with three
-components from 0 to 1, or `[RGB]` with three integers from 0 to 255, before
-the color argument (for example, `\color[rgb]{0.7,0,0}`).
-
 **Font**
 
 ||||
