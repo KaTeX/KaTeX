@@ -222,8 +222,9 @@ defineFunction({
     type: "enclose",
     names: ["\\colorbox"],
     numArgs: 2,
+    numOptionalArgs: 1,
     allowedInText: true,
-    argTypes: ["color", "hbox"],
+    argTypes: ["raw", "color", "hbox"],
 
     handler({parser, funcName}, args, optArgs) {
         const color = assertNodeType(args[0], "color-token").color;
