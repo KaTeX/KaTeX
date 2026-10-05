@@ -543,8 +543,13 @@ export default class Parser {
                 argType = "primitive";
             }
 
-            const arg = this.parseGroupOfType(`argument to '${func}'`,
-                argType, isOptional);
+            // An optional color model changes how the next color is parsed.
+            const model = optArgs[0]?.type === "raw"
+                ? optArgs[0] : undefined;
+            const arg = argType === "color" && model != null
+                ? this.parseColorGroup(isOptional, model)
+                : this.parseGroupOfType(`argument to '${func}'`,
+                    argType, isOptional);
             if (isOptional) {
                 optArgs.push(arg);
             } else if (arg != null) {
@@ -594,6 +599,7 @@ export default class Parser {
                     type: "raw",
                     mode: "text",
                     string: token.text,
+                    loc: token.loc,
                 } : null;
             }
             case "primitive": {
@@ -676,10 +682,33 @@ export default class Parser {
     /**
      * Parses a color description.
      */
-    parseColorGroup(optional: boolean): ParseNode<"color-token"> | null {
+    parseColorGroup(
+        optional: boolean, model?: ParseNode<"raw">
+    ): ParseNode<"color-token"> | null {
         const res = this.parseStringGroup(optional);
         if (res == null) {
             return null;
+        }
+        if (model != null) {
+            if (model.string !== "rgb" && model.string !== "RGB") {
+                throw new ParseError(
+                    "Unsupported color model: '" + model.string + "'", model);
+            }
+            const parts = res.text.split(",").map(part => part.trim());
+            const integer = model.string === "RGB";
+            const valid = integer ? /^\d+$/ : /^(?:\d+(?:\.\d*)?|\.\d+)$/;
+            const max = integer ? 255 : 1;
+            if (parts.length !== 3 || parts.some(part =>
+                !valid.test(part) || Number(part) > max)) {
+                throw new ParseError("Invalid color: '" + res.text + "'", res);
+            }
+            return {
+                type: "color-token",
+                mode: this.mode,
+                color: "#" + parts.map(part => Math.round(
+                    Number(part) * (integer ? 1 : 255)
+                ).toString(16).padStart(2, "0")).join(""),
+            };
         }
         const match = (
             /^(#[a-f0-9]{3,4}|#[a-f0-9]{6}|#[a-f0-9]{8}|[a-f0-9]{6}|[a-z]+)$/i

@@ -98,6 +98,9 @@ CD:
 Colors:
     tex: \blue{a}\textcolor{#0f0}{b}\textcolor{red}{c}
     nolatex: different syntax and different scope
+RGBColors:
+    tex: '{\color[rgb]{0.7,0,0}A} \textcolor[RGB]{0,0,255}{B} \colorbox[rgb]{0,1,0}{C}'
+    nolatex: CSS uses converted RGB values
 ColorImplicit:
   \begin{array}{l}
   bl{ack\color{red}red\textcolor{green}{green}red\color{blue}blue}black \\
