@@ -4233,11 +4233,11 @@ describe("A macro expander", function() {
     });
 
     it("should expand \\absolutevalue as expected", () => {
-        expect`\absolutevalue{x}`.toParseLike`\left\lvert{x}\right\rvert`;
+        expect`\absolutevalue{x}`.toParseLike`{\left\lvert{x}\right\rvert}`;
     });
 
     it("should expand sized \\absolutevalue as expected", () => {
-        expect`\absolutevalue \Big{A}`.toParseLike`\Bigl\lvert{A}\Bigr\rvert`;
+        expect`\absolutevalue \Big{A}`.toParseLike`{\Bigl\lvert{A}\Bigr\rvert}`;
     });
 
     it("should expand \\vectorbold as expected", () => {

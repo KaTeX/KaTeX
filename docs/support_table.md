@@ -67,10 +67,10 @@ $\gdef\VERT{|}$
 |:---------------|:------------|:-----------------|
 |\AA|$\text{\AA}$|`\text{\AA}`|
 |\aa|$\text{\aa}$|`\text{\aa}`|
-|\abs|$\abs{x}$|`\abs{x}`|
-|\absolutevalue|$\absolutevalue{x}$|`\absolutevalue{x}`|
 |\above|${a \above{2pt} b+1}$|`{a \above{2pt} b+1}`|
 |\abovewithdelims|<span style="color:firebrick;">Not supported</span>||
+|\abs|$\abs{x}$|`\abs{x}`|
+|\absolutevalue|$\absolutevalue{x}$|`\absolutevalue{x}`|
 |\acute|$\acute e$|`\acute e`|
 |\AE|$\text{\AE}$|`\text{\AE}`|
 |\ae|$\text{\ae}$|`\text{\ae}`|

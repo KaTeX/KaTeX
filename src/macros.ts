@@ -1001,16 +1001,16 @@ const getDelimiter = (
 
     if (modifier === "*") {
         context.popToken();
-        return `\\left${left}\\smash{#1}\\right${right}\\vphantom{#1}`;
+        return `{\\left${left}\\smash{#1}\\right${right}\\vphantom{#1}}`;
     }
 
     const size = physicsDelimiters[modifier];
     if (size) {
         context.popToken();
-        return `${size[0]}${left}{#1}${size[1]}${right}`;
+        return `{${size[0]}${left}{#1}${size[1]}${right}}`;
     }
 
-    return `\\left${left}{#1}\\right${right}`;
+    return `{\\left${left}{#1}\\right${right}}`;
 };
 
 defineMacro("\\absolutevalue", getDelimiter("\\lvert", "\\rvert"));
