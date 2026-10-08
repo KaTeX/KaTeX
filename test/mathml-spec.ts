@@ -19,6 +19,7 @@ const getMathML = function(expr: any, settings: any = new Settings()) {
         style: startStyle,
         maxSize: Infinity,
         minRuleThickness: 0,
+        strict: "warn",
     });
 
     const built = buildMathML(parseTree(expr, settings), expr, options,
@@ -265,5 +266,18 @@ describe("A MathML builder", function() {
     it('\\html@mathml makes clean symbols', () => {
         expect(getMathML("\\copyright\\neq\\notin\u2258\\KaTeX"))
             .toMatchSnapshot();
+    });
+
+    it("should preserve reflected content in MathML", () => {
+        expect(getMathML("\\reflectbox{$x^2$}")).toMatchSnapshot();
+    });
+
+    it("should use the mapsfrom character in MathML", () => {
+        expect(getMathML("\\mapsfrom")).toContain("↤");
+        expect(getMathML("a\\mapsfrom b")).toMatchSnapshot();
+    });
+
+    it("should preserve mathreflectbox content and script style in MathML", () => {
+        expect(getMathML("x_{\\mathreflectbox{\\frac{a}{b}}}")).toMatchSnapshot();
     });
 });

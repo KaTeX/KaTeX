@@ -161,6 +161,7 @@ const makeGlyphSpan = function(
     symbol: string,
     font: StackedDelimiterFont,
     mode: Mode,
+    options: Options,
 ): VListElem {
     let sizeClass;
     // Apply the correct CSS class to choose the right font.
@@ -172,7 +173,7 @@ const makeGlyphSpan = function(
 
     const corner = makeSpan(
         ["delimsizinginner", sizeClass],
-        [makeSpan([], [makeSymbol(symbol, font, mode)])]);
+        [makeSpan([], [makeSymbol(symbol, font, mode, options)])]);
 
     // Since this will be passed into `makeVList` in the end, wrap the element
     // in the appropriate tag that VList uses.
@@ -412,7 +413,7 @@ const makeStackedDelim = function(
     } else {
         // Stack glyphs
         // Start by adding the bottom symbol
-        stack.push(makeGlyphSpan(bottom, font, mode));
+        stack.push(makeGlyphSpan(bottom, font, mode, options));
         stack.push(lap); // overlap
 
         if (middle === null) {
@@ -429,14 +430,14 @@ const makeStackedDelim = function(
             stack.push(makeInner(repeat, innerHeight, options));
             // Now insert the middle of the brace.
             stack.push(lap);
-            stack.push(makeGlyphSpan(middle, font, mode));
+            stack.push(makeGlyphSpan(middle, font, mode, options));
             stack.push(lap);
             stack.push(makeInner(repeat, innerHeight, options));
         }
 
         // Add the top symbol
         stack.push(lap);
-        stack.push(makeGlyphSpan(top, font, mode));
+        stack.push(makeGlyphSpan(top, font, mode, options));
     }
 
     // Finally, build the vlist

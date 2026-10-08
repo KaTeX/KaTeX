@@ -3,12 +3,15 @@
 import buildMathMLOrig from "../src/buildMathML";
 import buildTreeOrig from "../src/buildTree";
 import katexOrig from "../katex";
+import Lexer from "../src/Lexer";
 import parseTreeOrig from "../src/parseTree";
 import Options from "../src/Options";
 import ParseError from "../src/ParseError";
 import Settings from "../src/Settings";
+import {handleStrict} from "../src/strict";
 import Style from "../src/Style";
 import type {MacroMap} from "../src/defineMacro";
+import type {Strict} from "../src/strict";
 import {
     strictSettings, nonstrictSettings, trustSettings, r,
     getBuilt, getParsed, stripPositions,
@@ -25,6 +28,7 @@ const defaultOptions = new Options({
     size: 5,
     maxSize: Infinity,
     minRuleThickness: 0,
+    strict: "warn",
 });
 
 describe("A parser", function() {
@@ -4256,6 +4260,20 @@ describe("\\tag support", function() {
         expect(markup).toContain("<span class=\"mord\">1</span>");
     });
 
+    it("should keep a bare final row in align but not aligned", () => {
+        const align = getParsed(
+            r`\begin{align}a&=b\\\end{align}`,
+            displayMode,
+        )[0];
+        expect(align.body).toHaveLength(2);
+
+        const aligned = getParsed(
+            r`\begin{aligned}a&=b\\\end{aligned}`,
+            displayMode,
+        )[0];
+        expect(aligned.body).toHaveLength(1);
+    });
+
     it("should work with \\nonumber/\\notag", () => {
         expect`\begin{align}\tag{1}\nonumber x\\&+y\notag\end{align}`
         .toParseLike(r`\begin{align}\tag{1}x\\&+y\nonumber\end{align}`, displayMode);
@@ -4683,6 +4701,78 @@ describe("strict setting", function() {
         expect`x\\y`.toWarn(new Settings({displayMode: true}));
         expect`x\\y`.toParse(new Settings({displayMode: false}));
     });
+
+    describe("handleStrict", function() {
+        const errorCode = "unknownSymbol";
+        const errorMsg = 'Unrecognized Unicode character "\u20ac" (8364)';
+
+        const report = (strict: Strict) =>
+            handleStrict({strict, errorCode, errorMsg, report: true});
+        const query = (strict: Strict) =>
+            handleStrict({strict, errorCode, errorMsg, report: false});
+
+        it("should throw or return true when strict is 'error'", () => {
+            expect(() => report("error")).toThrow(
+                `LaTeX-incompatible input and strict mode is set to 'error': ` +
+                `${errorMsg} [${errorCode}]`
+            );
+            expect(query("error")).toBe(true);
+        });
+
+        it("should warn when strict is 'warn'", () => {
+            const warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+            try {
+                expect(report("warn")).toBeUndefined();
+                expect(query("warn")).toBe(false);
+                expect(warn).toHaveBeenCalledTimes(2);
+                expect(warn).toHaveBeenCalledWith(
+                    "LaTeX-incompatible input and strict mode is set to 'warn': " +
+                    `${errorMsg} [${errorCode}]`);
+            } finally {
+                warn.mockRestore();
+            }
+        });
+
+        it("should stay silent when strict is 'ignore'", () => {
+            expect(report("ignore")).toBeUndefined();
+            expect(query("ignore")).toBe(false);
+        });
+
+        it("should apply the behavior returned by a strict function", () => {
+            const strict = jest.fn(() => "error" as const);
+            expect(query(strict)).toBe(true);
+            expect(strict).toHaveBeenCalledWith(errorCode, errorMsg, undefined);
+        });
+
+        it("should propagate an exception thrown by a strict function", () => {
+            const error = new Error("strict function failed");
+            expect(() => report(() => {
+                throw error;
+            })).toThrow(error);
+        });
+    });
+
+    it.each([
+        ["x\u00e9", "Accented Unicode text character"],
+        ["x\u00de", "Latin-1/Unicode text character"],
+        ["x\u20ac", "Unrecognized Unicode character"],
+        ["x\u8a66", "Unicode text character"],
+    ])("should pass the offending token for %s", (input: string, errorMsgStart: string) => {
+        const strict = jest.fn(() => "ignore");
+        getParsed(input, new Settings({strict}));
+
+        expect(strict).toHaveBeenCalledTimes(1);
+        const [, errorMsg, token] = strict.mock.calls[0];
+        expect(errorMsg.startsWith(errorMsgStart)).toBe(true);
+        expect(token).toMatchObject({text: input[1], loc: {start: 1, end: 2}});
+    });
+
+    it("should report symbols missing from the font when building", () => {
+        expect`\origof`.toParse(strictSettings);
+        expect`\origof`.toBuild(new Settings({strict: "ignore"}));
+        expect`\origof`.toWarn(new Settings({strict: "warn"}));
+        expect`\origof`.not.toBuild(new Settings({strict: "error"}));
+    });
 });
 
 describe("Settings prototype pollution", function() {
@@ -4813,5 +4903,75 @@ describe("\\emph", () => {
 
     it("should toggle italics within textit", () => {
         expect`\textit{\emph{foo \emph{bar}}}`.toBuildLike`\textit{\textup{foo \textit{bar}}}`;
+    });
+});
+
+describe("A reflectbox builder", function() {
+    it("should build", function() {
+        expect`\reflectbox{abc}`.toBuild();
+        expect`\reflectbox{$x^2$}`.toBuild();
+    });
+
+    it("should use the reflectbox class", function() {
+        expect(getBuilt`\reflectbox{abc}`[0].classes).toContain("reflectbox");
+        expect(getBuilt`\mathreflectbox{abc}`[0].classes).toContain("reflectbox");
+    });
+
+    it("should parse text and math arguments in their respective modes", () => {
+        expect`\reflectbox{x^2}`.not.toParse();
+        expect`\mathreflectbox{x^2}`.toBuild();
+        expect`\text{\reflectbox{abc}}`.toBuild();
+    });
+
+    it.each([r`\reflectbox{b}`, r`\mathreflectbox{b}`])(
+        "should give %s ordinary-atom spacing", (command: string) => {
+            const spacing = (expression: string) => getBuilt(expression).map(
+                (node: {classes: string[]; style: {marginRight?: string}}) =>
+                    [node.classes[0], node.style.marginRight]);
+            expect(spacing(`a+${command}=c`)).toEqual(spacing("a+b=c"));
+        });
+
+    it.each([
+        r`\displaystyle`, r`\textstyle`,
+        r`\scriptstyle`, r`\scriptscriptstyle`,
+    ])("should inherit %s in mathreflectbox", (style: string) => {
+        const reflected = getBuilt(String.raw`${style}\mathreflectbox{\frac{a}{b}}`)[0];
+        const normal = getBuilt(String.raw`${style}\frac{a}{b}`)[0];
+        expect(reflected.height).toBeCloseTo(normal.height);
+        expect(reflected.depth).toBeCloseTo(normal.depth);
+    });
+
+    it("should keep reflectbox math in text style", () => {
+        const reflected = getBuilt`\scriptstyle\reflectbox{$\frac{a}{b}$}`[0];
+        const normal = getBuilt`\textstyle\frac{a}{b}`[0];
+        expect(reflected.height).toBeCloseTo(normal.height);
+        expect(reflected.depth).toBeCloseTo(normal.depth);
+    });
+});
+
+describe("\\mapsfrom", () => {
+    it("should give both inputs relation spacing and preserve unary minus", () => {
+        const spacing = (expression: string) => getBuilt(expression).map(
+            (node: {classes: string[]; style: {marginRight?: string}}) =>
+                [node.classes[0], node.style.marginRight]);
+        for (const command of [r`\mapsfrom`, "↤"]) {
+            expect(spacing(`a ${command} b`)).toEqual(spacing(r`a \mapsto b`));
+            expect(spacing(`${command} -b`)).toEqual(spacing(r`\mapsto -b`));
+        }
+        expect`a ↤ b`.toBuildLike`a \mapsfrom b`;
+    });
+
+    it.each([
+        ["", ""],
+        ["x_{", "}"],
+        ["x_{y_{", "}}"],
+        ["x^{", "}"],
+    ])("should size arrows like mapsto in %s...%s", (prefix: string, suffix: string) => {
+        const reflected = getBuilt(String.raw`${prefix}a \mapsfrom b${suffix}`);
+        const normal = getBuilt(String.raw`${prefix}a \mapsto b${suffix}`);
+        expect(reflected.map((node: {height: number; depth: number}) =>
+            [node.height, node.depth])).toEqual(
+            normal.map((node: {height: number; depth: number}) =>
+                [node.height, node.depth]));
     });
 });
