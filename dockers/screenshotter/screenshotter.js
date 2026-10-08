@@ -355,10 +355,34 @@ async function setupDriver() {
 const targetW = 1024;
 const targetH = 768;
 let attempts = 0;
+let pixelRatio = null;
+
+async function getPixelRatio() {
+    if (pixelRatio === null) {
+        pixelRatio = await driver.executeScript(
+            "return window.devicePixelRatio || 1;");
+        if (pixelRatio !== 1) {
+            console.warn("Warning: devicePixelRatio is " + pixelRatio +
+                "; screenshots will be " + pixelRatio + "x larger and " +
+                "won't match the reference images. Use the Docker " +
+                "setup to verify screenshots.");
+        }
+    }
+    return pixelRatio;
+}
+
+async function cssDimensions(img) {
+    const ratio = await getPixelRatio();
+    return {
+        width: Math.round(img.width / ratio),
+        height: Math.round(img.height / ratio),
+    };
+}
+
 async function setSize(width, height) {
     await driver.manage().window().setRect({width, height});
     let img = await driver.takeScreenshot();
-    img = imageDimensions(img);
+    img = await cssDimensions(imageDimensions(img));
     const actualW = img.width;
     const actualH = img.height;
     if (actualW === targetW && actualH === targetH) {
@@ -510,9 +534,11 @@ async function takeScreenshot(key) {
         }
         let img = await driver.takeScreenshot();
         img = imageDimensions(img);
-        if (img.width !== targetW || img.height !== targetH) {
+        const css = await cssDimensions(img);
+        const resized = css.width !== targetW || css.height !== targetH;
+        if (resized) {
             console.error("Expected " + targetW + " x " + targetH +
-                          ", got " + img.width + "x" + img.height);
+                          ", got " + css.width + "x" + css.height);
             await setSize(targetW, targetH);
         }
         if (key === "Lap" && opts.browser === "firefox" &&
@@ -540,6 +566,16 @@ async function takeScreenshot(key) {
             if (buf.equals(expected)) {
                 console.log(`* ok  ${key}`);
                 return;
+            }
+
+            const expectedW = expected.readUInt32BE(16);
+            const expectedH = expected.readUInt32BE(20);
+            if (!resized &&
+                (img.width !== expectedW || img.height !== expectedH)) {
+                // Retrying can't fix a size mismatch
+                console.log(`error ${key}: size ${img.width}x${img.height}` +
+                    ` differs from expected ${expectedW}x${expectedH}`);
+                break;
             }
 
             let errorMessage = `error ${key}`;
