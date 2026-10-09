@@ -280,6 +280,9 @@ defineMacro("\\mathstrut", "\\vphantom{(}");
 // \underbar from TeXbook p 353
 defineMacro("\\underbar", "\\underline{\\text{#1}}");
 
+// LaTeX defines \mbox{#1} as \leavevmode\hbox{#1}
+defineMacro("\\mbox", "\\hbox{#1}");
+
 // \not is defined by base/fontmath.ltx via
 // \DeclareMathSymbol{\not}{\mathrel}{symbols}{"36}
 // It's thus treated like a \mathrel, but defined by a symbol that has zero

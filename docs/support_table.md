@@ -686,7 +686,7 @@ use `\ce` instead|
 |{matrix}|$\begin{matrix}a&b\\c&d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |{matrix*}|$\begin{matrix*}[r]0&-1\\-1&0\end{matrix*}$|`\begin{matrix*}[r]`<br>&nbsp;&nbsp;&nbsp;`0 & -1 \\`<br>&nbsp;&nbsp;&nbsp;`-1 & 0`<br>`\end{matrix*}`|
 |\max|$\max$||
-|\mbox|<span style="color:firebrick;">Not supported</span>||
+|\mbox|$\mbox{$x^2$}$|`\mbox{$x^2$}`|
 |\md|<span style="color:firebrick;">Not supported</span>||
 |\mdseries|<span style="color:firebrick;">Not supported</span>||
 |\measuredangle|$\measuredangle$||
