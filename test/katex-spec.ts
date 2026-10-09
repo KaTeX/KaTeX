@@ -1905,6 +1905,11 @@ describe("A raise parser", function() {
         expect`\hbox{\frac a b}`.not.toParse(nonstrictSettings);
     });
 
+    it("should parse \\mbox like \\hbox", function() {
+        expect`\mbox{ m}^3`.toParseLike`\hbox{ m}^3`;
+        expect`\mbox{$x^2$}`.toParseLike`\hbox{$x^2$}`;
+    });
+
     it("should fail to build, given an unbraced length", function() {
         expect`\raisebox5pt{text}`.not.toBuild(strictSettings);
         expect`\raisebox-5pt{text}`.not.toBuild(strictSettings);
