@@ -1,5 +1,7 @@
 /* eslint max-len:0 */
+import katex from "../katex";
 import Settings from "../src/Settings";
+import {getFontGlyphCharacter, setFontMetrics} from "../src/fontMetrics";
 import {scriptFromCodepoint, supportedCodepoint} from "../src/unicodeScripts";
 import {strictSettings, nonstrictSettings} from "./helpers";
 
@@ -179,5 +181,46 @@ describe("unicodeScripts", () => {
             expect(script).toBe(null);
             expect(supportedCodepoint(codepoint)).toBe(false);
         }
+    });
+});
+
+describe("glyph substitution", () => {
+    it("renders \\perp in HTML with the U+22A5 glyph, keeping U+27C2 in MathML", () => {
+        // U+27C2 PERPENDICULAR is absent from the KaTeX fonts but is the same
+        // glyph as U+22A5 UP TACK, which they carry. Only the HTML output
+        // substitutes; MathML keeps U+27C2 so copy/paste and assistive
+        // technology still read the character the author wrote.
+        const html = katex.renderToString("x \\perp y", {});
+        const visible = html.match(/katex-html"[^>]*>([\s\S]*)<\/span><\/span>$/);
+        expect(visible).not.toBeNull();
+        expect(visible![1]).toContain("⊥");
+        expect(visible![1]).not.toContain("⟂");
+        expect(html).toContain("⟂");
+    });
+
+    it("substitutes in math mode only, so text mode can fall back to system fonts", () => {
+        // The substitution hook is gated on mode === "math" in buildCommon. In text
+        // mode a character absent from the KaTeX fonts must be left alone, so the
+        // browser can fall back (Cyrillic, CJK) instead of showing a Latin lookalike.
+        // Without that gate, \text{U+27C2} would silently render as U+22A5.
+        expect(() => katex.renderToString("\\text{\\char\"27C2}", nonstrictSettings))
+            .toThrow(/No character metrics/);
+
+        // Math mode is the arm that does substitute, so the pair distinguishes the
+        // gate from "U+27C2 never renders anywhere".
+        expect(katex.renderToString("\\char\"27C2", nonstrictSettings))
+            .toContain("\u22A5");
+    });
+
+    it("leaves the character alone when the font does carry it", () => {
+        // getFontGlyphCharacter substitutes only when the font genuinely lacks the
+        // original. A font that carries U+27C2 must render U+27C2, not the U+22A5
+        // stand-in -- otherwise the substitution is unconditional and a font
+        // shipping the real glyph would never be used.
+        expect(getFontGlyphCharacter("\u27C2", "Main-Regular")).toBe("\u22A5");
+
+        const pluginFont = "PerpCarryingFont";
+        setFontMetrics(pluginFont, {0x27C2: [0.5, 0.5, 0, 0, 0.5]});
+        expect(getFontGlyphCharacter("\u27C2", pluginFont)).toBe("\u27C2");
     });
 });
