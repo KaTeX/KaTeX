@@ -2348,6 +2348,14 @@ describe("An HTML extension builder", function() {
         });
     });
 
+    it("should allow % in the attribute value", function() {
+        const built = getBuilt(
+            "\\htmlStyle{background-color:hsl(9, 100%, 64%);}{x^2+1}",
+            trustNonStrictSettings);
+        expect(built[0].attributes.style)
+            .toEqual("background-color:hsl(9, 100%, 64%);");
+    });
+
     it("should not affect spacing", function() {
         const built = getBuilt("\\htmlId{a}{x+}y", trustNonStrictSettings);
         expect(built).toMatchSnapshot();

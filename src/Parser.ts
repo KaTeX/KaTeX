@@ -589,7 +589,11 @@ export default class Parser {
                 } : null;
             }
             case "raw": {
+                // Skip spaces and comments up to the opening brace while % is still a comment
+                this.gullet.consumeSpaces();
+                this.gullet.lexer.setCatcode("%", 12); // other character
                 const token = this.parseStringGroup(optional);
+                this.gullet.lexer.setCatcode("%", 14); // comment character
                 return token != null ? {
                     type: "raw",
                     mode: "text",
