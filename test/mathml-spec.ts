@@ -239,6 +239,7 @@ describe("A MathML builder", function() {
             "\\mathsf{\\fcolorbox{blue}{red}{x}}",
             "\\mathsf{\\angl{x}}",
             "\\mathsf{\\hbox{x}}",
+            "\\mathsf{\\mbox{x}}",
         ]) {
             const mathml = getMathML(expression);
             expect(mathml).toContain("<mtext>x</mtext>");
@@ -261,6 +262,12 @@ describe("A MathML builder", function() {
             expect(mathml).toContain("<mstyle scriptlevel=\"0\"");
             expect(mathml).toContain("<mi>x</mi>");
         }
+    });
+
+    it("should reset mbox text to textstyle in scripts", () => {
+        const mathml = getMathML("x_{\\mbox{abc}}");
+        expect(mathml).toContain("<mstyle scriptlevel=\"0\"");
+        expect(mathml).toContain("<mtext>abc</mtext>");
     });
 
     it('\\html@mathml makes clean symbols', () => {
