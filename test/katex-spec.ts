@@ -2913,6 +2913,12 @@ describe("A colorbox builder", function() {
 });
 
 describe("An fcolorbox parser", function() {
+    it("uses the optional RGB model for both frame and background", function() {
+        const parse = getParsed(r`\fcolorbox[RGB]{255,0,0}{0,0,255}{x}`)[0];
+        expect(parse.borderColor).toBe("#ff0000");
+        expect(parse.backgroundColor).toBe("#0000ff");
+    });
+
     it("should not fail, given a text argument", function() {
         expect`\fcolorbox{blue}{yellow}{a b}`.toParse();
         expect`\fcolorbox{blue}{yellow}{x}^2`.toParse();

@@ -543,8 +543,8 @@ export default class Parser {
                 argType = "primitive";
             }
 
-            // An optional color model changes how the next color is parsed.
-            const model = optArgs[0]?.type === "raw"
+            // An optional color model applies to the following color arguments.
+            const model = optArgs[0]?.type === "color-model"
                 ? optArgs[0] : undefined;
             const arg = argType === "color" && model != null
                 ? this.parseColorGroup(isOptional, model)
@@ -597,6 +597,15 @@ export default class Parser {
                 const token = this.parseStringGroup(optional);
                 return token != null ? {
                     type: "raw",
+                    mode: "text",
+                    string: token.text,
+                    loc: token.loc,
+                } : null;
+            }
+            case "color-model": {
+                const token = this.parseStringGroup(optional);
+                return token != null ? {
+                    type: "color-model",
                     mode: "text",
                     string: token.text,
                     loc: token.loc,
@@ -683,7 +692,7 @@ export default class Parser {
      * Parses a color description.
      */
     parseColorGroup(
-        optional: boolean, model?: ParseNode<"raw">
+        optional: boolean, model?: ParseNode<"color-model">
     ): ParseNode<"color-token"> | null {
         const res = this.parseStringGroup(optional);
         if (res == null) {

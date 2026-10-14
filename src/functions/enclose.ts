@@ -224,7 +224,7 @@ defineFunction({
     numArgs: 2,
     numOptionalArgs: 1,
     allowedInText: true,
-    argTypes: ["raw", "color", "hbox"],
+    argTypes: ["color-model", "color", "hbox"],
 
     handler({parser, funcName}, args, optArgs) {
         const color = assertNodeType(args[0], "color-token").color;
@@ -246,8 +246,9 @@ defineFunction({
     type: "enclose",
     names: ["\\fcolorbox"],
     numArgs: 3,
+    numOptionalArgs: 1,
     allowedInText: true,
-    argTypes: ["color", "color", "hbox"],
+    argTypes: ["color-model", "color", "color", "hbox"],
 
     handler({parser, funcName}, args, optArgs) {
         const borderColor = assertNodeType(args[0], "color-token").color;
