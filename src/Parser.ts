@@ -53,12 +53,102 @@ import type {EnvSpec} from "./defineEnvironment";
  * The functions return ParseNodes.
  */
 
+/**
+ * The numeric color models of the xcolor package, which may appear in the
+ * optional argument of a color command, as in `\color[rgb]{0.7,0,0}`.
+ * Each entry gives the number of components in a color specification and
+ * the maximum permitted value of each component. (The `HTML` model is
+ * handled separately, as its specification is a hex string, not numbers.)
+ */
+const colorModels: {[model: string]: {count: number, max: number}} = {
+    cmy: {count: 3, max: 1},
+    cmyk: {count: 4, max: 1},
+    gray: {count: 1, max: 1},
+    Gray: {count: 1, max: 15},
+    hsb: {count: 3, max: 1},
+    rgb: {count: 3, max: 1},
+    RGB: {count: 3, max: 255},
+};
+
+/**
+ * Converts a color specification in an xcolor color model to a CSS hex
+ * color string of the form "#rrggbb", e.g. ("rgb", "0.7,0,0") gives
+ * "#b30000". Throws a ParseError for an unknown model or a malformed or
+ * out-of-range specification.
+ */
+const colorFromModel = (model: string, spec: string, token: Token): string => {
+    if (model === "HTML") {
+        if (!/^[0-9a-f]{6}$/i.test(spec)) {
+            throw new ParseError("Invalid color: '" + spec + "'", token);
+        }
+        return "#" + spec;
+    }
+    const def = colorModels[model];
+    if (def == null) {
+        throw new ParseError("Unknown color model: '" + model + "'", token);
+    }
+    const parts = spec.split(",").map(part => part.trim());
+    const values = parts.map(part => {
+        if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(part)) {
+            throw new ParseError("Invalid color: '" + spec + "'", token);
+        }
+        const value = Number(part);
+        if (value > def.max) {
+            throw new ParseError("Invalid color: '" + spec + "'", token);
+        }
+        return value;
+    });
+    if (values.length !== def.count) {
+        throw new ParseError("Invalid color: '" + spec + "'", token);
+    }
+    const hex = (rgb: number[]) => "#" + rgb.map(value =>
+        value.toString(16).padStart(2, "0")).join("");
+    switch (model) {
+        case "rgb":
+            return hex(values.map(value => Math.round(value * 255)));
+        case "RGB":
+            return hex(values.map(value => Math.round(value)));
+        case "cmy":
+            return hex(values.map(value => Math.round((1 - value) * 255)));
+        case "cmyk": {
+            const k = values[3];
+            return hex(values.slice(0, 3).map(value =>
+                Math.round((1 - value) * (1 - k) * 255)));
+        }
+        case "gray": {
+            const gray = Math.round(values[0] * 255);
+            return hex([gray, gray, gray]);
+        }
+        case "Gray": {
+            const gray = Math.round(values[0] / 15 * 255);
+            return hex([gray, gray, gray]);
+        }
+        case "hsb": {
+            // The hsb model is the HSV color space, with the hue given as
+            // a fraction of a full turn rather than in degrees.
+            const chroma = values[1] * values[2];
+            const x = chroma * (1 - Math.abs((values[0] * 6) % 2 - 1));
+            const m = values[2] - chroma;
+            const sector = Math.floor(values[0] * 6) % 6;
+            const rgb = [[chroma, x, 0], [x, chroma, 0], [0, chroma, x],
+                [0, x, chroma], [x, 0, chroma], [chroma, 0, x]][sector];
+            return hex(rgb.map(value => Math.round((value + m) * 255)));
+        }
+        default:
+            throw new ParseError("Unknown color model: '" + model + "'", token);
+    }
+};
+
 export default class Parser {
     mode: Mode;
     gullet: MacroExpander;
     settings: Settings;
     leftrightDepth: number;
     nextToken: Token | null;
+    // The xcolor model from the optional argument of the color command
+    // whose arguments are currently being parsed, e.g. "rgb" while parsing
+    // \fcolorbox[rgb]{1,0,0}{0,0,1}; null when no model was given.
+    colorModel: string | null;
 
     constructor(input: string, settings: Settings) {
         // Start in math mode
@@ -71,6 +161,7 @@ export default class Parser {
         // Count leftright depth (for \middle errors)
         this.leftrightDepth = 0;
         this.nextToken = null;
+        this.colorModel = null;
     }
 
     /**
@@ -529,6 +620,11 @@ export default class Parser {
             return {args: [], optArgs: []};
         }
 
+        // An xcolor model given in an optional argument, as in
+        // \color[rgb]{0.7,0,0}, applies to the color arguments of this
+        // command only; forget any model from an enclosing command.
+        this.colorModel = null;
+
         const args: AnyParseNode[] = [];
         const optArgs: (AnyParseNode | null)[] = [];
 
@@ -674,12 +770,55 @@ export default class Parser {
     }
 
     /**
+     * Parses an xcolor color model in square brackets, as in the "[rgb]" of
+     * \color[rgb]{0.7,0,0}, returning the model name. Like the scanning of
+     * an optional argument, this works on the gullet's token stack, before
+     * the color specification itself is scanned.
+     */
+    parseColorModelGroup(): string {
+        const startToken = this.gullet.popToken(); // consume "["
+        let model = "";
+        let token = this.gullet.popToken();
+        while (token.text !== "]") {
+            if (token.text === "EOF") {
+                throw new ParseError(
+                    "Unexpected end of input in a color model, " +
+                    "expected ']'", token);
+            }
+            model += token.text;
+            token = this.gullet.popToken();
+        }
+        if (!/^[a-zA-Z]+$/.test(model)) {
+            throw new ParseError(
+                "Invalid color model: '[" + model + "]'", startToken);
+        }
+        return model;
+    }
+
+    /**
      * Parses a color description.
      */
     parseColorGroup(optional: boolean): ParseNode<"color-token"> | null {
+        if (!optional) {
+            // The xcolor package allows an optional color model before the
+            // color specification, as in \color[rgb]{0.7,0,0}. Remember the
+            // model so that it also applies to any later color argument of
+            // the same command, e.g. both colors of \fcolorbox.
+            this.gullet.consumeSpaces();
+            if (this.gullet.future().text === "[") {
+                this.colorModel = this.parseColorModelGroup();
+            }
+        }
         const res = this.parseStringGroup(optional);
         if (res == null) {
             return null;
+        }
+        if (this.colorModel != null) {
+            return {
+                type: "color-token",
+                mode: this.mode,
+                color: colorFromModel(this.colorModel, res.text, res),
+            };
         }
         const match = (
             /^(#[a-f0-9]{3,4}|#[a-f0-9]{6}|#[a-f0-9]{8}|[a-f0-9]{6}|[a-z]+)$/i
