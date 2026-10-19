@@ -418,6 +418,11 @@ export default class Parser {
                 // So we render a string of Unicode (sub|super)scripts the
                 // same as a (sub|super)script of regular characters.
                 const isSub = unicodeSubRegEx.test(lex.text);
+                if (isSub && subscript) {
+                    throw new ParseError("Double subscript", lex);
+                } else if (!isSub && superscript) {
+                    throw new ParseError("Double superscript", lex);
+                }
                 const subsupTokens = [];
                 subsupTokens.push(new Token(uSubsAndSups[lex.text]));
                 this.consume();
