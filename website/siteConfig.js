@@ -201,6 +201,11 @@ const users = [
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
     },
     {
+        caption: 'Whiteboard',
+        image: 'https://whiteboard.marcopontili.com/apple-touch-icon.png',
+        infoLink: 'https://whiteboard.marcopontili.com/',
+    },
+    {
         caption: 'zzllrr Mather',
         image: 'https://github.com/zzllrr/mather/raw/master/img/logo.jpg',
         infoLink: 'https://github.com/zzllrr/mather',
