@@ -91,6 +91,11 @@ const users = [
         infoLink: 'https://www.intmath.com/',
     },
     {
+        caption: 'Liubai',
+        image: 'https://raw.githubusercontent.com/echoVic/liubai/main/resources/icon.png',
+        infoLink: 'https://liubai.echovic.com/en/',
+    },
+    {
         caption: 'Marker',
         image: 'https://raw.githubusercontent.com/fabiocolacio/Marker/master/data/com.github.fabiocolacio.marker.svg',
         infoLink: 'https://fabiocolacio.github.io/Marker/',
