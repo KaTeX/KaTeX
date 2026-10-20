@@ -329,8 +329,14 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
     const expression = buildExpression(tree, options, "root");
 
     let eqnNum;
-    if (expression.length === 2 && expression[1].hasClass("katex-tag")) {
+    if (expression.length > 0 &&
+            expression[expression.length - 1].hasClass("katex-tag")) {
         // An environment with automatic equation numbers, e.g. {gather}.
+        // The tag must be a direct child of .katex-html for the CSS to
+        // position it at the margin, but it does not need to be the
+        // second of exactly two root elements: an environment whose
+        // builder returns several root elements (or one preceded by
+        // other content) still ends the expression with its tag.
         eqnNum = expression.pop();
     }
 
