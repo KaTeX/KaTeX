@@ -771,26 +771,22 @@ export default class Parser {
 
     /**
      * Parses an xcolor color model in square brackets, as in the "[rgb]" of
-     * \color[rgb]{0.7,0,0}, returning the model name. Like the scanning of
-     * an optional argument, this works on the gullet's token stack, before
-     * the color specification itself is scanned.
+     * \color[rgb]{0.7,0,0}, returning the model name. The model is read
+     * through parseStringGroup's optional-argument path, so macros inside
+     * the brackets are expanded just like in other string arguments:
+     * \def\model{rgb} followed by \textcolor[\model]{1,0,0}{x} works.
      */
     parseColorModelGroup(): string {
-        const startToken = this.gullet.popToken(); // consume "["
-        let model = "";
-        let token = this.gullet.popToken();
-        while (token.text !== "]") {
-            if (token.text === "EOF") {
-                throw new ParseError(
-                    "Unexpected end of input in a color model, " +
-                    "expected ']'", token);
-            }
-            model += token.text;
-            token = this.gullet.popToken();
+        const res = this.parseStringGroup(true);
+        if (res == null) {
+            // The caller only invokes this after seeing "[", so a missing
+            // optional argument should not happen; guard anyway.
+            throw new ParseError("Expected a color model in '[' brackets");
         }
+        const model = res.text;
         if (!/^[a-zA-Z]+$/.test(model)) {
             throw new ParseError(
-                "Invalid color model: '[" + model + "]'", startToken);
+                "Invalid color model: '[" + model + "]'", res);
         }
         return model;
     }

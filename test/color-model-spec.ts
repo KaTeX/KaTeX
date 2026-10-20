@@ -57,6 +57,15 @@ describe("A color model parser", function() {
             .toParseLike(r`\textcolor{#ff0000}{\color{blue}x}`);
     });
 
+    it("should expand macros inside the model brackets", function() {
+        const parse = getParsed(r`\def\model{rgb}\textcolor[\model]{1,0,0}{x}`)[0];
+        expect(parse.color).toEqual("#ff0000");
+        expect(r`\def\model{rgb}\textcolor[\model]{1,0,0}{x}`).toBuild();
+        expect(r`\def\m{gray}\colorbox[\m]{0.5}{x}`).toBuild();
+        expect(r`\def\bad{rgb2}\textcolor[\bad]{1,0,0}{x}`).not.toParse();
+        expect(r`\textcolor[\undefinedmodel]{1,0,0}{x}`).not.toParse();
+    });
+
     it("should not parse a bad color model specification", function() {
         expect(r`\textcolor[foo]{1,0,0}{x}`).not.toParse();
         expect(r`\textcolor[rgb2]{1,0,0}{x}`).not.toParse();
