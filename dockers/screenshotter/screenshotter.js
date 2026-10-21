@@ -389,7 +389,11 @@ async function setSize(width, height) {
         return;
     }
     if (++attempts > opts.attempts) {
-        throw new Error("Failed to set window size correctly.");
+        throw new Error("Failed to set window size correctly: wanted a " +
+            targetW + "x" + targetH + " viewport, got " + actualW + "x" +
+            actualH + " (CSS pixels, devicePixelRatio " +
+            await getPixelRatio() + "). Try running the browser " +
+            "in headless mode.");
     }
     return setSize(targetW + width - actualW, targetH + height - actualH);
 }
