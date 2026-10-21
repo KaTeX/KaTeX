@@ -91,6 +91,11 @@ const users = [
         infoLink: 'https://www.intmath.com/',
     },
     {
+        caption: 'Liubai',
+        image: 'https://raw.githubusercontent.com/echoVic/liubai/main/resources/icon.png',
+        infoLink: 'https://liubai.echovic.com/en/',
+    },
+    {
         caption: 'Marker',
         image: 'https://raw.githubusercontent.com/fabiocolacio/Marker/master/data/com.github.fabiocolacio.marker.svg',
         infoLink: 'https://fabiocolacio.github.io/Marker/',
@@ -194,6 +199,11 @@ const users = [
         caption: 'Vade Mecum Shelf',
         image: '/img/vade_mecum_shelf_logo.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
+    },
+    {
+        caption: 'Whiteboard',
+        image: 'https://whiteboard.marcopontili.com/apple-touch-icon.png',
+        infoLink: 'https://whiteboard.marcopontili.com/',
     },
     {
         caption: 'zzllrr Mather',
