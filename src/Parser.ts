@@ -591,9 +591,10 @@ export default class Parser {
             case "raw": {
                 // Skip spaces and comments up to the opening brace while % is still a comment
                 this.gullet.consumeSpaces();
+                const percentCatcode = this.gullet.lexer.catcodes["%"];
                 this.gullet.lexer.setCatcode("%", 12); // other character
                 const token = this.parseStringGroup(optional);
-                this.gullet.lexer.setCatcode("%", 14); // comment character
+                this.gullet.lexer.setCatcode("%", percentCatcode);
                 return token != null ? {
                     type: "raw",
                     mode: "text",
@@ -755,11 +756,13 @@ export default class Parser {
      * and setting the catcode of % as an active character (as in \hyperref).
      */
     parseUrlGroup(optional: boolean): ParseNode<"url"> | null {
+        const percentCatcode = this.gullet.lexer.catcodes["%"];
+        const tildeCatcode = this.gullet.lexer.catcodes["~"];
         this.gullet.lexer.setCatcode("%", 13); // active character
         this.gullet.lexer.setCatcode("~", 12); // other character
         const res = this.parseStringGroup(optional);
-        this.gullet.lexer.setCatcode("%", 14); // comment character
-        this.gullet.lexer.setCatcode("~", 13); // active character
+        this.gullet.lexer.setCatcode("%", percentCatcode);
+        this.gullet.lexer.setCatcode("~", tildeCatcode);
         if (res == null) {
             return null;
         }

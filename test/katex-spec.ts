@@ -2356,6 +2356,11 @@ describe("An HTML extension builder", function() {
             .toEqual("background-color:hsl(9, 100%, 64%);");
     });
 
+    it("should still treat % as a comment around the attribute value", () => {
+        expect("\\htmlStyle %before\n{width:50%;}%after\n{x}")
+            .toParseLike("\\htmlStyle{width:50%;}{x}", trustNonStrictSettings);
+    });
+
     it("should not affect spacing", function() {
         const built = getBuilt("\\htmlId{a}{x+}y", trustNonStrictSettings);
         expect(built).toMatchSnapshot();
