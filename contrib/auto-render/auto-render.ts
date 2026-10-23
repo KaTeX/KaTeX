@@ -12,6 +12,9 @@ interface RenderMathInElementOptions {
     errorCallback?: (msg: string, err: Error) => void;
     displayMode?: boolean;
     macros?: Record<string, string>;
+    // Called for each element, including the root. Takes `Element`, not
+    // `HTMLElement`, for SVG/MathML. `true` skips the subtree.
+    ignoreElement?: (elem: Element) => boolean;
 }
 
 interface RenderMathInElementOptionsCopy {
@@ -22,6 +25,7 @@ interface RenderMathInElementOptionsCopy {
     errorCallback: (msg: string, err: Error) => void;
     displayMode?: boolean;
     macros?: Record<string, string>;
+    ignoreElement?: (elem: Element) => boolean;
 }
 
 /* Note: optionsCopy is mutated by this method. If it is ever exposed in the
@@ -78,6 +82,10 @@ const renderElem = function(
     elem: HTMLElement,
     optionsCopy: RenderMathInElementOptionsCopy
 ) {
+    if (optionsCopy.ignoreElement && optionsCopy.ignoreElement(elem)) {
+        return;
+    }
+
     for (let i = 0; i < elem.childNodes.length; i++) {
         const childNode = elem.childNodes[i];
         if (childNode.nodeType === 3) {
@@ -109,12 +117,12 @@ const renderElem = function(
         } else if (childNode.nodeType === 1) {
             // Element node
             const className = ' ' + (childNode as HTMLElement).className + ' ';
-            const shouldRender = !optionsCopy.ignoredTags.has(
+            const isAllowed = !optionsCopy.ignoredTags.has(
                 childNode.nodeName.toLowerCase()) &&
                   optionsCopy.ignoredClasses.every(
                       (x: string) => !className.includes(' ' + x + ' '));
 
-            if (shouldRender) {
+            if (isAllowed) {
                 renderElem(childNode as HTMLElement, optionsCopy);
             }
         }
