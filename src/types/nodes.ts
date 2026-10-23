@@ -104,6 +104,8 @@ type ArrayNode = BaseNode & {
     // Whether each row should be automatically numbered, or an explicit tag
     tags?: (boolean | AnyParseNode[])[];
     leqno?: boolean;
+    // {numcases}: the mandatory left-hand side
+    casesLeft?: AnyParseNode[];
 };
 
 type CommutativeDiagramLabelNode = BaseNode & {
