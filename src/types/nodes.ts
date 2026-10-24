@@ -18,6 +18,7 @@ export type AnyParseNode =
     | CommutativeDiagramLabelParentNode
     | ColorNode
     | ColorTokenNode
+	| DiceNode
     | OperatorNode
     | OrdinaryGroupNode
     | RawNode
@@ -265,6 +266,12 @@ type EnvironmentNode = BaseNode & {
     type: "environment";
     name: string;
     nameGroup: AnyParseNode;
+}
+
+type DiceNode = BaseNode & {
+    type: "dice";
+    value: number;
+	face: string | null;
 }
 
 type FontNode = BaseNode & {
