@@ -31,6 +31,11 @@ const users = [
         infoLink: 'https://cocalc.com/',
     },
     {
+        caption: 'Coddy',
+        image: 'https://coddy.tech/apple-touch-icon.png',
+        infoLink: 'https://coddy.tech/math',
+    },
+    {
         caption: 'Doctave',
         image: 'https://www.doctave.com/assets/img/katex-integration-logo.webp',
         infoLink: 'https://www.doctave.com/',
