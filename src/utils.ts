@@ -7,8 +7,16 @@ import type {AnyParseNode} from "./types/nodes";
 
 // hyphenate and escape adapted from Facebook's React under Apache 2 license
 const uppercase = /([A-Z])/g;
-export const hyphenate = (str: string): string =>
-    str.replace(uppercase, "-$1").toLowerCase();
+// Cache hyphenated CSS names
+const hyphenateCache = new Map<string, string>();
+export const hyphenate = (str: string): string => {
+    let hyphenated = hyphenateCache.get(str);
+    if (hyphenated === undefined) {
+        hyphenated = str.replace(uppercase, "-$1").toLowerCase();
+        hyphenateCache.set(str, hyphenated);
+    }
+    return hyphenated;
+};
 
 const ESCAPE_LOOKUP: Record<string, string> = {
     "&": "&amp;",
@@ -19,12 +27,18 @@ const ESCAPE_LOOKUP: Record<string, string> = {
 };
 
 const ESCAPE_REGEX = /[&><"']/g;
+const NEEDS_ESCAPE_REGEX = /[&><"']/;
 
 /**
  * Escapes text to prevent scripting attacks.
  */
-export const escape = (text: unknown): string =>
-    String(text).replace(ESCAPE_REGEX, match => ESCAPE_LOOKUP[match]);
+export const escape = (text: unknown): string => {
+    const str = String(text);
+    // Skip escaping unless required.
+    return NEEDS_ESCAPE_REGEX.test(str)
+        ? str.replace(ESCAPE_REGEX, match => ESCAPE_LOOKUP[match])
+        : str;
+};
 
 /**
  * Sometimes we want to pull out the innermost element of a group. In most
