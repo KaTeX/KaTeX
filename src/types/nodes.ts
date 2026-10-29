@@ -17,6 +17,7 @@ export type AnyParseNode =
     | CommutativeDiagramLabelNode
     | CommutativeDiagramLabelParentNode
     | ColorNode
+    | ColorModelNode
     | ColorTokenNode
     | OperatorNode
     | OrdinaryGroupNode
@@ -121,6 +122,11 @@ type ColorNode = BaseNode & {
     type: "color";
     color: string;
     body: AnyParseNode[];
+}
+
+type ColorModelNode = BaseNode & {
+    type: "color-model";
+    string: string;
 }
 
 type ColorTokenNode = BaseNode & {
