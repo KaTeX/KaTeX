@@ -151,6 +151,11 @@ const users = [
         infoLink: 'https://rocket.chat/',
     },
     {
+        caption: 'Skim',
+        image: 'https://skim.md/assets/icon-512.png',
+        infoLink: 'https://skim.md/',
+    },
+    {
         caption: 'Slab',
         image: '/img/slab-logo.png',
         infoLink: 'https://slab.com/',
