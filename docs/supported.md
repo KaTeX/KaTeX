@@ -581,6 +581,18 @@ Extensible arrows all can take an optional argument in the same manner<br>as `\x
 |$\bra{\phi}$ `\bra{\phi}` |$\ket{\psi}$ `\ket{\psi}` |$\braket{\phi\VERT\psi}$ <code>\braket{\phi&#124;\psi}</code> |
 |$\Bra{\phi}$ `\Bra{\phi}` |$\Ket{\psi}$ `\Ket{\psi}` |$\Braket{ ϕ \VERT \frac{∂^2}{∂ t^2} \VERT ψ }$ <code>\Braket{ ϕ &#124; \frac{∂^2}{∂ t^2} &#124; ψ }</code>|
 
+**Physics Notation**
+
+||||
+|:----------|:----------|:----------|
+|$\abs{x}$ `\abs{x}` or `\absolutevalue{x}`|$\norm{x}$ `\norm{x}`|$\pqty{x}$ `\pqty{x}`|
+|$\bqty{x}$ `\bqty{x}`|$\Bqty{x}$ `\Bqty{x}`|$\vqty{x}$ `\vqty{x}`|
+|$\vb{x}$ `\vb{x}` or `\vectorbold{x}`|$\va{x}$ `\va{x}` or `\vectorarrow{x}`|$\vu{x}$ `\vu{x}` or `\vectorunit{x}`|
+|$\vdot$ `\vdot` or `\dotproduct`|$\cross$ `\cross`, `\cp`, or `\crossproduct`||
+
+The physics delimiter commands support `*`, `\big`, `\Big`, `\bigg`, and
+`\Bigg` sizing modifiers. The vector commands support a starred form.
+
 ## Style, Color, Size, and Font
 
 **Class Assignment**
