@@ -241,6 +241,10 @@ defineMacro("\\rq", "'");
 defineMacro("\\aa", "\\r a");
 defineMacro("\\AA", "\\r A");
 
+// From lttab.dtx, so that \renewcommand{\arraystretch} works:
+// \def\arraystretch{1}
+defineMacro("\\arraystretch", "1");
+
 // Copyright (C) and registered (R) symbols. Use raw symbol in MathML.
 // \DeclareTextCommandDefault{\textcopyright}{\textcircled{c}}
 // \DeclareTextCommandDefault{\textregistered}{\textcircled{%
