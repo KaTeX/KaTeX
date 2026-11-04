@@ -64,6 +64,14 @@ describe("Parser:", function() {
             expect`1_{2+3}^4_5`.toFailWithParseError(
                    "Double subscript at position 10: 1_{2+3}^4_̲5");
         });
+        it("rejects Unicode scripts after a script", function() {
+            expect`1^2²`.toFailWithParseError(
+                   "Double superscript at position 4: 1^2²̲");
+            expect`1_2₂`.toFailWithParseError(
+                   "Double subscript at position 4: 1_2₂̲");
+            expect`1'²`.toFailWithParseError(
+                   "Double superscript at position 3: 1'²̲");
+        });
     });
 
     describe("#parseImplicitGroup", function() {
