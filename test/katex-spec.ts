@@ -1440,6 +1440,14 @@ describe("A begin/end parser", function() {
         expect(parse).toMatchSnapshot();
     });
 
+    it("should define \\arraystretch like LaTeX", function() {
+        const parse = getParsed`\renewcommand{\arraystretch}{1.5}\begin{matrix}a&b\\c&d\end{matrix}`;
+        expect(parse[0]).toHaveProperty("arraystretch", 1.5);
+        expect`\newcommand{\arraystretch}{2}\begin{matrix}a\end{matrix}`.not.toParse();
+        // the default \arraystretch costs no macro expansions
+        expect`\begin{matrix}a\end{matrix}`.toParse(new Settings({maxExpand: 0}));
+    });
+
     it("should allow an optional argument in {matrix*} and company.", function() {
         expect`\begin{matrix*}[r] a & -1 \\ -1 & d \end{matrix*}`.toBuild();
         expect`\begin{pmatrix*}[r] a & -1 \\ -1 & d \end{pmatrix*}`.toBuild();

@@ -127,7 +127,10 @@ function parseArray(
 
     // Get current arraystretch if it's not set by the environment
     if (!arraystretch) {
-        const stretch = parser.gullet.expandMacroAsText("\\arraystretch");
+        // The default from macros.ts is used without expanding it, so that
+        // it costs no expansions
+        const stretch = parser.gullet.macros.get("\\arraystretch") === "1"
+            ? "1" : parser.gullet.expandMacroAsText("\\arraystretch");
         if (stretch == null) {
             // Default \arraystretch from lttab.dtx
             arraystretch = 1;
