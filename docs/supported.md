@@ -599,6 +599,12 @@ $\textcolor{#228B22}{F=ma}$ `\textcolor{#228B22}{F=ma}`<br>
 $\colorbox{aqua}{$F=ma$}$ `\colorbox{aqua}{$F=ma$}`<br>
 $\fcolorbox{red}{aqua}{$F=ma$}$ `\fcolorbox{red}{aqua}{$F=ma$}`
 
+The optional `[rgb]` color model accepts three comma-separated numbers from 0 to 1;
+`[RGB]` accepts three integers from 0 to 255. For example,
+`\textcolor[rgb]{0.7,0,0}{red}`, `\color[RGB]{0,0,255} blue`, and
+`\fcolorbox[RGB]{255,0,0}{0,0,255}{text}` use these models. For `\fcolorbox`,
+the model applies to both frame and background colors.
+
 Note that, as in LaTeX, `\colorbox` & `\fcolorbox` renders its third argument as text, so you may want to switch back to math mode with `$` as in the examples above.
 
 For color definition, KaTeX color functions will accept the standard HTML [predefined color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords). They will also accept an RGB argument in CSS hexa­decimal style. The "#" is optional before a six-digit specification.

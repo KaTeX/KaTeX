@@ -897,6 +897,26 @@ describe("A color parser", function() {
     const badCustomColorExpression3 = r`\textcolor{#gA6}{x}`;
     const oldColorExpression = r`\color{#fA6}xy`;
 
+    it("supports xcolor RGB and rgb arguments", function() {
+        expect(getParsed(r`\color[rgb]{0.7,0,0}x`)[0].color).toBe("#b30000");
+        expect(getParsed(r`\textcolor[RGB]{255,0,255}{x}`)[0].color)
+            .toBe("#ff00ff");
+        expect(getParsed(r`\colorbox[rgb]{0,1,0}{x}`)[0].backgroundColor)
+            .toBe("#00ff00");
+        expect(getParsed(r`\color[rgb]{.5,1,0}x`)[0].color)
+            .toBe("#80ff00");
+        expect(r`\color[rgb]{0.7,0,0}x`).toBuild();
+        expect(r`\textcolor[RGB]{255,0,255}{x}`).toBuild();
+        expect(r`\colorbox[rgb]{0,1,0}{x}`).toBuild();
+        expect(r`\color[rgb]{1.1,0,0}x`).not.toParse();
+        expect(r`\textcolor[RGB]{256,0,0}{x}`).not.toParse();
+        expect(r`\color[rgb]{0,0}x`).not.toParse();
+        expect(r`\color[rgb]{0,red,0}x`).not.toParse();
+        expect(r`\color[unknown]{1,0,0}x`).not.toParse();
+        expect(() => getParsed(r`\color[cmyk]{0,0,0,0}x`))
+            .toThrow(/Unsupported color model: 'cmyk' at position 7/);
+    });
+
     it("should not fail", function() {
         expect(colorExpression).toParse();
     });
@@ -2906,6 +2926,12 @@ describe("A colorbox builder", function() {
 });
 
 describe("An fcolorbox parser", function() {
+    it("uses the optional RGB model for both frame and background", function() {
+        const parse = getParsed(r`\fcolorbox[RGB]{255,0,0}{0,0,255}{x}`)[0];
+        expect(parse.borderColor).toBe("#ff0000");
+        expect(parse.backgroundColor).toBe("#0000ff");
+    });
+
     it("should not fail, given a text argument", function() {
         expect`\fcolorbox{blue}{yellow}{a b}`.toParse();
         expect`\fcolorbox{blue}{yellow}{x}^2`.toParse();

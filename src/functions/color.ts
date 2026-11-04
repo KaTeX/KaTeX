@@ -37,8 +37,9 @@ defineFunction({
     type: "color",
     names: ["\\textcolor"],
     numArgs: 2,
+    numOptionalArgs: 1,
     allowedInText: true,
-    argTypes: ["color", "original"],
+    argTypes: ["color-model", "color", "original"],
 
     handler({parser}, args) {
         const color = assertNodeType(args[0], "color-token").color;
@@ -59,8 +60,9 @@ defineFunction({
     type: "color",
     names: ["\\color"],
     numArgs: 1,
+    numOptionalArgs: 1,
     allowedInText: true,
-    argTypes: ["color"],
+    argTypes: ["color-model", "color"],
 
     handler({parser, breakOnTokenText}, args) {
         const color = assertNodeType(args[0], "color-token").color;
