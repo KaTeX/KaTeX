@@ -1905,6 +1905,20 @@ describe("A raise parser", function() {
         expect`\hbox{\frac a b}`.not.toParse(nonstrictSettings);
     });
 
+    it("should parse and build text in an \\mbox", function() {
+        expect`\mbox{ m}^3`.toBuild(strictSettings);
+        expect`\mbox{$x^2$}`.toBuild(strictSettings);
+        expect`\text{\mbox{abc}}`.toBuild(strictSettings);
+        expect`\mbox{\frac a b}`.not.toParse(nonstrictSettings);
+    });
+
+    it("should keep \\mbox text at full size in subscripts", function() {
+        const boxed = getBuilt`x_{\mbox{abc}}`[0];
+        const normal = getBuilt`x_{\textstyle\text{abc}}`[0];
+        expect(boxed.height).toBeCloseTo(normal.height);
+        expect(boxed.depth).toBeCloseTo(normal.depth);
+    });
+
     it("should fail to build, given an unbraced length", function() {
         expect`\raisebox5pt{text}`.not.toBuild(strictSettings);
         expect`\raisebox-5pt{text}`.not.toBuild(strictSettings);
