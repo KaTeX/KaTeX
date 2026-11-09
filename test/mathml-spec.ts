@@ -88,6 +88,24 @@ describe("A MathML builder", function() {
         " \\Bigg(M\\Bigg)")).toMatchSnapshot();
     });
 
+    it('should use ⟨ and ⟩ for < and > delimiters', () => {
+        const leftRight = getMathML(String.raw`\left< x \right>`);
+        expect(leftRight).toContain('<mo fence="true">⟨</mo>');
+        expect(leftRight).toContain('<mo fence="true">⟩</mo>');
+        expect(leftRight).not.toContain('<mo fence="true">&lt;</mo>');
+
+        expect(getMathML(String.raw`\bigl< x \bigr>`)).toContain('>⟨</mo>');
+        expect(getMathML(String.raw`\left\lt x \right\gt`))
+            .toContain('<mo fence="true">⟨</mo>');
+        expect(getMathML(String.raw`\left( a \middle< b \right)`))
+            .toContain('>⟨</mo>');
+        expect(getMathML(String.raw`\left\langle x \right\rangle`))
+            .toContain('<mo fence="true">⟨</mo>');
+
+        // A comparison is not a delimiter, so it keeps its meaning.
+        expect(getMathML(String.raw`x < y`)).toContain('&lt;');
+    });
+
     it('should use <menclose> for colorbox', () => {
         expect(getMathML("\\colorbox{red}{b}")).toMatchSnapshot();
     });

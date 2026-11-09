@@ -15,6 +15,18 @@ import type {HtmlDomNode} from "../domTree";
 import type {DelimiterSize, MathClass} from "../types";
 import type {AnyParseNode, ParseNode, SymbolParseNode} from "../types/nodes";
 
+// The HTML builder draws < and > delimiters as \langle and \rangle. The
+// MathML builder has no font to consult, so it needs the characters that
+// \langle and \rangle stand for.
+const mathmlDelimiter = function(delim: string): string {
+    if (delim === "<" || delim === "\\lt" || delim === "\\langle") {
+        return "\u27e8";
+    } else if (delim === ">" || delim === "\\gt" || delim === "\\rangle") {
+        return "\u27e9";
+    }
+    return delim;
+};
+
 // Extra data needed for the delimiter handler down below
 const delimiterSizes = {
     "\\bigl" : {mclass: "mopen",    size: 1},
@@ -122,7 +134,7 @@ defineFunction({
         const children = [];
 
         if (group.delim !== ".") {
-            children.push(mml.makeText(group.delim, group.mode));
+            children.push(mml.makeText(mathmlDelimiter(group.delim), group.mode));
         }
 
         const node = new MathNode("mo", children);
@@ -285,7 +297,7 @@ defineFunction({
 
         if (group.left !== ".") {
             const leftNode = new MathNode(
-                "mo", [mml.makeText(group.left, group.mode)]);
+                "mo", [mml.makeText(mathmlDelimiter(group.left), group.mode)]);
 
             leftNode.setAttribute("fence", "true");
 
@@ -294,7 +306,7 @@ defineFunction({
 
         if (group.right !== ".") {
             const rightNode = new MathNode(
-                "mo", [mml.makeText(group.right, group.mode)]);
+                "mo", [mml.makeText(mathmlDelimiter(group.right), group.mode)]);
 
             rightNode.setAttribute("fence", "true");
 
@@ -354,7 +366,7 @@ defineFunction({
         // So we need to avoid U+2223 and use plain "|" instead.
         const textNode = (group.delim === "\\vert" || group.delim === "|")
             ? mml.makeText("|", "text")
-            : mml.makeText(group.delim, group.mode);
+            : mml.makeText(mathmlDelimiter(group.delim), group.mode);
         const middleNode = new MathNode("mo", [textNode]);
         middleNode.setAttribute("fence", "true");
         // MathML gives 5/18em spacing to each <mo> element.
