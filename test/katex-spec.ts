@@ -3132,6 +3132,13 @@ describe("An optional argument parser", function() {
         expect`\sqrt[3]{2}`.toParse();
     });
 
+    it("should only strip braces that enclose the whole optional argument", function() {
+        expect`\sqrt[{3}]{2}`.toParseLike`\sqrt[3]{2}`;
+        expect`\sqrt[{a}^{b}]{x}`.toParseLike`\sqrt[{{a}^{b}}]{x}`;
+        expect`\sqrt[{a}{b}]{x}`.toParseLike`\sqrt[{{a}{b}}]{x}`;
+        expect`\sqrt[{a}+{b}]{x}`.toParseLike`\sqrt[{{a}+{b}}]{x}`;
+    });
+
     it("should work when the optional argument is missing", function() {
         expect`\sqrt{2}`.toParse();
         expect`\rule{1em}{2em}`.toParse();
@@ -3961,6 +3968,9 @@ describe("A macro expander", function() {
         expect`\gdef\foo|#1||{#1}\text{\foo| x y ||}`.toParseLike`\text{ x y }`;
         expect`\gdef\foo#1|#2{#1+#2}\foo 1 2 |34`.toParseLike`12+34`;
         expect`\gdef\foo#1#{#1}\foo1^{23}`.toParseLike`1^{23}`;
+        expect`\gdef\foo#1.{[#1]}\foo{a}.`.toParseLike`[a]`;
+        expect`\gdef\foo#1.{[#1]}\foo{a}{b}.`.toParseLike`[{a}{b}]`;
+        expect`\gdef\foo#1.{[#1]}\foo{a}^{b}.`.toParseLike`[{a}^{b}]`;
         expect`\gdef\foo|{}\foo`.not.toParse();
         expect`\gdef\foo#1|{#1}\foo1`.not.toParse();
         expect`\gdef\foo#1|{#1}\foo1}|`.not.toParse();
