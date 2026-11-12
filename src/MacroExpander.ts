@@ -26,6 +26,26 @@ export const implicitCommands = {
     "\\nolimits": true,  // Parser.js
 };
 
+/**
+ * Check that the first token `{` is matched by the last token `}`,
+ * so the braces enclose the whole argument (`{a}` or `{{a}^{b}}`,
+ * but not `{a}^{b}` or `{a}{b}`).
+ */
+function isOneGroup(tokens: Token[]): boolean {
+    let depth = 0;
+    for (let i = 0; i < tokens.length - 1; i++) {
+        if (tokens[i].text === "{") {
+            ++depth;
+        } else if (tokens[i].text === "}") {
+            --depth;
+            if (depth === 0) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 export default class MacroExpander implements MacroContextInterface {
     settings: Settings;
     expansionCount: number;
@@ -210,7 +230,8 @@ export default class MacroExpander implements MacroContextInterface {
         } while (depth !== 0 || isDelimited);
         // If the argument found ... has the form ‘{<nested tokens>}’,
         // ... the outermost braces enclosing the argument are removed
-        if (start.text === "{" && tokens[tokens.length - 1].text === "}") {
+        if (start.text === "{" && tokens[tokens.length - 1].text === "}" &&
+            isOneGroup(tokens)) {
             tokens.pop();
             tokens.shift();
         }
