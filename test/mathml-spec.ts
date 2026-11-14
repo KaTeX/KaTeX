@@ -99,6 +99,51 @@ describe("A MathML builder", function() {
         expect(mathml).toMatchSnapshot();
     });
 
+    it.each(["aligned", "align", "align*", "split"])(
+        "should omit columnspacing for a single-column %s environment",
+        (env: string) => {
+            for (const body of ["", "x", "x\\\\y"]) {
+                const mathml = getMathML(
+                    `\\begin{${env}}${body}\\end{${env}}`,
+                    new Settings({displayMode: true}),
+                );
+                expect(mathml).toContain("<mtable ");
+                expect(mathml).not.toContain("columnspacing=");
+            }
+        },
+    );
+
+    it.each(["aligned", "align", "align*", "split"])(
+        "should preserve columnspacing for a two-column %s environment",
+        (env: string) => {
+            const mathml = getMathML(
+                `\\begin{${env}}a&=b\\end{${env}}`,
+                new Settings({displayMode: true}),
+            );
+            expect(mathml).toContain('columnspacing="0em"');
+        },
+    );
+
+    it.each(["aligned", "align", "align*"])(
+        "should preserve alternating columnspacing for %s",
+        (env: string) => {
+            const mathml = getMathML(
+                `\\begin{${env}}a&=b&c&=d\\end{${env}}`,
+                new Settings({displayMode: true}),
+            );
+            expect(mathml).toContain('columnspacing="0em 1em 0em"');
+        },
+    );
+
+    it("should preserve columnspacing for cases nested in aligned", () => {
+        const mathml = getMathML(
+            "\\begin{aligned}x=\\begin{cases}a&b\\\\c&d\\end{cases}" +
+            "\\end{aligned}",
+        );
+        expect(mathml).not.toContain('columnspacing=""');
+        expect(mathml).toContain('columnspacing="1em"');
+    });
+
     it('should set href attribute for href appropriately', () => {
         expect(
             getMathML("\\href{http://example.org}{\\alpha}", new Settings({trust: true})),
