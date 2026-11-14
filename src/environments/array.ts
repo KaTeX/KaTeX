@@ -666,7 +666,9 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
         for (let i = 1; i < cols.length; i++) {
             spacing += i % 2 ? "0em " : "1em ";
         }
-        table.setAttribute("columnspacing", spacing.trim());
+        if (spacing) {
+            table.setAttribute("columnspacing", spacing.trim());
+        }
     } else if (group.colSeparationType === "alignat" ||
         group.colSeparationType === "gather") {
         table.setAttribute("columnspacing", "0em");
