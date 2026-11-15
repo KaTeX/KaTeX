@@ -592,9 +592,12 @@ export default class Parser {
                 // Skip spaces and comments up to the opening brace while % is still a comment
                 this.gullet.consumeSpaces();
                 const percentCatcode = this.gullet.lexer.catcodes["%"];
+                const tildeCatcode = this.gullet.lexer.catcodes["~"];
                 this.gullet.lexer.setCatcode("%", 12); // other character
+                this.gullet.lexer.setCatcode("~", 12); // other character
                 const token = this.parseStringGroup(optional);
                 this.gullet.lexer.setCatcode("%", percentCatcode);
+                this.gullet.lexer.setCatcode("~", tildeCatcode);
                 return token != null ? {
                     type: "raw",
                     mode: "text",

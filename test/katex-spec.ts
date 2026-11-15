@@ -2327,6 +2327,12 @@ describe("An includegraphics builder", function() {
             "\\includegraphics[alt='\"]{image.png}", trustSettings);
         expect(built).toContain('<img src="image.png" alt="&#x27;&quot;"');
     });
+
+    it("should keep ~ literal in alt", () => {
+        const built = getBuilt(
+            "\\includegraphics[alt=Figure~1]{image.png}", trustSettings);
+        expect(built[0].alt).toEqual("Figure~1");
+    });
 });
 
 describe("An HTML extension builder", function() {
@@ -2359,6 +2365,23 @@ describe("An HTML extension builder", function() {
     it("should still treat % as a comment around the attribute value", () => {
         expect("\\htmlStyle %before\n{width:50%;}%after\n{x}")
             .toParseLike("\\htmlStyle{width:50%;}{x}", trustNonStrictSettings);
+    });
+
+    it("should allow ~ in the attribute value", function() {
+        const built = getBuilt("\\htmlStyle{a~b}{x}", trustNonStrictSettings);
+        expect(built[0].attributes.style).toEqual("a~b");
+    });
+
+    it("should allow ~ in the class and data values", function() {
+        expect(getBuilt("\\htmlClass{a~b}{x}", trustNonStrictSettings)[0].classes)
+            .toContain("a~b");
+        expect(getBuilt("\\htmlData{k=a~b}{x}", trustNonStrictSettings)[0]
+            .attributes["data-k"]).toEqual("a~b");
+    });
+
+    it("should restore ~ after the attribute value", () => {
+        expect("\\htmlClass{a~b}{x~y}")
+            .toParseLike("\\htmlClass{a~b}{x\\nobreakspace y}", trustNonStrictSettings);
     });
 
     it("should not affect spacing", function() {
