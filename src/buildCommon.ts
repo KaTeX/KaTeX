@@ -231,9 +231,10 @@ export const makeOrd = function(
     } else if (type === "textord") {
         const font = symbols[mode][text] && symbols[mode][text].font;
         if (font === "ams") {
-            const fontName = retrieveTextFontName("amsrm", fontWeight, fontShape);
+            // The AMS font has no bold or italic styles, so always use the
+            // regular metrics. The weight and shape still go on as classes.
             return makeSymbol(
-                text, fontName, mode, options,
+                text, "AMS-Regular", mode, options,
                 classes.concat("amsrm", fontWeight, fontShape));
         } else if (font === "main" || !font) {
             const fontName = retrieveTextFontName("textrm", fontWeight, fontShape);

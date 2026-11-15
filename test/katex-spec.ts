@@ -3634,6 +3634,17 @@ describe("Symbols", function() {
         expect(symbols).toBuild();
         expect(`\\text{${symbols}}`).toBuild(strictSettings);
     });
+
+    it("should support AMS text symbols in bold and italic text", function() {
+        // The AMS font only has a regular style.
+        const symbols = r`\yen\checkmark\circledR\maltese`;
+        for (const wrap of [r`\textit`, r`\textbf`, r`\emph`]) {
+            expect(`${wrap}{${symbols}}`).toBuild(strictSettings);
+        }
+        expect(`\\textbf{\\textit{${symbols}}}`).toBuild(strictSettings);
+        const markup = katex.renderToString(r`\textit{\checkmark}`);
+        expect(markup).toContain("<span class=\"mord amsrm textit\">✓</span>");
+    });
 });
 
 describe("A macro expander", function() {
