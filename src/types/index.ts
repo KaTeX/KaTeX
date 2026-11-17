@@ -6,7 +6,7 @@ export type Mode = "math" | "text";
 //   - "url": An url string, in which "\" will be ignored
 //   -        if it precedes [#$%&~_^\{}]
 //   - "raw": A string, allowing single character, percent sign,
-//            and nested braces
+//            tilde, and nested braces
 //   - "original": The same type as the environment that the
 //                 function being parsed is in (e.g. used for the
 //                 bodies of functions like \textcolor where the
