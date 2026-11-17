@@ -134,6 +134,12 @@ equation itself) the HTML id `katex-name`, and a reference is a link to that
 id which shows the label's name: `\eqref{eq:1}` shows (eq:1). The prefix is
 the [`labelPrefix` option](options.md). Two `\label`s in one row are an error.
 
+Once the page is rendered, the [auto-render extension](autorender.md)
+puts the equation numbers in: `\eqref{eq:1}` shows (1), or (A) for an equation
+with `\tag{A}`, and a label that isn't there shows ??, as in LaTeX. A page
+that renders its math some other way can call
+[`resolveReferences`](autorender.md#equation-references) itself.
+
 `\begin{equation}E=mc^2\label{eq:energy}\end{equation}`
 $$\begin{equation}E=mc^2\label{eq:energy}\end{equation}$$
 

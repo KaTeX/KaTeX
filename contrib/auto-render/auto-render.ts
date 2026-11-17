@@ -2,6 +2,7 @@
 
 import katex from "katex";
 import splitAtDelimiters from "./splitAtDelimiters";
+import resolveReferences from "./resolveReferences";
 import type {DelimiterSpec} from "./splitAtDelimiters";
 
 interface RenderMathInElementOptions {
@@ -12,6 +13,7 @@ interface RenderMathInElementOptions {
     errorCallback?: (msg: string, err: Error) => void;
     displayMode?: boolean;
     macros?: Record<string, string>;
+    resolveReferences?: boolean;
 }
 
 interface RenderMathInElementOptionsCopy {
@@ -159,6 +161,17 @@ const renderMathInElement = function(elem: HTMLElement, options?: RenderMathInEl
     optionsCopy.macros = optionsCopy.macros || {};
 
     renderElem(elem, optionsCopy as RenderMathInElementOptionsCopy);
+
+    // Equation numbers for any \ref and \eqref (#2003), numbering the whole
+    // page as its CSS counter does, unless the element isn't on the page
+    if (options?.resolveReferences !== false &&
+        elem.querySelector(".katex-ref, .katex-eqref")) {
+        resolveReferences(elem.isConnected ? elem.ownerDocument.body : elem);
+    }
 };
 
+// also for pages that render their math some other way
+renderMathInElement.resolveReferences = resolveReferences;
+
+export {resolveReferences};
 export default renderMathInElement;

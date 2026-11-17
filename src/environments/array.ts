@@ -442,6 +442,9 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             const label = group.labels?.[r];
             if (label) {
                 tagSpan.setAttribute("id", label);
+                // A link to the row lands on its number, which sits on the
+                // row's baseline: leave room for the row above it, and a bit.
+                tagSpan.style.scrollMarginTop = makeEm(rw.height + 0.5);
             }
             tagSpan.depth = rw.depth;
             tagSpan.height = rw.height;

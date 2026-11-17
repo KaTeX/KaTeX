@@ -4394,6 +4394,13 @@ describe("\\label, \\ref and \\eqref", function() {
         expect(markup).toContain(`href="#katex-a"`);
     });
 
+    it("should leave room above a labelled row when a link jumps to it", () => {
+        const markup = render(r`\begin{align}a\\x&=\frac{1}{2}\label{half}\end{align}`);
+        const tag = /<span[^>]* id="katex-half"[^>]*>/.exec(markup)![0];
+        // the fraction's height above the baseline, and half an em
+        expect(tag).toMatch(/style="scroll-margin-top:1\.\d+em;?"/);
+    });
+
     it("should not need trust", () => {
         expect`\label{a}x\ref{a}\eqref{a}`.toBuild(new Settings({trust: false}));
     });
