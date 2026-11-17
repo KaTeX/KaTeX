@@ -133,6 +133,26 @@ describe("A MathML builder", function() {
             .toMatchSnapshot();
     });
 
+    it('writes out a manual \\tag on a row of an environment', () => {
+        // #3783: the tag's text, not an automatic number
+        const mathml = getMathML(
+            "\\begin{align}a\\tag{Hello}\\\\b\\\\c\\notag\\end{align}",
+            {displayMode: true});
+        expect(mathml).toMatchSnapshot();
+        const rows = mathml.split("</mtr>");
+        expect(rows[0]).toContain("(Hello)");
+        expect(rows[0]).not.toContain("mml-eqn-num");
+        expect(rows[1]).toContain("mml-eqn-num");
+        expect(rows[2]).not.toContain("mml-eqn-num");
+
+        const star = getMathML("\\begin{gather}a\\tag*{A.1}\\end{gather}",
+            {displayMode: true});
+        expect(star).toContain("A.1");
+        expect(star).not.toContain("(A.1)");
+        expect(getMathML("\\begin{align}a\\tag{L}\\end{align}",
+            {displayMode: true, leqno: true})).toMatch(/<mtr>\s*<mtd>\s*<mtext>\s*\(L\)/);
+    });
+
     it('normal spaces render normally', function() {
         expect(getMathML("\\kern1em\\kern1ex")).toMatchSnapshot();
     });
