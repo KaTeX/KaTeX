@@ -265,7 +265,7 @@ function parseArray(
     // End array group defining \cr
     parser.gullet.endGroup();
 
-    return {
+    const array: ParseNode<"array"> = {
         type: "array",
         mode: parser.mode,
         addJot,
@@ -277,9 +277,12 @@ function parseArray(
         hLinesBeforeRow,
         colSeparationType,
         tags,
-        ...(labels.some(Boolean) ? {labels} : {}),
         leqno,
     };
+    if (labels.some(Boolean)) {
+        array.labels = labels;
+    }
+    return array;
 }
 
 // Decides on a style for cells in an array according to whether the given
