@@ -45,6 +45,7 @@ export type AnyParseNode =
     | HorizontalBoxNode
     | HorizontalBraceNode
     | HrefNode
+    | LabelNode
     | RefNode
     | HtmlNode
     | HtmlMathmlNode
@@ -106,6 +107,9 @@ type ArrayNode = BaseNode & {
     tags?: (boolean | AnyParseNode[])[];
     // The HTML id of each row's \label, if any row has one
     labels?: (string | undefined)[];
+    // With labels: whether each row's \tag put its own parentheses around it
+    // (\tag does, \tag* doesn't), so a \ref can leave them out
+    tagParens?: boolean[];
     leqno?: boolean;
 };
 
@@ -182,6 +186,15 @@ type TagNode = BaseNode & {
     tag: AnyParseNode[];
     // The HTML id from a \label, given to the tag
     label?: string;
+    // whether \tag put its own parentheses around the tag (\tag* doesn't)
+    paren?: boolean;
+}
+
+// The target of a \label with no equation number or \tag to go on: an empty
+// anchor at the start of the formula
+type LabelNode = BaseNode & {
+    type: "label";
+    id: string;
 }
 
 type TextNode = BaseNode & {

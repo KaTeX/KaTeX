@@ -321,14 +321,21 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
     // Strip off outer tag wrapper for processing below.
     let tag = null;
     let tagLabel;
+    let tagParen;
     if (tree.length === 1 && tree[0].type === "tag") {
         tag = tree[0].tag;
         tagLabel = tree[0].label;
+        tagParen = tree[0].paren;
         tree = tree[0].body;
     }
 
     // Build the expression contained in the tree
     const expression = buildExpression(tree, options, "root");
+
+    // Set aside the anchor of a \label that marks the whole formula, so it
+    // doesn't hide an environment's equation numbers just below
+    const labelAnchor = expression.length > 0 &&
+        expression[0].hasClass("katex-label") ? expression.shift() : undefined;
 
     let eqnNum;
     if (expression.length === 2 && expression[1].hasClass("katex-tag")) {
@@ -393,10 +400,16 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
         tagChild.classes = ["katex-tag"];
         if (tagLabel) {
             tagChild.setAttribute("id", tagLabel);
+            if (tagParen) {
+                tagChild.setAttribute("data-tag-paren", "");
+            }
         }
         children.push(tagChild);
     } else if (eqnNum) {
         children.push(eqnNum);
+    }
+    if (labelAnchor) {
+        children.unshift(labelAnchor);
     }
 
     const htmlNode = makeSpan(["katex-html"], children);

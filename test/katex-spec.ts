@@ -4340,9 +4340,9 @@ describe("\\label, \\ref and \\eqref", function() {
 
     it("should put a formula's label on an empty anchor at its start", () => {
         expect(ids(render(r`x^2\label{plain}`)))
-            .toEqual(["span#katex-plain.enclosing"]);
+            .toEqual(["span#katex-plain.katex-label"]);
         expect(ids(render(r`x\label{inline}`, {displayMode: false})))
-            .toEqual(["span#katex-inline.enclosing"]);
+            .toEqual(["span#katex-inline.katex-label"]);
     });
 
     it("should let a label inside {aligned} reach its row of {equation}", () => {
@@ -4363,14 +4363,14 @@ describe("\\label, \\ref and \\eqref", function() {
 
     it("should use labelPrefix for ids and links", () => {
         expect(ids(render(r`x\label{p}`, {labelPrefix: "doc1-"})))
-            .toEqual(["span#doc1-p.enclosing"]);
+            .toEqual(["span#doc1-p.katex-label"]);
         expect(render(r`\eqref{p}`, {labelPrefix: "doc1-"}))
             .toContain(`href="#doc1-p"`);
     });
 
     it("should turn whitespace in a label into hyphens in its id", () => {
         expect(ids(render(r`x\label{ two  words }`)))
-            .toEqual(["span#katex-two-words.enclosing"]);
+            .toEqual(["span#katex-two-words.katex-label"]);
         expect(render(r`\ref{ two  words }`)).toContain(`href="#katex-two-words"`);
     });
 
@@ -4396,6 +4396,49 @@ describe("\\label, \\ref and \\eqref", function() {
 
     it("should not need trust", () => {
         expect`\label{a}x\ref{a}\eqref{a}`.toBuild(new Settings({trust: false}));
+    });
+
+    it("should keep an environment's numbers in place with a label after it", () => {
+        const markup = render(r`\begin{equation}a=b\end{equation}\label{after}`);
+        // the number column stays a child of katex-html, not of its base
+        expect(markup).toMatch(/<span class="katex-html"[^>]*><span class="katex-label" id="katex-after"><\/span><span class="katex-base">.*<\/span><span class="katex-tag">/);
+    });
+
+    it("should keep an empty last row that has a label", () => {
+        expect(ids(render(r`\begin{align*}a\\\label{last}\end{align*}`)))
+            .toEqual(["span#katex-last."]);
+    });
+
+    it("should give a label inside \\tag to that row", () => {
+        expect(ids(render(r`\begin{align}a\tag{A\label{first}}\\b\label{second}\end{align}`)))
+            .toEqual(["span#katex-first.", "span#katex-second.eqn-num"]);
+    });
+
+    it("should note which tags put parentheses around themselves", () => {
+        expect(render(r`x\tag{A}\label{a}`)).toContain(`id="katex-a" data-tag-paren=""`);
+        expect(render(r`x\tag*{(A)}\label{a}`)).not.toContain("data-tag-paren");
+        expect(render(r`\begin{align}x\tag{A}\label{a}\\y\tag*{B}\label{b}\end{align}`))
+            .toMatch(/id="katex-a" data-tag-paren=""[^>]*>.*id="katex-b"(?! data-tag-paren)/);
+    });
+
+    it("should set a reference upright inside italic text", () => {
+        expect(render(r`\textit{see \eqref{a}}`)).toMatch(/<a [^>]*><span class="mord text"><span class="mord text"><span class="mord textrm textup">\(a\)/);
+    });
+
+    it("should mark references and targets in MathML", () => {
+        const both = katex.renderToString(
+            r`\begin{align}a\label{x}\end{align}\eqref{x}`,
+            {displayMode: true});
+        expect(both).toContain(`class="katex-eqref" href="#katex-x" data-label="x"`);
+        // in MathML alongside HTML, the id is the HTML's alone
+        expect(both.match(/ id="katex-x"/g)).toHaveLength(1);
+        expect(both).toContain(`data-label-id="katex-x"`);
+
+        const mathml = katex.renderToString(
+            r`\begin{align}a\label{x}\end{align}`,
+            {displayMode: true, output: "mathml"});
+        expect(mathml).toMatch(/<mtd id="katex-x" class ?="mml-eqn-num">/);
+        expect(mathml).not.toContain("data-label-id");
     });
 });
 

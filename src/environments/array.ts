@@ -2,7 +2,7 @@ import {makeFragment, makeLineSpan, makeSpan, makeVList} from "../buildCommon";
 import Style from "../Style";
 import defineEnvironment from "../defineEnvironment";
 import {parseCD} from "./cd";
-import {takeLabel} from "../functions/label";
+import {takeLabel, takeTagParen} from "../functions/label";
 import defineFunction from "../defineFunction";
 import defineMacro from "../defineMacro";
 import {MathNode} from "../mathMLTree";
@@ -149,8 +149,10 @@ function parseArray(
     const hLinesBeforeRow = [];
     const tags: Array<AnyParseNode[] | boolean> | undefined =
         (autoTag != null ? [] : undefined);
-    // Each row's \label, as an HTML id, in an environment that has tags
+    // Each row's \label, as an HTML id, in an environment that has tags, and
+    // whether its \tag put its own parentheses around it
     const labels: Array<string | undefined> = [];
+    const tagParens: boolean[] = [];
 
     // amsmath uses \global\@eqnswtrue and \global\@eqnswfalse to represent
     // whether this row should have an equation number.  Simulate this with
@@ -162,7 +164,6 @@ function parseArray(
     }
     function endRow() {
         if (tags) {
-            labels.push(takeLabel(parser));
             if (parser.gullet.macros.get("\\df@tag")) {
                 tags.push(parser.subparse([new Token("\\df@tag")]));
                 parser.gullet.macros.set("\\df@tag", undefined, true);
@@ -170,6 +171,9 @@ function parseArray(
                 tags.push(Boolean(autoTag) &&
                     parser.gullet.macros.get("\\@eqnsw") === "1");
             }
+            tagParens.push(takeTagParen(parser));
+            // after the tag, which may hold the row's \label
+            labels.push(takeLabel(parser));
         }
     }
     beginRow();
@@ -219,14 +223,15 @@ function parseArray(
             endRow();
             // Arrays terminate newlines with `\crcr` which consumes a `\cr` if
             // the last line is empty.  However, AMS environments keep the
-            // empty row if it's the only one, has a manual tag, or is an
-            // automatically numbered row explicitly ended with `\\`.
+            // empty row if it's the only one, has a manual tag or a \label, or
+            // is an automatically numbered row explicitly ended with `\\`.
             // NOTE: Currently, `cell` is the last item added into `row`.
             if (row.length === 1 && cell.type === "styling" &&
                 cell.body.length === 1 && cell.body[0].type === "ordgroup" &&
                 cell.body[0].body.length === 0 &&
                 (body.length > 1 || !emptySingleRow) &&
                 !Array.isArray(tags?.[tags.length - 1]) &&
+                !labels[labels.length - 1] &&
                 !(autoTag && tags?.[tags.length - 1] === true)) {
                 body.pop();
             }
@@ -281,6 +286,7 @@ function parseArray(
     };
     if (labels.some(Boolean)) {
         array.labels = labels;
+        array.tagParens = tagParens;
     }
     return array;
 }
@@ -442,6 +448,9 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             const label = group.labels?.[r];
             if (label) {
                 tagSpan.setAttribute("id", label);
+                if (group.tagParens?.[r]) {
+                    tagSpan.setAttribute("data-tag-paren", "");
+                }
             }
             tagSpan.depth = rw.depth;
             tagSpan.height = rw.height;
@@ -585,13 +594,20 @@ const alignMap: Record<string, string> = {
 const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     const tbl = [];
     const glue = new MathNode("mtd", [], ["mtr-glue"]);
-    const tag = new MathNode("mtd", [], ["mml-eqn-num"]);
+    const plainTag = new MathNode("mtd", [], ["mml-eqn-num"]);
     for (let i = 0; i < group.body.length; i++) {
         const rw = group.body[i];
         const row = [];
         for (let j = 0; j < rw.length; j++) {
             row.push(new MathNode("mtd",
                 [mml.buildGroup(rw[j], options)]));
+        }
+        // a labelled row's number carries the label (see mml.MATHML_LABEL_ID)
+        let tag = plainTag;
+        const label = group.labels?.[i];
+        if (label && group.tags && group.tags[i]) {
+            tag = new MathNode("mtd", [], ["mml-eqn-num"]);
+            tag.setAttribute(mml.MATHML_LABEL_ID, label);
         }
         if (group.tags && group.tags[i]) {
             row.unshift(glue);

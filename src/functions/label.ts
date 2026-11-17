@@ -1,5 +1,5 @@
-import defineFunction from "../defineFunction";
-import {makeAnchor} from "../buildCommon";
+import defineFunction, {defineFunctionBuilders} from "../defineFunction";
+import {makeAnchor, makeSpan} from "../buildCommon";
 import {assertNodeType} from "../parseNode";
 import {MathNode} from "../mathMLTree";
 import ParseError from "../ParseError";
@@ -34,6 +34,29 @@ export const takeLabel = (parser: Parser): string | undefined => {
     parser.gullet.macros.set("\\df@label", undefined, true);
     return labelId(parser.settings, name);
 };
+
+// Whether the \tag just taken put its own parentheses around it; clears it
+export const takeTagParen = (parser: Parser): boolean => {
+    const paren = parser.gullet.macros.has("\\df@tagparen");
+    parser.gullet.macros.set("\\df@tagparen", undefined, true);
+    return paren;
+};
+
+// A label with no equation number or \tag to go on: an empty anchor at the
+// start of the formula (made by parseTree)
+defineFunctionBuilders({
+    type: "label",
+    htmlBuilder(group, options) {
+        const anchor = makeSpan(["katex-label"], [], options);
+        anchor.setAttribute("id", group.id);
+        return anchor;
+    },
+    mathmlBuilder(group) {
+        const anchor = new MathNode("mrow", []);
+        anchor.setAttribute(mml.MATHML_LABEL_ID, group.id);
+        return anchor;
+    },
+});
 
 defineFunction({
     type: "internal",
@@ -76,11 +99,17 @@ defineFunction({
                 text: c === "~" ? "\\textasciitilde" : c,
             });
         }
+        // upright roman, even in italic text, as \eqref is in amsmath
         const body: ParseNode<"text"> = {
             type: "text",
             mode: parser.mode,
             font: "\\textrm",
-            body: chars,
+            body: [{
+                type: "text",
+                mode: "text",
+                font: "\\textup",
+                body: chars,
+            }],
         };
         return {
             type: "ref",
@@ -104,7 +133,10 @@ defineFunction({
         if (!(math instanceof MathNode)) {
             math = new MathNode("mrow", [math]);
         }
+        // marked like the HTML link, so the reference can be numbered there too
+        (math as MathNode).classes.push(group.eqref ? "katex-eqref" : "katex-ref");
         (math as MathNode).setAttribute("href", group.href);
+        (math as MathNode).setAttribute("data-label", group.label);
         return math;
     },
 });

@@ -280,6 +280,22 @@ export const buildGroup = function(
  * Note that we actually return a domTree element with a `<math>` inside it so
  * we can do appropriate styling.
  */
+// The target of a \label carries it as this attribute in MathML. When the
+// output is MathML alone, it becomes the target's id; otherwise the id is on
+// the HTML, and a second would clash with it.
+export const MATHML_LABEL_ID = "data-label-id";
+
+const labelIdsToIds = (node: MathDomNode) => {
+    if (node instanceof MathNode) {
+        const id = node.getAttribute(MATHML_LABEL_ID);
+        if (id !== undefined) {
+            delete node.attributes[MATHML_LABEL_ID];
+            node.setAttribute("id", id);
+        }
+        node.children.forEach(labelIdsToIds);
+    }
+};
+
 export default function buildMathML(
     tree: AnyParseNode[],
     texExpression: string,
@@ -314,6 +330,9 @@ export default function buildMathML(
         "semantics", [wrapper, annotation]);
 
     const math = new MathNode("math", [semantics]);
+    if (forMathmlOnly) {
+        labelIdsToIds(math);
+    }
     math.setAttribute("xmlns", "http://www.w3.org/1998/Math/MathML");
     if (isDisplayMode) {
         math.setAttribute("display", "block");
