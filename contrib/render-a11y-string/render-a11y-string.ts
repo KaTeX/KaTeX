@@ -621,6 +621,11 @@ const handleObject = (
             break;
         }
 
+        case "label": {
+            // a \label's anchor says nothing
+            break;
+        }
+
         case "cr": {
             // This is used by environments.
             throw new Error("KaTeX-a11y: cr not implemented yet");
