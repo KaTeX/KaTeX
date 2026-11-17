@@ -4437,6 +4437,9 @@ describe("\\label, \\ref and \\eqref", function() {
             r`\begin{align}a\label{x}\end{align}\eqref{x}`,
             {displayMode: true});
         expect(both).toContain(`class="katex-eqref" href="#katex-x" data-label="x"`);
+        // two references side by side stay two in MathML
+        const pair = katex.renderToString(r`\ref{a}\eqref{b}`, {output: "mathml"});
+        expect(pair).toMatch(/<mrow href="#katex-a" data-label="a" class ?="katex-ref">.*<mrow href="#katex-b" data-label="b" class ?="katex-eqref">/);
         // in MathML alongside HTML, the id is the HTML's alone
         expect(both.match(/ id="katex-x"/g)).toHaveLength(1);
         expect(both).toContain(`data-label-id="katex-x"`);

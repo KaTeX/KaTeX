@@ -129,14 +129,14 @@ defineFunction({
         return anchor;
     },
     mathmlBuilder: (group, options) => {
-        let math = mml.buildExpressionRow(group.body, options);
-        if (!(math instanceof MathNode)) {
-            math = new MathNode("mrow", [math]);
-        }
-        // marked like the HTML link, so the reference can be numbered there too
-        (math as MathNode).classes.push(group.eqref ? "katex-eqref" : "katex-ref");
-        (math as MathNode).setAttribute("href", group.href);
-        (math as MathNode).setAttribute("data-label", group.label);
+        // An <mrow> of its own: a bare <mtext> would be merged with the text
+        // beside it, a second reference's included.
+        const math = new MathNode("mrow",
+            [mml.buildExpressionRow(group.body, options)],
+            // marked like the HTML link, so the reference can be numbered too
+            [group.eqref ? "katex-eqref" : "katex-ref"]);
+        math.setAttribute("href", group.href);
+        math.setAttribute("data-label", group.label);
         return math;
     },
 });
