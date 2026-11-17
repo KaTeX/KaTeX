@@ -12,6 +12,15 @@ const pad = () => {
 defineFunctionBuilders({
     type: "tag",
     mathmlBuilder(group, options) {
+        const tag = new MathNode("mtd", [
+            mml.buildExpressionRow(group.tag, options),
+        ]);
+        if (group.label) {
+            tag.setAttribute(mml.MATHML_LABEL_ID, group.label);
+            if (group.paren) {
+                tag.setAttribute("data-tag-paren", "");
+            }
+        }
         const table = new MathNode("mtable", [
             new MathNode("mtr", [
                 pad(),
@@ -19,9 +28,7 @@ defineFunctionBuilders({
                     mml.buildExpressionRow(group.body, options),
                 ]),
                 pad(),
-                new MathNode("mtd", [
-                    mml.buildExpressionRow(group.tag, options),
-                ]),
+                tag,
             ]),
         ]);
         table.setAttribute("width", "100%");

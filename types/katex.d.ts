@@ -199,6 +199,14 @@ export interface KatexOptions {
      * @default false
      */
     globalGroup?: boolean;
+    /**
+     * Prefix for the HTML ids that `\label` gives equations, and for the
+     * links that `\ref` and `\eqref` make to them. Give each document on a
+     * page its own prefix so their labels don't clash.
+     *
+     * @default "katex-"
+     */
+    labelPrefix?: string;
 }
 
 /**
