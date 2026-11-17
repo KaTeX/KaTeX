@@ -71,7 +71,7 @@ changes.
 The JavaScript parser and some of the HTML and MathML tree
 builders are tested with Jest. These tests can be run using node with
 `pnpm test:jest`.  If you need to debug the tests see
-[https://facebook.github.io/jest/docs/troubleshooting.html](https://facebook.github.io/jest/docs/troubleshooting.html)
+[https://jestjs.io/docs/troubleshooting](https://jestjs.io/docs/troubleshooting)
 
 The interactive editor can also be used for debugging tests in the browser by
 copy/pasting the test case to be debugged into the editor.  The permalink option
@@ -83,7 +83,7 @@ tests when you submit a pull request, in case you forget.
 
 If you make any changes to Parser.js, add Jest tests to ensure they work.
 
-Some tests verify the structure of the output tree using [snapshot testing](https://facebook.github.io/jest/docs/en/snapshot-testing.html).
+Some tests verify the structure of the output tree using [snapshot testing](https://jestjs.io/docs/snapshot-testing).
 Those snapshots can be updated by running `pnpm test:jest:update`.
 
 Also, test code coverage can be collected by `pnpm test:jest:coverage`.
