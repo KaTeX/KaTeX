@@ -177,6 +177,7 @@ export type CssStyle = Partial<{
     minWidth: string;
     paddingLeft: string;
     position: string;
+    scrollMarginTop: string;
     textShadow: string;
     top: string;
     width: string;

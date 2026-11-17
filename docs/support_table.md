@@ -388,7 +388,7 @@ use `\ce` instead|
 |{eqnarray}|<span style="color:firebrick;">Not supported</span>||
 |\Eqqcolon|$\Eqqcolon$||
 |\eqqcolon|$\eqqcolon$||
-|\eqref|<span style="color:firebrick;">Not supported</span>|[Issue #350](https://github.com/KaTeX/KaTeX/issues/350)|
+|\eqref|$\eqref{eq:1}$|`\eqref{eq:1}` Shows the label's name; see [Equation references](supported.md#equation-references)|
 |\eqsim|$\eqsim$||
 |\eqslantgtr|$\eqslantgtr$||
 |\eqslantless|$\eqslantless$||
@@ -553,7 +553,7 @@ use `\ce` instead|
 |\l|<span style="color:firebrick;">Not supported</span>||
 |\Lambda|$\Lambda$||
 |\lambda|$\lambda$||
-|\label|<span style="color:firebrick;">Not supported</span>||
+|\label|$$\begin{equation}a=b\label{eq:1}\end{equation}$$|`\begin{equation}a=b\label{eq:1}\end{equation}` See [Equation references](supported.md#equation-references)|
 |\land|$\land$||
 |\lang|$\lang A\rangle$|`\lang A\rangle`|
 |\langle|$\langle A\rangle$|`\langle A\rangle`|
@@ -902,7 +902,7 @@ use `\ce` instead|
 |\real|$\real$||
 |\Reals|$\Reals$||
 |\reals|$\reals$||
-|\ref|<span style="color:firebrick;">Not supported</span>|[Issue #350](https://github.com/KaTeX/KaTeX/issues/350)|
+|\ref|$\ref{eq:1}$|`\ref{eq:1}` Shows the label's name; see [Equation references](supported.md#equation-references)|
 |\reflectbox|$\reflectbox{$x^2$}$|`\reflectbox{$x^2$}`|
 |\relax|||
 |\renewcommand|$\def\hail{Hi!}\renewcommand\hail{\text{Ahoy!}} \hail$|`\def\hail{Hi!}`<br>`\renewcommand\hail{\text{Ahoy!}}`<br>`\hail`|

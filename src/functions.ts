@@ -27,6 +27,7 @@ import "./functions/html";
 import "./functions/htmlmathml";
 import "./functions/includegraphics";
 import "./functions/kern";
+import "./functions/label";
 import "./functions/lap";
 import "./functions/math";
 import "./functions/mathchoice";

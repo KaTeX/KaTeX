@@ -128,6 +128,11 @@ in addition to five auto-render-specific keys:
 - `preProcess`: A callback function, `(math: string) => string`, used to process
   math expressions before rendering.
 
+- `resolveReferences`: If `true` (the default), once the math is rendered,
+  put equation numbers into any `\ref` and `\eqref` on the page, as
+  [below](#equation-references). Set it to `false` to call
+  `resolveReferences` yourself.
+
 The `displayMode` property of the options object is ignored, and is
 instead taken from the `display` key of the corresponding entry in the
 `delimiters` key.
@@ -135,3 +140,41 @@ instead taken from the `display` key of the corresponding entry in the
 The same `options.macros` object (which defaults to an empty object `{}`)
 is passed into several calls to `katex.render`, so that consecutive equations
 can build up shared macros by `\gdef`.
+
+## Equation references
+
+KaTeX renders each formula on its own, so a [`\ref` or
+`\eqref`](supported.md#equation-references) shows the name of its `\label`
+rather than a number. Once the page is rendered, `resolveReferences` numbers
+its equations in order and puts the numbers into the references:
+
+- an automatically numbered equation (`equation`, `align`, …): its number,
+  so `\ref` shows 3 and `\eqref` shows (3);
+- an equation with a `\tag`: the tag, so `\tag{A}` gives A and (A);
+- an equation with no number: the reference keeps showing the label's name;
+- a label that isn't there: a bold ??, as in LaTeX, with the class
+  `katex-ref-undefined`.
+
+The MathML that screen readers read gets the same numbers, and so does
+`output: "mathml"`.
+
+`renderMathInElement` calls it for you when the page has any references (or
+has been numbered before, so that adding an equation moves the numbers after
+it), numbering the whole page as KaTeX's CSS counter does: the document, or
+the shadow root the element is in. To call it
+yourself, for example after rendering with `katex.render`:
+
+```js
+renderMathInElement.resolveReferences(root);
+// or, as a module:
+import {resolveReferences} from "katex/contrib/auto-render";
+```
+
+`root` is optional; it defaults to `document.body`. It can be an element, a
+selector, or a list of elements. Each element is numbered from 1 on its own,
+so a page with several documents can number them separately (give each its own
+[`labelPrefix`](options.md) too, so their labels don't clash).
+`resolveReferences` writes each number into its equation, so the number shown
+always agrees with the references. It returns the names of any labels that
+were referred to but not found. Calling it again, after more math is rendered,
+numbers everything afresh.

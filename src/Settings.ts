@@ -288,6 +288,13 @@ export const SETTINGS_SCHEMA: Schema = {
         type: "boolean",
         cli: false,
     },
+    labelPrefix: {
+        type: "string",
+        default: "katex-",
+        description: "Prefix for the HTML ids that \\label gives equations, " +
+            "and the links that \\ref and \\eqref make to them.",
+        cli: "--label-prefix <prefix>",
+    },
 };
 
 function getImplicitDefault(type: "boolean"): boolean;
@@ -370,6 +377,7 @@ export default class Settings {
     maxSize!: number;
     maxExpand!: number;
     globalGroup!: boolean;
+    labelPrefix!: string;
 
     constructor(options: SettingsOptions = {}) {
         // allow null options

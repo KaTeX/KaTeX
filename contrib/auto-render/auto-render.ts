@@ -2,6 +2,7 @@
 
 import katex from "katex";
 import splitAtDelimiters from "./splitAtDelimiters";
+import resolveReferences from "./resolveReferences";
 import type {DelimiterSpec} from "./splitAtDelimiters";
 
 interface RenderMathInElementOptions {
@@ -12,6 +13,7 @@ interface RenderMathInElementOptions {
     errorCallback?: (msg: string, err: Error) => void;
     displayMode?: boolean;
     macros?: Record<string, string>;
+    resolveReferences?: boolean;
 }
 
 interface RenderMathInElementOptionsCopy {
@@ -159,6 +161,24 @@ const renderMathInElement = function(elem: HTMLElement, options?: RenderMathInEl
     optionsCopy.macros = optionsCopy.macros || {};
 
     renderElem(elem, optionsCopy as RenderMathInElementOptionsCopy);
+
+    // Equation numbers for any \ref and \eqref (#2003), numbering the whole
+    // page as its CSS counter does: the document's body, the shadow root the
+    // element is in, or the tree it's part of if it isn't on the page. Also
+    // when this call added only equations to a page that has been numbered
+    // before, so that the numbers after them move up.
+    if (options?.resolveReferences !== false) {
+        const top = elem.getRootNode();
+        const root: ParentNode = top instanceof Document ? top.body :
+            (top as ParentNode).querySelector ? top as ParentNode : elem;
+        if (root.querySelector(".katex-ref, .katex-eqref, [data-eqn-num]")) {
+            resolveReferences(root);
+        }
+    }
 };
 
+// also for pages that render their math some other way
+renderMathInElement.resolveReferences = resolveReferences;
+
+export {resolveReferences};
 export default renderMathInElement;

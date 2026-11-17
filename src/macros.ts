@@ -581,7 +581,8 @@ defineMacro("\\qquad", "\\hskip2em\\relax");
 
 // \tag@in@display form of \tag
 defineMacro("\\tag", "\\@ifstar\\tag@literal\\tag@paren");
-defineMacro("\\tag@paren", "\\tag@literal{({#1})}");
+// (\df@tagparen notes the parentheses, for a \ref to the tag to leave out)
+defineMacro("\\tag@paren", "\\tag@literal{({#1})}\\gdef\\df@tagparen{}");
 defineMacro("\\tag@literal", (context) => {
     if (context.macros.get("\\df@tag")) {
         throw new ParseError("Multiple \\tag");

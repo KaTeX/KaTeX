@@ -18,7 +18,24 @@ declare namespace renderMathInElement {
         ignoredTags?: readonly string[];
         ignoredClasses?: readonly string[];
         errorCallback?: (msg: string, err: Error) => void;
+        /**
+         * Put equation numbers into `\ref` and `\eqref` once the math is
+         * rendered, if there are any (see `resolveReferences`).
+         *
+         * @default true
+         */
+        resolveReferences?: boolean;
     }
+
+    /**
+     * Put equation numbers into the `\ref`s and `\eqref`s in `root` (by
+     * default the whole page): an element, a list of elements numbered
+     * separately, or a selector for them. Returns the names of the labels
+     * that were referred to but not found.
+     */
+    function resolveReferences(
+        root?: ParentNode | Iterable<ParentNode> | string,
+    ): string[];
 }
 
 export = renderMathInElement;

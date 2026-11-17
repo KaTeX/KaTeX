@@ -612,6 +612,22 @@ $display-margin: 1em 0 !default;
         content: "(" counter(katexEqnNo) ")";
     }
 
+    // the number auto-render's resolveReferences gave the equation (#2003)
+    .eqn-num[data-eqn-num]::before,
+    .mml-eqn-num[data-eqn-num]::before {
+        content: "(" attr(data-eqn-num) ")";
+    }
+
+    // a \label's target: leave a little room above when a link jumps to it
+    [id] {
+        scroll-margin-top: 1em;
+    }
+
+    // a \ref or \eqref to a label that isn't there shows a bold ??, as LaTeX does
+    .katex-ref-undefined {
+        font-weight: bold;
+    }
+
     .mml-eqn-num::before {
         counter-increment: mmlEqnNo;
         content: "(" counter(mmlEqnNo) ")";
