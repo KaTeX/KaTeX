@@ -17,9 +17,14 @@ const page = (...parts: [string, boolean?][]) => {
     return root;
 };
 
-// What each reference in `root` shows
+// What each reference in `root` shows (in the HTML)
 const refs = (root: ParentNode = document.body) =>
-    Array.from(root.querySelectorAll(".katex-ref, .katex-eqref"))
+    Array.from(root.querySelectorAll(".katex-html .katex-ref, .katex-html .katex-eqref"))
+        .map((ref) => ref.textContent);
+
+// What each reference says in the MathML (which screen readers read)
+const mathmlRefs = (root: ParentNode = document.body) =>
+    Array.from(root.querySelectorAll("math .katex-ref, math .katex-eqref"))
         .map((ref) => ref.textContent);
 
 // The numbers given to the equations in `root`
@@ -60,6 +65,46 @@ describe("resolveReferences", () => {
         expect(refs()).toEqual(["A", "(A)", "B.1", "(B.1)", "C"]);
     });
 
+    it("keeps the parentheses of \\tag*{(A)}, which \\tag* didn't add", () => {
+        page(
+            [String.raw`x\tag*{(A)}\label{a}`],
+            [String.raw`\begin{align}y\tag*{(B)}\label{b}\\z\tag{C}\label{c}\end{align}`],
+            [String.raw`\ref{a} \eqref{a} \ref{b} \ref{c}`, false],
+        );
+        resolveReferences();
+        expect(refs()).toEqual(["(A)", "((A))", "(B)", "C"]);
+    });
+
+    it("gives the MathML that screen readers read the same numbers", () => {
+        page(
+            [String.raw`\begin{equation}a\label{x}\end{equation}`],
+            [String.raw`x\tag{A}\label{t}`],
+            [String.raw`\eqref{x} \ref{t} \ref{nowhere}`, false],
+        );
+        resolveReferences();
+        expect(mathmlRefs()).toEqual(["(1)", "A", "??"]);
+        // the hidden MathML's own numbers are left to its counter
+        expect(document.querySelector(".katex-mathml .mml-eqn-num")!
+            .hasAttribute("data-eqn-num")).toBe(false);
+    });
+
+    it("numbers MathML output on its own", () => {
+        document.body.innerHTML = "";
+        for (const [tex, displayMode] of [
+            [String.raw`\begin{equation}a\label{x}\end{equation}`, true],
+            [String.raw`\begin{align}b\\c\label{y}\end{align}`, true],
+            [String.raw`\eqref{x} \ref{y}`, false],
+        ] as const) {
+            const p = document.createElement("p");
+            katex.render(tex, p, {displayMode, output: "mathml"});
+            document.body.appendChild(p);
+        }
+        expect(resolveReferences()).toEqual([]);
+        expect(Array.from(document.querySelectorAll(".mml-eqn-num"))
+            .map((el) => el.getAttribute("data-eqn-num"))).toEqual(["1", "2", "3"]);
+        expect(mathmlRefs()).toEqual(["(1)", "3"]);
+    });
+
     it("leaves the label's name for an equation without a number", () => {
         page(
             [String.raw`\begin{align*}x\label{star}\end{align*}`],
@@ -74,7 +119,7 @@ describe("resolveReferences", () => {
         page([String.raw`\ref{nowhere} \eqref{nowhere}`, false]);
         expect(resolveReferences()).toEqual(["nowhere"]);
         expect(refs()).toEqual(["??", "(??)"]);
-        expect(document.querySelectorAll(".katex-ref-undefined")).toHaveLength(2);
+        expect(document.querySelectorAll(".katex-html .katex-ref-undefined")).toHaveLength(2);
     });
 
     it("numbers each root on its own", () => {
@@ -147,6 +192,27 @@ describe("renderMathInElement and references", () => {
         document.body.innerHTML = html;
         renderMathInElement(document.body, {resolveReferences: false});
         expect(refs()).toEqual(["(energy)"]);
+    });
+
+    it("renumbers when a later call adds only an equation", () => {
+        document.body.innerHTML = html;
+        renderMathInElement(document.body);
+        const p = document.createElement("p");
+        p.textContent = String.raw`\begin{equation}F=ma\end{equation}`;
+        document.body.prepend(p);
+        renderMathInElement(p);
+        expect(numbers()).toEqual(["1", "2"]);
+        expect(refs()).toEqual(["(2)"]);
+    });
+
+    it("works inside a shadow root", () => {
+        document.body.innerHTML = "";
+        const host = document.createElement("div");
+        document.body.appendChild(host);
+        const shadow = host.attachShadow({mode: "open"});
+        shadow.innerHTML = html;
+        renderMathInElement(shadow.firstElementChild!.parentNode as unknown as HTMLElement);
+        expect(refs(shadow)).toEqual(["(1)"]);
     });
 
     it("offers resolveReferences for pages that render math another way", () => {

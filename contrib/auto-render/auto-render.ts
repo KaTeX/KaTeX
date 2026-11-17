@@ -163,10 +163,17 @@ const renderMathInElement = function(elem: HTMLElement, options?: RenderMathInEl
     renderElem(elem, optionsCopy as RenderMathInElementOptionsCopy);
 
     // Equation numbers for any \ref and \eqref (#2003), numbering the whole
-    // page as its CSS counter does, unless the element isn't on the page
-    if (options?.resolveReferences !== false &&
-        elem.querySelector(".katex-ref, .katex-eqref")) {
-        resolveReferences(elem.isConnected ? elem.ownerDocument.body : elem);
+    // page as its CSS counter does: the document's body, the shadow root the
+    // element is in, or the tree it's part of if it isn't on the page. Also
+    // when this call added only equations to a page that has been numbered
+    // before, so that the numbers after them move up.
+    if (options?.resolveReferences !== false) {
+        const top = elem.getRootNode();
+        const root: ParentNode = top instanceof Document ? top.body :
+            (top as ParentNode).querySelector ? top as ParentNode : elem;
+        if (root.querySelector(".katex-ref, .katex-eqref, [data-eqn-num]")) {
+            resolveReferences(root);
+        }
     }
 };
 

@@ -30,20 +30,25 @@ const numberOf = (target: Element): string | null => {
     if (eqnNum !== null) {
         return eqnNum;
     }
-    // a \tag's own text, less the parentheses \tag (but not \tag*) adds
+    // a \tag's own text, less the parentheses \tag adds; \tag* adds none, so
+    // \tag*{(A)} keeps its own (KaTeX marks which with data-tag-paren)
     const text = (target.textContent ?? "").replace(ZERO_WIDTH, "").trim();
     if (!text) {
         return null;
     }
     const inner = /^\((.*)\)$/s.exec(text);
-    return inner ? inner[1] : text;
+    return inner && target.hasAttribute("data-tag-paren") ? inner[1] : text;
 };
 
 // Show `text` in a reference, in place of what it showed before
 const setText = (ref: Element, text: string) => {
-    // KaTeX sets the reference as one or more runs of upright text
-    const runs = Array.from(ref.querySelectorAll(".textrm"))
+    // KaTeX sets the reference as one or more runs of upright text: spans in
+    // HTML, <mtext> in MathML
+    let runs = Array.from(ref.querySelectorAll(".textrm"))
         .filter((run) => !run.querySelector(".textrm"));
+    if (runs.length === 0) {
+        runs = Array.from(ref.querySelectorAll("mtext"));
+    }
     if (runs.length === 0) {
         ref.textContent = text;
         return;
@@ -55,11 +60,14 @@ const setText = (ref: Element, text: string) => {
 };
 
 const resolveRoot = (root: ParentNode, undefinedLabels: Set<string>) => {
-    // Number the equations in order, as the CSS counter would
-    const eqnNums = root.querySelectorAll(".eqn-num");
-    for (let i = 0; i < eqnNums.length; i++) {
-        eqnNums[i].setAttribute("data-eqn-num", String(i + 1));
-    }
+    // Number the equations in order, as the CSS counters would: the HTML's,
+    // and the MathML's where it's the output on its own (not the hidden copy
+    // beside the HTML, whose references take the HTML's numbers)
+    const number = (eqnNums: Element[]) => eqnNums.forEach((el, i) =>
+        el.setAttribute("data-eqn-num", String(i + 1)));
+    number(Array.from(root.querySelectorAll(".eqn-num")));
+    number(Array.from(root.querySelectorAll(".mml-eqn-num"))
+        .filter((el) => !el.closest(".katex-mathml")));
 
     // Every id in the root; the first of two alike wins, as in the browser
     const byId = new Map<string, Element>();

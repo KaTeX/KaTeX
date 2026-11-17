@@ -613,7 +613,8 @@ $display-margin: 1em 0 !default;
     }
 
     // the number auto-render's resolveReferences gave the equation (#2003)
-    .eqn-num[data-eqn-num]::before {
+    .eqn-num[data-eqn-num]::before,
+    .mml-eqn-num[data-eqn-num]::before {
         content: "(" attr(data-eqn-num) ")";
     }
 

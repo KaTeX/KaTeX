@@ -155,8 +155,13 @@ its equations in order and puts the numbers into the references:
 - a label that isn't there: a bold ??, as in LaTeX, with the class
   `katex-ref-undefined`.
 
-`renderMathInElement` calls it for you when the element it rendered has any
-references, numbering the whole page as KaTeX's CSS counter does. To call it
+The MathML that screen readers read gets the same numbers, and so does
+`output: "mathml"`.
+
+`renderMathInElement` calls it for you when the page has any references (or
+has been numbered before, so that adding an equation moves the numbers after
+it), numbering the whole page as KaTeX's CSS counter does: the document, or
+the shadow root the element is in. To call it
 yourself, for example after rendering with `katex.render`:
 
 ```js
