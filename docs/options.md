@@ -79,6 +79,7 @@ You can provide an object of options as the last argument to [`katex.render` and
   - Allow certain commands with specific protocols: `trust: (context) => ['\\url', '\\href'].includes(context.command) && ['http', 'https', '_relative'].includes(context.protocol)`
 
 - `globalGroup`: `boolean`  (default: `false`). Run KaTeX code in the global group. As a consequence, macros defined at the top level by `\def` and `\newcommand` are added to the `macros` argument and can be used in subsequent render calls. In LaTeX, constructs such as `\begin{equation}` and `$$` create a local group and prevent definitions other than `\gdef` from becoming visible outside of those blocks, so this is KaTeX's default behavior.
+- `labelPrefix`: `string` (default: `"katex-"`). Prefix for the HTML ids that `\label` gives equations, and for the links that `\ref` and `\eqref` make to them, so `\label{eq:1}` becomes `id="katex-eq:1"`. Give each document on a page its own prefix so their labels don't clash. See [Equation references](supported.md#equation-references).
 
 For example:
 

@@ -320,8 +320,10 @@ function buildHTMLUnbreakable(children: HtmlDomNode[], options: Options) {
 export default function buildHTML(tree: AnyParseNode[], options: Options): DomSpan {
     // Strip off outer tag wrapper for processing below.
     let tag = null;
+    let tagLabel;
     if (tree.length === 1 && tree[0].type === "tag") {
         tag = tree[0].tag;
+        tagLabel = tree[0].label;
         tree = tree[0].body;
     }
 
@@ -389,6 +391,9 @@ export default function buildHTML(tree: AnyParseNode[], options: Options): DomSp
             options,
         );
         tagChild.classes = ["katex-tag"];
+        if (tagLabel) {
+            tagChild.setAttribute("id", tagLabel);
+        }
         children.push(tagChild);
     } else if (eqnNum) {
         children.push(eqnNum);

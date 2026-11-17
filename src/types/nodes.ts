@@ -45,6 +45,7 @@ export type AnyParseNode =
     | HorizontalBoxNode
     | HorizontalBraceNode
     | HrefNode
+    | RefNode
     | HtmlNode
     | HtmlMathmlNode
     | IncludeGraphicsNode
@@ -103,6 +104,8 @@ type ArrayNode = BaseNode & {
     hLinesBeforeRow: boolean[][];
     // Whether each row should be automatically numbered, or an explicit tag
     tags?: (boolean | AnyParseNode[])[];
+    // The HTML id of each row's \label, if any row has one
+    labels?: (string | undefined)[];
     leqno?: boolean;
 };
 
@@ -177,6 +180,8 @@ type TagNode = BaseNode & {
     type: "tag";
     body: AnyParseNode[];
     tag: AnyParseNode[];
+    // The HTML id from a \label, given to the tag
+    label?: string;
 }
 
 type TextNode = BaseNode & {
@@ -299,6 +304,15 @@ type HorizontalBraceNode = BaseNode & {
 type HrefNode = BaseNode & {
     type: "href";
     href: string;
+    body: AnyParseNode[];
+}
+
+type RefNode = BaseNode & {
+    type: "ref";
+    // the \label name, and the link to its HTML id
+    label: string;
+    href: string;
+    eqref: boolean;
     body: AnyParseNode[];
 }
 

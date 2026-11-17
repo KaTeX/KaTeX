@@ -2,6 +2,7 @@ import {makeFragment, makeLineSpan, makeSpan, makeVList} from "../buildCommon";
 import Style from "../Style";
 import defineEnvironment from "../defineEnvironment";
 import {parseCD} from "./cd";
+import {takeLabel} from "../functions/label";
 import defineFunction from "../defineFunction";
 import defineMacro from "../defineMacro";
 import {MathNode} from "../mathMLTree";
@@ -148,6 +149,8 @@ function parseArray(
     const hLinesBeforeRow = [];
     const tags: Array<AnyParseNode[] | boolean> | undefined =
         (autoTag != null ? [] : undefined);
+    // Each row's \label, as an HTML id, in an environment that has tags
+    const labels: Array<string | undefined> = [];
 
     // amsmath uses \global\@eqnswtrue and \global\@eqnswfalse to represent
     // whether this row should have an equation number.  Simulate this with
@@ -159,6 +162,7 @@ function parseArray(
     }
     function endRow() {
         if (tags) {
+            labels.push(takeLabel(parser));
             if (parser.gullet.macros.get("\\df@tag")) {
                 tags.push(parser.subparse([new Token("\\df@tag")]));
                 parser.gullet.macros.set("\\df@tag", undefined, true);
@@ -273,6 +277,7 @@ function parseArray(
         hLinesBeforeRow,
         colSeparationType,
         tags,
+        ...(labels.some(Boolean) ? {labels} : {}),
         leqno,
     };
 }
@@ -413,9 +418,10 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
         shift: number;
     }> = [];
 
-    if (group.tags && group.tags.some(tag => tag)) {
+    if (group.tags && (group.tags.some(tag => tag) || group.labels)) {
         // An environment with manual tags and/or automatic equation numbers.
         // Create node(s), the latter of which trigger CSS counter increment.
+        // A row's \label gives its node an id, even if the row has no number.
         for (r = 0; r < nr; ++r) {
             const rw = body[r];
             const shift = rw.pos - offset;
@@ -429,6 +435,10 @@ const htmlBuilder: HtmlBuilder<"array"> = function(group, options) {
             } else {  // manual \tag
                 tagSpan = makeSpan([],
                     html.buildExpression(tag, options, true), options);
+            }
+            const label = group.labels?.[r];
+            if (label) {
+                tagSpan.setAttribute("id", label);
             }
             tagSpan.depth = rw.depth;
             tagSpan.height = rw.height;

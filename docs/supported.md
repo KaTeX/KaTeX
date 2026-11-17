@@ -123,6 +123,23 @@ The `{array}` environment does not yet support `\cline` or `\multicolumn`.
 `\tag` can be applied to individual rows of top-level environments
 (`align`, `align*`, `alignat`, `alignat*`, `gather`, `gather*`).
 
+#### Equation references
+
+`\label{name}` marks the equation or row it's written in, and `\ref{name}`
+and `\eqref{name}` link to it, in this formula or any other on the page.
+
+KaTeX renders each formula separately, so it can't know the page's equation
+numbers. Instead, `\label` gives the equation's number (or, without one, the
+equation itself) the HTML id `katex-name`, and a reference is a link to that
+id which shows the label's name: `\eqref{eq:1}` shows (eq:1). The prefix is
+the [`labelPrefix` option](options.md). Two `\label`s in one row are an error.
+
+`\begin{equation}E=mc^2\label{eq:energy}\end{equation}`
+$$\begin{equation}E=mc^2\label{eq:energy}\end{equation}$$
+
+`\text{by }\eqref{eq:energy}`
+$$\text{by }\eqref{eq:energy}$$
+
 <div class="katex-hopscotch">
 
 ## HTML

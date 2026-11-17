@@ -615,6 +615,12 @@ const handleObject = (
             throw new Error("KaTeX-a11y: href not implemented yet");
         }
 
+        case "ref": {
+            // \ref and \eqref read as the label they show
+            buildA11yStrings(tree.body, a11yStrings, atomType);
+            break;
+        }
+
         case "cr": {
             // This is used by environments.
             throw new Error("KaTeX-a11y: cr not implemented yet");

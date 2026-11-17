@@ -1,6 +1,7 @@
 import Parser from "./Parser";
 import ParseError from "./ParseError";
 import {Token} from "./Token";
+import {takeLabel} from "./functions/label";
 
 import type Settings from "./Settings";
 import type {AnyParseNode} from "./types/nodes";
@@ -19,6 +20,7 @@ const parseTree = function(
 
     // Blank out any \df@tag to avoid spurious "Duplicate \tag" errors
     delete parser.gullet.macros.current["\\df@tag"];
+    delete parser.gullet.macros.current["\\df@label"];
 
     let tree = parser.parse();
 
@@ -38,6 +40,22 @@ const parseTree = function(
             body: tree,
             tag: parser.subparse([new Token("\\df@tag")]),
         }];
+    }
+
+    // A \label that no environment's row took belongs to the whole formula:
+    // its \tag, if it has one, or else an empty anchor at its start.
+    const label = takeLabel(parser);
+    if (label) {
+        if (tree.length === 1 && tree[0].type === "tag") {
+            tree[0].label = label;
+        } else {
+            tree = [{
+                type: "html",
+                mode: "math",
+                attributes: {id: label},
+                body: [],
+            }, ...tree];
+        }
     }
 
     return tree;
