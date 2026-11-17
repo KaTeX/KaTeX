@@ -572,7 +572,7 @@ const alignMap: Record<string, string> = {
 const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
     const tbl = [];
     const glue = new MathNode("mtd", [], ["mtr-glue"]);
-    const tag = new MathNode("mtd", [], ["mml-eqn-num"]);
+    const autoTag = new MathNode("mtd", [], ["mml-eqn-num"]);
     for (let i = 0; i < group.body.length; i++) {
         const rw = group.body[i];
         const row = [];
@@ -580,7 +580,13 @@ const mathmlBuilder: MathMLBuilder<"array"> = function(group, options) {
             row.push(new MathNode("mtd",
                 [mml.buildGroup(rw[j], options)]));
         }
-        if (group.tags && group.tags[i]) {
+        // An automatic number comes from a CSS counter (.mml-eqn-num); a
+        // manual \tag is written out, as the HTML and a top-level \tag do.
+        const rowTag = group.tags && group.tags[i];
+        const tag = Array.isArray(rowTag)
+            ? new MathNode("mtd", [mml.buildExpressionRow(rowTag, options)])
+            : autoTag;
+        if (rowTag) {
             row.unshift(glue);
             row.push(glue);
             if (group.leqno) {

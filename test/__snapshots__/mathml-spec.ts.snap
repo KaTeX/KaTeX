@@ -1217,3 +1217,68 @@ exports[`A MathML builder tags use <mlabeledtr> 1`] = `
   </semantics>
 </math>
 `;
+
+exports[`A MathML builder writes out a manual \\tag on a row of an environment 1`] = `
+<math xmlns="http://www.w3.org/1998/Math/MathML"
+      display="block"
+>
+  <semantics>
+    <mtable rowspacing="0.25em"
+            columnalign="right"
+            columnspacing
+    >
+      <mtr>
+        <mtd class="mtr-glue">
+        </mtd>
+        <mtd>
+          <mstyle scriptlevel="0"
+                  displaystyle="true"
+          >
+            <mi>
+              a
+            </mi>
+          </mstyle>
+        </mtd>
+        <mtd class="mtr-glue">
+        </mtd>
+        <mtd>
+          <mtext>
+            (Hello)
+          </mtext>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd class="mtr-glue">
+        </mtd>
+        <mtd>
+          <mstyle scriptlevel="0"
+                  displaystyle="true"
+          >
+            <mi>
+              b
+            </mi>
+          </mstyle>
+        </mtd>
+        <mtd class="mtr-glue">
+        </mtd>
+        <mtd class="mml-eqn-num">
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mstyle scriptlevel="0"
+                  displaystyle="true"
+          >
+            <mi>
+              c
+            </mi>
+          </mstyle>
+        </mtd>
+      </mtr>
+    </mtable>
+    <annotation encoding="application/x-tex">
+      \\begin{align}a\\tag{Hello}\\\\b\\\\c\\notag\\end{align}
+    </annotation>
+  </semantics>
+</math>
+`;
