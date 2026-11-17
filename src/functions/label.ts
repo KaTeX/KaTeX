@@ -47,7 +47,9 @@ export const takeTagParen = (parser: Parser): boolean => {
 defineFunctionBuilders({
     type: "label",
     htmlBuilder(group, options) {
-        const anchor = makeSpan(["katex-label"], [], options);
+        // "enclosing", like \htmlId's span, so the spacing pass looks past
+        // it: -x\label{a} keeps its unary minus
+        const anchor = makeSpan(["enclosing", "katex-label"], [], options);
         anchor.setAttribute("id", group.id);
         return anchor;
     },

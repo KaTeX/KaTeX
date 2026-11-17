@@ -4340,9 +4340,9 @@ describe("\\label, \\ref and \\eqref", function() {
 
     it("should put a formula's label on an empty anchor at its start", () => {
         expect(ids(render(r`x^2\label{plain}`)))
-            .toEqual(["span#katex-plain.katex-label"]);
+            .toEqual(["span#katex-plain.enclosing katex-label"]);
         expect(ids(render(r`x\label{inline}`, {displayMode: false})))
-            .toEqual(["span#katex-inline.katex-label"]);
+            .toEqual(["span#katex-inline.enclosing katex-label"]);
     });
 
     it("should let a label inside {aligned} reach its row of {equation}", () => {
@@ -4363,14 +4363,14 @@ describe("\\label, \\ref and \\eqref", function() {
 
     it("should use labelPrefix for ids and links", () => {
         expect(ids(render(r`x\label{p}`, {labelPrefix: "doc1-"})))
-            .toEqual(["span#doc1-p.katex-label"]);
+            .toEqual(["span#doc1-p.enclosing katex-label"]);
         expect(render(r`\eqref{p}`, {labelPrefix: "doc1-"}))
             .toContain(`href="#doc1-p"`);
     });
 
     it("should turn whitespace in a label into hyphens in its id", () => {
         expect(ids(render(r`x\label{ two  words }`)))
-            .toEqual(["span#katex-two-words.katex-label"]);
+            .toEqual(["span#katex-two-words.enclosing katex-label"]);
         expect(render(r`\ref{ two  words }`)).toContain(`href="#katex-two-words"`);
     });
 
@@ -4401,7 +4401,15 @@ describe("\\label, \\ref and \\eqref", function() {
     it("should keep an environment's numbers in place with a label after it", () => {
         const markup = render(r`\begin{equation}a=b\end{equation}\label{after}`);
         // the number column stays a child of katex-html, not of its base
-        expect(markup).toMatch(/<span class="katex-html"[^>]*><span class="katex-label" id="katex-after"><\/span><span class="katex-base">.*<\/span><span class="katex-tag">/);
+        expect(markup).toMatch(/<span class="katex-html"[^>]*><span class="enclosing katex-label" id="katex-after"><\/span><span class="katex-base">.*<\/span><span class="katex-tag">/);
+    });
+
+    it("should leave a formula's spacing alone", () => {
+        const html = (expr: string) => render(expr)
+            .replace(/<span class="enclosing katex-label" id="[^"]*"><\/span>/, "");
+        expect(html(r`-x\label{a}`)).toBe(html(r`-x`));
+        expect(html(r`-x\label{a}`)).toContain(`<span class="mord">−</span>`);
+        expect(html(r`a+b\label{a}`)).toBe(html(r`a+b`));
     });
 
     it("should keep an empty last row that has a label", () => {
