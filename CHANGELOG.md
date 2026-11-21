@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file. This CHANGELOG roughly follows the guidelines from [www.keepachangelog.com](https://keepachangelog.com/en/1.0.0/).
 
+## [0.19.1](https://github.com/KaTeX/KaTeX/compare/v0.19.0...v0.19.1) (2026-10-23)
+
+
+### Bug Fixes
+
+* allow percent sign in raw argument type ([#4307](https://github.com/KaTeX/KaTeX/issues/4307)) ([6971e5c](https://github.com/KaTeX/KaTeX/commit/6971e5ccf27581e768e8353d94ccc7b6f6553d4a))
+
 # [0.19.0](https://github.com/KaTeX/KaTeX/compare/v0.18.11...v0.19.0) (2026-10-01)
 
 

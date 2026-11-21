@@ -31,6 +31,11 @@ const users = [
         infoLink: 'https://cocalc.com/',
     },
     {
+        caption: 'Coddy',
+        image: 'https://coddy.tech/apple-touch-icon.png',
+        infoLink: 'https://coddy.tech/math',
+    },
+    {
         caption: 'Doctave',
         image: 'https://www.doctave.com/assets/img/katex-integration-logo.webp',
         infoLink: 'https://www.doctave.com/',
@@ -144,6 +149,11 @@ const users = [
         caption: 'Rocket.Chat',
         image: '/img/rocketchat_logo.svg',
         infoLink: 'https://rocket.chat/',
+    },
+    {
+        caption: 'Skim',
+        image: 'https://skim.md/assets/icon-512.png',
+        infoLink: 'https://skim.md/',
     },
     {
         caption: 'Slab',
