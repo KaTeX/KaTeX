@@ -196,6 +196,11 @@ const users = [
         infoLink: 'https://techambition.com',
     },
     {
+        caption: 'TeXglass',
+        image: 'https://klepo0.github.io/TeXglass/icons/icon-512.png',
+        infoLink: 'https://klepo0.github.io/TeXglass/',
+    },
+    {
         caption: 'TiddlyWiki',
         image: '/img/tiddlywiki_logo.svg',
         infoLink: 'https://tiddlywiki.com/',
