@@ -38,11 +38,12 @@ $\gdef\VERT{|}$
 |\\$|$\text{\textdollar}$||
 |\\,|$a\,\,{b}$|`a\,\,{b}`|
 |\\.|$\text{\.{a}}$|`\text{\.{a}}`|
+|\\c|$\text{\c{c}}$|`\text{\c{c}}`|
 |\\:|$a\:\:{b}$|`a\:\:{b}`|
-|\\;|$a\;\;{b}$|a`\;\;{b}`|
+|\\;|$a\;\;{b}$|`a\;\;{b}`|
 |_|$x_i$|`x_i`|
 |\\_|$\_$||
-|\\\`|$\text{\`{a}}$|`\text{\'{a}}`|
+|\\\`|$\text{\`{a}}$|`\text{\`{a}}`|
 |&#060;|$<$||
 |\\=|$\text{\={a}}$|`\text{\={a}}`|
 | >|$>$||
@@ -57,7 +58,7 @@ $\gdef\VERT{|}$
 |\\&#124;|$\Vert$||
 |~|$\text{no~no~no~breaks}$|`\text{no~no~no~breaks}`|
 |\\~|$\text{\~{a}}$|`\text{\~{a}}`|
-|\\\\ |$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
+|\\\\ |$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`<br>Accepts optional `[size]`, e.g. `\\[6pt]`|
 |^|$x^i$|`x^i`|
 |\\^|$\text{\^{a}}$|`\text{\^{a}}`|
 
@@ -88,8 +89,8 @@ $\gdef\VERT{|}$
 |\And|$\And$||
 |\and|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
 |\ang|<span style="color:firebrick;">Not supported</span>|[Deprecated](https://en.wikipedia.org/wiki/Help:Displaying_a_formula#Deprecated_syntax)|
-|\angl|$a_{\angl n}$||
-|\angln|$a_\angln$||
+|\angl|$a_{\angl n}$|`a_{\angl n}`|
+|\angln|$a_\angln$|`a_\angln`|
 |\angle|$\angle$||
 |\approx|$\approx$||
 |\approxeq|$\approxeq$||
@@ -137,6 +138,7 @@ $\gdef\VERT{|}$
 |\between|$\between$||
 |\bf|$\bf AaBb12$|`\bf AaBb12`|
 |\bfseries|<span style="color:firebrick;">Not supported</span>||
+|\bgroup|$\bgroup a}$|`\bgroup a}`|
 |\big|$\big(\big)$|`\big(\big)`|
 |\Big|$\Big(\Big)$|`\Big(\Big)`|
 |\bigcap|$\bigcap$||
@@ -244,6 +246,7 @@ use `\ce` instead|
 |\circleddash|$\circleddash$||
 |\circledR|$\circledR$||
 |\circledS|$\circledS$||
+|\clap|$\clap{abc}$|`\clap{abc}`|
 |\class|<span style="color:firebrick;">Not supported</span>|A PR is pending.
 |\cline|<span style="color:firebrick;">Not supported</span>|[Issue #269](https://github.com/KaTeX/KaTeX/issues/269)|
 |\clubs|$\clubs$||
@@ -305,7 +308,7 @@ use `\ce` instead|
 |\Darr|$\Darr$||
 |\dArr|$\dArr$||
 |\darr|$\darr$||
-{darray}|$\begin{darray}{cc}a&b\\c&d\end{darray}$ | `\begin{darray}{cc}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{darray}`|
+|{darray}|$\begin{darray}{cc}a&b\\c&d\end{darray}$ | `\begin{darray}{cc}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{darray}`|
 |\dashleftarrow|$\dashleftarrow$||
 |\dashrightarrow|$\dashrightarrow$||
 |\dashv|$\dashv$||
@@ -366,6 +369,7 @@ use `\ce` instead|
 |Symbol/Function |  Rendered   | Source or Comment|
 |:---------------|:------------|:-----------------|
 |\edef|$\def\foo{a}\edef\fcopy{\foo}\def\foo{}\fcopy$|`\def\foo{a}\edef\fcopy{\foo}\def\foo{}\fcopy`|
+|\egroup|${a\egroup$|`{a\egroup`|
 |\ell|$\ell$||
 |\else|<span style="color:firebrick;">Not supported</span>|[Issue #1003](https://github.com/KaTeX/KaTeX/issues/1003)|
 |\em|<span style="color:firebrick;">Not supported</span>||
@@ -375,6 +379,7 @@ use `\ce` instead|
 |\enclose|<span style="color:firebrick;">Not supported</span>|Non standard
 |\end|$\begin{matrix} a & b\\ c & d\end{matrix}$|`\begin{matrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{matrix}`|
 |\endgroup|${a\endgroup$|`{a\endgroup`|
+|\enskip|$a\enskip b$|`a\enskip b`|
 |\enspace|$a\enspace b$|`a\enspace b`|
 |\Epsilon|$\Epsilon$||
 |\epsilon|$\epsilon$||
@@ -395,6 +400,7 @@ use `\ce` instead|
 |\equalscolon|$\equalscolon$||
 |\equalscoloncolon|$\equalscoloncolon$||
 |\equiv|$\equiv$||
+|\errmessage||Writes argument to the console error log|
 |\Eta|$\Eta$||
 |\eta|$\eta$||
 |\eth|$\eth$||
@@ -430,6 +436,7 @@ use `\ce` instead|
 |\gamma|$\gamma$||
 |{gather}|$$\begin{gather}a=b\\e=b+c\end{gather}$$|`\begin{gather}`<br>&nbsp;&nbsp;&nbsp;`a=b \\ `<br>&nbsp;&nbsp;&nbsp;`e=b+c`<br>`\end{gather}`|
 |{gathered}|$\begin{gathered}a=b\\e=b+c\end{gathered}$|`\begin{gathered}`<br>&nbsp;&nbsp;&nbsp;`a=b \\ `<br>&nbsp;&nbsp;&nbsp;`e=b+c`<br>`\end{gathered}`|
+|{gather*}|$$\begin{gather*}a=b\\e=b+c\end{gather*}$$|`\begin{gather*}`<br>&nbsp;&nbsp;&nbsp;`a=b \\ `<br>&nbsp;&nbsp;&nbsp;`e=b+c`<br>`\end{gather*}`|
 |\gcd|$\gcd$||
 |\gdef|$\gdef\sqr#1{#1^2} \sqr{y} + \sqr{y}$|`\gdef\sqr#1{#1^2} \sqr{y} + \sqr{y}`|
 |\ge|$\ge$||
@@ -485,7 +492,7 @@ use `\ce` instead|
 |\href|$\href{https://katex.org/}{\KaTeX}$|`\href{https://katex.org/}{\KaTeX}` Requires `trust` [option](options.md)|
 |\hskip|$w\hskip1em i\hskip2em d$|`w\hskip1em i\hskip2em d`|
 |\hslash|$\hslash$||
-|\hspace|$s\hspace7ex k$|`s\hspace7ex k`|
+|\hspace|$s\hspace7ex k$|`s\hspace7ex k`<br>Starred form `\hspace*`, e.g. `\hspace*{1em}`|
 |\htmlClass|$\htmlClass{foo}{x}$|`\htmlClass{foo}{x}` Must enable `trust` and disable `strict` [option](options.md)|
 |\htmlData|$\htmlData{foo=a, bar=b}{x}$|`\htmlData{foo=a, bar=b}{x}` Must enable `trust` and disable `strict` [option](options.md)|
 |\htmlId|$\htmlId{bar}{x}$|`\htmlId{bar}{x}` Must enable `trust` and disable `strict` [option](options.md)|
@@ -665,6 +672,7 @@ use `\ce` instead|
 |\mathfrak|$\mathfrak{AaBb}$|`\mathfrak{AaBb}`<br>KaTeX supports A-Za-z|
 |\mathinner|$ab\mathinner{\text{inside}}cd$|`ab\mathinner{\text{inside}}cd`|
 |\mathit|$\mathit{AaBb}$|`\mathit{AaBb}`<br>KaTeX supports A-Za-z|
+|\mathsfit|$\mathsfit{AaBb}$|`\mathsfit{AaBb}`|
 |\mathllap|${=}\mathllap{/\,}$|`{=}\mathllap{/\,}`|
 |\mathnormal|$\mathnormal{AaBb}$|`\mathnormal{AaBb}`<br>KaTeX supports A-Za-z|
 |\mathop|$\mathop{\star}_a^b$|`\mathop{\star}_a^b`|
@@ -691,6 +699,7 @@ use `\ce` instead|
 |\mdseries|<span style="color:firebrick;">Not supported</span>||
 |\measuredangle|$\measuredangle$||
 |\medspace|$a\medspace b$|`a\medspace b`|
+|\message||Writes argument to the console log|
 |\mho|$\mho$||
 |\mid|$\{x∈ℝ\mid x>0\}$|`\{x∈ℝ\mid x>0\}`|
 |\middle|$P\left(A\middle\vert B\right)$|`P\left(A\middle\vert B\right)`|
@@ -730,7 +739,7 @@ use `\ce` instead|
 |\negthickspace|$a\negthickspace b$|`a\negthickspace b`|
 |\negthinspace|$a\negthinspace b$|`a\negthinspace b`|
 |\neq|$\neq$||
-|\newcommand|$\newcommand\chk{\checkmark} \chk$|`\newcommand\chk{\checkmark} \chk`|
+|\newcommand|$\newcommand\chk{\checkmark} \chk$|`\newcommand\chk{\checkmark} \chk`<br>Optional `[default]` argument not supported|
 |\newenvironment|<span style="color:firebrick;">Not supported</span>|[Issue #37](https://github.com/KaTeX/KaTeX/issues/37)|
 |\Newextarrow|<span style="color:firebrick;">Not supported</span>||
 |\newline|$a\newline b$|`a\newline b`|
@@ -886,7 +895,7 @@ use `\ce` instead|
 |\R|$\R$||
 |\r|$\text{\r{a}}$|`\text{\r{a}}`|
 |\raise|<span style="color:firebrick;">Not supported</span>|see `\raisebox`|
-|\raisebox|$h\raisebox{2pt}{ighe}r$|`h\raisebox{2pt}{$ighe$}r`|
+|\raisebox|$h\raisebox{2pt}{$ighe$}r$|`h\raisebox{2pt}{$ighe$}r`|
 |\rang|$\langle A\rang$|`\langle A\rang`|
 |\rangle|$\langle A\rangle$|`\langle A\rangle`|
 |\Rarr|$\Rarr$||
@@ -969,6 +978,7 @@ use `\ce` instead|
 |\shortparallel|$\shortparallel$||
 |\shoveleft|<span style="color:firebrick;">Not supported</span>||
 |\shoveright|<span style="color:firebrick;">Not supported</span>||
+|\show||Writes information to the console log|
 |\sideset|<span style="color:firebrick;">Not supported</span>||
 |\Sigma|$\Sigma$||
 |\sigma|$\sigma$||
@@ -989,7 +999,7 @@ use `\ce` instead|
 |{smallmatrix}|$\begin{smallmatrix} a & b \\ c & d \end{smallmatrix}$|`\begin{smallmatrix}`<br>&nbsp;&nbsp;&nbsp;`a & b \\`<br>&nbsp;&nbsp;&nbsp;`c & d`<br>`\end{smallmatrix}`|
 |\smallsetminus|$\smallsetminus$||
 |\smallsmile|$\smallsmile$||
-|\smash|$\left(x^{\smash{2}}\right)$|`\left(x^{\smash{2}}\right)`|
+|\smash|$\left(x^{\smash{2}}\right)$|`\left(x^{\smash{2}}\right)`<br>Optional `[t]`/`[b]`, e.g. `\smash[t]{2}`|
 |\smile|$\smile$||
 |\smiley|<span style="color:firebrick;">Not supported</span>||
 |\sout|$\text{\sout{abc}}$|`\text{\sout{abc}}`|
@@ -1015,7 +1025,7 @@ use `\ce` instead|
 |\strut|<span style="color:firebrick;">Not supported</span>||
 |\style|<span style="color:firebrick;">Not supported</span>|Non standard|
 |\sub|$\sub$||
-|{subarray}|<span style="color:firebrick;">Not supported</span>||
+|{subarray}|$\begin{subarray}{c}a\\b\end{subarray}$|`\begin{subarray}{c}`<br>&nbsp;&nbsp;&nbsp;`a \\`<br>&nbsp;&nbsp;&nbsp;`b`<br>`\end{subarray}`<br>Single column; `l` or `c`|
 |\sube|$\sube$||
 |\Subset|$\Subset$||
 |\subset|$\subset$||
@@ -1067,6 +1077,7 @@ use `\ce` instead|
 |\textbraceright|$\text{\textbraceright}$|`\text{\textbraceright}`|
 |\textcircled|$\text{\textcircled a}$|`\text{\textcircled a}`|
 |\textcolor|$\textcolor{blue}{F=ma}$|`\textcolor{blue}{F=ma}`|
+|\textcopyright|$\text{\textcopyright}$|`\text{\textcopyright}`|
 |\textdagger|$\text{\textdagger}$|`\text{\textdagger}`|
 |\textdaggerdbl|$\text{\textdaggerdbl}$|`\text{\textdaggerdbl}`|
 |\textdegree|$\text{\textdegree}$|`\text{\textdegree}`|
@@ -1143,7 +1154,6 @@ use `\ce` instead|
 |\underline|$\underline{\text{a long argument}}$|`\underline{\text{a long argument}}`|
 |\underlinesegment|$\underlinesegment{AB}$|`\underlinesegment{AB}`|
 |\underparen|<span style="color:firebrick;">Not supported</span>|See `\undergroup`|
-|\underrightarrow|$\underrightarrow{AB}$|`\underrightarrow{AB}`|
 |\underset|$\underset{!}{=}$|`\underset{!}{=}`|
 |\unicode|<span style="color:firebrick;">Not supported</span>||
 |\unlhd|$\unlhd$||
@@ -1214,6 +1224,7 @@ use `\ce` instead|
 |\vee|$\vee$||
 |\veebar|$\veebar$||
 |\verb|$\verb!\frac a b!$|`\verb!\frac a b!`|
+|\verb*|$\verb*!a b!$|`\verb*!a b!`|
 |\Vert|$\Vert$||
 |\vert|$\vert$||
 |\vfil|<span style="color:firebrick;">Not supported</span>||

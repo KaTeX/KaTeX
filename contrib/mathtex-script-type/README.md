@@ -15,6 +15,10 @@ Load the extension by adding the following line to your HTML file.
 ```
 You can download the script and use it locally, or from a local KaTeX installation instead.
 
+The script scans `document.body` as soon as it loads, so keep the `defer`
+attribute (or place the tag at the end of `<body>`). Without `defer` in
+`<head>`, `document.body` does not exist yet and the extension will fail.
+
 For example, in the following simple page, we first load KaTeX as usual.
 Then, in the body, we use a `math/tex` script to typeset the equation `x+\sqrt{1-x^2}`.
 

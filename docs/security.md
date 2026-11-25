@@ -15,6 +15,54 @@ with untrusted inputs; refer to [Options](options.md) for more details.
 * `maxExpand` can prevent infinite macro loop attacks.
 * `trust` can allow certain commands that may load external resources or change HTML attributes and thus are not always safe (e.g., `\includegraphics` or `\htmlClass`)
 
+## Recommended settings for untrusted input
+
+Keep the default `trust: false` and allowlist only what you need. For
+example, to permit links but nothing else, and to restrict them to safe
+protocols:
+
+```js
+katex.renderToString(userTex, {
+    trust: (context) => ["\\url", "\\href"].includes(context.command) &&
+        ["http", "https", "_relative"].includes(context.protocol),
+});
+```
+
+To forbid one risky command while allowing the rest, invert the test.
+Prefer allowlisting (above): a denylist silently permits any command added
+in the future.
+
+```js
+trust: (context) => context.command !== "\\includegraphics"
+```
+
+To block dangerous protocols in URLs (e.g. `javascript:` or `file:` URLs
+smuggled through `\href` or `\includegraphics`), gate on the URL-bearing
+commands and allowlist safe protocols. A denylist such as
+`context.protocol !== "javascript"` is unsafe: commands without a URL
+(such as `\htmlClass`) have no `protocol`, so the test passes and they
+are trusted, and every unlisted scheme (`data:`, `vbscript:`) is
+permitted.
+
+```js
+trust: (context) => ["\\url", "\\href", "\\includegraphics"].includes(context.command) &&
+    ["http", "https", "_relative"].includes(context.protocol)
+```
+
+Run `strict` in at least the default `"warn"` mode so non-LaTeX extensions
+(such as `\html`-prefixed commands) are surfaced instead of silently
+accepted.
+
+## Sanitizers and Content Security Policy
+
+If you sanitize KaTeX output (recommended for untrusted input), your
+allowlist must cover MathML and SVG elements and attributes in addition to
+the usual HTML, or the math will break. If you target KaTeX's internal CSS
+classes, note that since v0.18.0 they are prefixed with `katex-` (see the
+[migration guide](migration.md#v0180)). Serve the font files from a location
+your Content Security Policy permits (`font-src`), and allow the inline
+`style` attributes KaTeX emits or the spacing will break.
+
 The error message thrown by KaTeX may contain unescaped LaTeX source code.
 See [Handling Errors](error.md) for more details.
 
