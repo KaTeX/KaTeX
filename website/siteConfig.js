@@ -31,6 +31,11 @@ const users = [
         infoLink: 'https://cocalc.com/',
     },
     {
+        caption: 'Coddy',
+        image: 'https://coddy.tech/apple-touch-icon.png',
+        infoLink: 'https://coddy.tech/math',
+    },
+    {
         caption: 'Doctave',
         image: 'https://www.doctave.com/assets/img/katex-integration-logo.webp',
         infoLink: 'https://www.doctave.com/',
@@ -91,6 +96,11 @@ const users = [
         infoLink: 'https://www.intmath.com/',
     },
     {
+        caption: 'Liubai',
+        image: 'https://raw.githubusercontent.com/echoVic/liubai/main/resources/icon.png',
+        infoLink: 'https://liubai.echovic.com/en/',
+    },
+    {
         caption: 'Marker',
         image: 'https://raw.githubusercontent.com/fabiocolacio/Marker/master/data/com.github.fabiocolacio.marker.svg',
         infoLink: 'https://fabiocolacio.github.io/Marker/',
@@ -139,6 +149,11 @@ const users = [
         caption: 'Rocket.Chat',
         image: '/img/rocketchat_logo.svg',
         infoLink: 'https://rocket.chat/',
+    },
+    {
+        caption: 'Skim',
+        image: 'https://skim.md/assets/icon-512.png',
+        infoLink: 'https://skim.md/',
     },
     {
         caption: 'Slab',
@@ -194,6 +209,11 @@ const users = [
         caption: 'Vade Mecum Shelf',
         image: '/img/vade_mecum_shelf_logo.png',
         infoLink: 'https://github.com/tonton-pixel/vade-mecum-shelf/',
+    },
+    {
+        caption: 'Whiteboard',
+        image: 'https://whiteboard.marcopontili.com/apple-touch-icon.png',
+        infoLink: 'https://whiteboard.marcopontili.com/',
     },
     {
         caption: 'zzllrr Mather',
