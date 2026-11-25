@@ -121,6 +121,11 @@ const users = [
         infoLink: 'https://mintapps.org',
     },
     {
+        caption: 'ModuMath',
+        image: 'https://math.hjinlabs.com/landing-assets/math-buddies-v1.png',
+        infoLink: 'https://math.hjinlabs.com/?lang=en',
+    },
+    {
         caption: 'MonsterWriter',
         image: 'https://www.monsterwriter.com/assets/logo-200.png',
         infoLink: 'https://www.monsterwriter.com/',
